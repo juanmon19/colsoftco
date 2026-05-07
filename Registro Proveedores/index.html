@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colsoftco – Registro de Proveedores</title>
+</head>
+
+<style>
+  
+:root {
+  --navy:      #0A1F44;
+  --navy2:     #0A1F44;
+  --gold:      #c9a227;
+  --gold2:     #f0c040;
+  --bg:        #eef1f7;
+  --white:     #ffffff;
+  --text:      #1e2d45;
+  --muted:     #6b7a99;
+  --border:    #d0d8e8;
+  --sidebar-w: 220px;
+}
+
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+
+header {
+  background: linear-gradient(90deg, var(--navy2) 0%, var(--navy) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  height: 70px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.logo img{
+    width: 75px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.brand-name {
+  font-family: "Arial, Helvetica, sans-serif";
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 2px;
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--navy2);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-name {
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+.header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.header-title h1 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+
+
+
+.layout {
+  display: flex;
+  min-height: calc(100vh - 122px);
+}
+
+
+aside {
+  width: var(--sidebar-w);
+  padding: 28px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  display: block;
+  width: 100%;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 6px;
+  background: var(--navy);
+  color: var(--white);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+  text-decoration: none;
+}
+
+.nav-btn:hover {
+  background: var(--navy2);
+  transform: translateX(2px);
+}
+
+.nav-btn.active {
+  background: var(--gold);
+  color: var(--navy2);
+}
+
+
+main {
+  flex: 1;
+  padding: 28px 32px 40px;
+}
+
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--white);
+  border: 1.5px solid var(--gold);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 2px 8px rgba(26,58,107,.07);
+  animation: fadeUp .4s ease both;
+}
+
+.user-card-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: var(--navy);
+  border: 2px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+
+
+
+
+
+.form-card {
+  background: var(--white);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  box-shadow: 0 2px 12px rgba(26,58,107,.08);
+  overflow: hidden;
+  animation: fadeUp .5s .1s ease both;
+}
+
+.form-card-header {
+  background: var(--navy);
+  color: var(--white);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-card-bar {
+  display: inline-block;
+  width: 4px;
+  height: 20px;
+  background: var(--gold);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.form-body {
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-group label,
+.label-static {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #0B3D91;
+  text-transform: uppercase;
+}
+
+.field-group input,
+.field-group select {
+  height: 42px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: var(--white);
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.field-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7a99' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.field-group input::placeholder {
+  color: #b0bac8;
+}
+
+.field-group input:focus,
+.field-group select:focus {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(26,58,107,.12);
+}
+
+
+.checkbox-row {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.check-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text);
+  user-select: none;
+}
+
+.check-label input[type="checkbox"] {
+  display: none;
+}
+
+.check-box {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, border-color .2s;
+  flex-shrink: 0;
+}
+
+.check-label input:checked + .check-box {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+
+.check-label input:checked + .check-box::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: 2px solid var(--gold);
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) translateY(-1px);
+}
+
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.btn-limpiar,
+.btn-registrar {
+  padding: 10px 28px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  transition: all .2s;
+}
+
+.btn-limpiar {
+  background: var(--white);
+  color: var(--text);
+}
+
+.btn-limpiar:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.btn-registrar {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+
+.btn-registrar:hover {
+  background: var(--navy2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26,58,107,.25);
+}
+
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: var(--navy);
+  color: var(--white);
+  padding: 14px 24px;
+  border-radius: 8px;
+  border-left: 4px solid var(--gold);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 6px 24px rgba(0,0,0,.2);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .3s, transform .3s;
+  pointer-events: none;
+  z-index: 999;
+  max-width: 360px;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.field-error {
+  color: #e74c3c;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+a.logo-area {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+</style>
+
+
+<body>
+
+
+<header>
+  <a href="index.html" class="logo-area">
+    <div class="logo">
+      <img src="../imagenes/logo.png">
+    </div>
+  </a>
+
+  <div class="header-title">
+    <h1>Registro de Proveedores</h1>
+    <div class="title-underline"></div>
+  </div>
+</header>
+
+
+
+
+
+<div class="layout">
+
+  
+  <main style="margin: 0 auto; max-width: 1000px; width: 100%;">
+
+    
+    
+    
+    <div class="form-card">
+      <div class="form-card-header">
+        <span class="form-card-bar"></span>
+        Nuevos Proveedores
+      </div>
+
+      <div class="form-body">
+
+        
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label for="razon-social">Razón Social</label>
+            <input type="text" id="razon-social" placeholder="Ingrese la razón social" />
+          </div>
+          <div class="field-group">
+            <label for="nit">NIT</label>
+            <input type="text" id="nit"  />
+          </div>
+        </div>
+
+        
+        <div class="field-group">
+          <label for="producto">Producto que suministra</label>
+          <select id="producto">
+            <option value="">-- Seleccione --</option>
+            <option>Tela</option>
+            <option>Espuma</option>
+            <option>Madera</option>
+            <option>Tornillos</option>
+            <option>Pintura</option>
+            <option>Resortes</option>
+            <option>Hilo</option>
+          </select>
+        </div>
+
+        
+        <div class="form-grid-2">
+          <div class="field-group">
+            <label for="metodo-pago">Método de Pago</label>
+            <select id="metodo-pago">
+              <option value="">-- Seleccione --</option>
+              <option>Transferencia bancaria</option>
+              <option>Efectivo</option>
+              <option>Cheque</option>
+              <option>Crédito 30 días</option>
+              <option>Crédito 60 días</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="telefono">Teléfono de Contacto</label>
+            <input type="tel" id="telefono" placeholder="Ej: 3001234567" />
+          </div>
+        </div>
+
+        
+        <div class="field-group">
+          <label for="correo">Correo Electrónico</label>
+          <input type="email" id="correo" placeholder="Ej: proveedor@empresa.com" />
+        </div>
+
+        
+        <div class="field-group">
+          <label class="label-static">Seleccione dónde recibir la notificación</label>
+          <div class="checkbox-row">
+            <label class="check-label">
+              <input type="checkbox" id="notif-email" />
+              <span class="check-box"></span>
+              CORREO ELECTRÓNICO
+            </label>
+            <label class="check-label">
+              <input type="checkbox" id="notif-sms" />
+              <span class="check-box"></span>
+              MENSAJE DE TEXTO
+            </label>
+          </div>
+        </div>
+
+        
+        <div class="form-actions">
+          <button class="btn-limpiar" id="btn-limpiar">Limpiar</button>
+          <button class="btn-registrar" id="btn-registrar">Registrar</button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+
+<div class="toast" id="toast">
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+  
+const campos = {
+  'razon-social': 'Razón Social',
+  'nit':          'NIT',
+  'producto':     'Producto que suministra',
+  'metodo-pago':  'Método de Pago',
+  'telefono':     'Teléfono de contacto',
+  'correo':       'Correo electrónico'
+};
+
+
+function showToast(msg, tipo = 'ok') {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toast-msg');
+  m.textContent = msg;
+  t.style.borderLeftColor = tipo === 'ok' ? 'var(--gold)' : '#e74c3c';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+
+function marcarError(id, mensaje) {
+  const el = document.getElementById(id);
+  el.style.borderColor = '#e74c3c';
+  el.style.boxShadow   = '0 0 0 3px rgba(231,76,60,.15)';
+
+  let err = el.parentElement.querySelector('.field-error');
+  if (!err) {
+    err = document.createElement('span');
+    err.className = 'field-error';
+    el.parentElement.appendChild(err);
+  }
+  err.textContent = mensaje;
+}
+
+
+function limpiarError(id) {
+  const el = document.getElementById(id);
+  el.style.borderColor = '';
+  el.style.boxShadow   = '';
+  const err = el.parentElement.querySelector('.field-error');
+  if (err) err.remove();
+}
+
+function limpiarTodosErrores() {
+  Object.keys(campos).forEach(limpiarError);
+}
+
+
+const validarNIT      = v => /^\d{6,12}(-\d)?$/.test(v.trim());
+const validarEmail    = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+const validarTelefono = v => /^[0-9+\s\-]{7,15}$/.test(v.trim());
+
+
+function validarFormulario() {
+  let valido = true;
+  limpiarTodosErrores();
+
+  
+  const rs = document.getElementById('razon-social').value.trim();
+  if (!rs) {
+    marcarError('razon-social', 'La razón social es obligatoria');
+    valido = false;
+  } else if (rs.length < 3) {
+    marcarError('razon-social', 'Mínimo 3 caracteres');
+    valido = false;
+  }
+
+  
+  const nit = document.getElementById('nit').value.trim();
+  if (!nit) {
+    marcarError('nit', 'El NIT es obligatorio');
+    valido = false;
+  } else if (!validarNIT(nit)) {
+    marcarError('nit', 'Formato inválido (ej: 9001234567 o 900123456-1)');
+    valido = false;
+  }
+
+  
+  if (!document.getElementById('producto').value) {
+    marcarError('producto', 'Seleccione un producto');
+    valido = false;
+  }
+
+ 
+  if (!document.getElementById('metodo-pago').value) {
+    marcarError('metodo-pago', 'Seleccione un método de pago');
+    valido = false;
+  }
+
+  
+  const tel = document.getElementById('telefono').value.trim();
+  if (!tel) {
+    marcarError('telefono', 'El teléfono es obligatorio');
+    valido = false;
+  } else if (!validarTelefono(tel)) {
+    marcarError('telefono', 'Ingrese un teléfono válido');
+    valido = false;
+  }
+
+  
+  const correo = document.getElementById('correo').value.trim();
+  if (!correo) {
+    marcarError('correo', 'El correo es obligatorio');
+    valido = false;
+  } else if (!validarEmail(correo)) {
+    marcarError('correo', 'Ingrese un correo válido (ej: nombre@empresa.com)');
+    valido = false;
+  }
+
+  
+  const emailCheck = document.getElementById('notif-email').checked;
+  const smsCheck   = document.getElementById('notif-sms').checked;
+  if (!emailCheck && !smsCheck) {
+    showToast('⚠️ Seleccione al menos un método de notificación', 'error');
+    valido = false;
+  }
+
+  return valido;
+}
+
+
+function resetForm() {
+  Object.keys(campos).forEach(id => {
+    const el = document.getElementById(id);
+    el.tagName === 'SELECT' ? el.selectedIndex = 0 : el.value = '';
+  });
+  document.getElementById('notif-email').checked = false;
+  document.getElementById('notif-sms').checked   = false;
+  limpiarTodosErrores();
+}
+
+
+document.getElementById('btn-limpiar').addEventListener('click', () => {
+  resetForm();
+  showToast('🧹 Formulario limpiado correctamente');
+});
+
+
+document.getElementById('btn-registrar').addEventListener('click', () => {
+  if (!validarFormulario()) return;
+
+  const proveedor = {
+    razonSocial:   document.getElementById('razon-social').value.trim(),
+    nit:           document.getElementById('nit').value.trim(),
+    producto:      document.getElementById('producto').value,
+    metodoPago:    document.getElementById('metodo-pago').value,
+    telefono:      document.getElementById('telefono').value.trim(),
+    correo:        document.getElementById('correo').value.trim(),
+    notifEmail:    document.getElementById('notif-email').checked,
+    notifSMS:      document.getElementById('notif-sms').checked,
+    fechaRegistro: new Date().toLocaleDateString('es-CO')
+  };
+
+  console.log('✅ Proveedor registrado:', proveedor);
+
+ 
+  const btn = document.getElementById('btn-registrar');
+  btn.textContent          = '✓ Registrado';
+  btn.style.background     = '#27ae60';
+  btn.style.borderColor    = '#27ae60';
+  btn.disabled             = true;
+
+  showToast(`✅ Proveedor "${proveedor.razonSocial}" registrado exitosamente`);
+
+  setTimeout(() => {
+    btn.textContent       = 'Registrar';
+    btn.style.background  = '';
+    btn.style.borderColor = '';
+    btn.disabled          = false;
+    resetForm();
+  }, 2500);
+});
+
+Object.keys(campos).forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input',  () => limpiarError(id));
+  el.addEventListener('change', () => limpiarError(id));
+});
+
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+<script src="../js/auth.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>

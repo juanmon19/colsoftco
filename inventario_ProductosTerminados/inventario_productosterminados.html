@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max & Flex - Inventario Productos Terminados</title>
+</head>
+<style>
+     
+        /* ===== RESET IMPORTANTE ===== */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* ===== GENERAL ===== */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background-color: #0A1F44;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 29px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .logo img {
+            width: 75px;
+            cursor: pointer;
+            display: block;
+        }
+
+        /* ===== BOTÓN GENERAL ===== */
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background: #D4AF37;
+            border: none;
+            color: black;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: white;
+        }
+
+        /* ===== WELCOME BAR ===== */
+        .welcome-bar {
+            background-color: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* ===== TÍTULO PÁGINA ===== */
+        .page-title-bar {
+            padding: 20px;
+            text-align: left;
+        }
+
+        .page-title {
+            display: inline-block;
+            border: 1px solid #aaa;
+            padding: 8px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            background: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            padding: 0 20px 30px 20px;
+        }
+
+        /* ===== TABLA ===== */
+        .table-wrapper {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead tr {
+            background-color: #e8e8e8;
+        }
+
+        table thead th {
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: bold;
+            color: #222;
+            border-bottom: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tbody tr:hover {
+            background-color: #eef3fb;
+        }
+
+        table tbody td {
+            padding: 9px 14px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        /* Filas vacías decorativas */
+        .empty-row td {
+            height: 32px;
+            color: transparent;
+        }
+
+        /* ===== BOTONES ACCIÓN ===== */
+        .action-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-actualizar,
+        .btn-eliminar {
+            padding: 5px 14px;
+            border: 1px solid #bbb;
+            border-radius: 3px;
+            font-size: 13px;
+            cursor: pointer;
+            background-color: #fff;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .btn-actualizar:hover {
+            background-color: #0A1F44;
+            color: #fff;
+            border-color: #0A1F44;
+        }
+
+        .btn-eliminar:hover {
+            background-color: #c0392b;
+            color: #fff;
+            border-color: #c0392b;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 12px 14px;
+            background: #f0f4ff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .btn-add {
+            background-color: #0A1F44;
+            color: #fff;
+            border: none;
+            padding: 7px 18px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: background 0.15s;
+        }
+
+        .btn-add:hover {
+            background-color: #D4AF37;
+            color: #0A1F44;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px 30px 24px;
+            width: 360px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal h3 {
+            margin: 0 0 20px 0;
+            color: #0A1F44;
+            font-size: 16px;
+        }
+
+        .modal label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 9px;
+            background: #0A1F44;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-save:hover { background: #D4AF37; color: #0A1F44; }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 9px;
+            background: #eee;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover { background: #ddd; }
+
+        /* ===== CONFIRM MODAL ===== */
+        .confirm-msg {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .btn-delete-confirm {
+            flex: 1;
+            padding: 9px;
+            background: #c0392b;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-delete-confirm:hover { background: #922b21; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0A1F44;
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 6px;
+            font-size: 13px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 200;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+</style>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="logo">
+        <img src="../imagenes/logo.png" alt="logo">
+    </div>
+    Max & Flex
+</div>
+
+<!-- WELCOME BAR -->
+<!-- Removido para mantener diseño minimalista -->
+
+<!-- TÍTULO PÁGINA -->
+<div class="page-title-bar">
+    <span class="page-title">PRODUCTOS TERMINADOS</span>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="table-wrapper">
+
+        <!-- TOOLBAR -->
+        <div class="toolbar">
+            <button class="btn-add" onclick="openAddModal()">+ Agregar Producto</button>
+        </div>
+
+        <!-- TABLE -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL: ADD / EDIT -->
+<div class="modal-overlay" id="modal-form">
+    <div class="modal">
+        <h3 id="modal-title">Agregar Producto</h3>
+        <label>Producto</label>
+        <input type="text" id="input-producto" placeholder="Nombre del producto">
+        <label>Cantidad</label>
+        <input type="text" id="input-cantidad" placeholder="Ej: 23 Unidades">
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+            <button class="btn-save" onclick="guardarProducto()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: CONFIRM DELETE -->
+<div class="modal-overlay" id="modal-confirm">
+    <div class="modal">
+        <h3>Confirmar eliminación</h3>
+        <p class="confirm-msg" id="confirm-msg">¿Estás seguro de eliminar este producto?</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+            <button class="btn-delete-confirm" onclick="confirmarEliminacion()">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+<script>
+    
+    // ===== DATA =====
+    let productos = [
+        { id: 1, nombre: "Colchon Queen",      cantidad: "x23 Unidades" },
+        { id: 2, nombre: "Colchon Semidobile",  cantidad: "x29 Unidades" },
+        { id: 3, nombre: "Colchon Doble",       cantidad: "x33 Unidades" },
+        { id: 4, nombre: "Colchon Sencillo",    cantidad: "x43 Unidades" },
+    ];
+
+    let nextId = 5;
+    let editingId = null;
+    let deletingId = null;
+
+    // ===== RENDER =====
+    function renderTabla() {
+        const tbody = document.getElementById('tabla-body');
+        tbody.innerHTML = '';
+
+        productos.forEach((p, i) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${i + 1}. ${p.nombre}</td>
+                <td>${p.cantidad}</td>
+                <td>
+                    <div class="action-cell">
+                        <button class="btn-actualizar" onclick="openEditModal(${p.id})">Actualizar</button>
+                        <button class="btn-eliminar"   onclick="openDeleteModal(${p.id})">Eliminar</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Filas vacías decorativas
+        const emptyRows = Math.max(0, 10 - productos.length);
+        for (let i = 0; i < emptyRows; i++) {
+            const tr = document.createElement('tr');
+            tr.className = 'empty-row';
+            tr.innerHTML = `<td>&nbsp;</td><td></td><td></td>`;
+            tbody.appendChild(tr);
+        }
+    }
+
+    // ===== MODALS =====
+    function openAddModal() {
+        editingId = null;
+        document.getElementById('modal-title').textContent = 'Agregar Producto';
+        document.getElementById('input-producto').value = '';
+        document.getElementById('input-cantidad').value = '';
+        document.getElementById('modal-form').classList.add('active');
+    }
+
+    function openEditModal(id) {
+        const p = productos.find(x => x.id === id);
+        if (!p) return;
+        editingId = id;
+        document.getElementById('modal-title').textContent = 'Actualizar Producto';
+        document.getElementById('input-producto').value = p.nombre;
+        document.getElementById('input-cantidad').value = p.cantidad;
+        document.getElementById('modal-form').classList.add('active');
+    }
+
+    function openDeleteModal(id) {
+        const p = productos.find(x => x.id === id);
+        if (!p) return;
+        deletingId = id;
+        document.getElementById('confirm-msg').textContent =
+            `¿Estás seguro de eliminar "${p.nombre}"?`;
+        document.getElementById('modal-confirm').classList.add('active');
+    }
+
+    function closeModal() {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+    }
+
+    // ===== ACCIONES =====
+    function guardarProducto() {
+        const nombre   = document.getElementById('input-producto').value.trim();
+        const cantidad = document.getElementById('input-cantidad').value.trim();
+        if (!nombre || !cantidad) { showToast('Complete todos los campos.'); return; }
+
+        if (editingId === null) {
+            productos.push({ id: nextId++, nombre, cantidad });
+            showToast('Producto agregado.');
+        } else {
+            const p = productos.find(x => x.id === editingId);
+            if (p) { p.nombre = nombre; p.cantidad = cantidad; }
+            showToast('Producto actualizado.');
+        }
+        closeModal();
+        renderTabla();
+    }
+
+    function confirmarEliminacion() {
+        productos = productos.filter(x => x.id !== deletingId);
+        closeModal();
+        renderTabla();
+        showToast('Producto eliminado.');
+    }
+
+    // ===== TOAST =====
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    });
+
+</script>
+<script src="../js/auth.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>
+
