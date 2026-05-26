@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador - Max & Flex</title>
+    <link href="paneladmin.css" rel="stylesheet">
+    
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">
+            <img src="../imagenes/logo.png" alt="logo">
+        </div>
+        <span class="header-titulo">BIENVENIDO</span>
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
+    </div>
+
+    <div class="contenedor">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <button onclick="window.location.href='../lista_proveedores/lista_proveedores.html'">Lista de Proveedores</button>
+            <button onclick="window.location.href='../registro_proveedores/registrodeproveedores.html'">Registrar Proveedor</button>
+            <button onclick="window.location.href='../lista_verificacion/lista_verificacion.html'">Lista Verificación</button>
+            <button onclick="window.location.href='../generar_informe/generar_informe.html'">Generar Informe</button>
+            <button onclick="window.location.href='../registromp/registromp.html'">Registrar Producto</button>
+            <button onclick="window.location.href='../control_de_stock/control_de_stock.html'">Control de Stock</button>
+            <button onclick="window.location.href='../inventario_materiaprima/inventario_materia_prima.html'">Inventario Materia Prima</button>
+            <button onclick="window.location.href='../inventario_productosterminados/inventario_productosterminados.html'">Inventario de Productos</button>
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="contenido">
+
+            <div class="bienvenida">
+                <!-- Imagen usuario -->
+                <img src="../imagenes/usuario.jpg" alt="Usuario">
+
+                <div class="info-usuario">
+                    <h2><strong>Usuario:</strong> Duvan Esteban Martínez Velandia</h2>
+                    <p><strong>Rol:</strong> Administrador</p>
+                </div>
+            </div>
+
+            <div class="tareas">
+                <h3>Tareas Pendientes</h3>
+                <ul>
+                    <li>Solicitar espuma</li>
+                    <li>Pedido N° 345</li>
+                    <li>Verificar inventario</li>
+                    <li>Supervisar el área de producción</li>
+                    <li>Contactar proveedor N° 12</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+<script src="../../public/js/auth.js"></script>
+<script src="../../public/js/app.js"></script>
+</body>
+
+</html>

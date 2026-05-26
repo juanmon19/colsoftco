@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cambio de Contraseña</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="../public/css/style.css" rel="stylesheet"> 
+</head>
+<body>
+
+ <header>
+  <a href="index.html" class="logo-area">
+    <div class="logo">
+      <img src="../public/imagenes/logo.png">
+    </div>
+  </a>
+
+  <div class="header-title">
+    <h1>Cambio de Contraseña</h1>
+    <div class="title-underline"></div>
+  </div>
+</header>
+
+  <main>
+    <div class="card">
+      <p class="card-title">Cambiar Contraseña</p>
+
+      <div class="field">
+        <label for="emailTel">Email o Teléfono</label>
+        <input type="text" id="emailTel" placeholder="ejemplo@correo.com o 300 000 0000" autocomplete="username"/>
+        <span class="hint" id="hintEmailTel">Este campo es obligatorio.</span>
+      </div>
+
+      <div class="field">
+        <label for="codigo">Código de verificación</label>
+        <input type="text" id="codigo" placeholder="Ingrese el código recibido" maxlength="10" autocomplete="one-time-code"/>
+        <span class="hint" id="hintCodigo">Ingrese el código de verificación.</span>
+      </div>
+
+      <div class="field">
+        <label for="nuevaPass">Nueva Contraseña</label>
+        <input type="password" id="nuevaPass" placeholder="Mínimo 8 caracteres" autocomplete="new-password"/>
+        <span class="hint" id="hintNueva">La contraseña debe tener al menos 8 caracteres.</span>
+      </div>
+
+      <div class="field">
+        <label for="confirmPass">Confirmar Nueva Contraseña</label>
+        <input type="password" id="confirmPass" placeholder="Repita la nueva contraseña" autocomplete="new-password"/>
+        <span class="hint" id="hintConfirm">Las contraseñas no coinciden.</span>
+      </div>
+
+      <button class="btn-submit" onclick="handleSubmit()">Cambiar la contraseña</button>
+
+      <p class="success-msg" id="successMsg">✔ Contraseña actualizada correctamente.</p>
+
+      <a href="../login/login.html" class="back-link">← Volver al inicio de sesión</a>
+    </div>
+  </main>
+
+  <script>
+    function handleSubmit() {
+      let valid = true;
+
+      const emailTel   = document.getElementById('emailTel');
+      const codigo     = document.getElementById('codigo');
+      const nuevaPass  = document.getElementById('nuevaPass');
+      const confirmPass= document.getElementById('confirmPass');
+
+      const hintEmailTel  = document.getElementById('hintEmailTel');
+      const hintCodigo    = document.getElementById('hintCodigo');
+      const hintNueva     = document.getElementById('hintNueva');
+      const hintConfirm   = document.getElementById('hintConfirm');
+      const successMsg    = document.getElementById('successMsg');
+
+      // Reset
+      [emailTel, codigo, nuevaPass, confirmPass].forEach(i => i.classList.remove('error'));
+      [hintEmailTel, hintCodigo, hintNueva, hintConfirm].forEach(h => h.classList.remove('visible'));
+      successMsg.classList.remove('visible');
+
+      if (!emailTel.value.trim()) {
+        emailTel.classList.add('error');
+        hintEmailTel.classList.add('visible');
+        valid = false;
+      }
+
+      if (!codigo.value.trim()) {
+        codigo.classList.add('error');
+        hintCodigo.classList.add('visible');
+        valid = false;
+      }
+
+      if (nuevaPass.value.length < 8) {
+        nuevaPass.classList.add('error');
+        hintNueva.classList.add('visible');
+        valid = false;
+      }
+
+      if (confirmPass.value !== nuevaPass.value || !confirmPass.value) {
+        confirmPass.classList.add('error');
+        hintConfirm.classList.add('visible');
+        valid = false;
+      }
+
+      if (valid) {
+        successMsg.classList.add('visible');
+        [emailTel, codigo, nuevaPass, confirmPass].forEach(i => i.value = '');
+      }
+    }
+  </script>
+<script src="../js/auth.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>
+

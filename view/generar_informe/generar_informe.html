@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Generar Informe</title>
+    <link href="generarinforme.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../panel_admin/panel_admin.html">
+                <img src="../imagenes/logo.png" alt="logo">
+            </a>
+        </div>
+
+        <div class="header-title">
+            <h1>Informes</h1>
+            <div class="title-underline"></div>
+        </div>
+    </header>
+
+
+    <div class="contenido" style="margin: 0 auto; max-width: 1000px; width: 100%;">
+        <div class="informes">
+            <h2>GENERAR INFORME</h2>
+            <p>Marque la herramienta en la que desea generar el informe:</p>
+            <div class="radio-group">
+                <label>Excel <input type="radio" name="tipo" value="excel"></label>
+                <label>PDF <input type="radio" name="tipo" value="pdf"></label>
+            </div>
+
+
+            <br><br>
+
+            <p>Digite los meses a comparar:</p>
+
+            <select name="mes_inicio">
+                <option>Enero</option>
+                <option>Febrero</option>
+                <option>Marzo</option>
+                <option>Abril</option>
+                <option>Mayo</option>
+                <option>Junio</option>
+                <option>Julio</option>
+                <option>Agosto</option>
+                <option>Septiembre</option>
+                <option>Octubre</option>
+                <option>Noviembre</option>
+                <option>Diciembre</option>
+            </select>
+
+            -
+
+            <select name="mes_fin">
+                <option>Enero</option>
+                <option>Febrero</option>
+                <option>Marzo</option>
+                <option>Abril</option>
+                <option>Mayo</option>
+                <option>Junio</option>
+                <option>Julio</option>
+                <option>Agosto</option>
+                <option>Septiembre</option>
+                <option>Octubre</option>
+                <option>Noviembre</option>
+                <option>Diciembre</option>
+            </select>
+            <br><br>
+
+            <button>Generar</button>
+            <script>
+                document.getElementById("formRegistro").addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    let password = document.getElementById("password").value;
+                    let confirmar = document.getElementById("confirmar").value;
+
+                    if (password !== confirmar) {
+                        alert("Las contraseñas no coinciden");
+                    } else {
+                        alert("Usuario registrado correctamente");
+                    }
+                });
+            </script>
+            <script src="../js/auth.js"></script>
+            <script src="../js/app.js"></script>
+</body>
+
+</html>

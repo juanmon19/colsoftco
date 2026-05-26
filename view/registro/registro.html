@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevos Usuario</title>
+    <link href="registro.css" rel="stylesheet">
+</head>
+
+<body class="body-registro">
+    <div class="header">
+
+        <a class="logo">
+            <img src="../imagenes/logo.png" alt="logo">
+        </a>
+        BIENVENIDO
+    </div>
+
+    <div class="contenido-registro">
+        <div class="contenedor-registro">
+            <h2>NUEVOS USUARIOS</h2>
+
+            <form id="formRegistro" method="POST" action="../../app/logica.php">
+
+                <input type="hidden" name="registro" value="1">
+
+                <label>Email</label>
+                <input type="text" id="contacto" name="email" required>
+
+                <label>Usuario</label>
+                <input type="text" id="usuario" name="usuario" required>
+
+                <label>Rol</label>
+                <select id="rol" name="rol">
+
+                    <option value="administrador">Administrador</option>
+                    <option value="bodeguero">Bodeguero</option>
+                    <option value="operario">Operario</option>
+
+                </select>
+
+                <label>Contraseña</label>
+                <input type="password" id="password" name="password" required>
+
+                <label>Confirmar Contraseña</label>
+                <input type="password" id="confirmar" required>
+
+                <button type="submit">Registrar</button>
+
+            </form>
+        </div>
+    </div>
+    <script>
+document.getElementById("formRegistro").addEventListener("submit", function(e){
+
+    let password = document.getElementById("password").value;
+    let confirmar = document.getElementById("confirmar").value;
+
+    if(password !== confirmar){
+
+        e.preventDefault();
+
+        alert("Las contraseñas no coinciden");
+    }
+});
+</script>
+    <?php
+                if(isset($_SESSION['mensaje'])):
+              ?>
+    <div class="alert alert-primary">
+        <?php echo $_SESSION['mensaje'] ?>
+    </div>
+
+    <?php  
+                unset($_SESSION['mensaje']);
+                endif; 
+              ?>
+
+</body>
+
+</html>

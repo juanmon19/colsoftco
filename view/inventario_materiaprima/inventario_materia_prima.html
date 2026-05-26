@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colsoftco - Inventario Materia Prima</title>
+    <link href="inventariomp.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">
+            <a href="../panel_admin/panel_admin.html">
+            <img src="../imagenes/logo.png" alt="logo">
+            </a>
+        </div>
+        Max & Flex
+    </div>
+
+
+    <!-- WELCOME BAR -->
+    <!-- Removido para mantener diseño minimalista -->
+
+    <!-- TAB NAV -->
+    <div class="tab-nav">
+        <button class="tab-btn active">MATERIA PRIMA</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="table-wrapper">
+            <!-- TOOLBAR -->
+            <div class="toolbar">
+                <button class="btn-add" onclick="openAddModal()">+ Agregar Producto</button>
+            </div>
+
+            <!-- TABLE -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                    <!-- rows injected by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD / EDIT -->
+    <div class="modal-overlay" id="modal-form">
+        <div class="modal">
+            <h3 id="modal-title">Agregar Producto</h3>
+            <label>Producto</label>
+            <input type="text" id="input-producto" placeholder="Nombre del producto">
+            <label>Cantidad</label>
+            <input type="text" id="input-cantidad" placeholder="Ej: 205 Unidades">
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn-save" onclick="guardarProducto()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CONFIRM DELETE -->
+    <div class="modal-overlay" id="modal-confirm">
+        <div class="modal">
+            <h3>Confirmar eliminación</h3>
+            <p class="confirm-msg" id="confirm-msg">¿Estás seguro de eliminar este producto?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn-delete-confirm" onclick="confirmarEliminacion()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+    <script>
+
+        // ===== DATA =====
+        let productos = [
+            { id: 1, nombre: "Resortes Pocket", cantidad: "x205 Unidades" },
+            { id: 2, nombre: "Resortes LFK", cantidad: "x300 Unidades" },
+            { id: 3, nombre: "Resortes Bonell", cantidad: "x150 Unidades" },
+            { id: 4, nombre: "Microresortes", cantidad: "x200 Unidades" },
+            { id: 5, nombre: "Resortes Continuous Coil", cantidad: "x245" },
+            { id: 6, nombre: "Hilos", cantidad: "x15 Metros" },
+            { id: 7, nombre: "Tela", cantidad: "x20 Rollos" },
+            { id: 8, nombre: "Espuma", cantidad: "59 Kg" },
+        ];
+
+        let nextId = 9;
+        let editingId = null;
+        let deletingId = null;
+
+        // ===== RENDER =====
+        function renderTabla() {
+            const tbody = document.getElementById('tabla-body');
+            tbody.innerHTML = '';
+            productos.forEach((p, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td>${i + 1}. ${p.nombre}</td>
+                <td>${p.cantidad}</td>
+                <td>
+                    <div class="action-cell">
+                        <button class="btn-actualizar" onclick="openEditModal(${p.id})">Actualizar</button>
+                        <button class="btn-eliminar"   onclick="openDeleteModal(${p.id})">Eliminar</button>
+                    </div>
+                </td>
+            `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ===== MODALS =====
+        function openAddModal() {
+            editingId = null;
+            document.getElementById('modal-title').textContent = 'Agregar Producto';
+            document.getElementById('input-producto').value = '';
+            document.getElementById('input-cantidad').value = '';
+            document.getElementById('modal-form').classList.add('active');
+        }
+
+        function openEditModal(id) {
+            const p = productos.find(x => x.id === id);
+            if (!p) return;
+            editingId = id;
+            document.getElementById('modal-title').textContent = 'Actualizar Producto';
+            document.getElementById('input-producto').value = p.nombre;
+            document.getElementById('input-cantidad').value = p.cantidad;
+            document.getElementById('modal-form').classList.add('active');
+        }
+
+        function openDeleteModal(id) {
+            const p = productos.find(x => x.id === id);
+            if (!p) return;
+            deletingId = id;
+            document.getElementById('confirm-msg').textContent =
+                `¿Estás seguro de eliminar "${p.nombre}"?`;
+            document.getElementById('modal-confirm').classList.add('active');
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+        }
+
+        // ===== ACCIONES =====
+        function guardarProducto() {
+            const nombre = document.getElementById('input-producto').value.trim();
+            const cantidad = document.getElementById('input-cantidad').value.trim();
+            if (!nombre || !cantidad) { showToast('Complete todos los campos.'); return; }
+
+            if (editingId === null) {
+                productos.push({ id: nextId++, nombre, cantidad });
+                showToast('Producto agregado.');
+            } else {
+                const p = productos.find(x => x.id === editingId);
+                if (p) { p.nombre = nombre; p.cantidad = cantidad; }
+                showToast('Producto actualizado.');
+            }
+            closeModal();
+            renderTabla();
+        }
+
+        function confirmarEliminacion() {
+            productos = productos.filter(x => x.id !== deletingId);
+            closeModal();
+            renderTabla();
+            showToast('Producto eliminado.');
+        }
+
+        // ===== TOAST =====
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+        });
+
+    </script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+</body>
+
+</html>
