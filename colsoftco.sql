@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-05-2026 a las 22:00:45
+-- Tiempo de generación: 26-05-2026 a las 21:32:30
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -185,19 +185,22 @@ CREATE TABLE `usuarios` (
   `email` varchar(50) NOT NULL,
   `usuario` varchar(10) NOT NULL,
   `rol` enum('administrador','bodeguero','operario','') NOT NULL,
-  `password_hash` varchar(60) NOT NULL
+  `password_hash` varchar(60) NOT NULL,
+  `request_password` enum('0','1') NOT NULL DEFAULT '0',
+  `token_password` varchar(200) DEFAULT NULL,
+  `expired_session` varchar(40) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `email`, `usuario`, `rol`, `password_hash`) VALUES
-(1, 'nicolas@gmail.com', 'nick', 'administrador', '$2y$10$VG.AmgQTyyN/BBO9iz4ZBee7ZScquAr97.kyTUqVLaDWbUkpRiYpG'),
-(2, 'jafet@gmail.com', 'jafet', 'operario', '$2y$10$2GdTGehHAW5OqFifgIWRoOY3WlAn.mwDyBgeXwxzk/.7N.19UhQ9K'),
-(3, 'jota@gmail.com', 'jota', 'bodeguero', '$2y$10$cdFkseTtjLGvt4wK4RMbLePv5nujQqSr9KGcHD/T6BXt7nh9XeQHq'),
-(4, 'diego', 'diego@gmai', 'bodeguero', '$2y$10$87mBCwY2GurNMupk.fhoduGRKBdV1Z9HLsAL4CxKbbvIU.tEtGhAa'),
-(5, 'san@gmail.com', 'san', 'bodeguero', '$2y$10$gaNlBZl/I.ZECdCTQBSVsOQXVXodk0Zwbagmeej7guiB5CVrGxSUy');
+INSERT INTO `usuarios` (`id_usuario`, `email`, `usuario`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
+(1, 'nicolas@gmail.com', 'nick', 'administrador', '$2y$10$VG.AmgQTyyN/BBO9iz4ZBee7ZScquAr97.kyTUqVLaDWbUkpRiYpG', '0', NULL, NULL),
+(2, 'jafet@gmail.com', 'jafet', 'operario', '$2y$10$2GdTGehHAW5OqFifgIWRoOY3WlAn.mwDyBgeXwxzk/.7N.19UhQ9K', '0', NULL, NULL),
+(3, 'jota@gmail.com', 'jota', 'bodeguero', '$2y$10$cdFkseTtjLGvt4wK4RMbLePv5nujQqSr9KGcHD/T6BXt7nh9XeQHq', '0', NULL, NULL),
+(4, 'diego', 'diego@gmai', 'bodeguero', '$2y$10$87mBCwY2GurNMupk.fhoduGRKBdV1Z9HLsAL4CxKbbvIU.tEtGhAa', '0', NULL, NULL),
+(5, 'san@gmail.com', 'san', 'bodeguero', '$2y$10$gaNlBZl/I.ZECdCTQBSVsOQXVXodk0Zwbagmeej7guiB5CVrGxSUy', '0', NULL, NULL);
 
 --
 -- Índices para tablas volcadas

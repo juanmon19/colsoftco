@@ -58,7 +58,7 @@ function cerrarSesion() {
     sessionStorage.clear();
 
     // Redirigir al login
-    window.location.href = "../../view/login/login.html";
+    window.location.href = "../login/login.html";
 }
 
 // Configurar elementos comunes en el DOM
