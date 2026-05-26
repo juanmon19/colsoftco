@@ -8,39 +8,32 @@
 </head>
 <body>
 
-  <!-- ══ ENCABEZADO ══ -->
   <header>
     <a class="logo" href="../panel_admin/panel_admin.html">
       <img src="../imagenes/logo.png" alt="logo">
     </a>
 
-    <!-- Título centrado en el header -->
     <span class="header-title">Control de Stock</span>
 
-    <!-- Usuario activo -->
     <div class="user-badge">
-      <div class="avatar-sm">D</div>
-      <span>Duvan Martínez</span>
+      <div class="avatar-sm">D</div> <span>Duvan Martínez</span>
     </div>
   </header>
 
-  <!-- ══ CUERPO (sin banner) ══ -->
   <div class="page-body">
 
-    <!-- Contenido -->
     <div class="content" style="margin: 0 auto; max-width: 1000px; width: 100%;">
 
-      <!-- Formulario -->
       <div class="form-card">
         <div class="form-header">
           <span class="form-header-bar"></span>
           Registra el nivel mínimo de cada materia prima
         </div>
+        
         <div class="form-body">
           <form id="regForm">
             <div class="form-grid">
 
-              <!-- Producto -->
               <div class="form-group">
                 <label for="producto">Producto</label>
                 <div class="select-wrap">
@@ -56,7 +49,6 @@
                 </div>
               </div>
 
-              <!-- Unidad de medida -->
               <div class="form-group">
                 <label for="unidad">Unidad de medida</label>
                 <div class="select-wrap">
@@ -71,7 +63,6 @@
                 </div>
               </div>
 
-              <!-- Cantidad mínima -->
               <div class="form-group full">
                 <label for="cantidad">Cantidad mínima</label>
                 <input
@@ -85,7 +76,6 @@
 
               <hr class="form-divider"/>
 
-              <!-- Notificaciones -->
               <div class="check-section">
                 <label>Seleccione dónde recibir la notificación</label>
                 <div class="check-options">
@@ -100,7 +90,6 @@
                 </div>
               </div>
 
-              <!-- Botones -->
               <div class="form-actions">
                 <button type="button" class="btn btn-outline" onclick="resetForm()">Limpiar</button>
                 <button type="submit" class="btn btn-primary">Registrar</button>
@@ -114,36 +103,46 @@
     </div>
   </div>
 
-  <!-- Toast de confirmación -->
   <div class="toast" id="toast"></div>
 
 <script>
+// 1. CAPTURA DE ELEMENTOS: Obtención de los componentes esenciales por ID
 const form  = document.getElementById('regForm');
 const toast = document.getElementById('toast');
 
+// 2. ESCUCHA DE EVENTOS: Controla el envío del formulario
 form.addEventListener('submit', function(e) {
+  // Evita el refresco automático de la página al presionar "Registrar"
   e.preventDefault();
 
+  // Obtiene los valores actuales escritos/seleccionados por el usuario
   const producto = document.getElementById('producto').value;
   const unidad   = document.getElementById('unidad').value;
   const cantidad = document.getElementById('cantidad').value;
 
-  if (!producto) { alert('Por favor seleccione un producto.'); return; }
-  if (!unidad)   { alert('Por favor seleccione la unidad de medida.'); return; }
+  // Validaciones lógicas individuales mediante ventanas JavaScript de alerta
+  if (!producto) { alert('Por favor seleccione un producto.'); return; } // Cancela ejecución si falta producto
+  if (!unidad)   { alert('Por favor seleccione la unidad de medida.'); return; } // Cancela si falta unidad
   if (cantidad === '' || Number(cantidad) < 0) {
     alert('Ingrese una cantidad mínima válida (número mayor o igual a 0).');
-    return;
+    return; // Cancela si la cantidad está vacía o es negativa
   }
 
+  // Si pasa todas las validaciones, muestra el aviso flotante y limpia los inputs
   showToast('✔ Materia prima registrada correctamente.');
   form.reset();
 });
 
+// 3. MÉTODO AUXILIAR: Permite blanquear el formulario desde el botón "Limpiar"
 function resetForm() { form.reset(); }
 
+// 4. MÉTODO AUXILIAR: Administra la visibilidad y temporizador del Toast informativo
 function showToast(mensaje) {
+  // Asigna el texto personalizado recibido o uno por defecto
   toast.textContent = mensaje || '✔ Operación exitosa.';
+  // Hace visible el bloque flotante cambiando su propiedad display CSS
   toast.style.display = 'block';
+  // Configura un temporizador para ocultarlo automáticamente tras 3.5 segundos (3500 ms)
   setTimeout(function() { toast.style.display = 'none'; }, 3500);
 }
 </script>

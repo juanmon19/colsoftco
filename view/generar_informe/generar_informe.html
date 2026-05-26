@@ -17,20 +17,19 @@
 
         <div class="header-title">
             <h1>Informes</h1>
-            <div class="title-underline"></div>
-        </div>
+            <div class="title-underline"></div> </div>
     </header>
 
-
     <div class="contenido" style="margin: 0 auto; max-width: 1000px; width: 100%;">
+        
         <div class="informes">
             <h2>GENERAR INFORME</h2>
             <p>Marque la herramienta en la que desea generar el informe:</p>
+            
             <div class="radio-group">
                 <label>Excel <input type="radio" name="tipo" value="excel"></label>
                 <label>PDF <input type="radio" name="tipo" value="pdf"></label>
             </div>
-
 
             <br><br>
 
@@ -70,22 +69,32 @@
             <br><br>
 
             <button>Generar</button>
+            
             <script>
+                // Escucha el evento de envío ('submit') de un formulario con ID "formRegistro"
                 document.getElementById("formRegistro").addEventListener("submit", function (e) {
+                    // Cancela la recarga por defecto de la página
                     e.preventDefault();
 
+                    // Captura los valores de dos campos de texto (password y confirmar)
                     let password = document.getElementById("password").value;
                     let confirmar = document.getElementById("confirmar").value;
 
+                    // Compara si el texto introducido en ambos campos es idéntico
                     if (password !== confirmar) {
+                        // Alerta si los campos no coinciden
                         alert("Las contraseñas no coinciden");
                     } else {
+                        // Alerta si la validación es exitosa
                         alert("Usuario registrado correctamente");
                     }
                 });
             </script>
+            
             <script src="../js/auth.js"></script>
             <script src="../js/app.js"></script>
+        </div>
+    </div>
 </body>
 
 </html>
