@@ -2,7 +2,7 @@
 session_start();
 
 require_once '../../config/Conexion.php';
-
+#polo no es gay 
 $conexion = new Conexion();
 
 $tiempo = time();
