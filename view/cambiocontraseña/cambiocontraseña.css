@@ -1,0 +1,183 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #0A1F44;
+      --navy-card: #0A1F44;
+      --gold:      #D4AF37;
+      --gold-hover:#D4AF37;
+      --white:     #ffffff;
+      --label:     #cdd6f0;
+      --input-bg:  #ffffff;
+      --input-border: transparent;
+      --radius:    10px;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #e8ebf0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--navy);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.35);
+    }
+
+    .logo-placeholder {
+      width: 40px; height: 40px;
+      background: var(--gold);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; color: var(--navy); font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      color: var(--white);
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 16px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--navy-card);
+      border-radius: 18px;
+      padding: 44px 40px 40px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 12px 48px rgba(0,0,0,.35);
+      animation: fadeUp .45s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-title {
+      color: var(--white);
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    /* ── FIELDS ── */
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      color: var(--label);
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px 14px;
+      background: var(--input-bg);
+      border: 2px solid var(--input-border);
+      border-radius: var(--radius);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: .95rem;
+      color: #111;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,162,39,.22);
+    }
+
+    input.error {
+      border-color: #e05c5c;
+    }
+
+    .hint {
+      margin-top: 4px;
+      font-size: .75rem;
+      color: #e05c5c;
+      display: none;
+    }
+
+    .hint.visible { display: block; }
+
+    /* ── BUTTON ── */
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      margin-top: 24px;
+      background: var(--gold);
+      color: var(--navy);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background .2s, transform .1s, box-shadow .2s;
+      box-shadow: 0 4px 14px rgba(201,162,39,.35);
+    }
+
+    .btn-submit:hover {
+      background: var(--gold-hover);
+      box-shadow: 0 6px 20px rgba(201,162,39,.45);
+    }
+
+    .btn-submit:active { transform: scale(.98); }
+
+    /* ── SUCCESS ── */
+    .success-msg {
+      display: none;
+      text-align: center;
+      color: #6fcf97;
+      font-weight: 700;
+      font-size: .95rem;
+      margin-top: 18px;
+      letter-spacing: .03em;
+      animation: fadeUp .3s ease both;
+    }
+
+    .success-msg.visible { display: block; }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--label);
+      font-size: .82rem;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: .04em;
+      transition: color .2s;
+    }
+
+    .back-link:hover { color: var(--gold); }
