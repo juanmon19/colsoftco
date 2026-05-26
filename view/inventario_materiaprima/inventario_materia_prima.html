@@ -1,3 +1,6 @@
+Aquí tienes tu código completo de inventario. He integrado comentarios minuciosos tanto en el maquetado y clases de diseño (HTML/CSS) como en cada sección de la lógica del CRUD dinámico en JavaScript.
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 
@@ -10,34 +13,26 @@
 
 <body>
 
-    <!-- HEADER -->
     <div class="header">
         <div class="logo">
             <a href="../panel_admin/panel_admin.html">
-            <img src="../imagenes/logo.png" alt="logo">
+                <img src="../imagenes/logo.png" alt="logo">
             </a>
         </div>
         Max & Flex
     </div>
 
 
-    <!-- WELCOME BAR -->
-    <!-- Removido para mantener diseño minimalista -->
-
-    <!-- TAB NAV -->
     <div class="tab-nav">
         <button class="tab-btn active">MATERIA PRIMA</button>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="main-content">
         <div class="table-wrapper">
-            <!-- TOOLBAR -->
             <div class="toolbar">
                 <button class="btn-add" onclick="openAddModal()">+ Agregar Producto</button>
             </div>
 
-            <!-- TABLE -->
             <table>
                 <thead>
                     <tr>
@@ -47,13 +42,11 @@
                     </tr>
                 </thead>
                 <tbody id="tabla-body">
-                    <!-- rows injected by JS -->
-                </tbody>
+                    </tbody>
             </table>
         </div>
     </div>
 
-    <!-- MODAL: ADD / EDIT -->
     <div class="modal-overlay" id="modal-form">
         <div class="modal">
             <h3 id="modal-title">Agregar Producto</h3>
@@ -68,7 +61,6 @@
         </div>
     </div>
 
-    <!-- MODAL: CONFIRM DELETE -->
     <div class="modal-overlay" id="modal-confirm">
         <div class="modal">
             <h3>Confirmar eliminación</h3>
@@ -80,11 +72,12 @@
         </div>
     </div>
 
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
+    
     <script>
 
         // ===== DATA =====
+        // Base de datos en memoria (Simulación en un arreglo de objetos JSON)
         let productos = [
             { id: 1, nombre: "Resortes Pocket", cantidad: "x205 Unidades" },
             { id: 2, nombre: "Resortes LFK", cantidad: "x300 Unidades" },
@@ -96,96 +89,114 @@
             { id: 8, nombre: "Espuma", cantidad: "59 Kg" },
         ];
 
-        let nextId = 9;
-        let editingId = null;
-        let deletingId = null;
+        // Controladores globales de estado para el ciclo CRUD
+        let nextId = 9;       // Auto-incremental para el ID de los productos nuevos
+        let editingId = null;  // Almacena el ID del elemento bajo edición (null = modo inserción)
+        let deletingId = null; // Almacena el ID del elemento seleccionado para dar de baja
 
         // ===== RENDER =====
+        // Dibuja dinámicamente el contenido del listado en el DOM
         function renderTabla() {
             const tbody = document.getElementById('tabla-body');
-            tbody.innerHTML = '';
+            tbody.innerHTML = ''; // Vacía la tabla para prevenir duplicaciones durante la recarga
+            
+            // Recorre secuencialmente cada producto del array
             productos.forEach((p, i) => {
                 const tr = document.createElement('tr');
+                // Estructura de interpolación HTML para las celdas
                 tr.innerHTML = `
-                <td>${i + 1}. ${p.nombre}</td>
-                <td>${p.cantidad}</td>
-                <td>
-                    <div class="action-cell">
-                        <button class="btn-actualizar" onclick="openEditModal(${p.id})">Actualizar</button>
-                        <button class="btn-eliminar"   onclick="openDeleteModal(${p.id})">Eliminar</button>
-                    </div>
-                </td>
-            `;
-                tbody.appendChild(tr);
+                    <td>${i + 1}. ${p.nombre}</td>
+                    <td>${p.cantidad}</td>
+                    <td>
+                        <div class="action-cell">
+                            <button class="btn-actualizar" onclick="openEditModal(${p.id})">Actualizar</button>
+                            <button class="btn-eliminar"   onclick="openDeleteModal(${p.id})">Eliminar</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr); // Añade el nodo tr estructurado al contenedor tbody
             });
         }
 
         // ===== MODALS =====
+        // Inicializa el formulario flotante para registrar un producto nuevo
         function openAddModal() {
-            editingId = null;
+            editingId = null; // Cambia el estado global a inserción pura
             document.getElementById('modal-title').textContent = 'Agregar Producto';
             document.getElementById('input-producto').value = '';
             document.getElementById('input-cantidad').value = '';
-            document.getElementById('modal-form').classList.add('active');
+            document.getElementById('modal-form').classList.add('active'); // Muestra el modal vía CSS (.active)
         }
 
+        // Prepara y despliega el formulario flotante cargando la información previa para edición
         function openEditModal(id) {
-            const p = productos.find(x => x.id === id);
-            if (!p) return;
-            editingId = id;
+            const p = productos.find(x => x.id === id); // Busca la coincidencia exacta por ID en el array
+            if (!p) return; // Rompe si no localiza el elemento
+            editingId = id; // Asigna el identificador para la reescritura posterior
             document.getElementById('modal-title').textContent = 'Actualizar Producto';
             document.getElementById('input-producto').value = p.nombre;
             document.getElementById('input-cantidad').value = p.cantidad;
-            document.getElementById('modal-form').classList.add('active');
+            document.getElementById('modal-form').classList.add('active'); // Despliega la ventana modal
         }
 
+        // Despliega la confirmación previa al borrado permanente
         function openDeleteModal(id) {
             const p = productos.find(x => x.id === id);
             if (!p) return;
-            deletingId = id;
+            deletingId = id; // Memoriza temporalmente el ID de eliminación
             document.getElementById('confirm-msg').textContent =
                 `¿Estás seguro de eliminar "${p.nombre}"?`;
-            document.getElementById('modal-confirm').classList.add('active');
+            document.getElementById('modal-confirm').classList.add('active'); // Despliega ventana de confirmación
         }
 
+        // Oculta todas las ventanas modales de la interfaz removiendo la clase activa
         function closeModal() {
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
         }
 
         // ===== ACCIONES =====
+        // Procesa la recopilación de datos para guardar (tanto para inserción como para actualización)
         function guardarProducto() {
             const nombre = document.getElementById('input-producto').value.trim();
             const cantidad = document.getElementById('input-cantidad').value.trim();
+            
+            // Validación básica de campos vacíos
             if (!nombre || !cantidad) { showToast('Complete todos los campos.'); return; }
 
             if (editingId === null) {
+                // Flujo alterno: Crear producto nuevo
                 productos.push({ id: nextId++, nombre, cantidad });
                 showToast('Producto agregado.');
             } else {
+                // Flujo alterno: Actualizar producto existente
                 const p = productos.find(x => x.id === editingId);
                 if (p) { p.nombre = nombre; p.cantidad = cantidad; }
                 showToast('Producto actualizado.');
             }
-            closeModal();
-            renderTabla();
+            closeModal();   // Cierra la interfaz del formulario
+            renderTabla();  // Redibuja la tabla con el arreglo modificado
         }
 
+        // Efectúa la eliminación del producto mediante filtrado del array
         function confirmarEliminacion() {
+            // Reasigna el array excluyendo el ID que coincide con deletingId
             productos = productos.filter(x => x.id !== deletingId);
-            closeModal();
-            renderTabla();
+            closeModal();   // Cierra ventana de confirmación
+            renderTabla();  // Recarga el listado visual
             showToast('Producto eliminado.');
         }
 
         // ===== TOAST =====
+        // Muestra avisos efímeros dinámicos
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.textContent = msg;
-            t.classList.add('show');
+            t.classList.add('show'); // Activa la visibilidad y animaciones CSS
+            // Oculta el componente tras 2.5 segundos de exposición (2500 ms)
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // Close modal on overlay click
+        // Habilita el cierre automático si el usuario da clic fuera del contenedor blanco del modal
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
         });
@@ -196,3 +207,5 @@
 </body>
 
 </html>
+
+```

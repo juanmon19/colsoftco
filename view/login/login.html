@@ -1,53 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="login.css" rel="stylesheet">
-    <title>Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colsoftco - Lista de Verificación</title>
+  <link href="listaverificacion.css" rel="stylesheet">
 </head>
-
 <body>
-    <div class="header">
 
-        <div class="logo">
-            <img src="../imagenes/logo.png">
-        </div>
-        INGRESE AL SISTEMA
+  <header>
+    <a class="logo" href="../panel_admin/panel_admin.html">
+      <img src="../imagenes/logo.png" alt="logo">
+    </a>
+    <div class="header-title">Lista de Verificación</div>
+  </header>
+
+  <main class="content">
+    
+    <div class="card">
+        <h2>Lista de Verificación de Inventario y Procesos</h2>
+        <p>Aquí se visualizarán los ítems a verificar (Módulo en construcción).</p>
     </div>
+  </main>
 
-    <div class="login-container">
-        <h2>INICIAR SESIÓN</h2>
-        <form id="loginForm" method="POST" action="../../app/logica.php">
-
-            <input type="hidden" name="login" value="1">
-
-            <div class="input-group">
-
-                <label for="username">Usuario</label>
-
-                <input type="text" id="username" name="usuario" required>
-
-            </div>
-
-            <div class="input-group">
-
-                <label for="password">Contraseña</label>
-
-                <input type="password" id="password" name="password" required>
-
-            </div>
-
-            <button type="submit" class="btn">Ingresar</button>
-        <div class="forgot-container">
-                <a href="../cambiocontraseña/cambio_contrasena.php" class="forgot-link">¿Olvidaste tu contraseña?</a>
-            </div>
-        </form>
-    </div>
-
-
-    <script src="../js/app.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 </body>
-
 </html>
