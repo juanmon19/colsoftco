@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\Exception;
 
 require '../vendor/autoload.php';
 require '../config/setting.php';
-require '../config/Conexion.php';
+require '../config/conexion.php';
 
 // --- BLOQUE 1: SOLICITUD DE RESETEO ---
 if (isset($_POST['send'])):
@@ -20,23 +20,23 @@ if (isset($_POST['send'])):
 
             // Se corrigió el punto y coma y ahora updateUser retorna true/false
             if (updateUser($token_, TIEMPO_VIDA, $Usuario[0]->id_usuario)) {
-                EnviarCorreoResetPassword($Usuario[0]->email, $Usuario[0]->name, $Usuario[0]->id_usuario, $token_);
+                EnviarCorreoResetPassword($Usuario[0]->email, $Usuario[0]->usuario, $Usuario[0]->id_usuario, $token_);
                 $_SESSION['response'] = 'Hemos enviado un correo con las instrucciones.';
-                header("Location: ../view/login.php?message=ok");
+                header("Location: ../view/login/login.html?message=ok");
                 exit();
             } else {
                 $_SESSION['response'] = 'Error interno al generar el token.';
-                header("Location: ../view/reset_password.php?message=error");
+                header("Location: ../view/recuperar_contrasena/recuperar_contrasena.php?message=error");
                 exit();
             }
         } else {
             $_SESSION['response'] = 'No existe usuario';
-            header("Location: ../view/reset_password.php?message=no_found");
+            header("Location: ../view/recuperar_contrasena/recuperar_contrasena.php?message=no_found");
             exit();
         }
     } else {
         $_SESSION['response'] = 'Email incorrecto';
-        header("Location: ../view/reset_password.php?message=error");
+        header("Location: ../view/recuperar_contrasena/recuperar_contrasena.php?message=error");
         exit();
     }
 endif;
@@ -53,7 +53,7 @@ if (isset($_POST['save'])):
         if (count($Usuario) > 0) {
             updateUserID($new_password, $id);
             $_SESSION['response'] = 'Contraseña actualizada con éxito.';
-            header("Location: ../view/login.php?message=success_password");
+            header("Location: ../view/login/login.html?message=success_password");
             exit();
         } else {
             $_SESSION['response'] = 'No existe el usuario';
@@ -62,7 +62,7 @@ if (isset($_POST['save'])):
         $_SESSION['response'] = 'Datos inválidos';
     }
 
-    header("Location: ../view/reset_password.php?message=error");
+    header("Location: ../view/recuperar_contrasena/recuperar_contrasena.php?message=error");
     exit();
 endif;
 
@@ -123,7 +123,7 @@ function updateUser($token, $tiempo_vida, $user_id) {
 
 function updateUserID($new_password, $user_id) {
     $conex = new Conexion();
-    $conex->sql = "UPDATE usuarios SET password = :password WHERE id_usuario = :id_usuario";
+    $conex->sql = "UPDATE usuarios SET password_hash = :password WHERE id_usuario = :id_usuario";
     try {
         $conex->pps = $conex->getConnection()->prepare($conex->sql);
         $conex->pps->bindParam(":password", $new_password);
@@ -154,7 +154,7 @@ function EnviarCorreoResetPassword($Correo, $NombreReceptor, $userid, $token_Use
         $mail->Subject = 'Reseteo de password';
         
         // Uso de & en lugar de && para los parámetros URL estándar
-        $mail->Body    = 'Usted ha solicitado un cambio de contraseña. <br><br> <b><a href="http://localhost/recuperarpassword/view/cambiar_password.php?id='.$userid.'&token='.$token_User.'">Cambiar Contraseña</a></b>';
+        $mail->Body    = 'Usted ha solicitado un cambio de contraseña. <br><br> <b><a href="http://localhost/colsoftco/view/cambiocontraseña/cambio_contrasena.php?id='.$userid.'&token='.$token_User.'">Cambiar Contraseña</a></b>';
 
         $mail->send();
     } catch (Exception $e) {

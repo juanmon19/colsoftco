@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-05-2026 a las 21:32:30
+-- Tiempo de generación: 28-05-2026 a las 03:29:25
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -200,7 +200,8 @@ INSERT INTO `usuarios` (`id_usuario`, `email`, `usuario`, `rol`, `password_hash`
 (2, 'jafet@gmail.com', 'jafet', 'operario', '$2y$10$2GdTGehHAW5OqFifgIWRoOY3WlAn.mwDyBgeXwxzk/.7N.19UhQ9K', '0', NULL, NULL),
 (3, 'jota@gmail.com', 'jota', 'bodeguero', '$2y$10$cdFkseTtjLGvt4wK4RMbLePv5nujQqSr9KGcHD/T6BXt7nh9XeQHq', '0', NULL, NULL),
 (4, 'diego', 'diego@gmai', 'bodeguero', '$2y$10$87mBCwY2GurNMupk.fhoduGRKBdV1Z9HLsAL4CxKbbvIU.tEtGhAa', '0', NULL, NULL),
-(5, 'san@gmail.com', 'san', 'bodeguero', '$2y$10$gaNlBZl/I.ZECdCTQBSVsOQXVXodk0Zwbagmeej7guiB5CVrGxSUy', '0', NULL, NULL);
+(5, 'san@gmail.com', 'san', 'bodeguero', '$2y$10$gaNlBZl/I.ZECdCTQBSVsOQXVXodk0Zwbagmeej7guiB5CVrGxSUy', '0', NULL, NULL),
+(6, 'nicolaspolo096@gmail.com', 'nicolas', 'administrador', '$2y$10$65BTTfYjuxOlo3nJkqjrUOYD5uqe5kWEqcti1hdl0eBfMeR6O9i2K', '1', 'e90c45c73c2ae80366fc9bac16d46604595ee6bc4aaa6b8127e53240ada1690f', '1779931951');
 
 --
 -- Índices para tablas volcadas
@@ -340,7 +341,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas

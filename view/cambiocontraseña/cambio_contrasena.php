@@ -1,52 +1,89 @@
 <?php
+session_start();
 
-  session_start();
+require_once '../../config/conexion.php';
+
+$conexion = new Conexion();
+
+$tiempo = time();
+
+$MiConexion = $conexion->getConnection();
+
+$conexion->sql = "SELECT * FROM usuarios WHERE id_usuario=? 
+and token_password=? and expired_session>?";
+
+try {
+  $conexion->pps = $MiConexion->prepare($conexion->sql);
+  $conexion->pps->bindParam(1, $_GET['id']);
+  $conexion->pps->bindParam(2, $_GET['token']);
+  $conexion->pps->bindParam(3, $tiempo);
+
+  $conexion->pps->execute();
+
+  $data = $conexion->pps->fetchAll(PDO::FETCH_OBJ);
+} catch (\Throwable $th) {
+  echo $th->getMessage();
+} finally {
+  $conexion->closeDataBase();
+}
+
+if (count($data) > 0):
 
 ?>
 
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reset contraseña</title>
-  <link href="cambiocontraseña.css" rel="stylesheet">
+  <title>Cambio Contraseña</title>
+  <link rel="stylesheet" href="cambiocontrasena.css">
 </head>
 
 <body>
   <div class="container">
-    <div class="row justify-content-center align-items-center vh-100">
-      <div class="col-xl-6 col-log-5 col-md-6 col-sm-9 col-2">
+    <div class="row">
+      <div class="col">
         <div class="card">
-          <div class="card-header bg bg-primary">
-            <p class="h4 text-white">Reset Password </p>
+
+          <div class="card-header">
+            <p>Cambiar Contraseña</p>
           </div>
-          <form action="../app/logicamail.php" method="post">
+
+          <form action="../../app/logicamail.php" method="post">
+
             <div class="card-body">
+
+              <?php
+              if (isset($_SESSION['error'])):
+              ?>
+                <div class="alert">
+                  <?php echo $_SESSION['error'] ?>
+                </div>
+              <?php
+                unset($_SESSION['error']);
+              endif;
+              ?>
+
               <div class="form-group">
-                <label for="email" class="form-label">Escriba su email</label>
-                <input type="email" name="email" id="email" class="form-control">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password">
               </div>
 
-
-              <?php
-                if(isset($_SESSION['response'])):
-                  
-              ?>
-                <h2><?php echo $_SESSION['response']?></h2>
-              <?php
-                unset($_SESSION['response']);
-                endif;
-              ?>
-
-            <div class="card-footer">
-              <button class="btn btn-primary" name="send">Enviar</button>
-              <a href="login.php" class="btn btn btn-danger">Login</a>
-              <!-- <button type="reset" class="btn btn-danger">Cancelar</button> -->
+              <div class="form-group">
+                <label for="password">Confirmar Password</label>
+                <input type="password" name="new_password" id="password">
+                <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+              </div>
 
             </div>
+
+            <div class="card-footer">
+              <button name="save">Guardar</button>
+              <button type="reset">Cancelar</button>
+            </div>
+
           </form>
 
         </div>
@@ -56,3 +93,7 @@
 </body>
 
 </html>
+
+<?php else:
+  header("Location:../../login/login.html");
+endif; ?>
