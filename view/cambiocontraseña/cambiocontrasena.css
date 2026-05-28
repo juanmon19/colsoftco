@@ -1,183 +1,228 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    :root {
-      --navy:      #0A1F44;
-      --navy-card: #0A1F44;
-      --gold:      #D4AF37;
-      --gold-hover:#D4AF37;
-      --white:     #ffffff;
-      --label:     #cdd6f0;
-      --input-bg:  #ffffff;
-      --input-border: transparent;
-      --radius:    10px;
-    }
+:root {
+  --navy-deep:   #0A1F44;
+  --navy-mid:    #0A1F44;
+  --navy-card:   #0A1F44;
+  --navy-input:  #ffffff;
+  --gold:        #D4AF37;
+  --gold-hover:  #D4AF37;
+  --gold-text:   #D4AF37;
+  --white:       #ffffff;
+  --text-muted:  #a0aec0;
+  --border:      #2e4070;
+  --error-bg:    #3d1a1a;
+  --error-text:  #ff8080;
+  --label-color: #b0bcd8;
+  --radius:      12px;
+  --shadow:      0 20px 60px rgba(0, 0, 0, 0.5);
+}
 
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #e8ebf0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+body {
+  font-family: 'Barlow', sans-serif;
+  background-color: var(--navy-deep);
+  /* Sutil textura de puntos para dar profundidad */
+  background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
 
-    /* ── HEADER ── */
-    header {
-      background: var(--navy);
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.35);
-    }
+/* ---------- Layout ---------- */
+.container {
+  width: 100%;
+  max-width: 520px;
+}
 
-    .logo-placeholder {
-      width: 40px; height: 40px;
-      background: var(--gold);
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; color: var(--navy); font-size: 18px;
-      flex-shrink: 0;
-    }
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
 
-    header h1 {
-      color: var(--white);
-      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-      font-weight: 800;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
+.col {
+  width: 100%;
+}
 
-    /* ── MAIN ── */
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 48px 16px;
-    }
+/* ---------- Card ---------- */
+.card {
+  background-color: var(--navy-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
-    /* ── CARD ── */
-    .card {
-      background: var(--navy-card);
-      border-radius: 18px;
-      padding: 44px 40px 40px;
-      width: 100%;
-      max-width: 460px;
-      box-shadow: 0 12px 48px rgba(0,0,0,.35);
-      animation: fadeUp .45s ease both;
-    }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+/* ---------- Card Header ---------- */
+.card-header {
+  background-color: var(--navy-deep);
+  border-bottom: 2px solid var(--gold);
+  padding: 22px 32px;
+  text-align: center;
+}
 
-    .card-title {
-      color: var(--white);
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      text-align: center;
-      margin-bottom: 32px;
-    }
+.card-header p {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin: 0;
+}
 
-    /* ── FIELDS ── */
-    .field {
-      margin-bottom: 18px;
-    }
+/* ---------- Card Body ---------- */
+.card-body {
+  padding: 32px 32px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-    label {
-      display: block;
-      color: var(--label);
-      font-size: .82rem;
-      font-weight: 600;
-      letter-spacing: .04em;
-      margin-bottom: 6px;
-    }
+/* ---------- Alert de error ---------- */
+.alert {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
 
-    input {
-      width: 100%;
-      padding: 11px 14px;
-      background: var(--input-bg);
-      border: 2px solid var(--input-border);
-      border-radius: var(--radius);
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: .95rem;
-      color: #111;
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
-    }
+/* ---------- Form Group ---------- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-    input:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(201,162,39,.22);
-    }
+.form-group label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--label-color);
+}
 
-    input.error {
-      border-color: #e05c5c;
-    }
+.form-group input[type="password"],
+.form-group input[type="text"],
+.form-group input[type="email"] {
+  background-color: var(--navy-input);
+  color: #1a2d5a;
+  border: 1.5px solid #d4d8e0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
 
-    .hint {
-      margin-top: 4px;
-      font-size: .75rem;
-      color: #e05c5c;
-      display: none;
-    }
+.form-group input[type="password"]::placeholder,
+.form-group input[type="text"]::placeholder {
+  color: #9ba8c0;
+  font-weight: 400;
+}
 
-    .hint.visible { display: block; }
+.form-group input[type="password"]:focus,
+.form-group input[type="text"]:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.2);
+}
 
-    /* ── BUTTON ── */
-    .btn-submit {
-      width: 100%;
-      padding: 13px;
-      margin-top: 24px;
-      background: var(--gold);
-      color: var(--navy);
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: background .2s, transform .1s, box-shadow .2s;
-      box-shadow: 0 4px 14px rgba(201,162,39,.35);
-    }
+/* Ocultar el input hidden */
+input[type="hidden"] {
+  display: none;
+}
 
-    .btn-submit:hover {
-      background: var(--gold-hover);
-      box-shadow: 0 6px 20px rgba(201,162,39,.45);
-    }
+/* ---------- Card Footer ---------- */
+.card-footer {
+  padding: 20px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
 
-    .btn-submit:active { transform: scale(.98); }
+/* Botón principal — Guardar */
+.card-footer button[name="save"],
+.card-footer button:not([type="reset"]) {
+  width: 100%;
+  background-color: var(--gold);
+  color: var(--navy-deep);
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 18px rgba(201, 162, 39, 0.35);
+}
 
-    /* ── SUCCESS ── */
-    .success-msg {
-      display: none;
-      text-align: center;
-      color: #6fcf97;
-      font-weight: 700;
-      font-size: .95rem;
-      margin-top: 18px;
-      letter-spacing: .03em;
-      animation: fadeUp .3s ease both;
-    }
+.card-footer button[name="save"]:hover,
+.card-footer button:not([type="reset"]):hover {
+  background-color: var(--gold-hover);
+  box-shadow: 0 6px 24px rgba(201, 162, 39, 0.5);
+  transform: translateY(-1px);
+}
 
-    .success-msg.visible { display: block; }
+.card-footer button[name="save"]:active,
+.card-footer button:not([type="reset"]):active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(201, 162, 39, 0.3);
+}
 
-    /* ── BACK LINK ── */
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      color: var(--label);
-      font-size: .82rem;
-      font-weight: 600;
-      text-decoration: none;
-      letter-spacing: .04em;
-      transition: color .2s;
-    }
+/* Botón secundario — Cancelar */
+.card-footer button[type="reset"] {
+  width: 100%;
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
 
-    .back-link:hover { color: var(--gold); }
+.card-footer button[type="reset"]:hover {
+  color: var(--white);
+  border-color: var(--white);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  .card-header { padding: 18px 20px; }
+  .card-header p { font-size: 1.3rem; }
+  .card-body { padding: 24px 20px 16px; }
+  .card-footer { padding: 16px 20px 24px; }
+}
