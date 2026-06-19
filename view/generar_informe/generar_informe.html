@@ -4,97 +4,353 @@
 <head>
     <meta charset="UTF-8">
     <title>Generar Informe</title>
-    <link href="generarinforme.css" rel="stylesheet">
+    <link href="generarInforme.css" rel="stylesheet">
+
+    <!-- SheetJS — exportar Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" crossorigin="anonymous"></script>
+    <!-- jsPDF — exportar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+    <!-- jsPDF AutoTable — tablas en PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <header>
-        <div class="logo">
-            <a href="../panel_admin/panel_admin.html">
-                <img src="../imagenes/logo.png" alt="logo">
-            </a>
-        </div>
 
-        <div class="header-title">
-            <h1>Informes</h1>
-            <div class="title-underline"></div> </div>
-    </header>
-
-    <div class="contenido" style="margin: 0 auto; max-width: 1000px; width: 100%;">
-        
-        <div class="informes">
-            <h2>GENERAR INFORME</h2>
-            <p>Marque la herramienta en la que desea generar el informe:</p>
-            
-            <div class="radio-group">
-                <label>Excel <input type="radio" name="tipo" value="excel"></label>
-                <label>PDF <input type="radio" name="tipo" value="pdf"></label>
-            </div>
-
-            <br><br>
-
-            <p>Digite los meses a comparar:</p>
-
-            <select name="mes_inicio">
-                <option>Enero</option>
-                <option>Febrero</option>
-                <option>Marzo</option>
-                <option>Abril</option>
-                <option>Mayo</option>
-                <option>Junio</option>
-                <option>Julio</option>
-                <option>Agosto</option>
-                <option>Septiembre</option>
-                <option>Octubre</option>
-                <option>Noviembre</option>
-                <option>Diciembre</option>
-            </select>
-
-            -
-
-            <select name="mes_fin">
-                <option>Enero</option>
-                <option>Febrero</option>
-                <option>Marzo</option>
-                <option>Abril</option>
-                <option>Mayo</option>
-                <option>Junio</option>
-                <option>Julio</option>
-                <option>Agosto</option>
-                <option>Septiembre</option>
-                <option>Octubre</option>
-                <option>Noviembre</option>
-                <option>Diciembre</option>
-            </select>
-            <br><br>
-
-            <button>Generar</button>
-            
-            <script>
-                // Escucha el evento de envío ('submit') de un formulario con ID "formRegistro"
-                document.getElementById("formRegistro").addEventListener("submit", function (e) {
-                    // Cancela la recarga por defecto de la página
-                    e.preventDefault();
-
-                    // Captura los valores de dos campos de texto (password y confirmar)
-                    let password = document.getElementById("password").value;
-                    let confirmar = document.getElementById("confirmar").value;
-
-                    // Compara si el texto introducido en ambos campos es idéntico
-                    if (password !== confirmar) {
-                        // Alerta si los campos no coinciden
-                        alert("Las contraseñas no coinciden");
-                    } else {
-                        // Alerta si la validación es exitosa
-                        alert("Usuario registrado correctamente");
-                    }
-                });
-            </script>
-            
-            <script src="../js/auth.js"></script>
-            <script src="../js/app.js"></script>
-        </div>
+<header>
+    <div class="logo">
+        <a href="../panel_admin/panel_admin.html">
+            <img src="../../public/imagenes/logo.png" alt="logo"
+                 onerror="this.style.display='none'">
+        </a>
     </div>
-</body>
+    <div class="header-title">
+        <h1>Informes</h1>
+        <div class="title-underline"></div>
+    </div>
+</header>
 
+<!-- ══════════════════════════════════════════════════════════
+     CONTENIDO PRINCIPAL
+══════════════════════════════════════════════════════════ -->
+<div class="contenido" style="margin: 0 auto; max-width: 1100px; width: 100%; padding: 0 16px;">
+
+    <!-- ── TARJETA GENERAR INFORME (diseño original) ── -->
+    <div class="informes">
+        <h2>GENERAR INFORME</h2>
+        <p>Marque la herramienta en la que desea generar el informe:</p>
+
+        <div class="radio-group">
+            <label><input type="radio" name="tipo" id="tipoExcel" value="excel" checked> Excel</label>
+            <label><input type="radio" name="tipo" id="tipoPDF"   value="pdf">           PDF</label>
+        </div>
+
+        <br>
+
+        <p>Seleccione los dos meses a comparar:</p>
+
+        <select id="mes_inicio" name="mes_inicio">
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+        </select>
+
+        vs
+
+        <select id="mes_fin" name="mes_fin">
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3" selected>Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+        </select>
+
+        <div class="anio-row">
+            <label style="color:white; font-size:13px;">Año: </label>
+            <input type="number" id="anio" value="2025" min="2020" max="2030">
+        </div>
+
+        <br>
+
+        <button id="btnGenerar">Generar</button>
+
+        <div id="statusMsg"></div>
+    </div>
+
+    <!-- ── TARJETA MATERIAS PRIMAS ── -->
+    <div class="materias">
+        <h2>MATERIAS PRIMAS</h2>
+
+        <input type="text" class="mp-buscar" id="mpSearch"
+               placeholder="Buscar por nombre o categoría...">
+
+        <div class="mp-wrap">
+            <table class="mp-tabla">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="mpBody">
+                    <tr>
+                        <td colspan="4" style="text-align:center;padding:20px;color:rgba(200,210,230,.4);">
+                            <span class="spinner"></span> Cargando...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="mp-count" id="mpCount"></p>
+    </div>
+
+</div><!-- /contenido -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────────────────────
+   URL del controlador PHP  (ajusta si cambias la carpeta)
+───────────────────────────────────────────────────────── */
+const CTRL = 'informe_controller.php';
+
+const MESES_NOMBRE = ["","Enero","Febrero","Marzo","Abril","Mayo","Junio",
+                      "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+/* ═══════════════════════════════════════════════════════════
+   MATERIAS PRIMAS — carga desde la BD
+═══════════════════════════════════════════════════════════ */
+let todasLasMP = [];
+
+async function cargarMateriasPrimas() {
+    try {
+        const res  = await fetch(`${CTRL}?accion=materias`);
+        const json = await res.json();
+
+        if (!json.ok) throw new Error(json.msg);
+
+        todasLasMP = json.data;
+        renderMP(todasLasMP);
+    } catch (e) {
+        document.getElementById("mpBody").innerHTML =
+            `<tr><td colspan="4" style="text-align:center;padding:16px;color:#ff8a8a;">
+                Error al cargar materias primas: ${e.message}
+             </td></tr>`;
+    }
+}
+
+function renderMP(data) {
+    const tbody = document.getElementById("mpBody");
+    const count = document.getElementById("mpCount");
+
+    if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:rgba(200,210,230,.4);">Sin resultados</td></tr>`;
+        count.textContent = "";
+        return;
+    }
+
+    tbody.innerHTML = data.map(mp => {
+        const cls = mp.estado === "Disponible" ? "mp-disp"
+                  : mp.estado === "Limitado"   ? "mp-lim" : "mp-ago";
+        const sc  = mp.stock == 0   ? "color:#ff8a8a"
+                  : mp.stock < 100  ? "color:#ffd55a" : "";
+        return `<tr>
+            <td>${mp.nombre}</td>
+            <td>${mp.categoria}</td>
+            <td style="font-weight:700;${sc}">${parseFloat(mp.stock).toLocaleString('es-CO')} ${mp.unidad}</td>
+            <td><span class="mp-badge ${cls}">${mp.estado}</span></td>
+        </tr>`;
+    }).join("");
+
+    count.textContent = `${data.length} de ${todasLasMP.length} registros`;
+}
+
+document.getElementById("mpSearch").addEventListener("input", function () {
+    const q = this.value.toLowerCase();
+    renderMP(todasLasMP.filter(m =>
+        m.nombre.toLowerCase().includes(q) ||
+        m.categoria.toLowerCase().includes(q)
+    ));
+});
+
+
+/* ═══════════════════════════════════════════════════════════
+   EXPORTACIÓN — Excel y PDF con datos reales de la BD
+═══════════════════════════════════════════════════════════ */
+
+function mostrarMsg(texto, tipo) {
+    const el = document.getElementById("statusMsg");
+    el.textContent = texto;
+    el.className   = tipo;
+    el.style.display = "block";
+    setTimeout(() => { el.style.display = "none"; }, 5000);
+}
+
+function setBtnCargando(cargando) {
+    const btn = document.getElementById("btnGenerar");
+    btn.disabled  = cargando;
+    btn.innerHTML = cargando
+        ? '<span class="spinner"></span> Generando...'
+        : 'Generar';
+}
+
+/* ── Excel — Comparativo mes A vs mes B ── */
+function exportarExcel(comparativo, nombre, mesANombre, mesBNombre) {
+    const filas = comparativo.map(c => ({
+        "Materia Prima":              c.materia_prima,
+        "Categoría":                  c.categoria,
+        "Unidad":                     c.unidad,
+        [`Entradas ${mesANombre}`]:   c.entradas_mes_a,
+        [`Salidas ${mesANombre}`]:    c.salidas_mes_a,
+        [`Entradas ${mesBNombre}`]:   c.entradas_mes_b,
+        [`Salidas ${mesBNombre}`]:    c.salidas_mes_b,
+        "Δ Entradas":                 c.diferencia_entradas,
+        "Δ Salidas":                  c.diferencia_salidas
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(filas);
+    ws['!cols'] = [
+        {wch:26},{wch:16},{wch:8},{wch:16},{wch:14},{wch:16},{wch:14},{wch:11},{wch:11}
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Comparativo");
+    XLSX.writeFile(wb, nombre + ".xlsx");
+}
+
+/* ── PDF — Comparativo mes A vs mes B ── */
+function exportarPDF(comparativo, titulo, nombre, mesANombre, mesBNombre) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+
+    // Encabezado azul marino
+    doc.setFillColor(10, 31, 68);
+    doc.rect(0, 0, 297, 20, "F");
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.8);
+    doc.line(0, 20, 297, 20);
+
+    doc.setTextColor(212, 175, 55);
+    doc.setFontSize(13);
+    doc.setFont("helvetica", "bold");
+    doc.text(titulo, 148.5, 13, { align: "center" });
+
+    doc.setTextColor(130, 130, 130);
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.text("Generado: " + new Date().toLocaleString("es-CO"), 10, 26);
+
+    doc.autoTable({
+        head: [[
+            "Materia Prima", "Categoría",
+            `Entradas\n${mesANombre}`, `Salidas\n${mesANombre}`,
+            `Entradas\n${mesBNombre}`, `Salidas\n${mesBNombre}`,
+            "Δ Entradas", "Δ Salidas"
+        ]],
+        body: comparativo.map(c => [
+            c.materia_prima, c.categoria,
+            c.entradas_mes_a.toLocaleString('es-CO'),
+            c.salidas_mes_a.toLocaleString('es-CO'),
+            c.entradas_mes_b.toLocaleString('es-CO'),
+            c.salidas_mes_b.toLocaleString('es-CO'),
+            (c.diferencia_entradas >= 0 ? '+' : '') + c.diferencia_entradas.toLocaleString('es-CO'),
+            (c.diferencia_salidas  >= 0 ? '+' : '') + c.diferencia_salidas.toLocaleString('es-CO')
+        ]),
+        startY: 30,
+        styles: { fontSize: 8, cellPadding: 2.5, halign: 'center' },
+        columnStyles: { 0: { halign: 'left' }, 1: { halign: 'left' } },
+        headStyles: { fillColor: [10,31,68], textColor: [212,175,55], fontStyle: "bold" },
+        alternateRowStyles: { fillColor: [240,243,248] },
+        didParseCell: (d) => {
+            // Colorea las columnas de diferencia (índices 6 y 7)
+            if (d.section === 'body' && (d.column.index === 6 || d.column.index === 7)) {
+                const v = parseFloat(String(d.cell.raw).replace(/[^\d.-]/g, ''));
+                if (v > 0)      d.cell.styles.textColor = [0, 150, 80];
+                else if (v < 0) d.cell.styles.textColor = [200, 40, 40];
+                d.cell.styles.fontStyle = 'bold';
+            }
+        },
+        didDrawPage: (d) => {
+            doc.setFontSize(7);
+            doc.setTextColor(160,160,160);
+            doc.text(`Página ${d.pageNumber}`, 148.5,
+                     doc.internal.pageSize.height - 4, { align: "center" });
+        }
+    });
+
+    doc.save(nombre + ".pdf");
+}
+
+/* ── Botón Generar — compara mes A (inicio) vs mes B (fin) ── */
+document.getElementById("btnGenerar").addEventListener("click", async () => {
+    const tipo = document.querySelector('input[name="tipo"]:checked')?.value;
+    const mesA = parseInt(document.getElementById("mes_inicio").value);
+    const mesB = parseInt(document.getElementById("mes_fin").value);
+    const anio = parseInt(document.getElementById("anio").value) || new Date().getFullYear();
+
+    if (!tipo) { mostrarMsg("Seleccione un formato (Excel o PDF).", "err"); return; }
+    if (mesA === mesB) { mostrarMsg("Seleccione dos meses diferentes para comparar.", "err"); return; }
+
+    setBtnCargando(true);
+
+    try {
+        const res  = await fetch(`${CTRL}?accion=comparativo&mes_a=${mesA}&mes_b=${mesB}&anio=${anio}`);
+        const json = await res.json();
+
+        if (!json.ok) throw new Error(json.msg);
+
+        const comparativo = json.data;
+
+        if (!comparativo.length) {
+            mostrarMsg("No hay materias primas registradas para comparar.", "err");
+            setBtnCargando(false);
+            return;
+        }
+
+        const mesANombre = MESES_NOMBRE[mesA];
+        const mesBNombre = MESES_NOMBRE[mesB];
+        const titulo  = `Comparativo de Inventario | ${mesANombre} vs ${mesBNombre} ${anio}`;
+        const archivo = `Comparativo_${mesANombre}_vs_${mesBNombre}_${anio}`;
+
+        if (tipo === "excel") {
+            exportarExcel(comparativo, archivo, mesANombre, mesBNombre);
+            mostrarMsg(`✔ Excel comparativo generado: ${mesANombre} vs ${mesBNombre}.`, "ok");
+        } else {
+            exportarPDF(comparativo, titulo, archivo, mesANombre, mesBNombre);
+            mostrarMsg(`✔ PDF comparativo generado: ${mesANombre} vs ${mesBNombre}.`, "ok");
+        }
+
+    } catch (e) {
+        console.error(e);
+        mostrarMsg("Error al generar el informe: " + e.message, "err");
+    }
+
+    setBtnCargando(false);
+});
+
+/* ── Inicio: cargar materias primas al abrir la página ── */
+cargarMateriasPrimas();
+</script>
+
+</body>
 </html>

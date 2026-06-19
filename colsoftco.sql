@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-05-2026 a las 03:29:25
+-- Tiempo de generación: 18-06-2026 a las 21:21:04
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -196,12 +196,10 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `usuario`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
-(1, 'nicolas@gmail.com', 'nick', 'administrador', '$2y$10$VG.AmgQTyyN/BBO9iz4ZBee7ZScquAr97.kyTUqVLaDWbUkpRiYpG', '0', NULL, NULL),
-(2, 'jafet@gmail.com', 'jafet', 'operario', '$2y$10$2GdTGehHAW5OqFifgIWRoOY3WlAn.mwDyBgeXwxzk/.7N.19UhQ9K', '0', NULL, NULL),
-(3, 'jota@gmail.com', 'jota', 'bodeguero', '$2y$10$cdFkseTtjLGvt4wK4RMbLePv5nujQqSr9KGcHD/T6BXt7nh9XeQHq', '0', NULL, NULL),
-(4, 'diego', 'diego@gmai', 'bodeguero', '$2y$10$87mBCwY2GurNMupk.fhoduGRKBdV1Z9HLsAL4CxKbbvIU.tEtGhAa', '0', NULL, NULL),
-(5, 'san@gmail.com', 'san', 'bodeguero', '$2y$10$gaNlBZl/I.ZECdCTQBSVsOQXVXodk0Zwbagmeej7guiB5CVrGxSUy', '0', NULL, NULL),
-(6, 'nicolaspolo096@gmail.com', 'nicolas', 'administrador', '$2y$10$65BTTfYjuxOlo3nJkqjrUOYD5uqe5kWEqcti1hdl0eBfMeR6O9i2K', '1', 'e90c45c73c2ae80366fc9bac16d46604595ee6bc4aaa6b8127e53240ada1690f', '1779931951');
+(7, 'juanjosemont19@gmail.com', 'juan mont', 'administrador', '$2y$10$eYghXWjWrYLYFJ1G.QjEIOJk9OyekVKsqAvIXRGpqAwOnMFkcarcm', '0', NULL, NULL),
+(8, 'avellanedamaldonadosantiago@gmail.com', 'santiago', 'bodeguero', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
+(9, 'nicolaspolo096@gmail.com', 'nicolas', 'operario', '$2y$10$uQHE1nhhHVS4cUKa/WBiE.2qEc7ctolJ9Us.EyKrqC1mjFr83/5Ca', '0', NULL, NULL),
+(10, 'jafetdavidpi@gmail.com', 'jafet', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -341,7 +339,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Restricciones para tablas volcadas
