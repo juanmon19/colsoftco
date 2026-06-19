@@ -1,3 +1,14 @@
+
+// ✅ AGREGA ESTO — bloquea el bfcache del navegador
+window.addEventListener('pageshow', function(e) {
+    if (e.persisted) { // la página viene del caché del botón atrás
+        const esPanel = window.location.pathname.includes('panel_');
+        if (esPanel && localStorage.getItem('logueado') !== 'true') {
+            window.location.replace('../login/login.html');
+        }
+    }
+});
+
 /**
  * app.js - Utilidades generales, navegación e UI unificada.
  */
@@ -53,13 +64,11 @@ function mostrar(modulo) {
 // FUNCION CERRAR SESIÓN
 // ===============================
 function cerrarSesion() {
-    // Eliminar datos guardados
     localStorage.clear();
     sessionStorage.clear();
-
-    // Redirigir al login
-    window.location.href = "../login/login.html";
+    window.location.replace('../login/login.html'); // ✅ borra del historial
 }
+
 
 // Configurar elementos comunes en el DOM
 document.addEventListener("DOMContentLoaded", () => {
