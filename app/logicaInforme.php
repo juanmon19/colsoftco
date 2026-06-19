@@ -16,14 +16,18 @@ class InformeLogica
 {
     $sql = "
         SELECT
-            id_material,
-            nombre_material,
-            stock_actual,
-            stock_minimo,
-            id_unidad,
-            id_proveedor
-        FROM materias_primas
-        ORDER BY nombre_material
+            mp.id_material,
+            mp.nombre_material,
+            mp.stock_actual,
+            mp.stock_minimo,
+            um.nombre_unidad,
+            p.nombre_empresa
+        FROM materias_primas mp
+        LEFT JOIN unidades_medida um
+            ON mp.id_unidad = um.id_unidad
+        LEFT JOIN proveedores p
+            ON mp.id_proveedor = p.id_proveedor
+        ORDER BY mp.id_material
     ";
 
     $stmt = $this->conn->prepare($sql);
@@ -31,6 +35,8 @@ class InformeLogica
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+       
     // ── Movimientos filtrados por rango de meses ─────────────
     public function getMovimientos(int $mesInicio, int $mesFin, int $anio): array
     {
@@ -217,7 +223,9 @@ class InformeLogica
         }
 
         // Ordenar por categoría y nombre
-        usort($resultado, fn($a, $b) =>
+        usort(
+            $resultado,
+            fn($a, $b) =>
             $a['categoria'] === $b['categoria']
                 ? strcmp($a['materia_prima'], $b['materia_prima'])
                 : strcmp($a['categoria'], $b['categoria'])

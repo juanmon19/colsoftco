@@ -87,7 +87,7 @@
 
         <br>
 
-        <button id="btnGenerar">Generar</button>
+        <button id="btnGenerar">Generar comparativo</button>
 
         <div id="statusMsg"></div>
     </div>
@@ -120,6 +120,10 @@
         </div>
 
         <p class="mp-count" id="mpCount"></p>
+
+        <!-- Botón que descarga el listado completo de materias primas
+             en Excel o PDF, según el radio button seleccionado arriba -->
+        <button id="btnDescargarMP" type="button">Descargar listado (según formato elegido)</button>
     </div>
 
 </div><!-- /contenido -->
@@ -193,9 +197,22 @@ document.getElementById("mpSearch").addEventListener("input", function () {
     ));
 });
 
+/* ── Botón "Descargar listado" — usa el radio Excel/PDF de arriba
+       para decidir a cuál script PHP llamar ── */
+document.getElementById("btnDescargarMP").addEventListener("click", () => {
+    const tipo = document.querySelector('input[name="tipo"]:checked')?.value;
+
+    if (tipo === "pdf") {
+        window.location.href = "exportar_pdf.php";
+    } else {
+        window.location.href = "exportar_excel.php";
+    }
+});
+
 
 /* ═══════════════════════════════════════════════════════════
-   EXPORTACIÓN — Excel y PDF con datos reales de la BD
+   EXPORTACIÓN COMPARATIVO — Excel y PDF generados en el navegador
+   (esto sigue igual, es independiente del listado de materias primas)
 ═══════════════════════════════════════════════════════════ */
 
 function mostrarMsg(texto, tipo) {
@@ -211,7 +228,7 @@ function setBtnCargando(cargando) {
     btn.disabled  = cargando;
     btn.innerHTML = cargando
         ? '<span class="spinner"></span> Generando...'
-        : 'Generar';
+        : 'Generar comparativo';
 }
 
 /* ── Excel — Comparativo mes A vs mes B ── */
@@ -243,7 +260,6 @@ function exportarPDF(comparativo, titulo, nombre, mesANombre, mesBNombre) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
 
-    // Encabezado azul marino
     doc.setFillColor(10, 31, 68);
     doc.rect(0, 0, 297, 20, "F");
     doc.setDrawColor(212, 175, 55);
@@ -282,7 +298,6 @@ function exportarPDF(comparativo, titulo, nombre, mesANombre, mesBNombre) {
         headStyles: { fillColor: [10,31,68], textColor: [212,175,55], fontStyle: "bold" },
         alternateRowStyles: { fillColor: [240,243,248] },
         didParseCell: (d) => {
-            // Colorea las columnas de diferencia (índices 6 y 7)
             if (d.section === 'body' && (d.column.index === 6 || d.column.index === 7)) {
                 const v = parseFloat(String(d.cell.raw).replace(/[^\d.-]/g, ''));
                 if (v > 0)      d.cell.styles.textColor = [0, 150, 80];
@@ -301,7 +316,7 @@ function exportarPDF(comparativo, titulo, nombre, mesANombre, mesBNombre) {
     doc.save(nombre + ".pdf");
 }
 
-/* ── Botón Generar — compara mes A (inicio) vs mes B (fin) ── */
+/* ── Botón Generar comparativo — compara mes A (inicio) vs mes B (fin) ── */
 document.getElementById("btnGenerar").addEventListener("click", async () => {
     const tipo = document.querySelector('input[name="tipo"]:checked')?.value;
     const mesA = parseInt(document.getElementById("mes_inicio").value);
