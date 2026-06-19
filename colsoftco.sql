@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
+<<<<<<< HEAD
 -- Tiempo de generación: 18-06-2026 a las 21:21:04
+=======
+-- Tiempo de generación: 19-06-2026 a las 06:38:04
+>>>>>>> cc7de7d (Base de datos)
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -46,6 +50,22 @@ CREATE TABLE `materias_primas` (
   `id_unidad` int(11) DEFAULT NULL,
   `id_proveedor` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `materias_primas`
+--
+
+INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`, `stock_minimo`, `id_unidad`, `id_proveedor`) VALUES
+(1, 'Espuma de poliuretano', 500.00, 100.00, 1, 1),
+(2, 'Tela Jacquard', 300.00, 50.00, 2, 2),
+(3, 'Resortes Bonnell', 1200.00, 300.00, 3, 3),
+(4, 'Fieltro aislante', 250.00, 50.00, 2, 1),
+(5, 'Pegante industrial', 100.00, 20.00, 4, 4),
+(6, 'Hilo de costura', 80.00, 15.00, 3, 2),
+(7, 'Espuma viscoelastica', 150.00, 30.00, 1, 1),
+(8, 'Tela antideslizante', 200.00, 40.00, 2, 2),
+(9, 'Borde perimetral', 180.00, 30.00, 2, 3),
+(10, 'Empaque plastico', 400.00, 80.00, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -149,6 +169,16 @@ CREATE TABLE `proveedores` (
   `email` varchar(70) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `proveedores`
+--
+
+INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `contacto_nombre`, `contacto_apellido`, `telefono`, `email`) VALUES
+(1, 'Espumas Colombia SAS', 'Carlos', 'Ramirez', '3101111111', 'ventas@espumascolombia.com'),
+(2, 'Textiles Andinos SAS', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com'),
+(3, 'Resortes Nacionales SAS', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com'),
+(4, 'Insumos Industriales SAS', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com');
+
 -- --------------------------------------------------------
 
 --
@@ -173,6 +203,16 @@ CREATE TABLE `unidades_medida` (
   `sigla` varchar(5) NOT NULL,
   `nombre_unidad` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `unidades_medida`
+--
+
+INSERT INTO `unidades_medida` (`id_unidad`, `sigla`, `nombre_unidad`) VALUES
+(1, 'KG', 'Kilogramos'),
+(2, 'MT', 'Metros'),
+(3, 'UND', 'Unidades'),
+(4, 'LT', 'Litros');
 
 -- --------------------------------------------------------
 
@@ -291,7 +331,7 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `materias_primas`
 --
 ALTER TABLE `materias_primas`
-  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `modelos_colchon`
@@ -321,7 +361,7 @@ ALTER TABLE `pedidos_proveedor`
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `receta_colchon`
@@ -333,7 +373,7 @@ ALTER TABLE `receta_colchon`
 -- AUTO_INCREMENT de la tabla `unidades_medida`
 --
 ALTER TABLE `unidades_medida`
-  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
