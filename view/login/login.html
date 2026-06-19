@@ -19,7 +19,7 @@
 
     <div class="login-container">
         <h2>INICIAR SESIÓN</h2>
-        <form id="loginForm" method="POST" action="../../app/logica.php">
+        <form id="loginForm" method="POST" action="../../app/logica.php" autocomplete="off">
 
             <input type="hidden" name="login" value="1">
 
@@ -47,7 +47,15 @@
     </div>
 
 
+    
     <script src="../js/app.js"></script>
+    
+    <script>
+    // Limpiar campos al cargar la página
+    window.addEventListener('pageshow', function(e) {
+        document.getElementById('loginForm').reset();
+    });
+</script>
 </body>
 
 </html>
