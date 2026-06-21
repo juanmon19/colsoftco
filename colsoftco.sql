@@ -3,11 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
-<<<<<<< HEAD
--- Tiempo de generación: 18-06-2026 a las 21:21:04
-=======
--- Tiempo de generación: 19-06-2026 a las 06:38:04
->>>>>>> cc7de7d (Base de datos)
+-- Tiempo de generación: 21-06-2026 a las 06:21:55
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -163,6 +159,9 @@ CREATE TABLE `pedidos_proveedor` (
 CREATE TABLE `proveedores` (
   `id_proveedor` int(11) NOT NULL,
   `nombre_empresa` varchar(80) NOT NULL,
+  `nit` varchar(20) NOT NULL,
+  `direccion` varchar(255) NOT NULL,
+  `descripcion_empresa` text DEFAULT NULL,
   `contacto_nombre` varchar(80) NOT NULL,
   `contacto_apellido` varchar(80) NOT NULL,
   `telefono` varchar(10) DEFAULT NULL,
@@ -173,11 +172,12 @@ CREATE TABLE `proveedores` (
 -- Volcado de datos para la tabla `proveedores`
 --
 
-INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `contacto_nombre`, `contacto_apellido`, `telefono`, `email`) VALUES
-(1, 'Espumas Colombia SAS', 'Carlos', 'Ramirez', '3101111111', 'ventas@espumascolombia.com'),
-(2, 'Textiles Andinos SAS', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com'),
-(3, 'Resortes Nacionales SAS', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com'),
-(4, 'Insumos Industriales SAS', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com');
+INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit`, `direccion`, `descripcion_empresa`, `contacto_nombre`, `contacto_apellido`, `telefono`, `email`) VALUES
+(1, 'Espumas Colombia SAS', '900123456-1', 'Bogotá D.C.', 'Fabricación y comercialización de espumas para colchones', 'Carlos', 'Ramirez', '3101111111', 'ventas@espumascolombia.com'),
+(2, 'Textiles Andinos SAS', '800234567-2', 'Medellín, Antioquia', 'Producción de textiles para la industria colchonera', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com'),
+(3, 'Resortes Nacionales SAS', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com'),
+(4, 'Insumos Industriales SAS', '900456789-4', 'Barranquilla, Atlántico', 'Distribución de insumos industriales', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com'),
+(5, 'prueba', '1234', 'CR CARMEN DE CARUPA CUNDINAMARCA CRA 4 #', 'prueba del crud', 'Juan', 'Montaño', '3229035224', 'juanjosemon19@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -236,10 +236,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `usuario`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
-(7, 'juanjosemont19@gmail.com', 'juan mont', 'administrador', '$2y$10$eYghXWjWrYLYFJ1G.QjEIOJk9OyekVKsqAvIXRGpqAwOnMFkcarcm', '0', NULL, NULL),
+(7, 'juanjosemon19@gmail.com', 'juan mont', 'administrador', '$2y$10$AR4/.AW21G2OPDJ0ZoffzOcnvadCc1dy.TbiTnKPWQTS3qssxcm5u', '1', '54444dcae0d4ab3e9e2a49435c415c683f6538ed8cdf9e0b91ca4a5abaf82f5e', '1782005773'),
 (8, 'avellanedamaldonadosantiago@gmail.com', 'santiago', 'bodeguero', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
-(9, 'nicolaspolo096@gmail.com', 'nicolas', 'operario', '$2y$10$uQHE1nhhHVS4cUKa/WBiE.2qEc7ctolJ9Us.EyKrqC1mjFr83/5Ca', '0', NULL, NULL),
-(10, 'jafetdavidpi@gmail.com', 'jafet', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL);
+(9, 'nicolaspolo096@gmail.com', 'nicolas', 'operario', '$2y$10$uQHE1nhhHVS4cUKa/WBiE.2qEc7ctolJ9Us.EyKrqC1mjFr83/5Ca', '1', '838c2c089f879501b195b3ef0b2b3ba3e18c01eed09ff560a603d63970fc6c97', '1781892928'),
+(10, 'jafetdavidpi@gmail.com', 'jafet', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
+(11, 'diegogo3027@gmail.com', 'diego', 'administrador', '$2y$10$nibWlgfFwT/WsTKv1NDdC.TMY3SHE6xrUvXl874NAikuHEN9juyyC', '1', '5b285d2f93f0e98c94f9da45a630dce655da9803d9125b426403616fcb9bee15', '1781920147');
 
 --
 -- Índices para tablas volcadas
@@ -361,7 +362,7 @@ ALTER TABLE `pedidos_proveedor`
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `receta_colchon`
@@ -379,7 +380,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Restricciones para tablas volcadas
