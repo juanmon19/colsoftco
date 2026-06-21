@@ -56,7 +56,7 @@ if (isset($_POST['registro'])) {
 
     header("location:../view/registro/registro.html");
 }
-
+//function saveUser este metodo es para registrar los usuarios
 function saveUser(array $datos)
 {
     try {
@@ -101,7 +101,7 @@ function login(array $credenciales)
 
     if ($Usuario) {
         $UserName = $Usuario[0]['email'];
-        $Email =  $Usuario[0]['usuario'];
+        $Email = $Usuario[0]['usuario'];
 
         $HashPassword = $Usuario[0]['password_hash'];
 
