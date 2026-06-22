@@ -11,8 +11,8 @@ const ROLES = {
 const Auth = {
 
     // Guarda el usuario en localStorage al hacer login
-    setUser: function(documento, rol) {
-        localStorage.setItem('documento', documento);
+    setUser: function(usuario, rol) {
+        localStorage.setItem('usuario', usuario);
         localStorage.setItem('rol', rol);
         localStorage.setItem('logueado', 'true');
     },
@@ -22,7 +22,7 @@ const Auth = {
         const logueado = localStorage.getItem('logueado');
         if (!logueado) return null;
         return {
-            documento: localStorage.getItem('documento'),
+            usuario: localStorage.getItem('usuario'),
             role:    localStorage.getItem('rol')
         };
     },
