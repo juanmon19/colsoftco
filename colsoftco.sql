@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-06-2026 a las 06:21:55
+-- Tiempo de generación: 22-06-2026 a las 23:20:13
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -223,7 +223,9 @@ INSERT INTO `unidades_medida` (`id_unidad`, `sigla`, `nombre_unidad`) VALUES
 CREATE TABLE `usuarios` (
   `id_usuario` int(11) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `usuario` varchar(10) NOT NULL,
+  `documento` varchar(10) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `apellido` varchar(50) NOT NULL,
   `rol` enum('administrador','bodeguero','operario','') NOT NULL,
   `password_hash` varchar(60) NOT NULL,
   `request_password` enum('0','1') NOT NULL DEFAULT '0',
@@ -235,12 +237,13 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `email`, `usuario`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
-(7, 'juanjosemon19@gmail.com', 'juan mont', 'administrador', '$2y$10$AR4/.AW21G2OPDJ0ZoffzOcnvadCc1dy.TbiTnKPWQTS3qssxcm5u', '1', '54444dcae0d4ab3e9e2a49435c415c683f6538ed8cdf9e0b91ca4a5abaf82f5e', '1782005773'),
-(8, 'avellanedamaldonadosantiago@gmail.com', 'santiago', 'bodeguero', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
-(9, 'nicolaspolo096@gmail.com', 'nicolas', 'operario', '$2y$10$uQHE1nhhHVS4cUKa/WBiE.2qEc7ctolJ9Us.EyKrqC1mjFr83/5Ca', '1', '838c2c089f879501b195b3ef0b2b3ba3e18c01eed09ff560a603d63970fc6c97', '1781892928'),
-(10, 'jafetdavidpi@gmail.com', 'jafet', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
-(11, 'diegogo3027@gmail.com', 'diego', 'administrador', '$2y$10$nibWlgfFwT/WsTKv1NDdC.TMY3SHE6xrUvXl874NAikuHEN9juyyC', '1', '5b285d2f93f0e98c94f9da45a630dce655da9803d9125b426403616fcb9bee15', '1781920147');
+INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
+(7, 'juanjosemon19@gmail.com', 'juan mont', '', '', 'administrador', '$2y$10$AR4/.AW21G2OPDJ0ZoffzOcnvadCc1dy.TbiTnKPWQTS3qssxcm5u', '1', '54444dcae0d4ab3e9e2a49435c415c683f6538ed8cdf9e0b91ca4a5abaf82f5e', '1782005773'),
+(8, 'avellanedamaldonadosantiago@gmail.com', 'santiago', '', '', 'bodeguero', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
+(9, 'nicolaspolo096@gmail.com', 'nicolas', '', '', 'operario', '$2y$10$uQHE1nhhHVS4cUKa/WBiE.2qEc7ctolJ9Us.EyKrqC1mjFr83/5Ca', '1', '838c2c089f879501b195b3ef0b2b3ba3e18c01eed09ff560a603d63970fc6c97', '1781892928'),
+(10, 'jafetdavidpi@gmail.com', 'jafet', '', '', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
+(11, 'diegogo3027@gmail.com', 'diego', '', '', 'administrador', '$2y$10$nibWlgfFwT/WsTKv1NDdC.TMY3SHE6xrUvXl874NAikuHEN9juyyC', '1', '5b285d2f93f0e98c94f9da45a630dce655da9803d9125b426403616fcb9bee15', '1781920147'),
+(12, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas ', 'Polo', 'administrador', '$2y$10$7PZ3K/EphX9Y6GyVqu3FBOgt/oawXzfmOQxSGKfs.iz6cynLCXAEK', '0', NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -380,7 +383,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas

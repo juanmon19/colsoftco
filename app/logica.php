@@ -11,13 +11,13 @@ require '../config/conexion.php';
 if (isset($_POST['login'])) {
     //proceso de login
 
-    if (isset($_POST['usuario']) and isset($_POST['password'])) {
-        $login = $_POST['usuario'];
+    if (isset($_POST['documento']) and isset($_POST['password'])) {
+        $login = $_POST['documento'];
         $Password = $_POST['password'];
 
         login(
             [
-                'usuario' => $login,
+                'documento' => $login,
                 'password' => $Password
             ]
         );
@@ -33,7 +33,9 @@ if (isset($_POST['registro'])) {
     //crear variables para los datos a enviar
 
     $Email = $_POST['email'] ?? '';
-    $Usuario = $_POST['usuario'] ?? '';
+    $Documento = $_POST['documento'] ?? '';
+    $Nombre = $_POST['nombre'] ?? '';
+    $Apellido = $_POST['apellido'] ?? '';
     $Rol = $_POST['rol'] ?? '';
     $Password = $_POST['password'] ?? '';
 
@@ -44,7 +46,9 @@ if (isset($_POST['registro'])) {
 
     $respuesta = saveUser([
         'email' => $Email,
-        'usuario' => $Usuario,
+        'documento' => $Documento,
+        'nombre' => $Nombre,
+        'apellido' => $Apellido,
         'rol' => $Rol,
         'password' => password_hash($Password, PASSWORD_BCRYPT),
 
@@ -67,13 +71,15 @@ function saveUser(array $datos)
 
         $Conex->pps = $MiConexion->prepare(
             "INSERT INTO usuarios
-            (email, usuario, rol, password_hash)
+            (email, documento, nombre, apellido, rol, password_hash)
             VALUES
-            (:email, :usuario, :rol, :password)"
+            (:email, :documento, :nombre, :apellido, :rol, :password)"
         );
 
         $Conex->pps->bindParam(":email", $datos['email']);
-        $Conex->pps->bindParam(":usuario", $datos['usuario']);
+        $Conex->pps->bindParam(":documento", $datos['documento']);
+        $Conex->pps->bindParam(":nombre", $datos['nombre']);
+        $Conex->pps->bindParam(":apellido", $datos['apellido']);
         $Conex->pps->bindParam(":rol", $datos['rol']);
         $Conex->pps->bindParam(":password", $datos['password']);
 
@@ -93,7 +99,7 @@ function login(array $credenciales)
     //consultar la base de datos
     $Conex = new Conexion;
 
-    $Usuario = ConsultaUsuario($Conex, ['usuario' => $credenciales['usuario']]);
+    $Usuario = ConsultaUsuario($Conex, ['documento' => $credenciales['documento']]);
 
 
     // print_r(ConsultaUsuario($Conex,['name'=>$credenciales['name'],
@@ -101,11 +107,11 @@ function login(array $credenciales)
 
     if ($Usuario) {
         $UserName = $Usuario[0]['email'];
-        $Email = $Usuario[0]['usuario'];
+        $Email = $Usuario[0]['documento'];
 
         $HashPassword = $Usuario[0]['password_hash'];
 
-        if ($UserName === $credenciales['usuario'] or $Email === $credenciales['usuario']) {
+        if ($UserName === $credenciales['documento'] or $Email === $credenciales['documento']) {
             //accesos la verificacion del password
             if (password_verify($credenciales['password'], $HashPassword)) {
                 $Rol = $Usuario[0]['rol'];
@@ -136,14 +142,14 @@ function ConsultaUsuario($conexion, array $dataConsulta)
 {
 
     $consulta = "
-      SELECT * FROM usuarios WHERE usuario = :usuario OR email = :email
+      SELECT * FROM usuarios WHERE documento = :documento OR email = :email
     ";
 
     try {
         $conexion->pps = $conexion->getConnection()->prepare($consulta);
 
-        $conexion->pps->bindParam(":usuario", $dataConsulta['usuario']);
-        $conexion->pps->bindParam(":email", $dataConsulta['usuario']);
+        $conexion->pps->bindParam(":documento", $dataConsulta['documento']);
+        $conexion->pps->bindParam(":email", $dataConsulta['documento']);
 
         $conexion->pps->execute();
 
