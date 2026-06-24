@@ -10,7 +10,7 @@ body{
 }
 
 header{
-    background:#082456;
+    background:#0A1F44;
     color:white;
     display:flex;
     justify-content:space-between;
@@ -38,7 +38,7 @@ header h1{
 
 .btn-volver{
     text-decoration:none;
-    background:#082456;
+    background:#0A1F44;
     color:white;
     padding:12px 20px;
     border-radius:8px;
@@ -57,7 +57,7 @@ header h1{
 }
 
 .card-header{
-    background:#082456;
+    background:#0A1F44;
     color:white;
     display:flex;
     align-items:center;
@@ -94,7 +94,7 @@ form{
 
 .field-group label{
     font-weight:bold;
-    color:#082456;
+    color:#0A1F44;
     margin-bottom:8px;
     text-transform:uppercase;
 }
@@ -121,9 +121,9 @@ form{
 
 .btn-limpiar{
     padding:12px 30px;
-    border:1px solid #082456;
+    border:1px solid #0A1F44;
     background:white;
-    color:#082456;
+    color:#0A1F44;
     border-radius:6px;
     cursor:pointer;
     font-weight:bold;
@@ -132,7 +132,7 @@ form{
 .btn-registrar{
     padding:12px 30px;
     border:none;
-    background:#082456;
+    background:#0A1F44;
     color:white;
     border-radius:6px;
     cursor:pointer;
