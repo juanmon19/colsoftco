@@ -1,0 +1,255 @@
+/* =========================
+   ESTILOS GENERALES
+========================= */
+
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#eef2ff;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+    background:#0A1F44;
+    color:#fff;
+    text-align:center;
+    padding:5px;
+    font-size:22px;
+    font-weight:bold;
+    border-bottom:4px solid #D4AF37;
+}
+
+.container{
+    width: 70%;
+    max-width: 1100px;
+    margin: 30px auto;
+}
+
+/* =========================
+   BOTON VOLVER
+========================= */
+
+.btn-volver,
+.volver{
+    display:inline-block;
+    background:#0A1F44;
+    color:white;
+    text-decoration:none;
+    padding:12px 20px;
+    border-radius:8px;
+    font-weight:bold;
+    margin-bottom:20px;
+    transition:.3s;
+}
+
+.btn-volver:hover,
+.volver:hover{
+    background:#081732;
+}
+
+/* =========================
+   TARJETAS
+========================= */
+
+.card{
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+.card-header{
+    background:#0A1F44;
+    color:white;
+    padding:20px;
+    font-size:30px;
+    font-weight:bold;
+    border-bottom:4px solid #D4AF37;
+}
+
+.card-body{
+    padding:30px;
+}
+
+/* =========================
+   FORMULARIOS
+========================= */
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+    color:#0A1F44;
+}
+
+.form-control{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    box-sizing:border-box;
+    font-size:15px;
+}
+
+.form-control:focus{
+    outline:none;
+    border:1px solid #D4AF37;
+}
+
+/* =========================
+   TABLA INVENTARIO
+========================= */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+    border-radius:10px;
+    overflow:hidden;
+}
+
+th{
+    background:#0A1F44;
+    color:white;
+    padding:14px;
+    text-align:center;
+    font-size:15px;
+}
+
+td{
+    padding:12px;
+    text-align:center;
+    border-bottom:1px solid #ddd;
+    font-size:14px;
+}
+
+tr:hover{
+    background:#f8faff;
+}
+
+/* =========================
+   ESTADOS
+========================= */
+
+.normal{
+    color:green;
+    font-weight:bold;
+}
+
+.alerta{
+    color:red;
+    font-weight:bold;
+}
+
+/* =========================
+   ACCIONES
+========================= */
+
+.acciones{
+    white-space:nowrap;
+    text-align:center;
+}
+
+/* EDITAR */
+
+.btn-editar{
+    display:inline-block;
+    background:#2563eb;
+    color:white;
+    padding:8px 15px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:bold;
+    margin-right:5px;
+    transition:.3s;
+}
+
+.btn-editar:hover{
+    background:#1d4ed8;
+}
+
+/* ELIMINAR */
+
+.btn-eliminar{
+    display:inline-block;
+    background:#dc2626;
+    color:white;
+    padding:8px 15px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.btn-eliminar:hover{
+    background:#b91c1c;
+}
+
+/* =========================
+   BOTONES FORMULARIO
+========================= */
+
+.btn{
+    padding:12px 22px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.btn-primary{
+    background:#0A1F44;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#081732;
+}
+
+.btn-secondary{
+    background:#6c757d;
+    color:white;
+}
+
+.btn-secondary:hover{
+    background:#565e64;
+}
+
+/* =========================
+   CONTENEDOR FORMULARIOS
+========================= */
+
+.contenedor{
+    width:70%;
+    margin:40px auto;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+
+    .container,
+    .contenedor{
+        width:95%;
+    }
+
+    table{
+        font-size:12px;
+    }
+
+    th,
+    td{
+        padding:8px;
+    }
+}

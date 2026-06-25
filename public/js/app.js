@@ -51,7 +51,7 @@ function mostrar(modulo) {
         // =========================
         // STOCK
         // =========================
-        'Stock': '../control_de_stock/control_stock.html',
+        'Stock': '../control_de_stock/control_stock.php',
 
         // =========================
         // INFORMES

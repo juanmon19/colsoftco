@@ -176,4 +176,54 @@ class ProveedorLogica
             ':id' => $id
         ]);
     }
+
+public function obtenerAlertasStock()
+{
+    $sql = "SELECT *
+            FROM materias_primas
+            WHERE stock_actual <= stock_minimo
+            ORDER BY stock_actual ASC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function obtenerMateriaPorId($id)
+{
+    $sql = "SELECT *
+            FROM materias_primas
+            WHERE id_material = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute([$id]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+public function actualizarStockMinimo($id, $stockMinimo)
+{
+    $sql = "UPDATE materias_primas
+            SET stock_minimo = ?
+            WHERE id_material = ?";
+
+    $stmt = $this->conn->prepare($sql);
+
+    return $stmt->execute([
+        $stockMinimo,
+        $id
+    ]);
+}
+
+public function eliminarAlerta($id)
+{
+    $sql = "UPDATE materias_primas
+            SET stock_minimo = 0
+            WHERE id_material = ?";
+
+    $stmt = $this->conn->prepare($sql);
+
+    return $stmt->execute([$id]);
+}
 }

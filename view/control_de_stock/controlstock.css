@@ -325,3 +325,62 @@ input:focus, select:focus {
   box-shadow: 0 4px 18px rgba(0,0,0,.22);
   z-index: 999;
 }
+.acciones-superior{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.btn-menu{
+    background:#0A1F44;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.btn-menu:hover{
+    background:#D4AF37;
+    color:#0A1F44;
+}
+.container{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+.btn-volver{
+    display:inline-block;
+    background:#0A1F44;
+    color:white;
+    text-decoration:none;
+    padding:12px 22px;
+    border-radius:8px;
+    font-weight:bold;
+    margin-bottom:20px;
+    transition:.3s;
+}
+
+.btn-volver:hover{
+    background:#081935;
+}
+
+.form-card{
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+.form-header{
+    background:#0A1F44;
+    color:white;
+    padding:18px 25px;
+    font-size:22px;
+    font-weight:bold;
+    border-bottom:3px solid #D4AF37;
+}
