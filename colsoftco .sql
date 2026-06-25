@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-06-2026 a las 06:21:55
+-- Tiempo de generación: 25-06-2026 a las 20:25:21
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -52,16 +52,17 @@ CREATE TABLE `materias_primas` (
 --
 
 INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`, `stock_minimo`, `id_unidad`, `id_proveedor`) VALUES
-(1, 'Espuma de poliuretano', 500.00, 100.00, 1, 1),
+(1, 'Espuma de poliuretano', 50.00, 0.00, 1, 1),
 (2, 'Tela Jacquard', 300.00, 50.00, 2, 2),
 (3, 'Resortes Bonnell', 1200.00, 300.00, 3, 3),
 (4, 'Fieltro aislante', 250.00, 50.00, 2, 1),
 (5, 'Pegante industrial', 100.00, 20.00, 4, 4),
 (6, 'Hilo de costura', 80.00, 15.00, 3, 2),
-(7, 'Espuma viscoelastica', 150.00, 30.00, 1, 1),
+(7, 'Espuma viscoelastica', 60.00, 30.00, 1, 1),
 (8, 'Tela antideslizante', 200.00, 40.00, 2, 2),
 (9, 'Borde perimetral', 180.00, 30.00, 2, 3),
-(10, 'Empaque plastico', 400.00, 80.00, 2, 4);
+(10, 'Empaque plastico', 400.00, 80.00, 2, 4),
+(11, 'Tela ', 100.00, 20.00, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -72,8 +73,19 @@ INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`,
 CREATE TABLE `modelos_colchon` (
   `id_modelo` int(11) NOT NULL,
   `nombre_modelo` varchar(80) NOT NULL,
-  `descripcion` text DEFAULT NULL
+  `descripcion` text DEFAULT NULL,
+  `serial` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `modelos_colchon`
+--
+
+INSERT INTO `modelos_colchon` (`id_modelo`, `nombre_modelo`, `descripcion`, `serial`) VALUES
+(1, 'Sueño Plus', 'Colchón de espuma de alta calidad', 'COL-0001'),
+(2, 'Descanso Real', 'Colchón ortopédico de firmeza media', 'COL-0002'),
+(3, 'Confort Total', 'Colchón con espuma viscoelástica', 'COL-0003'),
+(4, 'Premium Gold', 'Colchón de lujo con doble acolchado', 'COL-0004');
 
 -- --------------------------------------------------------
 
@@ -177,7 +189,7 @@ INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit`, `direccion`,
 (2, 'Textiles Andinos SAS', '800234567-2', 'Medellín, Antioquia', 'Producción de textiles para la industria colchonera', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com'),
 (3, 'Resortes Nacionales SAS', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com'),
 (4, 'Insumos Industriales SAS', '900456789-4', 'Barranquilla, Atlántico', 'Distribución de insumos industriales', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com'),
-(5, 'prueba', '1234', 'CR CARMEN DE CARUPA CUNDINAMARCA CRA 4 #', 'prueba del crud', 'Juan', 'Montaño', '3229035224', 'juanjosemon19@gmail.com');
+(5, 'Espumas y Colchones del Norte S.A.S.', '901456789-3', 'Carrera 15 # 45-20, Bogotá, Colombia', 'Proveedor especializado en espuma de poliuretano, telas para colchonería, resortes y materias primas para la fabricación de colchones y muebles.', 'Carlos', 'Ramírez', '3204567890', 'compras@espumasnorte.com');
 
 -- --------------------------------------------------------
 
@@ -264,7 +276,8 @@ ALTER TABLE `materias_primas`
 -- Indices de la tabla `modelos_colchon`
 --
 ALTER TABLE `modelos_colchon`
-  ADD PRIMARY KEY (`id_modelo`);
+  ADD PRIMARY KEY (`id_modelo`),
+  ADD UNIQUE KEY `serial` (`serial`);
 
 --
 -- Indices de la tabla `movimientos_inventario`
@@ -332,13 +345,13 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `materias_primas`
 --
 ALTER TABLE `materias_primas`
-  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `modelos_colchon`
 --
 ALTER TABLE `modelos_colchon`
-  MODIFY `id_modelo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_modelo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `movimientos_inventario`
