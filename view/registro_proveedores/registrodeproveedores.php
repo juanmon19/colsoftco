@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <header>
     <a class="logo-area" href="../panel_admin/panel_admin.html">
-        <img src="../imagenes/logo.png" alt="Logo">
+        <img src="../../public/imagenes/logo.png" alt="Logo">
     </a>
 
     <h1>Registro de Proveedores</h1>
