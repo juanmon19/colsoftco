@@ -21,7 +21,7 @@ $proveedores = $logica->getProveedores();
 
     <header>
         <a class="logo" href="../panel_admin/panel_admin.html">
-            <img src="../imagenes/logo.png" alt="logo">
+            <img src="../../public/imagenes/logo.png" alt="logo">
         </a>
 
         <a class="header-title">

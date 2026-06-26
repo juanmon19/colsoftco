@@ -12,7 +12,7 @@
 
   <header>
     <a class="logo" href="../panel_admin/panel_admin.html">
-      <img src="../imagenes/logo.png" alt="logo">
+      <img src="../../public/imagenes/logo.png" alt="logo">
     </a>
 
     <span class="header-title">Control de Stock</span>
