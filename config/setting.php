@@ -2,7 +2,7 @@
 
 define("HOST", "smtp.gmail.com");
 define("USERNAME", "colsoftco4@gmail.com");
-define("PASSWORD", "kvhyvbiltrnxyqvt");
+define("PASSWORD", "hzwabnwohwndfvhx");
 
 
 define("SMTP_SECURE", "TLS");
