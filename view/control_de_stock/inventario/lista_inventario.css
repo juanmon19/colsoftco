@@ -17,11 +17,23 @@ header{
     color:#fff;
     text-align:center;
     padding:5px;
-    font-size:22px;
+    font-size:15px;
     font-weight:bold;
     border-bottom:4px solid #D4AF37;
 }
 
+.header .logo {
+    position: absolute;
+    left: 20px;
+}
+
+.header .logo img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid #d4af37;
+    background: white;
+}
 .container{
     width: 70%;
     max-width: 1100px;

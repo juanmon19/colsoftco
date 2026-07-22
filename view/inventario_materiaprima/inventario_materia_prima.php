@@ -1,6 +1,6 @@
 <?php
 
-require_once('../../../config/conexion.php');
+require_once('../../config/conexion.php');
 
 $db = new Conexion();
 $conn = $db->getConnection();
@@ -28,14 +28,14 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>Inventario</title>
-    <link rel="stylesheet" href="lista_inventario.css">
+    <link rel="stylesheet" href="inventariomp.css">
 </head>
 
 <body>
 
     <header class="header">
         <div class="logo">
-            <img src="../../../public/imagenes/logo.png" alt="logo">
+            <img src="../../public/imagenes/logo.png" alt="logo">
         </div>
 
         <h1>Inventario de Materias Primas</h1>
@@ -44,7 +44,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="container">
 
-        <a class="btn-volver" href="../control_de_stock.php">
+        <a class="btn-volver" href="../panel_admin/panel_admin.html">
             ← Volver
         </a>
 
@@ -82,16 +82,14 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     <td class="acciones">
 
-                        <a class="btn-editar" href="editar_inventario.php?id=<?= $m['id_material'] ?>">
+                        <a class="btn-editar" href="../control_de_stock/inventario/editar_inventario.php?id=<?= $m['id_material'] ?>">
                             Editar
                         </a>
 
-                        <a href="eliminar_inventario.php?id=<?= $m['id_material'] ?>" class="btn-eliminar">
+                        <a href="../control_de_stock/inventario/eliminar_inventario.php?id=<?= $m['id_material'] ?>" class="btn-eliminar">
                             Eliminar
                         </a>
                     </td>
-
-
                 </tr>
 
             <?php endforeach; ?>
