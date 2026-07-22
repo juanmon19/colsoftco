@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-06-2026 a las 09:14:05
+-- Tiempo de generación: 22-07-2026 a las 20:47:14
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -250,10 +250,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
-(7, 'juanjosemon19@gmail.com', 'juan mont', '', '', 'administrador', '$2y$10$AR4/.AW21G2OPDJ0ZoffzOcnvadCc1dy.TbiTnKPWQTS3qssxcm5u', '1', '54444dcae0d4ab3e9e2a49435c415c683f6538ed8cdf9e0b91ca4a5abaf82f5e', '1782005773'),
-(8, 'avellanedamaldonadosantiago@gmail.com', 'santiago', '', '', 'bodeguero', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
-(10, 'jafetdavidpi@gmail.com', 'jafet', '', '', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
-(11, 'diegogo3027@gmail.com', 'diego', '', '', 'administrador', '$2y$10$nibWlgfFwT/WsTKv1NDdC.TMY3SHE6xrUvXl874NAikuHEN9juyyC', '1', '5b285d2f93f0e98c94f9da45a630dce655da9803d9125b426403616fcb9bee15', '1781920147'),
+(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'administrador', '$2y$10$AR4/.AW21G2OPDJ0ZoffzOcnvadCc1dy.TbiTnKPWQTS3qssxcm5u', '1', '54444dcae0d4ab3e9e2a49435c415c683f6538ed8cdf9e0b91ca4a5abaf82f5e', '1782005773'),
+(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'operario', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
+(10, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
 (14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
 
 --
