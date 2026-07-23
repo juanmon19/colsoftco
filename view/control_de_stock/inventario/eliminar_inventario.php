@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="contenedor">
 
-    <a href="../../inventario_materiaprima/inventario_materia_prima.php" class="volver">
+    <a href="lista_inventario.php" class="volver">
         ← Volver a Inventario
     </a>
 

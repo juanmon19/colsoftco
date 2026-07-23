@@ -16,6 +16,19 @@
     }
 
     /* ===== HEADER ===== */
+
+    .btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.3s;
+    margin-left: auto
+}
     header {
         background: #0A1F44;
         display: flex;
@@ -43,8 +56,9 @@
     }
 
     .header-title {
-        font-size: 22px;
-        font-weight: 700;
+        flex: 1;
+        font-size: 28px;
+        font-weight: bold;
         letter-spacing: 2px;
         text-transform: uppercase;
         text-align: center;

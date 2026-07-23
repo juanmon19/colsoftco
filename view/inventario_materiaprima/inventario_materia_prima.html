@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Max & Flex - Inventario Productos Terminados</title>
-    <link href="inventariopt.css" rel="stylesheet">
+    <title>Colsoftco - Inventario Materia Prima</title>
+    <link href="inventariomp.css" rel="stylesheet">
 </head>
 
 <body>
@@ -16,20 +16,20 @@
                 <img src="../../public/imagenes/logo.png" alt="logo">
             </a>
         </div>
-        <h1 class="header-title">Max & Flex</h1>
+       <h1 class="header-title">Max & Flex</h1>
 
         <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
             Cerrar sesión
         </button>
     </div>
 
-    <div class="page-title-bar">
-        <span class="page-title">PRODUCTOS TERMINADOS</span>
+
+    <div class="tab-nav">
+        <button class="tab-btn active">MATERIA PRIMA</button>
     </div>
 
     <div class="main-content">
         <div class="table-wrapper">
-
             <div class="toolbar">
                 <button class="btn-add" onclick="openAddModal()">+ Agregar Producto</button>
             </div>
@@ -42,7 +42,8 @@
                         <th>Acción</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-body"></tbody>
+                <tbody id="tabla-body">
+                </tbody>
             </table>
         </div>
     </div>
@@ -53,7 +54,7 @@
             <label>Producto</label>
             <input type="text" id="input-producto" placeholder="Nombre del producto">
             <label>Cantidad</label>
-            <input type="text" id="input-cantidad" placeholder="Ej: 23 Unidades">
+            <input type="text" id="input-cantidad" placeholder="Ej: 205 Unidades">
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
                 <button class="btn-save" onclick="guardarProducto()">Guardar</button>
@@ -73,33 +74,37 @@
     </div>
 
     <div class="toast" id="toast"></div>
-    
+
     <script>
 
         // ===== DATA =====
-        // Estructura de persistencia local temporal (Simulación de base de datos relacional mediante objetos)
+        // Base de datos en memoria (Simulación en un arreglo de objetos JSON)
         let productos = [
-            { id: 1, nombre: "Colchon Queen", cantidad: "x23 Unidades" },
-            { id: 2, nombre: "Colchon Semidobile", cantidad: "x29 Unidades" },
-            { id: 3, nombre: "Colchon Doble", cantidad: "x33 Unidades" },
-            { id: 4, nombre: "Colchon Sencillo", cantidad: "x43 Unidades" },
+            { id: 1, nombre: "Resortes Pocket", cantidad: "x205 Unidades" },
+            { id: 2, nombre: "Resortes LFK", cantidad: "x300 Unidades" },
+            { id: 3, nombre: "Resortes Bonell", cantidad: "x150 Unidades" },
+            { id: 4, nombre: "Microresortes", cantidad: "x200 Unidades" },
+            { id: 5, nombre: "Resortes Continuous Coil", cantidad: "x245" },
+            { id: 6, nombre: "Hilos", cantidad: "x15 Metros" },
+            { id: 7, nombre: "Tela", cantidad: "x20 Rollos" },
+            { id: 8, nombre: "Espuma", cantidad: "59 Kg" },
         ];
 
-        // Apuntadores de estado globales para control de operaciones concurrentes
-        let nextId = 5;        // Llave primaria auto-incremental asignada a nuevos registros
-        let editingId = null;  // Identificador numérico del objeto en edición (Permanece en null en inserciones)
-        let deletingId = null; // Almacenador temporal del ID agendado para descarte definitivo
+        // Controladores globales de estado para el ciclo CRUD
+        let nextId = 9;       // Auto-incremental para el ID de los productos nuevos
+        let editingId = null;  // Almacena el ID del elemento bajo edición (null = modo inserción)
+        let deletingId = null; // Almacena el ID del elemento seleccionado para dar de baja
 
         // ===== RENDER =====
-        // Función dedicada a la reconstrucción adaptativa de la tabla en el documento HTML
+        // Dibuja dinámicamente el contenido del listado en el DOM
         function renderTabla() {
             const tbody = document.getElementById('tabla-body');
-            tbody.innerHTML = ''; // Limpieza de nodos hijos para evitar concatenaciones redundantes
+            tbody.innerHTML = ''; // Vacía la tabla para prevenir duplicaciones durante la recarga
 
-            // Iteración secuencial de cada elemento del almacén de productos
+            // Recorre secuencialmente cada producto del array
             productos.forEach((p, i) => {
                 const tr = document.createElement('tr');
-                // Estructuración sintáctica de celdas con template literals e inyección de botones
+                // Estructura de interpolación HTML para las celdas
                 tr.innerHTML = `
                     <td>${i + 1}. ${p.nombre}</td>
                     <td>${p.cantidad}</td>
@@ -110,106 +115,96 @@
                         </div>
                     </td>
                 `;
-                tbody.appendChild(tr); // Vinculación física del tr estructurado al contenedor tbody
+                tbody.appendChild(tr); // Añade el nodo tr estructurado al contenedor tbody
             });
-
-            // ===== FILAS VACÍAS DECORATIVAS =====
-            // Bloque lógico para asegurar un mínimo visual estricto de 10 filas fijas en la interfaz
-            const emptyRows = Math.max(0, 10 - productos.length);
-            for (let i = 0; i < emptyRows; i++) {
-                const tr = document.createElement('tr');
-                tr.className = 'empty-row'; // Identificador CSS especializado para filas sin datos (.empty-row)
-                tr.innerHTML = `<td>&nbsp;</td><td></td><td></td>`;
-                tbody.appendChild(tr);
-            }
         }
 
         // ===== MODALS =====
-        // Prepara los componentes del formulario para la adición de un nuevo artículo
+        // Inicializa el formulario flotante para registrar un producto nuevo
         function openAddModal() {
-            editingId = null; // Restablece estado global a inserción pura
+            editingId = null; // Cambia el estado global a inserción pura
             document.getElementById('modal-title').textContent = 'Agregar Producto';
             document.getElementById('input-producto').value = '';
             document.getElementById('input-cantidad').value = '';
-            document.getElementById('modal-form').classList.add('active'); // Inyecta la propiedad visible (.active)
+            document.getElementById('modal-form').classList.add('active'); // Muestra el modal vía CSS (.active)
         }
 
-        // Recupera datos de un producto específico y reconfigura el modal en modalidad de edición
+        // Prepara y despliega el formulario flotante cargando la información previa para edición
         function openEditModal(id) {
-            const p = productos.find(x => x.id === id); // Localización por comparación estricta de ID
-            if (!p) return;
-            editingId = id; // Setea el identificador global de edición
+            const p = productos.find(x => x.id === id); // Busca la coincidencia exacta por ID en el array
+            if (!p) return; // Rompe si no localiza el elemento
+            editingId = id; // Asigna el identificador para la reescritura posterior
             document.getElementById('modal-title').textContent = 'Actualizar Producto';
             document.getElementById('input-producto').value = p.nombre;
             document.getElementById('input-cantidad').value = p.cantidad;
-            document.getElementById('modal-form').classList.add('active'); // Muestra ventana flotante de datos
+            document.getElementById('modal-form').classList.add('active'); // Despliega la ventana modal
         }
 
-        // Gestiona la asignación y apertura de confirmación previo a la baja del registro
+        // Despliega la confirmación previa al borrado permanente
         function openDeleteModal(id) {
             const p = productos.find(x => x.id === id);
             if (!p) return;
-            deletingId = id; // Retiene en memoria el ID a eliminar
+            deletingId = id; // Memoriza temporalmente el ID de eliminación
             document.getElementById('confirm-msg').textContent =
                 `¿Estás seguro de eliminar "${p.nombre}"?`;
-            document.getElementById('modal-confirm').classList.add('active'); // Despliega modal de confirmación
+            document.getElementById('modal-confirm').classList.add('active'); // Despliega ventana de confirmación
         }
 
-        // Cierra masivamente todas las ventanas modales del entorno removiendo la clase activa
+        // Oculta todas las ventanas modales de la interfaz removiendo la clase activa
         function closeModal() {
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
         }
 
         // ===== ACCIONES =====
-        // Centraliza la persistencia o reescritura de los datos capturados del formulario
+        // Procesa la recopilación de datos para guardar (tanto para inserción como para actualización)
         function guardarProducto() {
             const nombre = document.getElementById('input-producto').value.trim();
             const cantidad = document.getElementById('input-cantidad').value.trim();
-            
-            // Validación restrictiva contra strings vacíos o con puros espacios
+
+            // Validación básica de campos vacíos
             if (!nombre || !cantidad) { showToast('Complete todos los campos.'); return; }
 
             if (editingId === null) {
-                // Bifurcación: Registro e inserción de ítem nuevo
+                // Flujo alterno: Crear producto nuevo
                 productos.push({ id: nextId++, nombre, cantidad });
                 showToast('Producto agregado.');
             } else {
-                // Bifurcación: Sobreescritura del ítem mutado en edición
+                // Flujo alterno: Actualizar producto existente
                 const p = productos.find(x => x.id === editingId);
                 if (p) { p.nombre = nombre; p.cantidad = cantidad; }
                 showToast('Producto actualizado.');
             }
-            closeModal();   // Oculta modales activos
-            renderTabla();  // Re-renderiza el árbol de datos
+            closeModal();   // Cierra la interfaz del formulario
+            renderTabla();  // Redibuja la tabla con el arreglo modificado
         }
 
-        // Ejecuta la depuración del producto del array mediante exclusión controlada
+        // Efectúa la eliminación del producto mediante filtrado del array
         function confirmarEliminacion() {
-            // Filtra y genera una nueva colección omitiendo la id coincidente
+            // Reasigna el array excluyendo el ID que coincide con deletingId
             productos = productos.filter(x => x.id !== deletingId);
-            closeModal();   // Cierra modales
-            renderTabla();  // Actualiza la vista tabular de datos
+            closeModal();   // Cierra ventana de confirmación
+            renderTabla();  // Recarga el listado visual
             showToast('Producto eliminado.');
         }
 
         // ===== TOAST =====
-        // Inicializa y temporiza los cuadros emergentes asíncronos de estado
+        // Muestra avisos efímeros dinámicos
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.textContent = msg;
-            t.classList.add('show'); // Hace emerger visualmente el cuadro mediante CSS (.show)
-            // Desactiva la clase e invisibiliza el elemento transcurridos 2.5 segundos (2500 ms)
+            t.classList.add('show'); // Activa la visibilidad y animaciones CSS
+            // Oculta el componente tras 2.5 segundos de exposición (2500 ms)
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // Agrega un escuchador para cerrar las ventanas modales si el usuario da clic fuera de ellas
+        // Habilita el cierre automático si el usuario da clic fuera del contenedor blanco del modal
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
         });
 
     </script>
-<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
     <script src="../js/auth.js"></script>
     <script src="../js/app.js"></script>
 </body>

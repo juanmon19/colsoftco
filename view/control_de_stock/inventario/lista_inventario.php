@@ -33,20 +33,15 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
 
-    <header class="header">
-        <div class="logo">
-            <img src="../../../public/imagenes/logo.png" alt="logo">
-        </div>
-
+    <header>
         <h1>Inventario de Materias Primas</h1>
     </header>
-
 
     <div class="container">
 
         <a class="btn-volver" href="../control_de_stock.php">
-            ← Volver
-        </a>
+    ← Volver
+</a>
 
         <table>
 
