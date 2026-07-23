@@ -10,7 +10,8 @@
     <!-- jsPDF para exportar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
     <!-- jsPDF-AutoTable para tablas bonitas en PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"
+        crossorigin="anonymous"></script>
 
     <style>
         /* Estilos solo para los elementos nuevos; el CSS original no se toca */
@@ -33,8 +34,16 @@
             display: none;
             color: white;
         }
-        #statusMsg.ok  { background: rgba(40, 167, 69, .25); border: 1px solid rgba(40,167,69,.5); }
-        #statusMsg.err { background: rgba(220, 53, 69, .25); border: 1px solid rgba(220,53,69,.5); }
+
+        #statusMsg.ok {
+            background: rgba(40, 167, 69, .25);
+            border: 1px solid rgba(40, 167, 69, .5);
+        }
+
+        #statusMsg.err {
+            background: rgba(220, 53, 69, .25);
+            border: 1px solid rgba(220, 53, 69, .5);
+        }
 
         /* Tarjeta materias primas con el mismo fondo y estilo que .informes */
         .materias {
@@ -69,13 +78,23 @@
             border-radius: 6px;
         }
 
-        .mp-wrap::-webkit-scrollbar { width: 5px; }
-        .mp-wrap::-webkit-scrollbar-thumb { background: rgba(212,175,55,.4); border-radius: 4px; }
+        .mp-wrap::-webkit-scrollbar {
+            width: 5px;
+        }
 
-        .mp-tabla { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .mp-wrap::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, .4);
+            border-radius: 4px;
+        }
+
+        .mp-tabla {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
 
         .mp-tabla thead th {
-            background: rgba(212,175,55,.15);
+            background: rgba(212, 175, 55, .15);
             color: #d4af37;
             font-weight: 700;
             padding: 8px 10px;
@@ -87,21 +106,69 @@
             top: 0;
         }
 
-        .mp-tabla tbody tr { border-bottom: 1px solid rgba(255,255,255,.06); }
-        .mp-tabla tbody tr:hover { background: rgba(255,255,255,.04); }
+        .mp-tabla tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+        }
 
-        .mp-tabla tbody td { color: #c8d2e6; padding: 8px 10px; vertical-align: middle; }
-        .mp-tabla tbody td:first-child { color: white; font-weight: 700; }
+        .mp-tabla tbody tr:hover {
+            background: rgba(255, 255, 255, .04);
+        }
 
-        .mp-badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-        .mp-disp  { background: rgba(40,167,69,.2);  color: #6dffaa; }
-        .mp-lim   { background: rgba(255,193,7,.15); color: #ffd55a; }
-        .mp-ago   { background: rgba(220,53,69,.15); color: #ff8a8a; }
+        .mp-tabla tbody td {
+            color: #c8d2e6;
+            padding: 8px 10px;
+            vertical-align: middle;
+        }
 
-        .mp-count { color: rgba(200,210,230,.45); font-size: 11px; text-align: right; margin-top: 8px; }
+        .mp-tabla tbody td:first-child {
+            color: white;
+            font-weight: 700;
+        }
 
-        .radio-group { display: flex; gap: 16px; justify-content: center; margin: 10px 0; }
-        .radio-group label { display: flex; align-items: center; gap: 6px; color: white; cursor: pointer; }
+        .mp-badge {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .mp-disp {
+            background: rgba(40, 167, 69, .2);
+            color: #6dffaa;
+        }
+
+        .mp-lim {
+            background: rgba(255, 193, 7, .15);
+            color: #ffd55a;
+        }
+
+        .mp-ago {
+            background: rgba(220, 53, 69, .15);
+            color: #ff8a8a;
+        }
+
+        .mp-count {
+            color: rgba(200, 210, 230, .45);
+            font-size: 11px;
+            text-align: right;
+            margin-top: 8px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -117,6 +184,10 @@
             <h1>Informes</h1>
             <div class="title-underline"></div>
         </div>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
     </header>
 
     <div class="contenido" style="margin: 0 auto; max-width: 1100px; width: 100%; padding: 0 16px;">
@@ -128,7 +199,7 @@
 
             <div class="radio-group">
                 <label><input type="radio" name="tipo" id="tipoExcel" value="excel" checked> Excel</label>
-                <label><input type="radio" name="tipo" id="tipoPDF"   value="pdf">           PDF</label>
+                <label><input type="radio" name="tipo" id="tipoPDF" value="pdf"> PDF</label>
             </div>
 
             <br>
@@ -178,8 +249,7 @@
         <div class="materias">
             <h2>MATERIAS PRIMAS</h2>
 
-            <input type="text" class="mp-buscar" id="mpSearch"
-                   placeholder="Buscar por nombre o categoría...">
+            <input type="text" class="mp-buscar" id="mpSearch" placeholder="Buscar por nombre o categoría...">
 
             <div class="mp-wrap">
                 <table class="mp-tabla">
@@ -202,64 +272,64 @@
 
 
     <script>
-    /* ═══════════════════════════════════════
-       MATERIAS PRIMAS
-    ═══════════════════════════════════════ */
-   /* ═══════════════════════════════════════
-   MATERIAS PRIMAS
-═══════════════════════════════════════ */
+        /* ═══════════════════════════════════════
+           MATERIAS PRIMAS
+        ═══════════════════════════════════════ */
+        /* ═══════════════════════════════════════
+        MATERIAS PRIMAS
+     ═══════════════════════════════════════ */
 
-let MATERIAS = [];
+        let MATERIAS = [];
 
-async function cargarMaterias() {
+        async function cargarMaterias() {
 
-    console.log("Entró a cargarMaterias");
+            console.log("Entró a cargarMaterias");
 
-    try {
+            try {
 
-        const respuesta = await fetch('obtener_materias.php');
-        const datos = await respuesta.json();
+                const respuesta = await fetch('obtener_materias.php');
+                const datos = await respuesta.json();
 
-        console.log(datos);
+                console.log(datos);
 
-        MATERIAS = datos;
+                MATERIAS = datos;
 
-        renderMP(MATERIAS);
+                renderMP(MATERIAS);
 
-    } catch (error) {
+            } catch (error) {
 
-        console.error("ERROR:", error);
+                console.error("ERROR:", error);
 
-    }
-}
+            }
+        }
 
-function renderMP(data) {
+        function renderMP(data) {
 
-    const tbody = document.getElementById("mpBody");
-    const count = document.getElementById("mpCount");
+            const tbody = document.getElementById("mpBody");
+            const count = document.getElementById("mpCount");
 
-    if (!data.length) {
-        tbody.innerHTML =
-        `<tr>
+            if (!data.length) {
+                tbody.innerHTML =
+                    `<tr>
             <td colspan="4"
                 style="text-align:center;padding:20px;color:rgba(200,210,230,.4);">
                 Sin resultados
             </td>
         </tr>`;
-        count.textContent = "";
-        return;
-    }
+                count.textContent = "";
+                return;
+            }
 
-    tbody.innerHTML = data.map(mp => {
+            tbody.innerHTML = data.map(mp => {
 
-        const cls =
-            mp.estado === "Disponible"
-                ? "mp-disp"
-                : mp.estado === "Limitado"
-                ? "mp-lim"
-                : "mp-ago";
+                const cls =
+                    mp.estado === "Disponible"
+                        ? "mp-disp"
+                        : mp.estado === "Limitado"
+                            ? "mp-lim"
+                            : "mp-ago";
 
-        return `
+                return `
         <tr>
             <td>${mp.nombre}</td>
             <td>${mp.categoria}</td>
@@ -271,134 +341,135 @@ function renderMP(data) {
             </td>
         </tr>
         `;
-    }).join("");
+            }).join("");
 
-    count.textContent =
-        `${data.length} de ${MATERIAS.length} registros`;
-}
-
-document.getElementById("mpSearch")
-.addEventListener("input", function () {
-
-    const q = this.value.toLowerCase();
-
-    const filtradas = MATERIAS.filter(mp =>
-        mp.nombre.toLowerCase().includes(q) ||
-        mp.categoria.toLowerCase().includes(q)
-    );
-
-    renderMP(filtradas);
-
-});
-
-cargarMaterias();
-    /* ═══════════════════════════════════════
-       EXPORTACIÓN EXCEL / PDF
-    ═══════════════════════════════════════ */
-    const MESES = ["","Enero","Febrero","Marzo","Abril","Mayo","Junio",
-                   "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-
-    // Genera filas de ejemplo. En producción: reemplaza con fetch() a tu PHP.
-    function generarDatos(ini, fin) {
-        const filas = [];
-        for (let m = ini; m <= fin; m++) {
-            MATERIAS.forEach(mp => {
-                const consumo = Math.floor(Math.random() * 300) + 10;
-                filas.push({
-                    "Mes":           MESES[m],
-                    "Materia Prima": mp.nombre,
-                    "Categoría":     mp.categoria,
-                    "Stock Actual":  mp.stock,
-                    "Consumo (kg)":  consumo,
-                    "Estado":        mp.estado
-                });
-            });
+            count.textContent =
+                `${data.length} de ${MATERIAS.length} registros`;
         }
-        return filas;
-    }
 
-    function mostrarMsg(texto, tipo) {
-        const el = document.getElementById("statusMsg");
-        el.textContent = texto;
-        el.className = tipo;
-        el.style.display = "block";
-        setTimeout(() => { el.style.display = "none"; }, 4000);
-    }
+        document.getElementById("mpSearch")
+            .addEventListener("input", function () {
 
-    function exportarExcel(datos, nombre) {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(datos);
-        ws['!cols'] = [{wch:12},{wch:26},{wch:16},{wch:13},{wch:14},{wch:13}];
-        XLSX.utils.book_append_sheet(wb, ws, "Informe");
-        XLSX.writeFile(wb, nombre + ".xlsx");
-    }
+                const q = this.value.toLowerCase();
 
-    function exportarPDF(datos, titulo, nombre) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+                const filtradas = MATERIAS.filter(mp =>
+                    mp.nombre.toLowerCase().includes(q) ||
+                    mp.categoria.toLowerCase().includes(q)
+                );
 
-        doc.setFillColor(10, 31, 68);
-        doc.rect(0, 0, 297, 20, "F");
-        doc.setDrawColor(212, 175, 55);
-        doc.setLineWidth(0.8);
-        doc.line(0, 20, 297, 20);
+                renderMP(filtradas);
 
-        doc.setTextColor(212, 175, 55);
-        doc.setFontSize(13);
-        doc.setFont("helvetica", "bold");
-        doc.text(titulo, 148.5, 13, { align: "center" });
+            });
 
-        doc.setTextColor(120, 120, 120);
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "normal");
-        doc.text("Generado: " + new Date().toLocaleString("es-CO"), 10, 26);
+        cargarMaterias();
+        /* ═══════════════════════════════════════
+           EXPORTACIÓN EXCEL / PDF
+        ═══════════════════════════════════════ */
+        const MESES = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-        const cols = Object.keys(datos[0]);
-        const rows = datos.map(f => cols.map(c => f[c]));
+        // Genera filas de ejemplo. En producción: reemplaza con fetch() a tu PHP.
+        function generarDatos(ini, fin) {
+            const filas = [];
+            for (let m = ini; m <= fin; m++) {
+                MATERIAS.forEach(mp => {
+                    const consumo = Math.floor(Math.random() * 300) + 10;
+                    filas.push({
+                        "Mes": MESES[m],
+                        "Materia Prima": mp.nombre,
+                        "Categoría": mp.categoria,
+                        "Stock Actual": mp.stock,
+                        "Consumo (kg)": consumo,
+                        "Estado": mp.estado
+                    });
+                });
+            }
+            return filas;
+        }
 
-        doc.autoTable({
-            head: [cols], body: rows, startY: 30,
-            styles: { fontSize: 8, cellPadding: 2.5 },
-            headStyles: { fillColor: [10,31,68], textColor: [212,175,55], fontStyle: "bold" },
-            alternateRowStyles: { fillColor: [240,243,248] },
-            didDrawPage: (d) => {
-                doc.setFontSize(7);
-                doc.setTextColor(150,150,150);
-                doc.text(`Página ${d.pageNumber}`, 148.5, doc.internal.pageSize.height - 4, { align: "center" });
+        function mostrarMsg(texto, tipo) {
+            const el = document.getElementById("statusMsg");
+            el.textContent = texto;
+            el.className = tipo;
+            el.style.display = "block";
+            setTimeout(() => { el.style.display = "none"; }, 4000);
+        }
+
+        function exportarExcel(datos, nombre) {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(datos);
+            ws['!cols'] = [{ wch: 12 }, { wch: 26 }, { wch: 16 }, { wch: 13 }, { wch: 14 }, { wch: 13 }];
+            XLSX.utils.book_append_sheet(wb, ws, "Informe");
+            XLSX.writeFile(wb, nombre + ".xlsx");
+        }
+
+        function exportarPDF(datos, titulo, nombre) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+
+            doc.setFillColor(10, 31, 68);
+            doc.rect(0, 0, 297, 20, "F");
+            doc.setDrawColor(212, 175, 55);
+            doc.setLineWidth(0.8);
+            doc.line(0, 20, 297, 20);
+
+            doc.setTextColor(212, 175, 55);
+            doc.setFontSize(13);
+            doc.setFont("helvetica", "bold");
+            doc.text(titulo, 148.5, 13, { align: "center" });
+
+            doc.setTextColor(120, 120, 120);
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "normal");
+            doc.text("Generado: " + new Date().toLocaleString("es-CO"), 10, 26);
+
+            const cols = Object.keys(datos[0]);
+            const rows = datos.map(f => cols.map(c => f[c]));
+
+            doc.autoTable({
+                head: [cols], body: rows, startY: 30,
+                styles: { fontSize: 8, cellPadding: 2.5 },
+                headStyles: { fillColor: [10, 31, 68], textColor: [212, 175, 55], fontStyle: "bold" },
+                alternateRowStyles: { fillColor: [240, 243, 248] },
+                didDrawPage: (d) => {
+                    doc.setFontSize(7);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text(`Página ${d.pageNumber}`, 148.5, doc.internal.pageSize.height - 4, { align: "center" });
+                }
+            });
+
+            doc.save(nombre + ".pdf");
+        }
+
+        document.getElementById("btnGenerar").addEventListener("click", () => {
+            const tipo = document.querySelector('input[name="tipo"]:checked')?.value;
+            const ini = parseInt(document.getElementById("mes_inicio").value);
+            const fin = parseInt(document.getElementById("mes_fin").value);
+
+            if (!tipo) { mostrarMsg("Seleccione un formato (Excel o PDF).", "err"); return; }
+            if (ini > fin) { mostrarMsg("El mes de inicio no puede ser mayor al mes final.", "err"); return; }
+
+            const rango = `${MESES[ini]} - ${MESES[fin]}`;
+            const titulo = `Informe de Materias Primas | ${rango}`;
+            const archivo = `Informe_${MESES[ini]}_${MESES[fin]}`;
+            const datos = generarDatos(ini, fin);
+
+            try {
+                if (tipo === "excel") {
+                    exportarExcel(datos, archivo);
+                    mostrarMsg(`Informe Excel generado (${datos.length} registros).`, "ok");
+                } else {
+                    exportarPDF(datos, titulo, archivo);
+                    mostrarMsg(`Informe PDF generado (${datos.length} registros).`, "ok");
+                }
+            } catch (e) {
+                console.error(e);
+                mostrarMsg("Error al generar el informe. Revise la consola.", "err");
             }
         });
-
-        doc.save(nombre + ".pdf");
-    }
-
-    document.getElementById("btnGenerar").addEventListener("click", () => {
-        const tipo = document.querySelector('input[name="tipo"]:checked')?.value;
-        const ini  = parseInt(document.getElementById("mes_inicio").value);
-        const fin  = parseInt(document.getElementById("mes_fin").value);
-
-        if (!tipo) { mostrarMsg("Seleccione un formato (Excel o PDF).", "err"); return; }
-        if (ini > fin) { mostrarMsg("El mes de inicio no puede ser mayor al mes final.", "err"); return; }
-
-        const rango  = `${MESES[ini]} - ${MESES[fin]}`;
-        const titulo = `Informe de Materias Primas | ${rango}`;
-        const archivo = `Informe_${MESES[ini]}_${MESES[fin]}`;
-        const datos  = generarDatos(ini, fin);
-
-        try {
-            if (tipo === "excel") {
-                exportarExcel(datos, archivo);
-                mostrarMsg(`Informe Excel generado (${datos.length} registros).`, "ok");
-            } else {
-                exportarPDF(datos, titulo, archivo);
-                mostrarMsg(`Informe PDF generado (${datos.length} registros).`, "ok");
-            }
-        } catch (e) {
-            console.error(e);
-            mostrarMsg("Error al generar el informe. Revise la consola.", "err");
-        }
-    });
     </script>
-<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 </body>
+
 </html>

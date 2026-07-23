@@ -16,7 +16,11 @@
                 <img src="../../public/imagenes/logo.png" alt="logo">
             </a>
         </div>
-        Max & Flex
+       <h1 class="header-title">Max & Flex</h1>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
     </div>
 
 
@@ -39,7 +43,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabla-body">
-                    </tbody>
+                </tbody>
             </table>
         </div>
     </div>
@@ -70,7 +74,7 @@
     </div>
 
     <div class="toast" id="toast"></div>
-    
+
     <script>
 
         // ===== DATA =====
@@ -96,7 +100,7 @@
         function renderTabla() {
             const tbody = document.getElementById('tabla-body');
             tbody.innerHTML = ''; // Vacía la tabla para prevenir duplicaciones durante la recarga
-            
+
             // Recorre secuencialmente cada producto del array
             productos.forEach((p, i) => {
                 const tr = document.createElement('tr');
@@ -156,7 +160,7 @@
         function guardarProducto() {
             const nombre = document.getElementById('input-producto').value.trim();
             const cantidad = document.getElementById('input-cantidad').value.trim();
-            
+
             // Validación básica de campos vacíos
             if (!nombre || !cantidad) { showToast('Complete todos los campos.'); return; }
 
@@ -199,8 +203,8 @@
         });
 
     </script>
-<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
     <script src="../js/auth.js"></script>
     <script src="../js/app.js"></script>
 </body>

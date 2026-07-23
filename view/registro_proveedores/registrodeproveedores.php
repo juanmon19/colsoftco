@@ -34,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $mensaje = "Error al registrar proveedor";
         }
-
     } catch (Exception $e) {
         $mensaje = $e->getMessage();
     }
@@ -53,98 +52,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
 
-<header>
-    <a class="logo-area" href="../panel_admin/panel_admin.html">
-        <img src="../../public/imagenes/logo.png" alt="Logo">
-    </a>
-
-    <h1>Registro de Proveedores</h1>
-</header>
-
-<div class="contenedor-principal">
-
-    <div class="acciones-superior">
-        <a href="../lista_proveedores/lista_proveedores.php" class="btn-volver">
-            ← Volver a Proveedores
+    <header>
+        <a class="logo-area" href="../panel_admin/panel_admin.html">
+            <img src="../../public/imagenes/logo.png" alt="Logo">
         </a>
-    </div>
 
-    <?php if (!empty($mensaje)): ?>
-        <div class="mensaje">
-            <?= htmlspecialchars($mensaje) ?>
+        <h1>Registro de Proveedores</h1>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
+    </header>
+
+    <div class="contenedor-principal">
+
+        <div class="acciones-superior">
+            <a href="../lista_proveedores/lista_proveedores.php" class="btn-volver">
+                ← Volver a Proveedores
+            </a>
         </div>
-    <?php endif; ?>
 
-    <div class="card-formulario">
+        <?php if (!empty($mensaje)): ?>
+            <div class="mensaje">
+                <?= htmlspecialchars($mensaje) ?>
+            </div>
+        <?php endif; ?>
 
-        <div class="card-header">
-            <span class="barra-amarilla"></span>
-            <h2>Registrar Nuevo Proveedor</h2>
+        <div class="card-formulario">
+
+            <div class="card-header">
+                
+                <h2>Registrar Nuevo Proveedor</h2>
+            </div>
+
+            <form method="POST">
+
+                <div class="grid-form">
+
+                    <div class="field-group">
+                        <label>Nombre Empresa</label>
+                        <input type="text" name="nombre_empresa" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label>NIT</label>
+                        <input type="text" name="nit" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label>Nombre Contacto</label>
+                        <input type="text" name="contacto_nombre" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label>Apellido Contacto</label>
+                        <input type="text" name="contacto_apellido" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label>Teléfono</label>
+                        <input type="text" name="telefono" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label>Correo Electrónico</label>
+                        <input type="email" name="email" required>
+                    </div>
+
+                </div>
+
+                <div class="field-group">
+                    <label>Dirección</label>
+                    <input type="text" name="direccion" required>
+                </div>
+
+                <div class="field-group">
+                    <label>Descripción de la Empresa</label>
+                    <textarea name="descripcion_empresa" rows="4"></textarea>
+                </div>
+
+                <div class="form-actions">
+
+                    <button type="reset" class="btn-limpiar">
+                        Limpiar
+                    </button>
+
+                    <button type="submit" class="btn-registrar">
+                        Registrar
+                    </button>
+
+                </div>
+
+            </form>
+
         </div>
 
-        <form method="POST">
-
-            <div class="grid-form">
-
-                <div class="field-group">
-                    <label>Nombre Empresa</label>
-                    <input type="text" name="nombre_empresa" required>
-                </div>
-
-                <div class="field-group">
-                    <label>NIT</label>
-                    <input type="text" name="nit" required>
-                </div>
-
-                <div class="field-group">
-                    <label>Nombre Contacto</label>
-                    <input type="text" name="contacto_nombre" required>
-                </div>
-
-                <div class="field-group">
-                    <label>Apellido Contacto</label>
-                    <input type="text" name="contacto_apellido" required>
-                </div>
-
-                <div class="field-group">
-                    <label>Teléfono</label>
-                    <input type="text" name="telefono" required>
-                </div>
-
-                <div class="field-group">
-                    <label>Correo Electrónico</label>
-                    <input type="email" name="email" required>
-                </div>
-
-            </div>
-
-            <div class="field-group">
-                <label>Dirección</label>
-                <input type="text" name="direccion" required>
-            </div>
-
-            <div class="field-group">
-                <label>Descripción de la Empresa</label>
-                <textarea name="descripcion_empresa" rows="4"></textarea>
-            </div>
-
-            <div class="form-actions">
-
-                <button type="reset" class="btn-limpiar">
-                    Limpiar
-                </button>
-
-                <button type="submit" class="btn-registrar">
-                    Registrar
-                </button>
-
-            </div>
-
-        </form>
-
     </div>
-
-</div>
 
 </body>
+
 </html>

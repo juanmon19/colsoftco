@@ -11,21 +11,43 @@ body {
 }
 
 /* ===== HEADER ===== */
-.header {
-    background-color: #0A1F44;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    font-size: 29px;
+
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
     font-weight: bold;
+    transition: 0.3s;
+    margin-left: auto;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0A1F44;
+    padding: 0 20px;
+    height: 80px;
     position: relative;
 }
 
-.logo {
+.header-title {
     position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    color: white;
+    font-size: 29px;
+    font-weight: bold;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
 }
 
 .logo img {

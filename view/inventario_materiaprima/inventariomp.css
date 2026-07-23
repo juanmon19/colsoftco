@@ -1,335 +1,363 @@
 * {
-            box-sizing: border-box;
-        }
+    box-sizing: border-box;
+}
 
-        /* ===== GENERAL ===== */
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            font-size: 14px;
-        }
+/* ===== GENERAL ===== */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    font-size: 14px;
+}
 
-        .header {
-            background-color: #0A1F44;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 29px;
-            font-weight: bold;
-            position: relative;
-        }
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.3s;
+    margin-left: auto;
+}
 
-        .logo {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0A1F44;
+    padding: 0 20px;
+    height: 80px;
+    position: relative;
+}
 
-        .logo img {
-            width: 75px;
-            cursor: pointer;
-            display: block;
-        }
+.header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    color: white;
+    font-size: 29px;
+    font-weight: bold;
+}
 
-        /* ===== BOTÓN ===== */
-        .btn {
-            width: 100%;
-            padding: 10px;
-            background: #D4AF37;
-            border: none;
-            color: black;
-            font-size: 14px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+.logo {
+    display: flex;
+    align-items: center;
+}
 
-        .btn:hover {
-            background: white;
-        }
+.logo img {
+    width: 75px;
+    cursor: pointer;
+    display: block;
+}
 
-        /* ===== ERROR ===== */
-        .error {
-            color: red;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 10px;
-        }
+/* ===== BOTÓN ===== */
+.btn {
+    width: 100%;
+    padding: 10px;
+    background: #D4AF37;
+    border: none;
+    color: black;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
 
-        /* ===== NAVBAR / BIENVENIDA ===== */
-        .welcome-bar {
-            background-color: #fff;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
-            font-size: 14px;
-            color: #333;
-        }
+.btn:hover {
+    background: white;
+}
 
-        /* ===== TAB NAV ===== */
-        .tab-nav {
-            padding: 15px 20px 0 20px;
-            background-color: #f4f4f4;
-        }
+/* ===== ERROR ===== */
+.error {
+    color: red;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+}
 
-        .tab-btn {
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-bottom: none;
-            padding: 8px 20px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px 4px 0 0;
-            color: #333;
-        }
+/* ===== NAVBAR / BIENVENIDA ===== */
+.welcome-bar {
+    background-color: #fff;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    color: #333;
+}
 
-        .tab-btn.active {
-            background-color: #0A1F44;
-            color: #fff;
-            border-color: #0A1F44;
-        }
+/* ===== TAB NAV ===== */
+.tab-nav {
+    padding: 15px 20px 0 20px;
+    background-color: #f4f4f4;
+}
 
-        /* ===== CONTENIDO PRINCIPAL ===== */
-        .main-content {
-            padding: 0 20px 30px 20px;
-        }
+.tab-btn {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    color: #333;
+}
 
-        /* ===== TABLA ===== */
-        .table-wrapper {
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 0 4px 4px 4px;
-        }
+.tab-btn.active {
+    background-color: #0A1F44;
+    color: #fff;
+    border-color: #0A1F44;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+/* ===== CONTENIDO PRINCIPAL ===== */
+.main-content {
+    padding: 0 20px 30px 20px;
+}
 
-        table thead tr {
-            background-color: #e8e8e8;
-        }
+/* ===== TABLA ===== */
+.table-wrapper {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0 4px 4px 4px;
+}
 
-        table thead th {
-            padding: 10px 14px;
-            text-align: left;
-            font-weight: bold;
-            color: #222;
-            border-bottom: 1px solid #ccc;
-            font-size: 14px;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        table tbody tr {
-            border-bottom: 1px solid #e0e0e0;
-        }
+table thead tr {
+    background-color: #e8e8e8;
+}
 
-        table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+table thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: bold;
+    color: #222;
+    border-bottom: 1px solid #ccc;
+    font-size: 14px;
+}
 
-        table tbody tr:hover {
-            background-color: #eef3fb;
-        }
+table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+}
 
-        table tbody td {
-            padding: 9px 14px;
-            color: #333;
-            font-size: 14px;
-        }
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
 
-        /* ===== BOTONES ACCIÓN ===== */
-        .action-cell {
-            display: flex;
-            gap: 8px;
-        }
+table tbody tr:hover {
+    background-color: #eef3fb;
+}
 
-        .btn-actualizar,
-        .btn-eliminar {
-            padding: 5px 14px;
-            border: 1px solid #bbb;
-            border-radius: 3px;
-            font-size: 13px;
-            cursor: pointer;
-            background-color: #fff;
-            transition: background 0.15s, color 0.15s;
-        }
+table tbody td {
+    padding: 9px 14px;
+    color: #333;
+    font-size: 14px;
+}
 
-        .btn-actualizar:hover {
-            background-color: #0A1F44;
-            color: #fff;
-            border-color: #0A1F44;
-        }
+/* ===== BOTONES ACCIÓN ===== */
+.action-cell {
+    display: flex;
+    gap: 8px;
+}
 
-        .btn-eliminar:hover {
-            background-color: #c0392b;
-            color: #fff;
-            border-color: #c0392b;
-        }
+.btn-actualizar,
+.btn-eliminar {
+    padding: 5px 14px;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    font-size: 13px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background 0.15s, color 0.15s;
+}
 
-        /* ===== LOGO SVG (placeholder) ===== */
-        .logo-placeholder {
-            width: 70px;
-            height: 70px;
-            background-color: #D4AF37;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-            color: #0A1F44;
-            text-align: center;
-            line-height: 1.2;
-            cursor: pointer;
-            
-        }
+.btn-actualizar:hover {
+    background-color: #0A1F44;
+    color: #fff;
+    border-color: #0A1F44;
+}
 
-        /* ===== TOOLBAR (Add) ===== */
-        .toolbar {
-            display: flex;
-            justify-content: flex-end;
-            padding: 12px 14px;
-            background: #f0f4ff;
-            border-bottom: 1px solid #ddd;
-        }
+.btn-eliminar:hover {
+    background-color: #c0392b;
+    color: #fff;
+    border-color: #c0392b;
+}
 
-        .btn-add {
-            background-color: #0A1F44;
-            color: #fff;
-            border: none;
-            padding: 7px 18px;
-            border-radius: 4px;
-            font-size: 13px;
-            cursor: pointer;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            transition: background 0.15s;
-        }
+/* ===== LOGO SVG (placeholder) ===== */
+.logo-placeholder {
+    width: 70px;
+    height: 70px;
+    background-color: #D4AF37;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: #0A1F44;
+    text-align: center;
+    line-height: 1.2;
+    cursor: pointer;
 
-        .btn-add:hover {
-            background-color: #D4AF37;
-            color: #0A1F44;
-        }
+}
 
-        /* ===== MODAL ===== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-        }
+/* ===== TOOLBAR (Add) ===== */
+.toolbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 14px;
+    background: #f0f4ff;
+    border-bottom: 1px solid #ddd;
+}
 
-        .modal-overlay.active {
-            display: flex;
-        }
+.btn-add {
+    background-color: #0A1F44;
+    color: #fff;
+    border: none;
+    padding: 7px 18px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: background 0.15s;
+}
 
-        .modal {
-            background: #fff;
-            border-radius: 8px;
-            padding: 30px 30px 24px;
-            width: 360px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-        }
+.btn-add:hover {
+    background-color: #D4AF37;
+    color: #0A1F44;
+}
 
-        .modal h3 {
-            margin: 0 0 20px 0;
-            color: #0A1F44;
-            font-size: 16px;
-        }
+/* ===== MODAL ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
 
-        .modal label {
-            display: block;
-            margin-bottom: 4px;
-            font-size: 13px;
-            color: #555;
-        }
+.modal-overlay.active {
+    display: flex;
+}
 
-        .modal input {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-bottom: 14px;
-        }
+.modal {
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px 30px 24px;
+    width: 360px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
 
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 6px;
-        }
+.modal h3 {
+    margin: 0 0 20px 0;
+    color: #0A1F44;
+    font-size: 16px;
+}
 
-        .btn-save {
-            flex: 1;
-            padding: 9px;
-            background: #0A1F44;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+.modal label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: #555;
+}
 
-        .btn-save:hover { background: #D4AF37; color: #0A1F44; }
+.modal input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 14px;
+}
 
-        .btn-cancel {
-            flex: 1;
-            padding: 9px;
-            background: #eee;
-            color: #333;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-        }
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
 
-        .btn-cancel:hover { background: #ddd; }
+.btn-save {
+    flex: 1;
+    padding: 9px;
+    background: #0A1F44;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
 
-        /* ===== CONFIRM MODAL ===== */
-        .confirm-msg {
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 20px;
-        }
+.btn-save:hover {
+    background: #D4AF37;
+    color: #0A1F44;
+}
 
-        .btn-delete-confirm {
-            flex: 1;
-            padding: 9px;
-            background: #c0392b;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+.btn-cancel {
+    flex: 1;
+    padding: 9px;
+    background: #eee;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
 
-        .btn-delete-confirm:hover { background: #922b21; }
+.btn-cancel:hover {
+    background: #ddd;
+}
 
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #0A1F44;
-            color: #fff;
-            padding: 12px 22px;
-            border-radius: 6px;
-            font-size: 13px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s, transform 0.3s;
-            z-index: 200;
-            pointer-events: none;
-        }
+/* ===== CONFIRM MODAL ===== */
+.confirm-msg {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 20px;
+}
 
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+.btn-delete-confirm {
+    flex: 1;
+    padding: 9px;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-delete-confirm:hover {
+    background: #922b21;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #0A1F44;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 200;
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}

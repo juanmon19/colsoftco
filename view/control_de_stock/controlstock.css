@@ -29,6 +29,20 @@ body {
 }
 
 /* ══ HEADER ══ */
+
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.3s;
+    margin-left: auto
+}
+
 header {
   background: var(--blue);
   display: flex;
