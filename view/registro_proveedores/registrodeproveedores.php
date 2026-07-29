@@ -82,50 +82,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2>Registrar Nuevo Proveedor</h2>
         </div>
 
-        <form method="POST">
+        <form method="POST" id="formProveedor">
 
             <div class="grid-form">
 
                 <div class="field-group">
                     <label>Nombre Empresa</label>
-                    <input type="text" name="nombre_empresa" required>
+                    <input type="text" id="nombre_empresa" name="nombre_empresa" required>
                 </div>
 
                 <div class="field-group">
                     <label>NIT</label>
-                    <input type="text" name="nit" required>
+                    <input type="text" id="nit" name="nit" required>
                 </div>
 
                 <div class="field-group">
                     <label>Nombre Contacto</label>
-                    <input type="text" name="contacto_nombre" required>
+                    <input type="text" id="contacto_nombre" name="contacto_nombre" required>
                 </div>
 
                 <div class="field-group">
                     <label>Apellido Contacto</label>
-                    <input type="text" name="contacto_apellido" required>
+                    <input type="text"  id="contacto_apellido" name="contacto_apellido" required>
                 </div>
 
                 <div class="field-group">
                     <label>Teléfono</label>
-                    <input type="text" name="telefono" required>
+                    <input type="text" id="telefono" name="telefono" required>
                 </div>
 
                 <div class="field-group">
                     <label>Correo Electrónico</label>
-                    <input type="email" name="email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
 
             </div>
 
             <div class="field-group">
                 <label>Dirección</label>
-                <input type="text" name="direccion" required>
+                <input type="text" id="direccion" name="direccion" required>
             </div>
 
             <div class="field-group">
                 <label>Descripción de la Empresa</label>
-                <textarea name="descripcion_empresa" rows="4"></textarea>
+                <textarea id="descripcion_empresa" name="descripcion_empresa" rows="4"></textarea>
             </div>
 
             <div class="form-actions">
@@ -145,6 +145,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
 </div>
+<script src="../../public/js/validacionesProveedor.js"></script>
 
+<script>
+
+const formulario = document.getElementById("formProveedor");
+
+formulario.addEventListener("submit", function(e){
+
+    const nombreEmpresa = document.getElementById("nombre_empresa").value;
+    const nit = document.getElementById("nit").value;
+    const nombre = document.getElementById("contacto_nombre").value;
+    const apellido = document.getElementById("contacto_apellido").value;
+    const telefono = document.getElementById("telefono").value;
+    const correo = document.getElementById("email").value;
+    const direccion = document.getElementById("direccion").value;
+    const descripcion = document.getElementById("descripcion_empresa").value;
+
+    if(!expresiones.empresa.test(nombreEmpresa)){
+        alert("Nombre de empresa inválido.");
+        e.preventDefault();
+        return;
+    }
+
+    if(!expresiones.nit.test(nit)){
+        alert("NIT inválido.");
+        e.preventDefault();
+        return;
+    }
+
+    if(!expresiones.nombre.test(nombre)){
+        alert("Nombre del contacto inválido.");
+        e.preventDefault();
+        return;
+    }
+
+    if(!expresiones.apellido.test(apellido)){
+        alert("Apellido del contacto inválido.");
+        e.preventDefault();
+        return;
+    }
+
+    if(!expresiones.telefono.test(telefono)){
+        alert("Teléfono inválido.");
+        e.preventDefault();
+        return;
+    }
+
+    if(!expresiones.correo.test(correo)){
+        alert("Correo inválido.");
+        e.preventDefault();
+        return;
+    }
+
+    if(!expresiones.direccion.test(direccion)){
+        alert("Dirección inválida.");
+        e.preventDefault();
+        return;
+    }
+
+    if(!expresiones.descripcion.test(descripcion)){
+        alert("Descripción inválida.");
+        e.preventDefault();
+        return;
+    }
+
+});
+
+</script>
 </body>
 </html>

@@ -114,7 +114,15 @@ function login(array $credenciales)
         if ($UserName === $credenciales['documento'] or $Email === $credenciales['documento']) {
             //accesos la verificacion del password
             if (password_verify($credenciales['password'], $HashPassword)) {
-                $Rol = $Usuario[0]['rol'];
+
+                // Guardar los datos del usuario en la sesión
+                $_SESSION['rol'] = $Usuario[0]['rol'];
+                $_SESSION['nombre'] = $Usuario[0]['nombre'];
+                $_SESSION['apellido'] = $Usuario[0]['apellido'];
+                $_SESSION['documento'] = $Usuario[0]['documento'];
+                $_SESSION['email'] = $Usuario[0]['email'];
+
+                $Rol = $_SESSION['rol'];
 
                 if ($Rol == 'administrador') {
                     header("location:../view/panel_admin/panel_admin.html");
@@ -123,6 +131,9 @@ function login(array $credenciales)
                 } elseif ($Rol == 'operario') {
                     header("location:../view/panel_operario/panel_operario.html");
                 }
+
+                exit();
+        
             } else {
                 $_SESSION['error'] = 'Error en el password';
                 header("location:../view/login/login.html");

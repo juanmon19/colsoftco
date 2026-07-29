@@ -37,13 +37,19 @@
                 <label for="producto">Producto</label>
                 <div class="select-wrap">
                   <select id="producto" name="producto">
-                    <option value="">-- Seleccione --</option>
-                    <option value="tela">Tela</option>
-                    <option value="hilo">Hilo</option>
-                    <option value="boton">Botón</option>
-                    <option value="cierre">Cierre</option>
-                    <option value="espuma">Espuma</option>
-                    <option value="elastico">Elástico</option>
+                    </option>
+                    <option>Espuma de poliuretano</option>
+                    <option>Tela Jacquard</option>
+                    <option>Resortes Bonell </option>
+                    <option>Espuma </option>
+                    <option>Fieltro aislante </option>
+                    <option>Pegante industrial </option>
+                    <option>Hilo de costura </option>
+                    <option>Espuma viscoelástica </option>
+                    <option>Tela antideslizante </option>
+                    <option>Borde perimetral </option>
+                    <option>Empaque plástico </option>
+                    <option>Tela </option>
                   </select>
                 </div>
               </div>
@@ -127,7 +133,7 @@
     const toast = document.getElementById('toast');
 
     // 2. ESCUCHA DE EVENTOS: Controla el envío del formulario
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', function(e) {
       // Evita el refresco automático de la página al presionar "Registrar"
       e.preventDefault();
 
@@ -137,8 +143,14 @@
       const cantidad = document.getElementById('cantidad').value;
 
       // Validaciones lógicas individuales mediante ventanas JavaScript de alerta
-      if (!producto) { alert('Por favor seleccione un producto.'); return; } // Cancela ejecución si falta producto
-      if (!unidad) { alert('Por favor seleccione la unidad de medida.'); return; } // Cancela si falta unidad
+      if (!producto) {
+        alert('Por favor seleccione un producto.');
+        return;
+      } // Cancela ejecución si falta producto
+      if (!unidad) {
+        alert('Por favor seleccione la unidad de medida.');
+        return;
+      } // Cancela si falta unidad
       if (cantidad === '' || Number(cantidad) < 0) {
         alert('Ingrese una cantidad mínima válida (número mayor o igual a 0).');
         return; // Cancela si la cantidad está vacía o es negativa
@@ -150,7 +162,9 @@
     });
 
     // 3. MÉTODO AUXILIAR: Permite blanquear el formulario desde el botón "Limpiar"
-    function resetForm() { form.reset(); }
+    function resetForm() {
+      form.reset();
+    }
 
     // 4. MÉTODO AUXILIAR: Administra la visibilidad y temporizador del Toast informativo
     function showToast(mensaje) {
@@ -159,7 +173,9 @@
       // Hace visible el bloque flotante cambiando su propiedad display CSS
       toast.style.display = 'block';
       // Configura un temporizador para ocultarlo automáticamente tras 3.5 segundos (3500 ms)
-      setTimeout(function () { toast.style.display = 'none'; }, 3500);
+      setTimeout(function() {
+        toast.style.display = 'none';
+      }, 3500);
     }
   </script>
   <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
