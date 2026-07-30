@@ -1,190 +1,116 @@
 * {
-
     box-sizing: border-box;
-
 }
-
 
 /* ===== GENERAL ===== */
-
 body {
-
     font-family: Arial, Helvetica, sans-serif;
-
     background-color: #f4f4f4;
-
     margin: 0;
-
     font-size: 14px;
-
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Ocupa el espacio libre entre el header y el footer,
+   y centra la caja de login ahí (reemplaza el margin: 120px auto) */
+.login-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
 
 .header {
-
     background-color: #0A1F44;
-
     color: white;
-
     padding: 20px;
-
     text-align: center;
-
     font-size: 29px;
-
     font-weight: bold;
-
     position: relative;
-
 }
-
 
 .logo {
-
     position: absolute;
-
     left: 20px;
-
     top: 50%;
-
     transform: translateY(-50%);
-
 }
-
 
 .logo img {
-
     width: 75px;
-
     cursor: pointer;
-
     margin-top: 10px;
-
 }
-
 
 /* ===== CONTENEDOR LOGIN ===== */
-
 .login-container {
-
     background: #0A1F44;
-
     padding: 50px;
-
     border-radius: 10px;
-
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-
     width: 400px;
-
-
-    margin: 120px auto;
-
 }
-
 
 /* ===== TÍTULO ===== */
-
 .login-container h2 {
-
     color: white;
-
     text-align: center;
-
     margin-bottom: 20px;
-
     font-size: 20px;
-
 }
-
 
 /* ===== INPUTS ===== */
-
 .input-group {
-
     margin-bottom: 15px;
-
 }
-
 
 .input-group label {
-
     color: white;
-
     display: block;
-
     font-size: 14px;
-
     margin-bottom: 5px;
-
 }
-
 
 .input-group input {
-
-    width: 100%;
-    /* Ahora igual que el botón */
-
+    width: 100%; /* Ahora igual que el botón */
     padding: 8px;
-
     border: 1px solid #ccc;
-
     border-radius: 5px;
-
     font-size: 14px;
-
 }
-
 
 /* ===== BOTÓN ===== */
-
 .btn {
-
-    width: 100%;
-    /* Igual ancho */
-
+    width: 100%; /* Igual ancho */
     padding: 10px;
-
     background: #D4AF37;
-
     border: none;
-
     color: black;
-
     font-size: 14px;
-
     border-radius: 5px;
-
     cursor: pointer;
-
-    margin-top: 10px;
-    /* Separación del input */
-
+    margin-top: 10px; /* Separación del input */
 }
-
 
 .btn:hover {
-
     background: white;
-
 }
-
 
 /* ===== ERROR ===== */
-
+/* Se mantiene aunque no aparezca en este login.html: se usa para
+   mostrar mensajes de error dinámicos que devuelve logica.php */
 .error {
-
     color: red;
-
     font-size: 14px;
-
     text-align: center;
-
     margin-top: 10px;
-
 }
-/* ===== ENLACE RECUPERAR CONTRASEÑA ===== */
 
+/* ===== ENLACE RECUPERAR CONTRASEÑA ===== */
 .forgot-container {
     text-align: center;
     margin-top: 20px; /* Separación respecto al botón de ingresar */
@@ -202,6 +128,8 @@ body {
     color: #D4AF37; /* Cambia al dorado de tu botón al pasar el cursor */
     text-decoration: underline; /* Agrega el subrayado solo en el hover */
 }
+
+/* ===== FOOTER ===== */
 footer {
     background: #0D1B3E;
     color: #ffffff;
