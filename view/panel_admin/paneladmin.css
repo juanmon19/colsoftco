@@ -12,6 +12,9 @@ body {
     background-color: var(--gris);
     font-weight: bold;
     font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ===== HEADER ===== */
@@ -97,10 +100,8 @@ body {
 /* ===== LAYOUT ===== */
 .contenedor {
     display: flex;
-    /* Se quitó min-height: 90vh para que el alto se ajuste
-       al contenido real (sidebar y contenido ya igualan su
-       altura entre sí por ser flex), eliminando el espacio
-       vacío antes del footer. */
+    flex: 1; /* rellena el espacio libre entre header y footer,
+                sea cual sea el zoom o el alto de la ventana */
 }
 
 /* ===== SIDEBAR ===== */
@@ -191,6 +192,7 @@ footer {
     width: 100%;
     box-sizing: border-box;
     margin-top: 0;
+    flex-shrink: 0;
 }
 
 .footer-divider {
