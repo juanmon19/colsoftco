@@ -41,13 +41,19 @@
                 <label for="producto">Producto</label>
                 <div class="select-wrap">
                   <select id="producto" name="producto">
-                    <option value="">-- Seleccione --</option>
-                    <option value="tela">Tela</option>
-                    <option value="hilo">Hilo</option>
-                    <option value="boton">Botón</option>
-                    <option value="cierre">Cierre</option>
-                    <option value="espuma">Espuma</option>
-                    <option value="elastico">Elástico</option>
+                    </option>
+                    <option>Espuma de poliuretano</option>
+                    <option>Tela Jacquard</option>
+                    <option>Resortes Bonell </option>
+                    <option>Espuma </option>
+                    <option>Fieltro aislante </option>
+                    <option>Pegante industrial </option>
+                    <option>Hilo de costura </option>
+                    <option>Espuma viscoelástica </option>
+                    <option>Tela antideslizante </option>
+                    <option>Borde perimetral </option>
+                    <option>Empaque plástico </option>
+                    <option>Tela </option>
                   </select>
                 </div>
               </div>
