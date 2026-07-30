@@ -5,57 +5,58 @@ session_start();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reset contraseña</title>
-  <link rel="stylesheet" href="recuperar_contrasena.css">
+  <title>Recuperar contraseña</title>
+  <link href="recuperar_contrasena.css" rel="stylesheet">
 </head>
 
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        <div class="card">
 
-          <div class="card-header">
-            <p>Reset Password</p>
-          </div>
-
-          <form action="../../app/logicamail.php" method="post">
-
-            <div class="card-body">
-
-              <div class="form-group">
-                <label for="email">Escriba su email</label>
-                <input type="email" name="email" id="email">
-              </div>
-
-              <?php
-              if (isset($_SESSION['response'])):
-              ?>
-                <h2><?php echo $_SESSION['response'] ?></h2>
-              <?php
-                unset($_SESSION['response']);
-              endif;
-              ?>
-
-            </div>
-
-            <div class="card-footer">
-              <button name="send">Enviar</button>
-              <a href="../login/login.html">Login</a>
-              <!-- <button type="reset">Cancelar</button> -->
-            </div>
-
-          </form>
-
-        </div>
-      </div>
+  <div class="header">
+    <div class="logo">
+      <a href="../login/login.html">
+        <img src="../../public/imagenes/logo.png" alt="logo">
+      </a>
     </div>
+    Recuperar Contraseña
   </div>
+
+  <div class="login-container">
+
+    <h2>Reset Password</h2>
+
+    <form action="../../app/logicamail.php" method="post">
+
+      <div class="input-group">
+        <label for="email">Escriba su email</label>
+        <input type="email" name="email" id="email">
+      </div>
+
+      <?php
+      if (isset($_SESSION['response'])):
+      ?>
+        <p class="response"><?php echo $_SESSION['response'] ?></p>
+      <?php
+        unset($_SESSION['response']);
+      endif;
+      ?>
+
+      <button name="send" class="btn">Enviar</button>
+
+      <div class="forgot-container">
+        <a href="../login/login.html" class="forgot-link">Login</a>
+      </div>
+
+    </form>
+
+  </div>
+
+<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 </body>
 
 </html>

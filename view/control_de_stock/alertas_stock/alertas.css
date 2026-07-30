@@ -1,0 +1,299 @@
+/* ===== RESET ===== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/* ===== GENERAL ===== */
+
+body{
+    font-family: Arial, sans-serif;
+    background:#eef3ff;
+    min-height:100vh;
+}
+
+/* ===== HEADER ===== */
+
+header{
+    background:#0A1F44;
+    color:white;
+    text-align:center;
+    padding:35px 20px;
+    border-bottom:4px solid #D4AF37;
+}
+
+header h1{
+    margin:0;
+    font-size:48px;
+    font-weight:bold;
+}
+
+/* ===== CONTENEDOR ===== */
+
+.container{
+    width:90%;
+    max-width:1100px;
+    margin:30px auto;
+}
+
+/* ===== BOTÓN VOLVER ===== */
+
+.btn-volver{
+    display:inline-block;
+    background:#0A1F44;
+    color:white;
+    text-decoration:none;
+    padding:12px 22px;
+    border-radius:8px;
+    font-weight:bold;
+    margin-bottom:20px;
+    transition:.3s;
+}
+
+.btn-volver:hover{
+    background:#081935;
+}
+
+/* ===== TABLAS ===== */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+thead th{
+    background:#0A1F44;
+    color:white;
+    padding:16px;
+    text-align:center;
+    font-size:16px;
+}
+
+tbody td{
+    padding:16px;
+    text-align:center;
+    border-bottom:1px solid #e5e7eb;
+    font-size:15px;
+}
+
+tbody tr:hover{
+    background:#f8fafc;
+}
+
+/* ===== ALERTAS ===== */
+
+.alerta{
+    background:#ef4444;
+    color:white;
+    padding:6px 12px;
+    border-radius:6px;
+    font-weight:bold;
+    display:inline-block;
+}
+
+/* ===== ACCIONES ===== */
+
+td:last-child{
+    white-space:nowrap;
+}
+
+/* ===== BOTÓN EDITAR ===== */
+
+.btn-editar{
+    display:inline-block;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    padding:8px 16px;
+    border-radius:6px;
+    font-weight:bold;
+    margin-right:5px;
+    transition:.3s;
+}
+
+.btn-editar:hover{
+    background:#1d4ed8;
+}
+
+/* ===== BOTÓN ELIMINAR ===== */
+
+.btn-eliminar{
+    display:inline-block;
+    background:#dc2626;
+    color:white;
+    text-decoration:none;
+    padding:8px 16px;
+    border-radius:6px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.btn-eliminar:hover{
+    background:#b91c1c;
+}
+
+/* ==================================================
+   FORMULARIOS (EDITAR ALERTA)
+================================================== */
+
+.card{
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+    max-width:700px;
+    margin:auto;
+}
+
+.card-header{
+    background:#0A1F44;
+    color:white;
+    padding:18px 25px;
+    font-size:22px;
+    font-weight:bold;
+    border-bottom:3px solid #D4AF37;
+}
+
+.card-body{
+    padding:30px;
+}
+
+.form-group{
+    margin-bottom:22px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+    color:#0A1F44;
+}
+
+.form-control{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    font-size:15px;
+}
+
+.form-control:focus{
+    outline:none;
+    border-color:#0A1F44;
+    box-shadow:0 0 0 3px rgba(10,31,68,.15);
+}
+
+input[readonly]{
+    background:#f1f5f9;
+}
+
+/* ===== BOTONES FORMULARIO ===== */
+
+.botones{
+    display:flex;
+    justify-content:space-between;
+    margin-top:30px;
+}
+
+.btn{
+    text-decoration:none;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-guardar{
+    background:#0A1F44;
+    color:white;
+}
+
+.btn-guardar:hover{
+    background:#081935;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:768px){
+
+    .container{
+        width:95%;
+    }
+
+    table{
+        display:block;
+        overflow-x:auto;
+    }
+
+    .botones{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .btn{
+        width:100%;
+        text-align:center;
+    }
+
+    header h1{
+        font-size:32px;
+    }
+
+    .card{
+        width:100%;
+    }
+}
+/* ======================================
+   ELIMINAR ALERTA
+====================================== */
+
+.mensaje-eliminar{
+    font-size:18px;
+    text-align:center;
+    color:#334155;
+    margin-bottom:30px;
+    line-height:1.6;
+}
+
+.btn-cancelar{
+    background:#64748b;
+    color:white;
+}
+
+.btn-cancelar:hover{
+    background:#475569;
+}
+
+.botones{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+}
+
+.botones .btn{
+    min-width:140px;
+    text-align:center;
+}
+
+.btn-eliminar{
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-eliminar:hover{
+    background:#b91c1c;
+}

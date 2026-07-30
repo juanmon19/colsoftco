@@ -11,13 +11,13 @@ require '../config/conexion.php';
 if (isset($_POST['login'])) {
     //proceso de login
 
-    if (isset($_POST['usuario']) and isset($_POST['password'])) {
-        $login = $_POST['usuario'];
+    if (isset($_POST['documento']) and isset($_POST['password'])) {
+        $login = $_POST['documento'];
         $Password = $_POST['password'];
 
         login(
             [
-                'usuario' => $login,
+                'documento' => $login,
                 'password' => $Password
             ]
         );
@@ -33,7 +33,9 @@ if (isset($_POST['registro'])) {
     //crear variables para los datos a enviar
 
     $Email = $_POST['email'] ?? '';
-    $Usuario = $_POST['usuario'] ?? '';
+    $Documento = $_POST['documento'] ?? '';
+    $Nombre = $_POST['nombre'] ?? '';
+    $Apellido = $_POST['apellido'] ?? '';
     $Rol = $_POST['rol'] ?? '';
     $Password = $_POST['password'] ?? '';
 
@@ -44,7 +46,9 @@ if (isset($_POST['registro'])) {
 
     $respuesta = saveUser([
         'email' => $Email,
-        'usuario' => $Usuario,
+        'documento' => $Documento,
+        'nombre' => $Nombre,
+        'apellido' => $Apellido,
         'rol' => $Rol,
         'password' => password_hash($Password, PASSWORD_BCRYPT),
 
@@ -56,7 +60,7 @@ if (isset($_POST['registro'])) {
 
     header("location:../view/registro/registro.html");
 }
-
+//function saveUser este metodo es para registrar los usuarios
 function saveUser(array $datos)
 {
     try {
@@ -67,13 +71,15 @@ function saveUser(array $datos)
 
         $Conex->pps = $MiConexion->prepare(
             "INSERT INTO usuarios
-            (email, usuario, rol, password_hash)
+            (email, documento, nombre, apellido, rol, password_hash)
             VALUES
-            (:email, :usuario, :rol, :password)"
+            (:email, :documento, :nombre, :apellido, :rol, :password)"
         );
 
         $Conex->pps->bindParam(":email", $datos['email']);
-        $Conex->pps->bindParam(":usuario", $datos['usuario']);
+        $Conex->pps->bindParam(":documento", $datos['documento']);
+        $Conex->pps->bindParam(":nombre", $datos['nombre']);
+        $Conex->pps->bindParam(":apellido", $datos['apellido']);
         $Conex->pps->bindParam(":rol", $datos['rol']);
         $Conex->pps->bindParam(":password", $datos['password']);
 
@@ -93,7 +99,7 @@ function login(array $credenciales)
     //consultar la base de datos
     $Conex = new Conexion;
 
-    $Usuario = ConsultaUsuario($Conex, ['usuario' => $credenciales['usuario']]);
+    $Usuario = ConsultaUsuario($Conex, ['documento' => $credenciales['documento']]);
 
 
     // print_r(ConsultaUsuario($Conex,['name'=>$credenciales['name'],
@@ -101,14 +107,22 @@ function login(array $credenciales)
 
     if ($Usuario) {
         $UserName = $Usuario[0]['email'];
-        $Email =  $Usuario[0]['usuario'];
+        $Email = $Usuario[0]['documento'];
 
         $HashPassword = $Usuario[0]['password_hash'];
 
-        if ($UserName === $credenciales['usuario'] or $Email === $credenciales['usuario']) {
+        if ($UserName === $credenciales['documento'] or $Email === $credenciales['documento']) {
             //accesos la verificacion del password
             if (password_verify($credenciales['password'], $HashPassword)) {
-                $Rol = $Usuario[0]['rol'];
+
+                // Guardar los datos del usuario en la sesión
+                $_SESSION['rol'] = $Usuario[0]['rol'];
+                $_SESSION['nombre'] = $Usuario[0]['nombre'];
+                $_SESSION['apellido'] = $Usuario[0]['apellido'];
+                $_SESSION['documento'] = $Usuario[0]['documento'];
+                $_SESSION['email'] = $Usuario[0]['email'];
+
+                $Rol = $_SESSION['rol'];
 
                 if ($Rol == 'administrador') {
                     header("location:../view/panel_admin/panel_admin.html");
@@ -117,12 +131,15 @@ function login(array $credenciales)
                 } elseif ($Rol == 'operario') {
                     header("location:../view/panel_operario/panel_operario.html");
                 }
+
+                exit();
+        
             } else {
                 $_SESSION['error'] = 'Error en el password';
                 header("location:../view/login/login.html");
             }
         } else {
-            $_SESSION['error'] = 'Error en el nombre de usuario';
+            $_SESSION['error'] = 'Error en el documento';
             header("location:../view/login/login.html");
         }
     } else {
@@ -136,14 +153,14 @@ function ConsultaUsuario($conexion, array $dataConsulta)
 {
 
     $consulta = "
-      SELECT * FROM usuarios WHERE usuario = :usuario OR email = :email
+      SELECT * FROM usuarios WHERE documento = :documento OR email = :email
     ";
 
     try {
         $conexion->pps = $conexion->getConnection()->prepare($consulta);
 
-        $conexion->pps->bindParam(":usuario", $dataConsulta['usuario']);
-        $conexion->pps->bindParam(":email", $dataConsulta['usuario']);
+        $conexion->pps->bindParam(":documento", $dataConsulta['documento']);
+        $conexion->pps->bindParam(":email", $dataConsulta['documento']);
 
         $conexion->pps->execute();
 

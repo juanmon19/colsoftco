@@ -25,36 +25,56 @@ function navegar(ruta) {
 
 // Mapa de funciones de navegación antiguas a las nuevas rutas
 function mostrar(modulo) {
-    const basePath = typeof Auth !== 'undefined' ? Auth.getBasePath() : "../";
-    
+
     const rutas = {
-        'Proveedores': 'registro Proveedores/index.html',
-        'Registro Proveedor': 'Registro Proveedores/index.html',
-        'Lista de Proveedores': 'Registro Proveedores/index.html',
-        
-        'Materia': 'inventario_MateriaPrima/inventario_materia_prima.html',
-        'Inventario Materia Prima': 'inventario_MateriaPrima/inventario_materia_prima.html',
-        'Registrar Materia Prima': 'Registro de materias primas/registros de materias prima.html',
-        
-        'Productos': 'inventario_ProductosTerminados/inventario_productosterminados.html',
-        'Inventario Productos': 'inventario_ProductosTerminados/inventario_productosterminados.html',
-        'Producto': 'inventario_ProductosTerminados/inventario_productosterminados.html',
-        
-        'Stock': 'control de stock/Control de stock.html',
-        
-        'Informe': 'generar_informe/generar_informe.html',
-        
-        'Verificación': 'lista_verificacion/lista_verificacion.html',
-        'Lista Verificación': 'lista_verificacion/lista_verificacion.html',
-        'Lista de Verificacion': 'lista_verificacion/lista_verificacion.html',
-        'Lista de verificacion': 'lista_verificacion/lista_verificacion.html',
-        'Lista de Verificaciòn': 'lista_verificacion/lista_verificacion.html',
-        
-        'Panel': Auth && Auth.getUser() ? ROLES[Auth.getUser().role].dashboard : 'login/login.html'
+
+        // =========================
+        // PROVEEDORES
+        // =========================
+        'Proveedores': '../lista_proveedores/lista_proveedores.php',
+        'Lista de Proveedores': '../lista_proveedores/lista_proveedores.php',
+        'Registrar Proveedor': 'registro_proveedores/registroproveedores.php',
+
+        // =========================
+        // MATERIAS PRIMAS
+        // =========================
+        'Materia': '../inventario_materiaprima/inventario_materiaprima.php',
+        'Inventario Materia Prima': '../inventario_materiaprima/inventario_materiaprima.php',
+        'Registrar Materia Prima': '../registro_materiaprima/registro_materiaprima.php',
+
+        // =========================
+        // PRODUCTOS
+        // =========================
+        'Productos': '../inventario_productosterminados/inventario_productosterminados.php',
+        'Inventario Productos': '../inventario_productosterminados/inventario_productosterminados.php',
+
+        // =========================
+        // STOCK
+        // =========================
+        'Stock': '../control_de_stock/control_stock.php',
+
+        // =========================
+        // INFORMES
+        // =========================
+        'Informe': '../generar_informe/generar_informe.html',
+
+        // =========================
+        // VERIFICACIÓN
+        // =========================
+        'Verificación': '../lista_verificacion/lista_verificacion.html',
+        'Lista Verificación': '../lista_verificacion/lista_verificacion.html',
+        'Lista de Verificacion': '../lista_verificacion/lista_verificacion.html',
+
+        // =========================
+        // PANELES
+        // =========================
+        'Panel Admin': '../panel_admin/panel_admin.html',
+        'Panel Bodeguero': '../panel_bodeguero/panel_bodeguero.html',
+        'Panel Operario': '../panel_operario/panel_operario.html'
     };
 
     if (rutas[modulo]) {
-        window.location.href = basePath + rutas[modulo];
+        window.location.href = rutas[modulo];
     } else {
         alert("Módulo " + modulo + " en construcción.");
     }

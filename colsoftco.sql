@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-05-2026 a las 03:29:25
+-- Tiempo de generación: 22-07-2026 a las 20:47:14
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -47,6 +47,23 @@ CREATE TABLE `materias_primas` (
   `id_proveedor` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `materias_primas`
+--
+
+INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`, `stock_minimo`, `id_unidad`, `id_proveedor`) VALUES
+(1, 'Espuma de poliuretano', 50.00, 0.00, 1, 1),
+(2, 'Tela Jacquard', 300.00, 50.00, 2, 2),
+(3, 'Resortes Bonnell', 1200.00, 300.00, 3, 3),
+(4, 'Fieltro aislante', 250.00, 50.00, 2, 1),
+(5, 'Pegante industrial', 100.00, 20.00, 4, 4),
+(6, 'Hilo de costura', 80.00, 15.00, 3, 2),
+(7, 'Espuma viscoelastica', 60.00, 30.00, 1, 1),
+(8, 'Tela antideslizante', 200.00, 40.00, 2, 2),
+(9, 'Borde perimetral', 180.00, 30.00, 2, 3),
+(10, 'Empaque plastico', 400.00, 80.00, 2, 4),
+(11, 'Tela ', 100.00, 20.00, 2, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -56,8 +73,19 @@ CREATE TABLE `materias_primas` (
 CREATE TABLE `modelos_colchon` (
   `id_modelo` int(11) NOT NULL,
   `nombre_modelo` varchar(80) NOT NULL,
-  `descripcion` text DEFAULT NULL
+  `descripcion` text DEFAULT NULL,
+  `serial` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `modelos_colchon`
+--
+
+INSERT INTO `modelos_colchon` (`id_modelo`, `nombre_modelo`, `descripcion`, `serial`) VALUES
+(1, 'Sueño Plus', 'Colchón de espuma de alta calidad', 'COL-0001'),
+(2, 'Descanso Real', 'Colchón ortopédico de firmeza media', 'COL-0002'),
+(3, 'Confort Total', 'Colchón con espuma viscoelástica', 'COL-0003'),
+(4, 'Premium Gold', 'Colchón de lujo con doble acolchado', 'COL-0004');
 
 -- --------------------------------------------------------
 
@@ -143,11 +171,25 @@ CREATE TABLE `pedidos_proveedor` (
 CREATE TABLE `proveedores` (
   `id_proveedor` int(11) NOT NULL,
   `nombre_empresa` varchar(80) NOT NULL,
+  `nit` varchar(20) NOT NULL,
+  `direccion` varchar(255) NOT NULL,
+  `descripcion_empresa` text DEFAULT NULL,
   `contacto_nombre` varchar(80) NOT NULL,
   `contacto_apellido` varchar(80) NOT NULL,
   `telefono` varchar(10) DEFAULT NULL,
   `email` varchar(70) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `proveedores`
+--
+
+INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit`, `direccion`, `descripcion_empresa`, `contacto_nombre`, `contacto_apellido`, `telefono`, `email`) VALUES
+(1, 'Espumas Colombia SAS', '900123456-1', 'Bogotá D.C.', 'Fabricación y comercialización de espumas para colchones', 'Carlos', 'Ramirez', '3101111111', 'ventas@espumascolombia.com'),
+(2, 'Textiles Andinos SAS', '800234567-2', 'Medellín, Antioquia', 'Producción de textiles para la industria colchonera', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com'),
+(3, 'Resortes Nacionales SAS', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com'),
+(4, 'Insumos Industriales SAS', '900456789-4', 'Barranquilla, Atlántico', 'Distribución de insumos industriales', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com'),
+(5, 'Espumas y Colchones del Norte S.A.S.', '901456789-3', 'Carrera 15 # 45-20, Bogotá, Colombia', 'Proveedor especializado en espuma de poliuretano, telas para colchonería, resortes y materias primas para la fabricación de colchones y muebles.', 'Carlos', 'Ramírez', '3204567890', 'compras@espumasnorte.com');
 
 -- --------------------------------------------------------
 
@@ -174,6 +216,16 @@ CREATE TABLE `unidades_medida` (
   `nombre_unidad` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `unidades_medida`
+--
+
+INSERT INTO `unidades_medida` (`id_unidad`, `sigla`, `nombre_unidad`) VALUES
+(1, 'KG', 'Kilogramos'),
+(2, 'MT', 'Metros'),
+(3, 'UND', 'Unidades'),
+(4, 'LT', 'Litros');
+
 -- --------------------------------------------------------
 
 --
@@ -183,7 +235,9 @@ CREATE TABLE `unidades_medida` (
 CREATE TABLE `usuarios` (
   `id_usuario` int(11) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `usuario` varchar(10) NOT NULL,
+  `documento` varchar(15) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
+  `apellido` varchar(30) NOT NULL,
   `rol` enum('administrador','bodeguero','operario','') NOT NULL,
   `password_hash` varchar(60) NOT NULL,
   `request_password` enum('0','1') NOT NULL DEFAULT '0',
@@ -195,13 +249,11 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `email`, `usuario`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
-(1, 'nicolas@gmail.com', 'nick', 'administrador', '$2y$10$VG.AmgQTyyN/BBO9iz4ZBee7ZScquAr97.kyTUqVLaDWbUkpRiYpG', '0', NULL, NULL),
-(2, 'jafet@gmail.com', 'jafet', 'operario', '$2y$10$2GdTGehHAW5OqFifgIWRoOY3WlAn.mwDyBgeXwxzk/.7N.19UhQ9K', '0', NULL, NULL),
-(3, 'jota@gmail.com', 'jota', 'bodeguero', '$2y$10$cdFkseTtjLGvt4wK4RMbLePv5nujQqSr9KGcHD/T6BXt7nh9XeQHq', '0', NULL, NULL),
-(4, 'diego', 'diego@gmai', 'bodeguero', '$2y$10$87mBCwY2GurNMupk.fhoduGRKBdV1Z9HLsAL4CxKbbvIU.tEtGhAa', '0', NULL, NULL),
-(5, 'san@gmail.com', 'san', 'bodeguero', '$2y$10$gaNlBZl/I.ZECdCTQBSVsOQXVXodk0Zwbagmeej7guiB5CVrGxSUy', '0', NULL, NULL),
-(6, 'nicolaspolo096@gmail.com', 'nicolas', 'administrador', '$2y$10$65BTTfYjuxOlo3nJkqjrUOYD5uqe5kWEqcti1hdl0eBfMeR6O9i2K', '1', 'e90c45c73c2ae80366fc9bac16d46604595ee6bc4aaa6b8127e53240ada1690f', '1779931951');
+INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
+(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'administrador', '$2y$10$AR4/.AW21G2OPDJ0ZoffzOcnvadCc1dy.TbiTnKPWQTS3qssxcm5u', '1', '54444dcae0d4ab3e9e2a49435c415c683f6538ed8cdf9e0b91ca4a5abaf82f5e', '1782005773'),
+(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'operario', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
+(10, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
+(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
 
 --
 -- Índices para tablas volcadas
@@ -225,7 +277,8 @@ ALTER TABLE `materias_primas`
 -- Indices de la tabla `modelos_colchon`
 --
 ALTER TABLE `modelos_colchon`
-  ADD PRIMARY KEY (`id_modelo`);
+  ADD PRIMARY KEY (`id_modelo`),
+  ADD UNIQUE KEY `serial` (`serial`);
 
 --
 -- Indices de la tabla `movimientos_inventario`
@@ -277,7 +330,8 @@ ALTER TABLE `unidades_medida`
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id_usuario`);
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `documento` (`documento`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -293,13 +347,13 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `materias_primas`
 --
 ALTER TABLE `materias_primas`
-  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `modelos_colchon`
 --
 ALTER TABLE `modelos_colchon`
-  MODIFY `id_modelo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_modelo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `movimientos_inventario`
@@ -323,7 +377,7 @@ ALTER TABLE `pedidos_proveedor`
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `receta_colchon`
@@ -335,13 +389,13 @@ ALTER TABLE `receta_colchon`
 -- AUTO_INCREMENT de la tabla `unidades_medida`
 --
 ALTER TABLE `unidades_medida`
-  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Restricciones para tablas volcadas
