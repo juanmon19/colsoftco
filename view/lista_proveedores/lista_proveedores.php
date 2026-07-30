@@ -27,6 +27,11 @@ $proveedores = $logica->getProveedores();
         <a class="header-title">
             Lista de Proveedores
         </a>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
+
     </header>
 
     <main class="content">
@@ -110,7 +115,7 @@ $proveedores = $logica->getProveedores();
                                 <?php
                                 echo htmlspecialchars(
                                     $proveedor['contacto_nombre'] . ' ' .
-                                    $proveedor['contacto_apellido']
+                                        $proveedor['contacto_apellido']
                                 );
                                 ?>
                             </p>
@@ -176,7 +181,6 @@ $proveedores = $logica->getProveedores();
     </main>
 
     <script>
-
         function editarProveedor(id) {
 
             window.location.href =
@@ -185,13 +189,13 @@ $proveedores = $logica->getProveedores();
 
         function eliminarProveedor(id) {
 
-    window.location.href =
-        "../registro_proveedores/eliminar_proveedor.php?id=" + id;
-}
+            window.location.href =
+                "../registro_proveedores/eliminar_proveedor.php?id=" + id;
+        }
 
         document.querySelectorAll('.tab').forEach(tab => {
 
-            tab.addEventListener('click', function () {
+            tab.addEventListener('click', function() {
 
                 document.querySelectorAll('.tab')
                     .forEach(t => t.classList.remove('active'));
