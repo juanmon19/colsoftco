@@ -338,12 +338,12 @@ input:focus, select:focus {
 .logo {
     position: absolute;
     left: 20px;
-    top: 50%;
+    top: 52%;
     transform: translateY(-50%);
 }
 
 .logo img{
-    width: 75px;
+    width: 60px;
     cursor: pointer;
     margin-top: 10px;
 }
@@ -353,8 +353,8 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 28px;
-    height: 66px;
+    padding: 0px 20px;
+    height: 88px;
     border-bottom: 3px solid #d4af37;
     position: sticky;
     top: 0;
