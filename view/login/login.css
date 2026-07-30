@@ -202,3 +202,89 @@ body {
     color: #D4AF37; /* Cambia al dorado de tu botón al pasar el cursor */
     text-decoration: underline; /* Agrega el subrayado solo en el hover */
 }
+footer {
+    background: #0D1B3E;
+    color: #ffffff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+}
+
+.footer-divider {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #C9A227, #E8C84A, #C9A227);
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 1.5rem 3rem 1.2rem;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+}
+
+.footer-brand-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #C9A227;
+    letter-spacing: 2px;
+    margin: 0 0 4px;
+}
+
+.footer-brand-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+}
+
+.footer-brand-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.6;
+    max-width: 280px;
+    margin: 0;
+}
+
+.footer-col-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #C9A227;
+    border-bottom: 2px solid #C9A227;
+    display: inline-block;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 3rem;
+    background: rgba(0, 0, 0, 0.25);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.footer-bottom span {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.footer-bottom strong {
+    color: #C9A227;
+}
