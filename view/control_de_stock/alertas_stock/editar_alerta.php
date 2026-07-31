@@ -8,8 +8,7 @@ $id = $_GET['id'];
 
 $material = $logica->obtenerMateriaPorId($id);
 
-if($_SERVER['REQUEST_METHOD']=="POST")
-{
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $logica->actualizarStockMinimo(
         $id,
         $_POST['stock_minimo']
@@ -23,68 +22,71 @@ if($_SERVER['REQUEST_METHOD']=="POST")
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Editar Alerta</title>
 
-<link rel="stylesheet" href="alertas.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Alerta</title>
+
+    <link rel="stylesheet" href="alertas.css">
 </head>
+
 <body>
 
-<header>
-    <h1>Editar Stock Mínimo</h1>
-</header>
+    <header>
+        <h1>Editar Stock Mínimo</h1>
+    </header>
 
-<div class="container">
+    <div class="container">
 
-    <div class="card">
+        <div class="card">
 
-        <div class="card-header">
-            Actualizar Alerta
-        </div>
+            <div class="card-header">
+                Actualizar Alerta
+            </div>
 
-        <div class="card-body">
+            <div class="card-body">
 
-            <form method="POST">
+                <form method="POST">
 
-                <div class="form-group">
-                    <label>Material</label>
-                    <input type="text"
-                           class="form-control"
-                           value="<?= $material['nombre_material'] ?>"
-                           readonly>
-                </div>
+                    <div class="form-group">
+                        <label>Material</label>
+                        <input type="text"
+                            class="form-control"
+                            value="<?= $material['nombre_material'] ?>"
+                            readonly>
+                    </div>
 
-                <div class="form-group">
-                    <label>Stock Mínimo</label>
-                    <input type="number"
-                           name="stock_minimo"
-                           class="form-control"
-                           value="<?= $material['stock_minimo'] ?>"
-                           required>
-                </div>
+                    <div class="form-group">
+                        <label>Stock Mínimo</label>
+                        <input type="number"
+                            name="stock_minimo"
+                            class="form-control"
+                            value="<?= $material['stock_minimo'] ?>"
+                            required>
+                    </div>
 
-                <div class="botones">
+                    <div class="botones">
 
-                    <a href="lista_alertas.php"
-                       class="btn btn-volver">
-                        ← Volver
-                    </a>
+                        <a href="lista_alertas.php"
+                            class="btn btn-volver">
+                            ← Volver
+                        </a>
 
-                    <button type="submit"
+                        <button type="submit"
                             class="btn btn-guardar">
-                        Guardar Cambios
-                    </button>
+                            Guardar Cambios
+                        </button>
 
-                </div>
+                    </div>
 
-            </form>
+                </form>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
 </body>
+
 </html>
