@@ -33,11 +33,10 @@ header h1 {
     transform: translateX(-50%);
 }
 
-.contenedor-principal {
-    max-width: 900px;
-    margin: 25px auto;
-    flex: 1;
-    width: 100%;
+.contenedor-principal{
+    max-width: 600px;
+    width: 70%;
+    margin: 10px auto;
 }
 
 .acciones-superior {
@@ -54,7 +53,7 @@ header h1 {
 }
 
 .btn-volver:hover {
-    opacity: .9;
+    opacity: .1;
 }
 
 .card-formulario {
@@ -85,19 +84,19 @@ header h1 {
 }
 
 form {
-    padding: 30px;
+    padding: 20px;
 }
 
 .grid-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 10px;
 }
 
 .field-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .field-group label {
