@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-07-2026 a las 20:47:14
+-- Tiempo de generación: 01-08-2026 a las 06:11:22
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.1.25
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -85,7 +85,12 @@ INSERT INTO `modelos_colchon` (`id_modelo`, `nombre_modelo`, `descripcion`, `ser
 (1, 'Sueño Plus', 'Colchón de espuma de alta calidad', 'COL-0001'),
 (2, 'Descanso Real', 'Colchón ortopédico de firmeza media', 'COL-0002'),
 (3, 'Confort Total', 'Colchón con espuma viscoelástica', 'COL-0003'),
-(4, 'Premium Gold', 'Colchón de lujo con doble acolchado', 'COL-0004');
+(4, 'Premium Gold', 'Colchón de lujo con doble acolchado', 'COL-0004'),
+(5, 'Sencillo', NULL, ''),
+(8, 'Semidoble', NULL, 'MOD-SEMIDOBLE'),
+(9, 'Doble', NULL, 'MOD-DOBLE'),
+(10, 'Queen', NULL, 'MOD-QUEEN'),
+(11, 'King', NULL, 'MOD-KING');
 
 -- --------------------------------------------------------
 
@@ -204,6 +209,113 @@ CREATE TABLE `receta_colchon` (
   `cantidad_requerida` decimal(12,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `receta_colchon`
+--
+
+INSERT INTO `receta_colchon` (`id_receta`, `id_modelo`, `id_material`, `cantidad_requerida`) VALUES
+(1, 5, 1, 15.00),
+(2, 5, 2, 5.00),
+(3, 5, 5, 1.00),
+(4, 8, 1, 18.00),
+(5, 8, 2, 6.00),
+(6, 8, 5, 1.10),
+(7, 9, 1, 21.00),
+(8, 9, 2, 7.00),
+(9, 9, 5, 1.30),
+(10, 10, 1, 25.00),
+(11, 10, 2, 8.00),
+(12, 10, 5, 1.50),
+(13, 11, 1, 30.00),
+(14, 11, 2, 9.50),
+(15, 11, 5, 1.80),
+(16, 1, 1, 20.00),
+(17, 1, 2, 6.50),
+(18, 1, 3, 150.00),
+(19, 1, 4, 3.80),
+(20, 1, 5, 1.30),
+(21, 1, 6, 0.45),
+(22, 1, 8, 3.20),
+(23, 1, 9, 9.50),
+(24, 1, 10, 1.00),
+(25, 2, 1, 26.00),
+(26, 2, 2, 8.50),
+(27, 2, 3, 190.00),
+(28, 2, 4, 5.20),
+(29, 2, 5, 1.80),
+(30, 2, 6, 0.65),
+(31, 2, 7, 4.00),
+(32, 2, 8, 4.20),
+(33, 2, 9, 11.20),
+(34, 2, 10, 1.00),
+(35, 3, 1, 23.00),
+(36, 3, 2, 7.50),
+(37, 3, 3, 170.00),
+(38, 3, 4, 4.50),
+(39, 3, 5, 1.60),
+(40, 3, 6, 0.55),
+(41, 3, 7, 2.00),
+(42, 3, 8, 3.80),
+(43, 3, 9, 10.50),
+(44, 3, 10, 1.00),
+(45, 4, 1, 32.00),
+(46, 4, 2, 10.00),
+(47, 4, 3, 230.00),
+(48, 4, 4, 6.50),
+(49, 4, 5, 2.20),
+(50, 4, 6, 0.80),
+(51, 4, 7, 8.00),
+(52, 4, 8, 5.50),
+(53, 4, 9, 12.50),
+(54, 4, 10, 1.00),
+(55, 5, 1, 15.00),
+(56, 5, 2, 5.00),
+(57, 5, 3, 120.00),
+(58, 5, 4, 3.00),
+(59, 5, 5, 1.00),
+(60, 5, 6, 0.30),
+(61, 5, 8, 2.50),
+(62, 5, 9, 8.00),
+(63, 5, 10, 1.00),
+(64, 8, 1, 18.00),
+(65, 8, 2, 6.00),
+(66, 8, 3, 140.00),
+(67, 8, 4, 3.50),
+(68, 8, 5, 1.20),
+(69, 8, 6, 0.40),
+(70, 8, 8, 3.00),
+(71, 8, 9, 9.00),
+(72, 8, 10, 1.00),
+(73, 9, 1, 22.00),
+(74, 9, 2, 7.00),
+(75, 9, 3, 160.00),
+(76, 9, 4, 4.00),
+(77, 9, 5, 1.50),
+(78, 9, 6, 0.50),
+(79, 9, 8, 3.50),
+(80, 9, 9, 10.00),
+(81, 9, 10, 1.00),
+(82, 10, 1, 25.00),
+(83, 10, 2, 8.00),
+(84, 10, 3, 180.00),
+(85, 10, 4, 5.00),
+(86, 10, 5, 1.70),
+(87, 10, 6, 0.60),
+(88, 10, 7, 3.00),
+(89, 10, 8, 4.00),
+(90, 10, 9, 11.00),
+(91, 10, 10, 1.00),
+(92, 11, 1, 30.00),
+(93, 11, 2, 9.00),
+(94, 11, 3, 210.00),
+(95, 11, 4, 6.00),
+(96, 11, 5, 2.00),
+(97, 11, 6, 0.70),
+(98, 11, 7, 5.00),
+(99, 11, 8, 5.00),
+(100, 11, 9, 12.00),
+(101, 11, 10, 1.00);
+
 -- --------------------------------------------------------
 
 --
@@ -250,7 +362,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
-(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'administrador', '$2y$10$AR4/.AW21G2OPDJ0ZoffzOcnvadCc1dy.TbiTnKPWQTS3qssxcm5u', '1', '54444dcae0d4ab3e9e2a49435c415c683f6538ed8cdf9e0b91ca4a5abaf82f5e', '1782005773'),
+(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'administrador', '$2y$10$WIOrMUGxtSwEkYs4M0GgOuVfDrb9x6e4P7uVC6hvp8GxRE3oHV2ue', '1', '189510a696b40e8fe8fad52f932f321cb629de31456b124461fc2fc44fa6f3f1', '1785468187'),
 (8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'operario', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
 (10, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
 (14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
@@ -353,7 +465,7 @@ ALTER TABLE `materias_primas`
 -- AUTO_INCREMENT de la tabla `modelos_colchon`
 --
 ALTER TABLE `modelos_colchon`
-  MODIFY `id_modelo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_modelo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `movimientos_inventario`
@@ -383,7 +495,7 @@ ALTER TABLE `proveedores`
 -- AUTO_INCREMENT de la tabla `receta_colchon`
 --
 ALTER TABLE `receta_colchon`
-  MODIFY `id_receta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_receta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT de la tabla `unidades_medida`

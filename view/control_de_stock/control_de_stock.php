@@ -95,7 +95,6 @@
               </div>
             </div>
           </form>
-          </form>
 
           <div class="acciones-stock">
 
@@ -122,8 +121,35 @@
     </div>
   </div>
 
-  </div>
-  </div>
+  <footer>
+    <div class="footer-divider"></div>
+
+    <div class="footer-top">
+
+      <div>
+        <p class="footer-brand-name">COLSOFTCO</p>
+        <p class="footer-brand-sub">Sistema de Gestión</p>
+        <p class="footer-brand-desc">
+          Sistema de gestión y administración de materias primas para Max&Flex.
+          Eficiencia en inventarios y movimientos empresariales.
+        </p>
+      </div>
+
+      <div>
+        <p class="footer-col-title">Contacto</p>
+        <div class="footer-contact-item">📍 Bogotá, Colombia</div>
+        <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
+        <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
+        <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2025 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+      <span>Desarrollado por <strong>Equipo SENA</strong></span>
+    </div>
+  </footer>
 
   <div class="toast" id="toast"></div>
 

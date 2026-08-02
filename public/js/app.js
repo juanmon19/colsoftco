@@ -1,4 +1,3 @@
-
 // ✅ AGREGA ESTO — bloquea el bfcache del navegador
 window.addEventListener('pageshow', function(e) {
     if (e.persisted) { // la página viene del caché del botón atrás
@@ -56,14 +55,14 @@ function mostrar(modulo) {
         // =========================
         // INFORMES
         // =========================
-        'Informe': '../generar_informe/generar_informe.html',
+        'Informe': '../generar_informe/generar_informe.php',
 
         // =========================
         // VERIFICACIÓN
         // =========================
-        'Verificación': '../lista_verificacion/lista_verificacion.html',
-        'Lista Verificación': '../lista_verificacion/lista_verificacion.html',
-        'Lista de Verificacion': '../lista_verificacion/lista_verificacion.html',
+        'Verificación': '../lista_verificacion/lista_verificacion.php',
+        'Lista Verificación': '../lista_verificacion/lista_verificacion.php',
+        'Lista de Verificacion': '../lista_verificacion/lista_verificacion.php',
 
         // =========================
         // PANELES
