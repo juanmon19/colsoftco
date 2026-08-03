@@ -26,6 +26,10 @@
       <h1>Registro de Productos terminados</h1>
       <div class="title-underline"></div>
     </div>
+
+      <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+          Cerrar sesión
+      </button>
   </header>
 
   <!-- ── BODY ── -->

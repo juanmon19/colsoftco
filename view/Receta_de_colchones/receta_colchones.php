@@ -26,6 +26,10 @@ $modelos = $dbConn->query(
             <img src="../../public/imagenes/logo.png" alt="logo">
         </a>
         <span class="header-title">Receta Colchones</span>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
     </header>
 
 

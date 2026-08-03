@@ -15,33 +15,53 @@ body{
    HEADER
 ========================= */
 
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.3s;
+    margin-left: auto;
+}
+
 .header {
-    background: #0A1F44;
-    padding: 15px 30px;
-    position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    background-color: #0A1F44;
+    padding: 0 20px;
+    height: 80px;
+    position: relative;
 }
 
 .header .logo {
-    position: absolute;
-    left: 20px;
+    display: flex;
+    align-items: center;
 }
 
 .header .logo img {
     width: 70px;
     height: 70px;
     border-radius: 50%;
+    border: 2px solid #d4af37;
     background: white;
 }
 
 .header h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
     color: white;
     font-size: 26px;
-    margin: 0;
     font-weight: bold;
+    white-space: nowrap;
 }
+
 .container{
     width: 70%;
     max-width: 1100px;

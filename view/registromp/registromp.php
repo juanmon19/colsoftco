@@ -71,6 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h1>Registro de Materias Primas</h1>
             <div class="title-underline"></div>
         </div>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
+        
     </header>
 
     <div class="page-body">

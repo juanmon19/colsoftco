@@ -9,17 +9,31 @@ body {
     flex-direction: column;
 }
 
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.3s;
+    margin-left: auto;
+    margin-top: 0px;
+}
+
 header {
-    background-color: #0A1F44;
+    background: #0A1F44;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0 28px;
-    height: 66px;
+    height: 70px;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 12px rgba(11, 61, 145, .35);
+    color: white;
 }
 
 .logo {
@@ -36,7 +50,7 @@ header {
 .header-title {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
-    font-weight: 900;
+    font-weight: bold;
     color: white;
     text-transform: uppercase;
     text-shadow: 0 2px 10px rgba(0, 0, 0, .3);

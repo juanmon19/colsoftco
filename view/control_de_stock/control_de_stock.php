@@ -17,6 +17,10 @@
 
     <span class="header-title">Control de Stock</span>
 
+    <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+      Cerrar sesión
+    </button>
+
   </header>
 
   <div class="page-body">

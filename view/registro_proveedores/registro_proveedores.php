@@ -58,6 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </a>
 
         <h1>REGISTRO DE PROVEEDORES</h1>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
     </header>
 
     <div class="contenedor-principal">

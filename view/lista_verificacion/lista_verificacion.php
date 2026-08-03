@@ -18,6 +18,11 @@
       <img src="../../public/imagenes/logo.png" alt="logo">
     </a>
     <div class="header-title">Lista de Verificación</div>
+
+    <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+      Cerrar sesión
+    </button>
+
   </header>
 
   <!-- CONTENIDO PRINCIPAL -->

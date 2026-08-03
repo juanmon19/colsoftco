@@ -38,8 +38,12 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <img src="../../public/imagenes/logo.png" alt="logo">
             </a>
     
-
         <h1>INVENTARIO MATERIAS PRIMAS</h1>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
+        
     </header>
 
 

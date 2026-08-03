@@ -14,8 +14,12 @@
             <a class="logo" href="../../app/ir_panel.php">
                 <img src="../../public/imagenes/logo.png" alt="logo" />
             </a>
-            
-            PRODUCTOS TERMINADOS
+        <div class="header-title"> PRODUCTOS TERMINADOS </div>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
+
         </div>
 
         <div class="page-title-bar">

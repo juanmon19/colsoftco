@@ -189,6 +189,11 @@
             <h1>Informes</h1>
             <div class="title-underline"></div>
         </div>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
+        
     </header>
 
     <div class="contenido" style="margin: 0 auto; max-width: 1100px; width: 100%; padding: 0 16px;">
