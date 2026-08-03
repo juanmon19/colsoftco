@@ -51,275 +51,274 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!doctype html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>REGISTRO DE MATERIAS PRIMAS</title>
-        <link href="registromp.css" rel="stylesheet" />
-    </head>
 
-    <body>
-        <header>
-            <div class="logo">
-                <a href="../panel_admin/panel_admin.html">
-                    <img src="../../public/imagenes/logo.png" alt="logo" />
-                </a>
-            </div>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro Materias Primas</title>
+    <link href="registromp.css" rel="stylesheet" />
+</head>
 
-            <div class="header-title">
-                <h1>Registro de Materias Primas</h1>
-                <div class="title-underline"></div>
-            </div>
-        </header>
-
-        <div class="page-body">
-            <main
-                class="content"
-                style="margin: 0 auto; max-width: 1000px; width: 100%"
-            >
-                <div class="form-card">
-                    <div class="form-header">
-                        <span class="form-header-bar"></span>
-                        Registra Producto
-                    </div>
-
-                    <div class="form-body">
-                        <form id="regForm">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="producto">Producto</label>
-                                    <div class="select-wrap">
-                                        <select id="unidad">
-                                            <option value="">
-                                                -- Seleccione --
-                                            </option>
-                                            <option>
-                                                Espuma de poliuretano
-                                            </option>
-                                            <option>Tela Jacquard</option>
-                                            <option>Resortes Bonell</option>
-                                            <option>Espuma</option>
-                                            <option>Fieltro aislante</option>
-                                            <option>Pegante industrial</option>                    
-                                            <option>Hilo de costura</option>
-                                            <option>Espuma viscoelástica</option>
-                                            <option>Tela antideslizante</option>
-                                            <option>Borde perimetral</option>
-                                            <option>Empaque plástico</option>
-                                            <option>Tela</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="unidad">Unidad de medida</label>
-
-                                    <div class="select-wrap">
-                                        <select id="unidad">
-                                            <option value="">
-                                                -- Seleccione --
-                                            </option>
-                                            <option>Metro (M)</option>
-                                            <option>Kilogramo (Kg)</option>
-                                            <option>Unidad (Und)</option>
-                                            <option>Litro (L)</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="cantidad">Cantidad</label>
-
-                                    <input
-                                        type="number"
-                                        id="cantidad"
-                                        min="0"
-                                        placeholder="Ingrese la cantidad"
-                                    />
-                                </div>
-
-                                <div class="form-group full">
-                            <label>Proveedor</label>
-
-                            <select name="id_proveedor" required>
-
-                                <option value="">Seleccione</option>
-
-                                <?php foreach ($proveedores as $proveedor): ?>
-
-                                    <option value="<?= $proveedor['id_proveedor'] ?>">
-
-                                        <?= $proveedor['nombre_empresa'] ?>
-                                        - <?= $proveedor['descripcion_empresa'] ?>
-
-                                    </option>
-
-                                <?php endforeach; ?>
-
-                            </select>
-
-                        </div>
-                                </div>
-
-                                <hr class="form-divider" />
-
-                                <div class="form-actions">
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline"
-                                        onclick="limpiar()"
-                                    >
-                                        Limpiar
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        class="btn btn-primary"
-                                        onclick="registrar()"
-                                    >
-                                        Registrar
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </main>
+<body>
+    <header>
+        <div class="logo">
+            <a class="logo" href="../../app/ir_panel.php">
+                <img src="../../public/imagenes/logo.png" alt="logo">
+            </a>
         </div>
 
-        <footer>
-            <div class="footer-divider"></div>
+        <div class="header-title">
+            <h1>Registro de Materias Primas</h1>
+            <div class="title-underline"></div>
+        </div>
+    </header>
 
-            <div class="footer-top">
-
-                <div>
-                    <p class="footer-brand-name">COLSOFTCO</p>
-                    <p class="footer-brand-sub">Sistema de Gestión</p>
-                    <p class="footer-brand-desc">
-                        Sistema de gestión y administración de materias primas para Max&Flex. 
-                        Eficiencia en inventarios y movimientos empresariales.
-                    </p>
+    <div class="page-body">
+        <main
+            class="content"
+            style="margin: 0 auto; max-width: 1000px; width: 100%">
+            <div class="form-card">
+                <div class="form-header">
+                    <span class="form-header-bar"></span>
+                    Registra Producto
                 </div>
 
-                <div>
-                    <p class="footer-col-title">Contacto</p>
-                    <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                    <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                    <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
-                    <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
+                <div class="form-body">
+                    <form id="regForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="producto">Producto</label>
+                                <div class="select-wrap">
+                                    <select id="unidad">
+                                        <option value="">
+                                            -- Seleccione --
+                                        </option>
+                                        <option>
+                                            Espuma de poliuretano
+                                        </option>
+                                        <option>Tela Jacquard</option>
+                                        <option>Resortes Bonell</option>
+                                        <option>Espuma</option>
+                                        <option>Fieltro aislante</option>
+                                        <option>Pegante industrial</option>
+                                        <option>Hilo de costura</option>
+                                        <option>Espuma viscoelástica</option>
+                                        <option>Tela antideslizante</option>
+                                        <option>Borde perimetral</option>
+                                        <option>Empaque plástico</option>
+                                        <option>Tela</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="unidad">Unidad de medida</label>
+
+                                <div class="select-wrap">
+                                    <select id="unidad">
+                                        <option value="">
+                                            -- Seleccione --
+                                        </option>
+                                        <option>Metro (M)</option>
+                                        <option>Kilogramo (Kg)</option>
+                                        <option>Unidad (Und)</option>
+                                        <option>Litro (L)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cantidad">Cantidad</label>
+
+                                <input
+                                    type="number"
+                                    id="cantidad"
+                                    min="0"
+                                    placeholder="Ingrese la cantidad" />
+                            </div>
+
+                            <div class="form-group full">
+                                <label>Proveedor</label>
+
+                                <select name="id_proveedor" required>
+
+                                    <option value="">Seleccione</option>
+
+                                    <?php foreach ($proveedores as $proveedor): ?>
+
+                                        <option value="<?= $proveedor['id_proveedor'] ?>">
+
+                                            <?= $proveedor['nombre_empresa'] ?>
+                                            - <?= $proveedor['descripcion_empresa'] ?>
+
+                                        </option>
+
+                                    <?php endforeach; ?>
+
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <hr class="form-divider" />
+
+                        <div class="form-actions">
+                            <button
+                                type="button"
+                                class="btn btn-outline"
+                                onclick="limpiar()">
+                                Limpiar
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                onclick="registrar()">
+                                Registrar
+                            </button>
+                        </div>
                 </div>
+                </form>
+            </div>
+    </div>
+    </main>
+    </div>
 
+    <footer>
+        <div class="footer-divider"></div>
+
+        <div class="footer-top">
+
+            <div>
+                <p class="footer-brand-name">COLSOFTCO</p>
+                <p class="footer-brand-sub">Sistema de Gestión</p>
+                <p class="footer-brand-desc">
+                    Sistema de gestión y administración de materias primas para Max&Flex.
+                    Eficiencia en inventarios y movimientos empresariales.
+                </p>
             </div>
 
-            <div class="footer-bottom">
-                <span>© 2025 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-                <span>Desarrollado por <strong>Equipo SENA</strong></span>
+            <div>
+                <p class="footer-col-title">Contacto</p>
+                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
+                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
+                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
+                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
             </div>
-        </footer>
 
-        <div class="toast" id="toast">✔ Producto registrado exitosamente.</div>
+        </div>
 
-        <script>
-            function limpiar() {
-                document.getElementById("producto").value = "";
-                document.getElementById("cantidad").value = "";
+        <div class="footer-bottom">
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>Desarrollado por <strong>Equipo SENA</strong></span>
+        </div>
+    </footer>
 
-                quitarErrores();
+    <div class="toast" id="toast">✔ Producto registrado exitosamente.</div>
+
+    <script>
+        function limpiar() {
+            document.getElementById("producto").value = "";
+            document.getElementById("cantidad").value = "";
+
+            quitarErrores();
+        }
+
+        function registrar() {
+            const producto = document
+                .getElementById("producto")
+                .value.trim();
+            const cantidad = document
+                .getElementById("cantidad")
+                .value.trim();
+
+            quitarErrores();
+
+            if (!producto) {
+                mostrarError(
+                    "producto",
+                    "Por favor ingrese el nombre del producto.",
+                );
+
+                return;
             }
 
-            function registrar() {
-                const producto = document
-                    .getElementById("producto")
-                    .value.trim();
-                const cantidad = document
-                    .getElementById("cantidad")
-                    .value.trim();
+            if (!cantidad || isNaN(cantidad) || Number(cantidad) < 0) {
+                mostrarError(
+                    "cantidad",
+                    "Por favor ingrese una cantidad válida.",
+                );
 
-                quitarErrores();
-
-                if (!producto) {
-                    mostrarError(
-                        "producto",
-                        "Por favor ingrese el nombre del producto.",
-                    );
-
-                    return;
-                }
-
-                if (!cantidad || isNaN(cantidad) || Number(cantidad) < 0) {
-                    mostrarError(
-                        "cantidad",
-                        "Por favor ingrese una cantidad válida.",
-                    );
-
-                    return;
-                }
-
-                console.log({
-                    producto,
-                    cantidad: Number(cantidad),
-                });
-
-                limpiar();
-
-                mostrarToast("✔ Producto registrado exitosamente.");
+                return;
             }
 
-            function mostrarError(inputId, mensaje) {
-                const input = document.getElementById(inputId);
+            console.log({
+                producto,
+                cantidad: Number(cantidad),
+            });
 
-                input.style.borderColor = "#c0392b";
-                input.style.boxShadow = "0 0 0 3px rgba(192,57,43,.15)";
-                input.focus();
+            limpiar();
 
-                const msg = document.createElement("span");
+            mostrarToast("✔ Producto registrado exitosamente.");
+        }
 
-                msg.className = "field-error";
+        function mostrarError(inputId, mensaje) {
+            const input = document.getElementById(inputId);
 
-                msg.textContent = mensaje;
+            input.style.borderColor = "#c0392b";
+            input.style.boxShadow = "0 0 0 3px rgba(192,57,43,.15)";
+            input.focus();
 
-                msg.style.cssText =
-                    "color:#c0392b;font-size:12px;font-weight:600;margin-top:3px;display:block;";
+            const msg = document.createElement("span");
 
-                input.parentNode.appendChild(msg);
+            msg.className = "field-error";
 
-                input.addEventListener("input", quitarErrores, { once: true });
-            }
+            msg.textContent = mensaje;
 
-            function quitarErrores() {
-                document
-                    .querySelectorAll(".field-error")
-                    .forEach((el) => el.remove());
+            msg.style.cssText =
+                "color:#c0392b;font-size:12px;font-weight:600;margin-top:3px;display:block;";
 
-                ["producto", "cantidad"].forEach((id) => {
-                    const inp = document.getElementById(id);
+            input.parentNode.appendChild(msg);
 
-                    inp.style.borderColor = "";
-                    inp.style.boxShadow = "";
-                });
-            }
+            input.addEventListener("input", quitarErrores, {
+                once: true
+            });
+        }
 
-            function mostrarToast(texto) {
-                const toast = document.getElementById("toast");
+        function quitarErrores() {
+            document
+                .querySelectorAll(".field-error")
+                .forEach((el) => el.remove());
 
-                toast.textContent = texto;
+            ["producto", "cantidad"].forEach((id) => {
+                const inp = document.getElementById(id);
 
-                toast.style.display = "block";
+                inp.style.borderColor = "";
+                inp.style.boxShadow = "";
+            });
+        }
 
-                clearTimeout(toast._timer);
+        function mostrarToast(texto) {
+            const toast = document.getElementById("toast");
 
-                toast._timer = setTimeout(() => {
-                    toast.style.display = "none";
-                }, 3000);
-            }
-        </script>
+            toast.textContent = texto;
 
-        <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-        <script
-            src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js"
-            defer
-        ></script>
-        <script src="../js/auth.js"></script>
-        <script src="../js/app.js"></script>
-    </body>
+            toast.style.display = "block";
+
+            clearTimeout(toast._timer);
+
+            toast._timer = setTimeout(() => {
+                toast.style.display = "none";
+            }, 3000);
+        }
+    </script>
+
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script
+        src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js"
+        defer></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+</body>
+
 </html>

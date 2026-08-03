@@ -14,13 +14,13 @@ $proveedores = $logica->getProveedores();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colsoftco - Lista de Proveedores</title>
-    <link href="listaproveedores.css" rel="stylesheet">
+    <link href="lista_proveedores.css" rel="stylesheet">
 </head>
 
 <body>
 
     <header>
-        <a class="logo" href="../panel_admin/panel_admin.html">
+        <a class="logo" href="../../app/ir_panel.php">
             <img src="../../public/imagenes/logo.png" alt="logo">
         </a>
 
@@ -110,7 +110,7 @@ $proveedores = $logica->getProveedores();
                                 <?php
                                 echo htmlspecialchars(
                                     $proveedor['contacto_nombre'] . ' ' .
-                                    $proveedor['contacto_apellido']
+                                        $proveedor['contacto_apellido']
                                 );
                                 ?>
                             </p>
@@ -184,7 +184,7 @@ $proveedores = $logica->getProveedores();
                 <p class="footer-brand-name">COLSOFTCO</p>
                 <p class="footer-brand-sub">Sistema de Gestión</p>
                 <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex. 
+                    Sistema de gestión y administración de materias primas para Max&Flex.
                     Eficiencia en inventarios y movimientos empresariales.
                 </p>
             </div>
@@ -200,13 +200,12 @@ $proveedores = $logica->getProveedores();
         </div>
 
         <div class="footer-bottom">
-            <span>© 2025 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
             <span>Desarrollado por <strong>Equipo SENA</strong></span>
         </div>
     </footer>
 
     <script>
-
         function editarProveedor(id) {
 
             window.location.href =
@@ -215,13 +214,13 @@ $proveedores = $logica->getProveedores();
 
         function eliminarProveedor(id) {
 
-    window.location.href =
-        "../registro_proveedores/eliminar_proveedor.php?id=" + id;
-}
+            window.location.href =
+                "../registro_proveedores/eliminar_proveedor.php?id=" + id;
+        }
 
         document.querySelectorAll('.tab').forEach(tab => {
 
-            tab.addEventListener('click', function () {
+            tab.addEventListener('click', function() {
 
                 document.querySelectorAll('.tab')
                     .forEach(t => t.classList.remove('active'));

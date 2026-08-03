@@ -27,26 +27,23 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <head>
     <meta charset="UTF-8">
-    <title>Inventario</title>
+    <title>Inventario Materia Prima</title>
     <link rel="stylesheet" href="inventariomp.css">
 </head>
 
 <body>
 
     <header class="header">
-        <div class="logo">
-            <img src="../../public/imagenes/logo.png" alt="logo">
-        </div>
+            <a class="logo" href="../../app/ir_panel.php">
+                <img src="../../public/imagenes/logo.png" alt="logo">
+            </a>
+    
 
-        <h1>Inventario de Materias Primas</h1>
+        <h1>INVENTARIO MATERIAS PRIMAS</h1>
     </header>
 
 
     <div class="container">
-
-        <a class="btn-volver" href="../panel_admin/panel_admin.html">
-            ← Volver
-        </a>
 
         <table>
 
@@ -106,7 +103,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <p class="footer-brand-name">COLSOFTCO</p>
                 <p class="footer-brand-sub">Sistema de Gestión</p>
                 <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex. 
+                    Sistema de gestión y administración de materias primas para Max&Flex.
                     Eficiencia en inventarios y movimientos empresariales.
                 </p>
             </div>
@@ -122,7 +119,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <div class="footer-bottom">
-            <span>© 2025 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
             <span>Desarrollado por <strong>Equipo SENA</strong></span>
         </div>
     </footer>

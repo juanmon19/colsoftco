@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="../../public/imagenes/logo.png" alt="Logo">
         </a>
 
-        <h1>Registro de Proveedores</h1>
+        <h1>REGISTRO DE PROVEEDORES</h1>
     </header>
 
     <div class="contenedor-principal">
@@ -170,16 +170,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="footer-bottom">
-            <span>© 2025 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
             <span>Desarrollado por <strong>Equipo SENA</strong></span>
         </div>
     </footer>
     <script src="../../public/js/validacionesProveedor.js"></script>
 
     <script>
+        function mostrarError(id, mensaje) {
+
+    const input = document.getElementById(id);
+
+    input.style.border = "2px solid #dc3545";
+
+    const errorExistente = input.parentNode.querySelector(".mensaje-error");
+
+    if (errorExistente) {
+        errorExistente.remove();
+    }
+
+    const error = document.createElement("small");
+    error.className = "mensaje-error";
+    error.textContent = mensaje;
+    error.style.color = "#dc3545";
+    error.style.display = "block";
+    error.style.marginTop = "5px";
+    error.style.fontSize = "13px";
+
+    input.parentNode.appendChild(error);
+}
+
+function limpiarErrores() {
+
+    document.querySelectorAll(".mensaje-error").forEach(e => e.remove());
+
+    document.querySelectorAll("#formProveedor input, #formProveedor textarea")
+    .forEach(campo => {
+        campo.style.border = "";
+    });
+
+}
         const formulario = document.getElementById("formProveedor");
 
         formulario.addEventListener("submit", function(e) {
+
+            
 
             const nombreEmpresa = document.getElementById("nombre_empresa").value;
             const nit = document.getElementById("nit").value;
@@ -189,51 +224,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const correo = document.getElementById("email").value;
             const direccion = document.getElementById("direccion").value;
             const descripcion = document.getElementById("descripcion_empresa").value;
-
+            limpiarErrores();
             if (!expresiones.empresa.test(nombreEmpresa)) {
-                alert("Nombre de empresa inválido.");
-                e.preventDefault();
-                return;
-            }
-
+                mostrarError(
+                "nombre_empresa",
+                "Ingrese un nombre de empresa válido."
+                );
+               e.preventDefault();
+               return;
+           }
+            
             if (!expresiones.nit.test(nit)) {
-                alert("NIT inválido.");
+                mostrarError(
+                "nit",
+                "Ingrese un NIT válido (8 a 12 dígitos)."
+                );
                 e.preventDefault();
-                return;
+               return;
             }
 
             if (!expresiones.nombre.test(nombre)) {
-                alert("Nombre del contacto inválido.");
-                e.preventDefault();
-                return;
+                mostrarError(
+               "contacto_nombre",
+               "Ingrese un nombre válido."
+               );
+               e.preventDefault();
+              return;
             }
 
             if (!expresiones.apellido.test(apellido)) {
-                alert("Apellido del contacto inválido.");
+                mostrarError(
+                "contacto_apellido",
+                "Ingrese un apellido válido."
+                );
                 e.preventDefault();
                 return;
             }
 
             if (!expresiones.telefono.test(telefono)) {
-                alert("Teléfono inválido.");
+                mostrarError(
+                "telefono",
+                "Ingrese un teléfono válido de 10 dígitos."
+                );
                 e.preventDefault();
                 return;
-            }
+                }
 
             if (!expresiones.correo.test(correo)) {
-                alert("Correo inválido.");
+                mostrarError(
+                "email",
+                "Ingrese un correo electrónico válido."
+                );
                 e.preventDefault();
                 return;
             }
 
-            if (!expresiones.direccion.test(direccion)) {
-                alert("Dirección inválida.");
+           if (!expresiones.direccion.test(direccion)) {
+                mostrarError(
+                 "direccion",
+                "Ingrese una dirección válida."
+                );
                 e.preventDefault();
                 return;
-            }
+                }
 
-            if (!expresiones.descripcion.test(descripcion)) {
-                alert("Descripción inválida.");
+            if (descripcion.trim() !== "" && !expresiones.descripcion.test(descripcion)) {
+                mostrarError(
+                "descripcion_empresa",
+                "La descripción debe tener entre 10 y 300 caracteres."
+                );
                 e.preventDefault();
                 return;
             }

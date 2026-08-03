@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="controlstock.css">
-  <title>control de stock</title>
+  <title>Control de stock</title>
 </head>
 
 <body>
@@ -146,7 +146,7 @@
     </div>
 
     <div class="footer-bottom">
-      <span>© 2025 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+      <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
       <span>Desarrollado por <strong>Equipo SENA</strong></span>
     </div>
   </footer>
