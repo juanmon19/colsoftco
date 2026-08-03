@@ -129,7 +129,7 @@ if (count($data) > 0):
         </div>
 
         <div class="footer-bottom">
-            <span>© 2025 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
             <span>Desarrollado por <strong>Equipo SENA</strong></span>
         </div>
     </footer>

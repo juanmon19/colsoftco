@@ -16,21 +16,18 @@ $modelos = $dbConn->query(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receta Colchones</title>
-    <link href="recetacolchones.css" rel="stylesheet">
+    <link href="receta_colchones.css" rel="stylesheet">
 </head>
 
 <body>
 
     <header>
-        <a class="logo" href="../panel_admin/panel_admin.html">
+        <a class="logo" href="../../app/ir_panel.php">
             <img src="../../public/imagenes/logo.png" alt="logo">
         </a>
         <span class="header-title">Receta Colchones</span>
     </header>
 
-    <div class="volver-wrap">
-        <a href="../panel_admin/panel_admin.html" class="btn-volver">← Volver al Panel</a>
-    </div>
 
     <div class="paneles">
 
@@ -96,16 +93,16 @@ $modelos = $dbConn->query(
         </div>
 
         <div class="footer-bottom">
-            <span>© 2025 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
             <span>Desarrollado por <strong>Equipo SENA</strong></span>
         </div>
     </footer>
 
     <script>
         const selectProducto = document.getElementById('producto');
-        const inputCantidad  = document.getElementById('cantidad');
-        const btnGenerar     = document.getElementById('btnGenerar');
-        const resultadoBody  = document.getElementById('resultadoBody');
+        const inputCantidad = document.getElementById('cantidad');
+        const btnGenerar = document.getElementById('btnGenerar');
+        const resultadoBody = document.getElementById('resultadoBody');
 
         let ultimoResultado = null;
 
@@ -153,15 +150,15 @@ $modelos = $dbConn->query(
                 </tr>
             `).join('');
 
-            const bannerTop = data.produccion_posible
-                ? `<div class="banner banner-ok">
+            const bannerTop = data.produccion_posible ?
+                `<div class="banner banner-ok">
                         <span class="banner-icono">✔</span>
                         <div>
                             <strong>Producción posible</strong>
                             <p>Todos los materiales están disponibles para fabricar ${data.cantidad} ${data.nombre_producto.toLowerCase()}s.</p>
                         </div>
-                   </div>`
-                : `<div class="banner banner-error">
+                   </div>` :
+                `<div class="banner banner-error">
                         <span class="banner-icono">✖</span>
                         <div>
                             <strong>Producción no posible</strong>
@@ -169,20 +166,20 @@ $modelos = $dbConn->query(
                         </div>
                    </div>`;
 
-            const bannerBottom = data.produccion_posible
-                ? `<div class="banner banner-ok">
+            const bannerBottom = data.produccion_posible ?
+                `<div class="banner banner-ok">
                         <span class="banner-icono">✔</span>
                         <div>
                             <strong>La producción de ${data.cantidad} ${data.nombre_producto.toLowerCase()}s es un éxito.</strong>
                             <p>Al confirmar, se descontarán automáticamente las materias primas del inventario
                                y se aumentará el stock de productos terminados.</p>
                         </div>
-                   </div>`
-                : '';
+                   </div>` :
+                '';
 
-            const botonFabricar = data.produccion_posible
-                ? `<button id="btnFabricar" class="btn btn-fabricar">🏭 Fabricar</button>`
-                : '';
+            const botonFabricar = data.produccion_posible ?
+                `<button id="btnFabricar" class="btn btn-fabricar">🏭 Fabricar</button>` :
+                '';
 
             resultadoBody.innerHTML = `
                 ${bannerTop}
@@ -234,7 +231,9 @@ $modelos = $dbConn->query(
         }
 
         function formatear(n) {
-            return Number(n).toLocaleString('es-CO', { maximumFractionDigits: 2 });
+            return Number(n).toLocaleString('es-CO', {
+                maximumFractionDigits: 2
+            });
         }
     </script>
 

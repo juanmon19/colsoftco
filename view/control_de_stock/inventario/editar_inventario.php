@@ -63,7 +63,7 @@ $material = $stmt->fetch(PDO::FETCH_ASSOC);
 
         <div class="contenedor">
 
-            <a href="../../inventario_materiaprima/inventario_materia_prima.php" class="volver">
+            <a href="../../inventario_materia_prima/inventario_materia_prima.php" class="volver">
                 ← Volver al Inventario
             </a>
 

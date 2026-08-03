@@ -37,15 +37,15 @@ function mostrar(modulo) {
         // =========================
         // MATERIAS PRIMAS
         // =========================
-        'Materia': '../inventario_materiaprima/inventario_materiaprima.php',
-        'Inventario Materia Prima': '../inventario_materiaprima/inventario_materiaprima.php',
+        'Materia': '../inventario_materia_prima/inventario_materia_prima.php',
+        'Inventario Materia Prima': '../inventario_materia_prima/inventario_materia_prima.php',
         'Registrar Materia Prima': '../registro_materiaprima/registro_materiaprima.php',
 
         // =========================
         // PRODUCTOS
         // =========================
-        'Productos': '../inventario_productosterminados/inventario_productosterminados.php',
-        'Inventario Productos': '../inventario_productosterminados/inventario_productosterminados.php',
+        'Productos': '../inventario_productos_terminados/inventario_productos_terminados.php',
+        'Inventario Productos': '../inventario_productos_terminados/inventario_productos_terminados.php',
 
         // =========================
         // STOCK

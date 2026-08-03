@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Usuarios</title>
+    <title>Registro de Usuarios </title>
     <link href="registro.css" rel="stylesheet">
 </head>
 
@@ -13,7 +13,7 @@
         <a class="logo-area" href="../panel_admin/panel_admin.html">
             <img src="../../public/imagenes/logo.png" alt="logo">
         </a>
-        <h1>Registro de Usuarios</h1>
+        <h1>REGISTRO DE USUARIOS</h1>
     </header>
 
     <div class="contenedor-principal">
@@ -123,7 +123,7 @@
         </div>
 
         <div class="footer-bottom">
-            <span>© 2025 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
             <span>Desarrollado por <strong>Equipo SENA</strong></span>
         </div>
     </footer>

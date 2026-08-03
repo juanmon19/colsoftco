@@ -7,8 +7,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>REGISTRO DE PRODUCTOS TERMINADOS</title>
-  <link href="registrodeproductoterminado.css" rel="stylesheet">
+  <title>Registro de productos terminados</title>
+  <link href="registro_producto_terminado.css" rel="stylesheet">
 </head>
 
 
