@@ -5,6 +5,13 @@
     --gris: #f2f2f2;
 }
 
+/* ===== RESET BASE ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 /* ===== GENERAL ===== */
 body {
     margin: 0;
@@ -15,6 +22,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
 /* ===== HEADER ===== */
@@ -28,6 +36,7 @@ body {
     font-size: 14px;
     font-weight: bold;
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 .btn-logout:hover {
@@ -46,6 +55,7 @@ body {
     font-weight: bold;
     text-decoration: none;
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 .btn-header:hover,
@@ -63,7 +73,7 @@ body {
     justify-content: center;
     font-size: 33px;
     font-weight: bold;
-    position: relative
+    position: relative;
 }
 
 .header-titulo {
@@ -107,6 +117,7 @@ body {
 /* ===== SIDEBAR ===== */
 .sidebar {
     width: 250px;
+    flex-shrink: 0;
     background-color: var(--blanco);
     padding: 20px;
     border-right: 5px solid var(--dorado);
@@ -130,9 +141,36 @@ body {
     color: var(--azul);
 }
 
+/* Botón de menú desplegable: oculto en escritorio, solo aparece en móvil/tablet */
+.sidebar-toggle {
+    display: none;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    background-color: var(--azul);
+    color: var(--blanco);
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.sidebar-toggle .toggle-icono {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-toggle.abierto .toggle-icono {
+    transform: rotate(180deg);
+}
+
 /* ===== CONTENIDO ===== */
 .contenido {
     flex: 1;
+    min-width: 0; /* evita que textos largos empujen el ancho del layout flex */
     padding: 40px;
 }
 
@@ -273,20 +311,177 @@ footer {
     color: #C9A227;
 }
 
-/* RESPONSIVE */
-@media(max-width:900px) {
+/* ============================================================
+   RESPONSIVE
+   Breakpoints: 900px (tablet) / 600px (móvil grande) / 400px (móvil pequeño)
+   ============================================================ */
+
+/* ===== TABLET (hasta 900px) ===== */
+@media (max-width: 900px) {
+    /* El logo, el título y los botones dejan de flotar en posición absoluta
+       y pasan a repartirse el espacio real (logo | título flexible | acciones).
+       Así el título nunca se monta sobre los botones: si el nombre del
+       usuario es largo y no cabe, se trunca con "..." en vez de superponerse. */
+    .header {
+        padding: 0 15px;
+        justify-content: space-between;
+    }
+
+    .logo {
+        position: static;
+        transform: none;
+        flex-shrink: 0;
+    }
+
+    .header-titulo {
+        position: static;
+        transform: none;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .header-actions {
+        position: static;
+        flex-shrink: 0;
+    }
+
     .contenedor {
         flex-direction: column;
     }
 
     .sidebar {
         width: 100%;
+        padding: 15px;
         border-right: none;
         border-bottom: 5px solid var(--dorado);
+    }
+
+    .sidebar-toggle {
+        display: flex;
+    }
+
+    .sidebar-links {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease;
+    }
+
+    .sidebar-links.abierto {
+        max-height: 900px;
     }
 
     .bienvenida {
         flex-direction: column;
         text-align: center;
+    }
+
+    .footer-top {
+        padding: 1.5rem 2rem 1.2rem;
+    }
+
+    .footer-bottom {
+        padding: 0.6rem 2rem;
+    }
+}
+
+/* ===== MÓVIL GRANDE (hasta 600px) ===== */
+@media (max-width: 600px) {
+    .header {
+        height: 60px;
+        padding: 0 8px;
+        font-size: 20px;
+    }
+
+    .header-titulo {
+        font-size: 15px;
+        padding: 0 6px;
+    }
+
+    .logo img {
+        width: 40px;
+        margin-top: 0;
+    }
+
+    .header-actions {
+        gap: 6px;
+    }
+
+    .btn-header,
+    .btn-logout {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .contenido {
+        padding: 20px 15px;
+    }
+
+    .bienvenida {
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .bienvenida img {
+        width: 110px;
+    }
+
+    .tareas {
+        padding: 15px;
+    }
+
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.2rem 1.5rem;
+    }
+
+    .footer-brand-desc {
+        max-width: 100%;
+    }
+
+    .footer-bottom {
+        padding: 0.8rem 1.5rem;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* ===== MÓVIL PEQUEÑO (hasta 400px) ===== */
+@media (max-width: 400px) {
+    .header {
+        padding: 0 6px;
+    }
+
+    .header-titulo {
+        font-size: 12px;
+        padding: 0 4px;
+    }
+
+    .logo img {
+        width: 32px;
+    }
+
+    .header-actions {
+        gap: 4px;
+    }
+
+    .btn-header,
+    .btn-logout {
+        padding: 5px 7px;
+        font-size: 10px;
+    }
+
+    .bienvenida img {
+        width: 90px;
+    }
+
+    .footer-top,
+    .footer-bottom {
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 }
