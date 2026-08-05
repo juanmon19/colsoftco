@@ -55,7 +55,7 @@ session_start();
         <button name="send" class="btn">Enviar</button>
 
         <div class="forgot-container">
-          <a href="../login/login.html" class="forgot-link">Volver al Login</a>
+          <a href="../login/login.php" class="forgot-link">Volver al Login</a>
         </div>
 
       </form>
