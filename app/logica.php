@@ -23,7 +23,7 @@ if (isset($_POST['login'])) {
         );
     } else {
         $_SESSION['error'] = 'Ingrese sus credenciales';
-        header("location:../view/login/login.html");
+        header("location:../view/login/login.php");
     }
 }
 
@@ -125,7 +125,7 @@ function login(array $credenciales)
                 $Rol = $_SESSION['rol'];
 
                 if ($Rol == 'administrador') {
-                    header("location:../view/panel_admin/panel_admin.html");
+                    header("location:../view/panel_admin/panel_admin.php");
                 } elseif ($Rol == 'bodeguero') {
                     header("location:../view/panel_bodeguero/panel_bodeguero.html");
                 } elseif ($Rol == 'operario') {
@@ -136,15 +136,15 @@ function login(array $credenciales)
         
             } else {
                 $_SESSION['error'] = 'Error en el password';
-                header("location:../view/login/login.html");
+                header("location:../view/login/login.php");
             }
         } else {
             $_SESSION['error'] = 'Error en el documento';
-            header("location:../view/login/login.html");
+            header("location:../view/login/login.php");
         }
     } else {
         $_SESSION['error'] = 'Error, no existe ese usuario';
-        header("location:../view/login/login.html");
+        header("location:../view/login/login.php");
     }
 }
 

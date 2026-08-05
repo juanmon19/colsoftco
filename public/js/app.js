@@ -3,7 +3,7 @@ window.addEventListener('pageshow', function(e) {
     if (e.persisted) { // la página viene del caché del botón atrás
         const esPanel = window.location.pathname.includes('panel_');
         if (esPanel && localStorage.getItem('logueado') !== 'true') {
-            window.location.replace('../login/login.html');
+            window.location.replace('../login/login.php');
         }
     }
 });
@@ -83,10 +83,10 @@ function mostrar(modulo) {
 // FUNCION CERRAR SESIÓN
 // ===============================
 function cerrarSesion() {
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.replace('../login/login.html'); // ✅ borra del historial
-}
+    if (confirm("¿Desea cerrar la sesión?")) {
+        window.location.href = "../../app/logout.php";
+    }
+} 
 
 
 // Configurar elementos comunes en el DOM
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ===============================
     // LOGO REDIRECCIÓN
     // ===============================
-    const logos = document.querySelectorAll(".logo img, .logo");
+/*     const logos = document.querySelectorAll(".logo img, .logo");
 
     logos.forEach(logo => {
         logo.style.cursor = "pointer";
@@ -119,11 +119,11 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 window.location.href =
                     typeof Auth !== 'undefined'
-                        ? Auth.getBasePath() + "login/login.html"
-                        : "../login/login.html";
+                        ? Auth.getBasePath() + "login/login.php"
+                        : "../login/login.php";
             }
         });
-    });
+    }); */
 
     // ===============================
     // BOTÓN CERRAR SESIÓN

@@ -1,4 +1,6 @@
 <?php
+
+require_once "../../app/verificar_sesion.php";
 require_once __DIR__ . '/../../app/logica_proveedores.php';
 
 $mensaje = '';
@@ -53,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
    <header>
         <div class="logo">
-            <a href="../panel_admin/panel_admin.html">
+            <a href="../panel_admin/panel_admin.php">
                 <img src="../../public/imagenes/logo.png" alt="Logo">
             </a>
         </div>
@@ -262,6 +264,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
     </script>
+
+    <script src="../../public/js/app.js"></script>
+    
 </body>
 
 </html>

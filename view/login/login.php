@@ -1,3 +1,21 @@
+<?php
+session_start();
+
+// Obtener mensajes de sesión
+$error = '';
+$mensaje = '';
+
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
+    unset($_SESSION['error']);
+}
+
+if (isset($_SESSION['mensaje'])) {
+    $mensaje = $_SESSION['mensaje'];
+    unset($_SESSION['mensaje']);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -9,17 +27,32 @@
 </head>
 
 <body>
+
     <div class="header">
         <div class="logo">
             <img src="../../public/imagenes/logo.png" alt="Logo">
         </div>
-        <!-- Envolvemos el texto en un span para controlar su tamaño en móviles -->
-        <span class="header-title">INGRESE AL SISTEMA</span>
+        INGRESE AL SISTEMA
     </div>
 
     <div class="login-wrapper">
         <div class="login-container">
+
             <h2>INICIAR SESIÓN</h2>
+
+            <!-- Mensajes -->
+            <?php if (!empty($error)) : ?>
+                <div class="mensaje-error">
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($mensaje)) : ?>
+                <div class="mensaje-exito">
+                    <?= htmlspecialchars($mensaje) ?>
+                </div>
+            <?php endif; ?>
+
             <form id="loginForm" method="POST" action="../../app/logica.php" autocomplete="off">
 
                 <input type="hidden" name="login" value="1">
@@ -34,34 +67,43 @@
                     <input type="password" id="password" name="password" required>
                 </div>
 
-                <button type="submit" class="btn">Ingresar</button>
+                <button type="submit" class="btn">
+                    Ingresar
+                </button>
+
                 <div class="forgot-container">
-                    <a href="../recuperar_contrasena/recuperar_contrasena.php" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                    <a href="../recuperar_contrasena/recuperar_contrasena.php" class="forgot-link">
+                        ¿Olvidaste tu contraseña?
+                    </a>
                 </div>
+
             </form>
+
         </div>
     </div>
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+
     <script src="../js/app.js"></script>
-    
+
     <script>
-        // Limpiar campos al cargar la página
-        window.addEventListener('pageshow', function(e) {
+        // Limpiar el formulario al cargar o regresar a la página
+        window.addEventListener('pageshow', function () {
             document.getElementById('loginForm').reset();
         });
     </script>
-    
+
     <footer>
         <div class="footer-divider"></div>
 
         <div class="footer-top">
+
             <div>
                 <p class="footer-brand-name">COLSOFTCO</p>
                 <p class="footer-brand-sub">Sistema de Gestión</p>
                 <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex. 
+                    Sistema de gestión y administración de materias primas para Max&Flex.
                     Eficiencia en inventarios y movimientos empresariales.
                 </p>
             </div>
@@ -73,6 +115,7 @@
                 <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
                 <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
             </div>
+
         </div>
 
         <div class="footer-bottom">
@@ -80,6 +123,7 @@
             <span>Desarrollado por <strong>Equipo SENA</strong></span>
         </div>
     </footer>
+
 </body>
 
 </html>

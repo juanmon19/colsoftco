@@ -13,6 +13,32 @@ body {
     flex-direction: column;
 }
 
+.mensaje-error{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:6px;
+    background:#fdecea;
+    color:#b71c1c;
+    border:1px solid #f5c6cb;
+    text-align:center;
+    font-size:14px;
+    font-weight:600;
+}
+
+.mensaje-exito{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:6px;
+    background:#e8f5e9;
+    color:#1b5e20;
+    border:1px solid #c3e6cb;
+    text-align:center;
+    font-size:14px;
+    font-weight:600;
+}
+
 .login-wrapper {
     flex: 1;
     display: flex;
