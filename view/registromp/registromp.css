@@ -37,33 +37,21 @@ body {
 }
 
 /* HEADER */
-
-.btn-logout{
-  background-color: #D4AF37;
-  color: #0A1F44;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
 header {
     background-color: #0A1F44;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 20px;
-    height: 66px;
+    min-height: 66px; /* Modificado a min-height para adaptarse */
     border-bottom: 3px solid #d4af37;
     position: sticky;
     top: 0;
     z-index: 100;
     box-shadow: 0 2px 12px rgba(11, 61, 145, .35);
+    flex-wrap: wrap; /* Permite que los elementos se acomoden en pantallas estrechas */
+    gap: 10px;
 }
-
 
 .logo {
     display: flex;
@@ -74,23 +62,41 @@ header {
   width: 75px;
   cursor: pointer;
   display: block;
-  margin-top:10px;
 }
 
-
+/* El título se adapta mediante flexbox en lugar de absolute */
 .header-title {
-  font-size: 13px;
+  flex: 1;
+  text-align: center;
+}
+
+.header-title h1 {
+  font-size: 16px; /* Tamaño ajustado para armonía */
   font-weight: 900;
   color: white;
   text-transform: uppercase;
   text-shadow: 0 2px 10px rgba(0, 0, 0, .3);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  margin: 0;
+}
+
+.btn-logout {
+  background-color: #D4AF37;
+  color: #0A1F44;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+.btn-logout:hover {
+  background-color: #fff;
 }
 
 /* BODY */
-
 .page-body {
   display: flex;
   max-width: 1180px;
@@ -110,7 +116,6 @@ header {
 }
 
 /* FORM CARD */
-
 .form-card {
   background: var(--white);
   border-radius: 5px;
@@ -258,7 +263,6 @@ select:focus {
 }
 
 /* TOAST */
-
 .toast {
   display: none;
   position: fixed;
@@ -281,26 +285,10 @@ select:focus {
     opacity: 0;
     transform: translateY(14px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* RESPONSIVE */
-
-@media (max-width:800px) {
-
-  .page-body {
-    flex-direction: column;
-    padding: 0 12px 32px;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
 }
 
 /* ===== FOOTER ===== */
@@ -390,4 +378,57 @@ footer {
 
 .footer-bottom strong {
   color: #C9A227;
+}
+
+/* =========================================
+   MEDIA QUERIES (DISEÑO RESPONSIVO)
+   ========================================= */
+
+@media (max-width: 800px) {
+  .page-body {
+    flex-direction: column;
+    padding: 0 12px 32px;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 1.5rem 1.2rem;
+  }
+
+  .footer-bottom {
+    padding: 0.8rem 1.5rem;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    height: auto;
+    padding: 15px 10px;
+  }
+
+  .header-title h1 {
+    font-size: 14px;
+    margin: 5px 0;
+  }
+  
+  .form-body {
+    padding: 20px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .btn {
+    width: 100%;
+  }
 }

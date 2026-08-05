@@ -14,52 +14,64 @@ body{
 /* =========================
    HEADER
 ========================= */
-
-.btn-logout {
-    background-color: #D4AF37;
-    color: #0A1F44;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    transition: 0.3s;
-    margin-left: auto;
-}
-
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: #0A1F44;
-    padding: 0 20px;
-    height: 80px;
-    position: relative;
+    padding: 10px 15px;
+    min-height: 70px;
+    position: relative; 
+    z-index: 100;
+    border-bottom: 3px solid #d4af37; 
+    gap: 10px; 
 }
 
 .header .logo {
     display: flex;
     align-items: center;
+    flex-shrink: 0; 
 }
 
 .header .logo img {
-    width: 70px;
-    height: 70px;
+    width: 55px; 
+    height: 55px;
     border-radius: 50%;
     border: 2px solid #d4af37;
     background: white;
+    cursor: pointer;
 }
 
-.header h1 {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+.header-title {
+    flex: 1; 
+    text-align: center;
+    overflow: hidden;
+}
+
+.header-title h1 {
     margin: 0;
     color: white;
-    font-size: 26px;
+    font-size: 14px; 
     font-weight: bold;
     white-space: nowrap;
+    text-overflow: ellipsis; 
+}
+
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.3s;
+    flex-shrink: 0; 
+}
+
+.btn-logout:hover {
+    background-color: #fff;
 }
 
 .container{
@@ -68,7 +80,6 @@ body{
     margin: 30px auto;
     flex: 1;
 }
-
 
 /* =========================
    TARJETAS
@@ -120,6 +131,25 @@ body{
 .form-control:focus{
     outline:none;
     border:1px solid #D4AF37;
+}
+
+/* =========================
+   CONTENEDOR RESPONSIVE DE TABLA
+========================= */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; 
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
+/* Para evitar doble sombra si la tabla ya la tiene */
+.table-responsive table {
+    box-shadow: none; 
+    border-radius: 0;
+    min-width: 700px; 
 }
 
 /* =========================
@@ -252,24 +282,30 @@ tr:hover{
     margin:40px auto;
 }
 
+
 /* =========================
-   RESPONSIVE
+   MEDIA QUERIES (RESPONSIVE)
 ========================= */
-
-@media(max-width:768px){
-
+@media (max-width: 900px) {
     .container,
-    .contenedor{
-        width:95%;
+    .contenedor {
+        width: 95%; 
+        margin: 20px auto;
     }
+}
 
-    table{
-        font-size:12px;
+@media (max-width: 480px) {
+    th, td {
+        padding: 10px;
     }
-
-    th,
-    td{
-        padding:8px;
+    
+    .acciones a {
+        display: block; 
+        margin: 5px 0;
+    }
+    
+    .btn-editar {
+        margin-right: 0;
     }
 }
 

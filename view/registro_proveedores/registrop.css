@@ -12,6 +12,72 @@ body {
     flex-direction: column;
 }
 
+/* ===== CABECERA ===== */
+header {
+    background: #0A1F44;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    min-height: 70px; 
+    position: relative; /* <-- Cambiamos 'sticky' por 'relative' */
+    /* top: 0; <-- Puedes borrar esta línea, ya no la necesitamos */
+    z-index: 100;
+    color: white;
+    flex-wrap: wrap; 
+    gap: 10px;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+}
+
+.logo-area img {
+    width: 60px;
+}
+
+/* ===== CABECERA ===== */
+header {
+    background-color: #0A1F44;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    min-height: 66px; 
+    border-bottom: 3px solid #d4af37;
+    position: relative; /* <-- Se mantiene relativo para que no baje al hacer scroll */
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(11, 61, 145, .35);
+    flex-wrap: wrap; 
+    gap: 10px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 75px;
+    cursor: pointer;
+    display: block;
+}
+
+.header-title {
+    flex: 1;
+    text-align: center;
+}
+
+.header-title h1 {
+    font-size: 16px; 
+    font-weight: 900;
+    color: white;
+    text-transform: uppercase;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, .3);
+    margin: 0;
+}
+
 .btn-logout {
     background-color: #D4AF37;
     color: #0A1F44;
@@ -22,40 +88,19 @@ body {
     font-size: 14px;
     font-weight: bold;
     transition: 0.3s;
-    margin-left: auto
+    white-space: nowrap;
 }
 
-header {
-    background: #0A1F44;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    height: 70px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    color: white;
+.btn-logout:hover {
+    background-color: #fff;
 }
 
-.logo-area img {
-    width: 60px;
-    display: flex;
-    align-items: center;
-}
-
-header h1 {
-    font-size: 25px;
-    font-weight: bold;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.contenedor-principal{
-    max-width: 600px;
-    width: 70%;
-    margin: 10px auto;
+/* ===== CONTENIDO PRINCIPAL ===== */
+.contenedor-principal {
+    max-width: 800px; /* Aumentado ligeramente para mejor vista en PC */
+    width: 90%; /* En lugar de 70% para que use bien el espacio en móviles */
+    margin: 30px auto;
+    flex: 1;
 }
 
 .acciones-superior {
@@ -63,18 +108,22 @@ header h1 {
 }
 
 .btn-volver {
+    display: inline-block;
     text-decoration: none;
     background: #0A1F44;
     color: white;
     padding: 12px 20px;
     border-radius: 8px;
     font-weight: bold;
+    transition: 0.3s ease;
 }
 
 .btn-volver:hover {
-    opacity: .1;
+    background: #081935;
+    opacity: 0.9;
 }
 
+/* ===== FORMULARIO ===== */
 .card-formulario {
     background: white;
     border-radius: 10px;
@@ -89,39 +138,41 @@ header h1 {
     align-items: center;
     gap: 15px;
     padding: 18px 25px;
+    border-bottom: 3px solid #D4AF37;
 }
 
 .barra-amarilla {
     width: 5px;
     height: 30px;
-    background: #d8b100;
+    background: #D4AF37;
     border-radius: 5px;
 }
 
 .card-header h2 {
-    font-size: 22px;
+    font-size: 20px;
 }
 
 form {
-    padding: 20px;
+    padding: 25px;
 }
 
 .grid-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 15px 20px;
 }
 
 .field-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .field-group label {
-    font-weight: bold;
+    font-size: 13px;
+    font-weight: 700;
     color: #0A1F44;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-transform: uppercase;
 }
 
@@ -129,9 +180,19 @@ form {
 .field-group textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #cbd5e1;
+    border: 1.5px solid #cbd5e1;
     border-radius: 6px;
     font-size: 14px;
+    background: #fafbfd;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.field-group input:focus,
+.field-group textarea:focus {
+    outline: none;
+    border-color: #0A1F44;
+    box-shadow: 0 0 0 3px rgba(10, 31, 68, .13);
+    background: #fff;
 }
 
 .field-group textarea {
@@ -147,12 +208,17 @@ form {
 
 .btn-limpiar {
     padding: 12px 30px;
-    border: 1px solid #0A1F44;
+    border: 1.5px solid #0A1F44;
     background: white;
     color: #0A1F44;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-limpiar:hover {
+    background: #f4f6fb;
 }
 
 .btn-registrar {
@@ -163,6 +229,12 @@ form {
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-registrar:hover {
+    background: #081935;
+    transform: translateY(-1px);
 }
 
 .mensaje {
@@ -171,18 +243,8 @@ form {
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
-}
-
-@media(max-width:768px) {
-
-    .grid-form {
-        grid-template-columns: 1fr;
-    }
-
-    header h1 {
-        font-size: 24px;
-    }
-
+    font-weight: bold;
+    border-left: 4px solid #28a745;
 }
 
 /* ===== FOOTER ===== */
@@ -272,4 +334,59 @@ footer {
 
 .footer-bottom strong {
     color: #C9A227;
+}
+
+/* =========================================
+   MEDIA QUERIES (DISEÑO RESPONSIVO)
+   ========================================= */
+
+@media (max-width: 768px) {
+    .grid-form {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .footer-bottom {
+        justify-content: center;
+        text-align: center;
+        padding: 0.8rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        padding: 15px 10px;
+    }
+
+    header h1 {
+        font-size: 18px;
+        margin: 10px 0;
+    }
+
+    .btn-logout {
+        margin: 0 auto;
+    }
+
+    .card-header h2 {
+        font-size: 16px;
+    }
+
+    form {
+        padding: 15px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-limpiar, .btn-registrar {
+        width: 100%;
+        text-align: center;
+    }
 }

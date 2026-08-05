@@ -53,55 +53,61 @@ if (count($data) > 0):
 
 <body>
 
-    <div class="header">
+    <header class="header">
         <div class="logo">
             <a href="../../login/login.html">
                 <img src="../../public/imagenes/logo.png" alt="logo">
             </a>
         </div>
-        Cambiar Contraseña
-    </div>
+        
+        <div class="header-title">
+            <h1>Cambiar Contraseña</h1>
+        </div>
+
+        <!-- Elemento invisible para equilibrar el espacio del logo y que el título quede perfectamente centrado -->
+        <div style="width: 55px; flex-shrink: 0;"></div>
+    </header>
 
     <div class="login-wrapper">
-    <div class="login-container">
+        <div class="login-container">
 
-        <h2>Cambiar Contraseña</h2>
+            <h2>Cambiar Contraseña</h2>
 
-        <form action="../../app/logicamail.php" method="post">
+            <form action="../../app/logicamail.php" method="post">
 
-            <?php if (isset($_SESSION['error'])): ?>
-                <p class="error">
-                    <?php echo $_SESSION['error']; ?>
-                </p>
-                <?php unset($_SESSION['error']); ?>
-            <?php endif; ?>
+                <?php if (isset($_SESSION['error'])): ?>
+                    <p class="error">
+                        <?php echo $_SESSION['error']; ?>
+                    </p>
+                    <?php unset($_SESSION['error']); ?>
+                <?php endif; ?>
 
-            <div class="input-group">
-                <label for="password">Nueva contraseña</label>
-                <input type="password" name="password" id="password" required>
-            </div>
+                <div class="input-group">
+                    <label for="password">Nueva contraseña</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
 
-            <div class="input-group">
-                <label for="new_password">Confirmar contraseña</label>
-                <input type="password" name="new_password" id="new_password" required>
+                <div class="input-group">
+                    <label for="new_password">Confirmar contraseña</label>
+                    <input type="password" name="new_password" id="new_password" required>
 
-                <input
-                    type="hidden"
-                    name="id"
-                    value="<?php echo $_GET['id']; ?>">
-            </div>
+                    <input
+                        type="hidden"
+                        name="id"
+                        value="<?php echo $_GET['id']; ?>">
+                </div>
 
-            <button type="submit" name="save" class="btn">
-                Guardar
-            </button>
+                <button type="submit" name="save" class="btn">
+                    Guardar
+                </button>
 
-            <button type="reset" class="btn-secondary">
-                Cancelar
-            </button>
+                <button type="reset" class="btn-secondary">
+                    Cancelar
+                </button>
 
-        </form>
+            </form>
 
-    </div>
+        </div>
     </div>
 
     <footer>

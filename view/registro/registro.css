@@ -12,32 +12,76 @@ body {
     flex-direction: column;
 }
 
-header {
-    background: #0A1F44;
-    color: white;
+/* =========================
+   HEADER ESTANDARIZADO
+========================= */
+.header {
     display: flex;
     align-items: center;
-    padding: 0 15px;
-    position: relative;
+    justify-content: space-between;
+    background-color: #0A1F44;
+    padding: 10px 15px;
+    min-height: 70px;
+    position: relative; 
+    z-index: 100;
+    border-bottom: 4px solid #D4AF37; 
+    gap: 10px; 
 }
 
-.logo-area img {
-    width: 60px;
+.header .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; 
 }
 
-header h1 {
-    font-size: 30px;
+.header .logo img {
+    width: 55px; 
+    height: 55px;
+    border-radius: 50%;
+    border: 2px solid #d4af37;
+    background: white;
+}
+
+.header-title {
+    flex: 1; 
+    text-align: center;
+    overflow: hidden;
+}
+
+.header-title h1 {
+    margin: 0;
+    color: white;
+    font-size: 15px; 
     font-weight: bold;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    white-space: nowrap;
+    text-overflow: ellipsis; 
 }
 
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.3s;
+    flex-shrink: 0; 
+}
+
+.btn-logout:hover {
+    background-color: #fff;
+}
+
+/* =========================
+   CONTENEDOR PRINCIPAL
+========================= */
 .contenedor-principal {
     max-width: 620px;
     margin: 25px auto;
     flex: 1;
-    width: 100%;
+    width: 90%; /* Ajuste para evitar que toque los bordes en celular */
 }
 
 .acciones-superior {
@@ -46,17 +90,22 @@ header h1 {
 
 .btn-volver {
     text-decoration: none;
+    display: inline-block;
     background: #0A1F44;
     color: white;
     padding: 12px 20px;
     border-radius: 8px;
     font-weight: bold;
+    transition: 0.3s;
 }
 
 .btn-volver:hover {
-    opacity: .9;
+    background: #081732;
 }
 
+/* =========================
+   FORMULARIOS
+========================= */
 .card-formulario {
     background: white;
     border-radius: 10px;
@@ -149,6 +198,11 @@ form {
     cursor: pointer;
     font-weight: bold;
     font-size: 13px;
+    transition: 0.3s;
+}
+
+.btn-limpiar:hover {
+    background: #f1f5f9;
 }
 
 .btn-registrar {
@@ -160,6 +214,11 @@ form {
     cursor: pointer;
     font-weight: bold;
     font-size: 13px;
+    transition: 0.3s;
+}
+
+.btn-registrar:hover {
+    background: #081732;
 }
 
 .mensaje {
@@ -178,15 +237,9 @@ form {
 }
 
 @media(max-width:768px) {
-
     .grid-form {
         grid-template-columns: 1fr;
     }
-
-    header h1 {
-        font-size: 24px;
-    }
-
 }
 
 /* ===== FOOTER ===== */
@@ -196,7 +249,7 @@ footer {
     font-family: 'Segoe UI', Arial, sans-serif;
     width: 100%;
     box-sizing: border-box;
-    margin-top: 0;
+    margin-top: auto;
     flex-shrink: 0;
 }
 
@@ -276,4 +329,17 @@ footer {
 
 .footer-bottom strong {
     color: #C9A227;
+}
+
+@media (max-width: 768px) {
+    .footer-top { 
+        grid-template-columns: 1fr; 
+        gap: 1.5rem; 
+        padding: 1.5rem; 
+    }
+    .footer-bottom { 
+        justify-content: center; 
+        text-align: center; 
+        padding: 0.8rem 1.5rem; 
+    }
 }

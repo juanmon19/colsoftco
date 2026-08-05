@@ -16,45 +16,51 @@ session_start();
 
 <body>
 
-  <div class="header">
+  <header class="header">
     <div class="logo">
       <a href="../login/login.html">
         <img src="../../public/imagenes/logo.png" alt="logo">
       </a>
     </div>
-    Recuperar Contraseña
-  </div>
+    
+    <div class="header-title">
+      <h1>Recuperar Contraseña</h1>
+    </div>
+
+    <!-- Elemento invisible para equilibrar el espacio del logo y centrar el título -->
+    <div style="width: 55px; flex-shrink: 0;"></div>
+  </header>
 
   <div class="login-wrapper">
-  <div class="login-container">
+    <div class="login-container">
 
-    <h2>Reset Password</h2>
+      <h2>Recuperar Contraseña</h2>
 
-    <form action="../../app/logicamail.php" method="post">
+      <form action="../../app/logicamail.php" method="post">
 
-      <div class="input-group">
-        <label for="email">Escriba su email</label>
-        <input type="email" name="email" id="email">
-      </div>
+        <div class="input-group">
+          <label for="email">Escriba su email</label>
+          <input type="email" name="email" id="email" required>
+        </div>
 
-      <?php
-      if (isset($_SESSION['response'])):
-      ?>
-        <p class="response"><?php echo $_SESSION['response'] ?></p>
-      <?php
-        unset($_SESSION['response']);
-      endif;
-      ?>
+        <?php
+        if (isset($_SESSION['response'])):
+        ?>
+          <p class="response"><?php echo $_SESSION['response'] ?></p>
+        <?php
+          unset($_SESSION['response']);
+        endif;
+        ?>
 
-      <button name="send" class="btn">Enviar</button>
+        <button name="send" class="btn">Enviar</button>
 
-      <div class="forgot-container">
-        <a href="../login/login.html" class="forgot-link">Login</a>
-      </div>
+        <div class="forgot-container">
+          <a href="../login/login.html" class="forgot-link">Volver al Login</a>
+        </div>
 
-    </form>
+      </form>
 
-  </div>
+    </div>
   </div>
 
   <footer>

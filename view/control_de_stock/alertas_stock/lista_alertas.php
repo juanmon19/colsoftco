@@ -13,6 +13,7 @@ $alertas = $logica->obtenerAlertasStock();
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alertas de Stock</title>
 
     <link rel="stylesheet" href="alertas.css">
@@ -21,7 +22,17 @@ $alertas = $logica->obtenerAlertasStock();
 <body>
 
     <header>
-        <h1>Alertas de Stock</h1>
+        <div class="logo">
+            <a href="../control_de_stock.php">
+                <img src="../../../public/imagenes/logo.png" alt="logo">
+            </a>
+        </div>
+        
+        <div class="header-title">
+            <h1>Alertas de Stock</h1>
+        </div>
+
+        <div style="width: 50px; flex-shrink: 0;"></div>
     </header>
 
     <div class="container">
@@ -31,58 +42,56 @@ $alertas = $logica->obtenerAlertasStock();
         </a>
 
         <table>
-           <table>
+            <thead>
+                <tr>
+                    <th>Material</th>
+                    <th>Stock Actual</th>
+                    <th>Stock Mínimo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
 
-    <thead>
-        <tr>
-            <th>Material</th>
-            <th>Stock Actual</th>
-            <th>Stock Mínimo</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
+            <tbody>
 
-    <tbody>
+                <?php foreach ($alertas as $item): ?>
 
-        <?php foreach ($alertas as $item): ?>
+                <tr>
 
-        <tr>
+                    <td><?= $item['nombre_material'] ?></td>
 
-            <td><?= $item['nombre_material'] ?></td>
+                    <td><?= $item['stock_actual'] ?></td>
 
-            <td><?= $item['stock_actual'] ?></td>
+                    <td><?= $item['stock_minimo'] ?></td>
 
-            <td><?= $item['stock_minimo'] ?></td>
+                    <td>
+                        <span class="alerta">
+                            STOCK BAJO
+                        </span>
+                    </td>
 
-            <td>
-                <span class="alerta">
-                    STOCK BAJO
-                </span>
-            </td>
+                    <td>
 
-            <td>
+                        <a href="editar_alerta.php?id=<?= $item['id_material'] ?>"
+                           class="btn-editar">
+                           Editar
+                        </a>
 
-                <a href="editar_alerta.php?id=<?= $item['id_material'] ?>"
-                   class="btn-editar">
-                   Editar
-                </a>
+                        <a href="eliminar_alerta.php?id=<?= $item['id_material'] ?>"
+                           class="btn-eliminar">
+                           Eliminar
+                        </a>
 
-                <a href="eliminar_alerta.php?id=<?= $item['id_material'] ?>"
-                   class="btn-eliminar">
-                   Eliminar
-                </a>
+                    </td>
 
-            </td>
+                </tr>
 
-        </tr>
+                <?php endforeach; ?>
 
-        <?php endforeach; ?>
+            </tbody>
 
-    </tbody>
-
-</table>
-          
+        </table>
+    </div>      
 </body>
 
 </html>

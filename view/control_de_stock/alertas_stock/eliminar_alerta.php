@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eliminar Alerta</title>
     <link rel="stylesheet" href="alertas.css">
 </head>
@@ -42,7 +43,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 
 <header>
-    <h1>Eliminar Alerta de Stock</h1>
+    <div class="logo">
+        <a href="lista_alertas.php">
+            <img src="../../../public/imagenes/logo.png" alt="logo">
+        </a>
+    </div>
+    
+    <div class="header-title">
+        <h1>Eliminar Alerta de Stock</h1>
+    </div>
+
+    <div style="width: 50px; flex-shrink: 0;"></div>
 </header>
 
 <div class="container">

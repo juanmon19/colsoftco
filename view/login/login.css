@@ -13,24 +13,30 @@ body {
     flex-direction: column;
 }
 
-/* Ocupa el espacio libre entre el header y el footer,
-   y centra la caja de login ahí (reemplaza el margin: 120px auto) */
 .login-wrapper {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
+    padding: 40px 20px; /* El padding horizontal evita que se pegue a los bordes en móviles */
 }
 
+/* ===== CABECERA ===== */
 .header {
     background-color: #0A1F44;
     color: white;
-    padding: 20px;
-    text-align: center;
+    padding: 0 20px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.header-title {
     font-size: 29px;
     font-weight: bold;
-    position: relative;
+    text-align: center;
 }
 
 .logo {
@@ -43,7 +49,7 @@ body {
 .logo img {
     width: 75px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 /* ===== CONTENEDOR LOGIN ===== */
@@ -52,7 +58,8 @@ body {
     padding: 50px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    width: 400px;
+    width: 100%; /* Ajuste responsivo */
+    max-width: 400px; /* Límite para pantallas grandes */
 }
 
 /* ===== TÍTULO ===== */
@@ -76,7 +83,7 @@ body {
 }
 
 .input-group input {
-    width: 100%; /* Ahora igual que el botón */
+    width: 100%; 
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -85,15 +92,17 @@ body {
 
 /* ===== BOTÓN ===== */
 .btn {
-    width: 100%; /* Igual ancho */
+    width: 100%; 
     padding: 10px;
     background: #D4AF37;
     border: none;
     color: black;
     font-size: 14px;
+    font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px; /* Separación del input */
+    margin-top: 10px; 
+    transition: background 0.3s ease;
 }
 
 .btn:hover {
@@ -101,8 +110,6 @@ body {
 }
 
 /* ===== ERROR ===== */
-/* Se mantiene aunque no aparezca en este login.html: se usa para
-   mostrar mensajes de error dinámicos que devuelve logica.php */
 .error {
     color: red;
     font-size: 14px;
@@ -113,20 +120,20 @@ body {
 /* ===== ENLACE RECUPERAR CONTRASEÑA ===== */
 .forgot-container {
     text-align: center;
-    margin-top: 20px; /* Separación respecto al botón de ingresar */
+    margin-top: 20px; 
 }
 
 .forgot-link {
-    color: #ffffff; /* Texto blanco para que resalte sobre el azul oscuro */
-    text-decoration: none; /* Quita la línea de abajo por defecto */
+    color: #ffffff; 
+    text-decoration: none; 
     font-size: 13px;
     display: inline-block;
     transition: color 0.3s ease;
 }
 
 .forgot-link:hover {
-    color: #D4AF37; /* Cambia al dorado de tu botón al pasar el cursor */
-    text-decoration: underline; /* Agrega el subrayado solo en el hover */
+    color: #D4AF37; 
+    text-decoration: underline; 
 }
 
 /* ===== FOOTER ===== */
@@ -215,4 +222,48 @@ footer {
 
 .footer-bottom strong {
     color: #C9A227;
+}
+
+
+/* =========================================
+   MEDIA QUERIES (DISEÑO RESPONSIVO)
+   ========================================= */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 768px) {
+    .footer-top {
+        grid-template-columns: 1fr; /* El footer pasa a 1 sola columna */
+        gap: 1.5rem;
+        padding: 1.5rem 1.5rem 1.2rem;
+    }
+
+    .footer-bottom {
+        padding: 0.8rem 1.5rem;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* Teléfonos móviles */
+@media (max-width: 480px) {
+    .header {
+        padding: 0 10px;
+    }
+
+    .header-title {
+        font-size: 18px; /* Título más pequeño para evitar desbordamientos */
+        margin-left: 50px; /* Evita que el texto choque con el logo */
+    }
+
+    .logo img {
+        width: 50px; /* Logo más sutil en móviles */
+    }
+
+    .login-container {
+        padding: 30px 20px; /* Menos espacio interno en el cuadro azul */
+    }
+
+    .login-wrapper {
+        padding: 20px 15px; 
+    }
 }

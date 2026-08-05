@@ -3,17 +3,27 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuarios </title>
     <link href="registro.css" rel="stylesheet">
 </head>
 
 <body>
 
-    <header>
-        <a class="logo-area" href="../panel_admin/panel_admin.html">
-            <img src="../../public/imagenes/logo.png" alt="logo">
-        </a>
-        <h1>REGISTRO DE USUARIOS</h1>
+    <header class="header">
+        <div class="logo">
+            <a href="../panel_admin/panel_admin.html">
+                <img src="../../public/imagenes/logo.png" alt="logo">
+            </a>
+        </div>
+
+        <div class="header-title">
+            <h1>REGISTRO DE USUARIOS</h1>
+        </div>
+
+        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
     </header>
 
     <div class="contenedor-principal">

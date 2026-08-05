@@ -99,60 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         window.location.pathname.includes("login") ||
                         window.location.pathname.includes("cambio_contrasena");
 
-    if (!isMainPanel && typeof Auth !== 'undefined' && Auth.isAuthenticated()) {
-        const header = document.querySelector("header") || document.querySelector(".header") || document.querySelector(".banner");
-        
-        if (header) {
-            const user = Auth.getUser();
-            const basePath = Auth.getBasePath();
-            const returnUrl = basePath + ROLES[user.role].dashboard;
-            
-            // ===============================
-            // BOTÓN VOLVER AL PANEL
-            // ===============================
-            const returnBtn = document.createElement("button");
-            returnBtn.className = "btn-return";
-            returnBtn.innerHTML = `← Volver al Panel`;
-
-            returnBtn.style.position = "absolute";
-
-            if (header.classList.contains("banner")) {
-                returnBtn.style.left = "20px";
-                header.style.position = "relative";
-            } else {
-                returnBtn.style.left = "100px";
-            }
-
-            returnBtn.style.top = "50%";
-            returnBtn.style.transform = "translateY(-50%)";
-            returnBtn.style.padding = "8px 15px";
-            returnBtn.style.backgroundColor = "transparent";
-            returnBtn.style.color = "white";
-            returnBtn.style.border = "1px solid white";
-            returnBtn.style.borderRadius = "5px";
-            returnBtn.style.cursor = "pointer";
-            returnBtn.style.fontWeight = "bold";
-            returnBtn.style.fontSize = "13px";
-            returnBtn.style.transition = "all 0.3s ease";
-
-            returnBtn.addEventListener("mouseover", () => {
-                returnBtn.style.backgroundColor = "white";
-                returnBtn.style.color = "#0A1F44";
-            });
-
-            returnBtn.addEventListener("mouseout", () => {
-                returnBtn.style.backgroundColor = "transparent";
-                returnBtn.style.color = "white";
-            });
-
-            returnBtn.addEventListener("click", () => {
-                window.location.href = returnUrl;
-            });
-
-            header.appendChild(returnBtn);
-        }
-    }
-
     // ===============================
     // LOGO REDIRECCIÓN
     // ===============================

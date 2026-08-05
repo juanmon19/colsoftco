@@ -29,40 +29,55 @@ body {
     
 }
 
+/* ══ HEADER ══ */
 header {
     background: #0A1F44;
-    height: 70px;
-    position: sticky;
-    top: 0;
+    min-height: 70px;
+    position: relative; /* Evita que baje con el scroll */
     z-index: 100;
     color: white;
     display: flex;
     align-items: center;
-    position: relative;
+    justify-content: space-between;
+    padding: 10px 15px;
+    gap: 10px; /* Mantiene una separación segura entre los tres elementos */
+    border-bottom: 3px solid #d4af37; /* Agregado para igualarlo a los otros módulos */
 }
 
 header .logo {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    flex-shrink: 0; /* Evita que el logo se aplaste */
 }
 
 header .logo img {
-    width: 75px;
+    width: 55px; /* Un poco más pequeño para dar espacio al centro */
     cursor: pointer;
     display: block;
 }
 
 .header-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    flex: 1; /* Toma todo el espacio disponible en el medio */
+    text-align: center;
     margin: 0;
-    font-size: 26px;
+    font-size: 15px; /* Tamaño optimizado para que no estorbe al botón */
     font-weight: 700;
     text-transform: uppercase;
-    white-space: nowrap;
+}
+
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px; /* Botón ligeramente más compacto */
+    font-weight: bold;
+    transition: 0.3s;
+    flex-shrink: 0; /* Evita que el botón se aplaste */
+}
+
+.btn-logout:hover {
+    background-color: #fff;
 }
 
 

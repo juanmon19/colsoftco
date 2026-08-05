@@ -19,14 +19,16 @@ $proveedores = $logica->getProveedores();
 
 <body>
 
-    <header>
-        <a class="logo" href="../../app/ir_panel.php">
-            <img src="../../public/imagenes/logo.png" alt="logo">
-        </a>
+    <header class="header">
+        <div class="logo">
+            <a href="../../app/ir_panel.php">
+                <img src="../../public/imagenes/logo.png" alt="logo">
+            </a>
+        </div>
 
-        <a class="header-title">
-            Lista de Proveedores
-        </a>
+        <div class="header-title">
+            <h1>Lista de Proveedores</h1>
+        </div>
 
         <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
             Cerrar sesión
@@ -43,7 +45,7 @@ $proveedores = $logica->getProveedores();
             </div>
 
             <div class="actions">
-                <button onclick="window.location.href='../registro_proveedores/registroproveedores.php'">
+                <button class="btn-action" onclick="window.location.href='../registro_proveedores/registroproveedores.php'">
                     Registrar Proveedor
                 </button>
 
