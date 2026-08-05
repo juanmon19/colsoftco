@@ -58,7 +58,7 @@ if (isset($_POST['registro'])) {
 
     $_SESSION['mensaje'] = $Mensaje;
 
-    header("location:../view/registro/registro.html");
+    header("location:../view/registro/registro.php");
 }
 //function saveUser este metodo es para registrar los usuarios
 function saveUser(array $datos)
@@ -127,9 +127,9 @@ function login(array $credenciales)
                 if ($Rol == 'administrador') {
                     header("location:../view/panel_admin/panel_admin.php");
                 } elseif ($Rol == 'bodeguero') {
-                    header("location:../view/panel_bodeguero/panel_bodeguero.html");
+                    header("location:../view/panel_bodeguero/panel_bodeguero.php");
                 } elseif ($Rol == 'operario') {
-                    header("location:../view/panel_operario/panel_operario.html");
+                    header("location:../view/panel_operario/panel_operario.php");
                 }
 
                 exit();

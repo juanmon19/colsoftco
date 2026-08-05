@@ -1,5 +1,6 @@
 <?php
 
+require_once "../../app/verificar_sesion.php";
 require_once('../../config/conexion.php');
 
 $db = new Conexion();
@@ -135,6 +136,8 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </footer>
 
+    <script src="../../public/js/app.js"></script>
+    
 </body>
 
 </html>

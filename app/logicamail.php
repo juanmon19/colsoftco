@@ -22,7 +22,7 @@ if (isset($_POST['send'])):
             if (updateUser($token_, TIEMPO_VIDA, $Usuario[0]->id_usuario)) {
                 EnviarCorreoResetPassword($Usuario[0]->email, $Usuario[0]->usuario, $Usuario[0]->id_usuario, $token_);
                 $_SESSION['response'] = 'Hemos enviado un correo con las instrucciones.';
-                header("Location: ../view/login/login.html?message=ok");
+                header("Location: ../view/login/login.php?message=ok");
                 exit();
             } else {
                 $_SESSION['response'] = 'Error interno al generar el token.';
@@ -53,7 +53,7 @@ if (isset($_POST['save'])):
         if (count($Usuario) > 0) {
             updateUserID($new_password, $id);
             $_SESSION['response'] = 'Contraseña actualizada con éxito.';
-            header("Location: ../view/login/login.html?message=success_password");
+            header("Location: ../view/login/login.php?message=success_password");
             exit();
         } else {
             $_SESSION['response'] = 'No existe el usuario';

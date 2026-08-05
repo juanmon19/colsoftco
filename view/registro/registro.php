@@ -1,3 +1,9 @@
+<?php
+
+require_once "../../app/verificar_sesion.php";
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -12,7 +18,7 @@
 
     <header class="header">
         <div class="logo">
-            <a href="../panel_admin/panel_admin.html">
+            <a href="../panel_admin/panel_admin.php">
                 <img src="../../public/imagenes/logo.png" alt="logo">
             </a>
         </div>
@@ -29,7 +35,7 @@
     <div class="contenedor-principal">
 
         <div class="acciones-superior">
-            <a href="../panel_admin/panel_admin.html" class="btn-volver">
+            <a href="../panel_admin/panel_admin.php" class="btn-volver">
                 ← Volver al Panel
             </a>
         </div>
@@ -152,6 +158,8 @@
             }
         });
     </script>
+
+    <script src="../../public/js/app.js"></script>
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>

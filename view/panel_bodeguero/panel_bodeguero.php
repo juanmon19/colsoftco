@@ -1,3 +1,9 @@
+<?php
+
+require_once "../../app/verificar_sesion.php";
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -39,10 +45,10 @@
             <button onclick="window.location.href='../generar_informe/generar_informe.php'">
                 <span>▥</span> Generar Informe
             </button>
-            <button onclick="window.location.href='../inventario_materiprima/inventario_materia_prima.html'">
+            <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
                 <span>◇</span> Inventario de Materia Prima
             </button>
-            <button onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.html'">
+            <button onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">
                 <span>□</span> Inventario de Productos
             </button>
             <button onclick="window.location.href='../receta_de_colchones/receta_colchones.php'">
@@ -234,7 +240,7 @@
                                 <strong>Registrar materia prima</strong>
                             </button>
 
-                            <button onclick="window.location.href='../inventario_materiprima/inventario_materia_prima.html'">
+                            <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
                                 <span class="quick-icon blue">◇</span>
                                 <strong>Ver inventario</strong>
                             </button>

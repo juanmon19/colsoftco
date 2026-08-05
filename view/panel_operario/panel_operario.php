@@ -1,3 +1,9 @@
+<?php
+
+require_once "../../app/verificar_sesion.php";
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
