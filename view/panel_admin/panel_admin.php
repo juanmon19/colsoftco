@@ -250,7 +250,6 @@ require_once "../../app/verificar_sesion.php";
         </div>
     </div>
 
-    <script src="../../public/js/auth.js"></script>
     <script src="../../public/js/app.js"></script>
 
     <script>

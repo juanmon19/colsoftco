@@ -18,7 +18,7 @@ require_once "../../app/verificar_sesion.php";
 
   <header>
     <div class="logo">
-      <a href="../panel_admin/panel_admin.html">
+      <a href="../panel_admin/panel_admin.php">
         <img src="../../public/imagenes/logo.png" alt="logo">
       </a>
     </div>
@@ -205,7 +205,7 @@ require_once "../../app/verificar_sesion.php";
   </script>
   <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
   <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-  <script src="../../public/js/Auth.js"></script>
+  
   <script src="../../public/js/app.js"></script>
 </body>
 

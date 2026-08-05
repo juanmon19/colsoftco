@@ -257,7 +257,7 @@ require_once "../../app/verificar_sesion.php";
             src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js"
             defer
         ></script>
-        <script src="../../public/js/Auth.js"></script>
+      
         <script src="../../public/js/app.js"></script>
     </body>
 </html>
