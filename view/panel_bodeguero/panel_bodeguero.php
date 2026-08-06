@@ -33,8 +33,8 @@ require_once "../../app/verificar_sesion.php";
         </button>
 
         <nav class="sidebar-links" id="sidebarLinks">
-            <button onclick="window.location.href='../lista_verificacion/lista_verificacion.php'">
-                <span>☑</span> Lista de Verificación
+            <button onclick="window.location.href='../historial_movimientos/historial.php'">
+                <span>☑</span> Historial de Moviemientos
             </button>
             <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
                 <span>♙</span> Lista de Proveedores

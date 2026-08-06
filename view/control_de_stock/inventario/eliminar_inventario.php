@@ -1,6 +1,9 @@
 <?php
 
 require_once '../../../config/conexion.php';
+require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
+
+session_start();
 
 $db = new Conexion();
 $conn = $db->getConnection();
@@ -30,6 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "DELETE FROM materias_primas WHERE id_material = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
+
+    (new HistorialMovimientos())->registrar([
+        'modulo'           => 'materia_prima',
+        'accion'           => 'eliminar',
+        'id_registro'      => $id,
+        'descripcion'      => "Se eliminó la materia prima '{$material['nombre_material']}'",
+        'datos_anteriores' => $material,
+        'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+    ]);
 
     header("Location: lista_inventario.php");
     exit();

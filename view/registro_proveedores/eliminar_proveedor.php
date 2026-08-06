@@ -1,6 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../../app/logica_proveedores.php';
+require_once __DIR__ . '/../../app/HistorialMovimientos.php';
+
+session_start();
 
 $logica = new ProveedorLogica();
 
@@ -15,6 +18,15 @@ if (!$proveedor) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $logica->eliminarProveedor($id);
+
+    (new HistorialMovimientos())->registrar([
+        'modulo'           => 'proveedores',
+        'accion'           => 'eliminar',
+        'id_registro'      => $id,
+        'descripcion'      => "Se eliminó el proveedor '{$proveedor['nombre_empresa']}'",
+        'datos_anteriores' => $proveedor,
+        'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+    ]);
 
     header("Location: ../lista_proveedores/lista_proveedores.php");
     exit;

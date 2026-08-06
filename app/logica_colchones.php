@@ -2,6 +2,9 @@
 
 header('Content-Type: application/json');
 require_once '../config/conexion.php';
+require_once __DIR__ . '/HistorialMovimientos.php';
+
+session_start();
 
 $conexion = new Conexion();
 $db = $conexion->getConnection();
@@ -168,6 +171,33 @@ if ($accion === 'fabricar') {
         }
 
         $db->commit();
+
+        // Registrar en el historial: salida de cada materia prima consumida
+        $historial = new HistorialMovimientos();
+        $usuarioNombre = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema';
+
+        foreach ($resultado['materiales'] as $mat) {
+            $historial->registrar([
+                'modulo'      => 'produccion',
+                'accion'      => 'salida',
+                'id_registro' => $mat['id_material'],
+                'descripcion' => "Salida de {$mat['cantidad_requerida']} {$mat['unidad']} de '{$mat['nombre_material']}' "
+                                . "para fabricar {$resultado['cantidad']} unidades de '{$resultado['nombre_producto']}'",
+                'datos_anteriores' => ['stock_actual' => $mat['cantidad_disponible']],
+                'datos_nuevos'     => ['stock_actual' => $mat['cantidad_disponible'] - $mat['cantidad_requerida']],
+                'usuario_nombre'   => $usuarioNombre,
+            ]);
+        }
+
+        // Registrar en el historial: entrada del producto terminado
+        $historial->registrar([
+            'modulo'         => 'produccion',
+            'accion'         => 'entrada',
+            'id_registro'    => $resultado['id_modelo'],
+            'descripcion'    => "Se fabricaron {$resultado['cantidad']} unidades de '{$resultado['nombre_producto']}'",
+            'datos_nuevos'   => ['unidades_fabricadas' => $resultado['cantidad']],
+            'usuario_nombre' => $usuarioNombre,
+        ]);
 
         echo json_encode([
             'ok'      => true,

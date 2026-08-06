@@ -1,6 +1,9 @@
 <?php
 
 require_once '../../../config/conexion.php';
+require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
+
+session_start();
 
 $db = new Conexion();
 $conn = $db->getConnection();
@@ -41,6 +44,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ':stock_minimo' => $stock_minimo,
         ':id_unidad' => $id_unidad,
         ':id_proveedor' => $id_proveedor
+    ]);
+
+    $idNuevoMaterial = $conn->lastInsertId();
+    (new HistorialMovimientos())->registrar([
+        'modulo'       => 'materia_prima',
+        'accion'       => 'crear',
+        'id_registro'  => $idNuevoMaterial,
+        'descripcion'  => "Se registró la materia prima '{$nombre_material}' con stock inicial de {$stock_actual}",
+        'datos_nuevos' => [
+            'nombre_material' => $nombre_material,
+            'stock_actual'    => $stock_actual,
+            'stock_minimo'    => $stock_minimo,
+            'id_unidad'       => $id_unidad,
+            'id_proveedor'    => $id_proveedor,
+        ],
+        'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
     ]);
 
     header("Location: lista_inventario.php");

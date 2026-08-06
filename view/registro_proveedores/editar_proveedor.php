@@ -1,6 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../../app/logica_proveedores.php';
+require_once __DIR__ . '/../../app/HistorialMovimientos.php';
+
+session_start();
 
 $logica = new ProveedorLogica();
 
@@ -25,6 +28,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['direccion'],
         $_POST['descripcion_empresa']
     );
+
+    (new HistorialMovimientos())->registrar([
+        'modulo'           => 'proveedores',
+        'accion'           => 'editar',
+        'id_registro'      => $id,
+        'descripcion'      => "Se actualizó el proveedor '{$_POST['nombre_empresa']}'",
+        'datos_anteriores' => $proveedor,
+        'datos_nuevos'     => $_POST,
+        'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+    ]);
 
     header("Location: ../lista_proveedores/lista_proveedores.php");
     exit;

@@ -1,6 +1,9 @@
 <?php
 
 require_once '../../../app/logica_proveedores.php';
+require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
+
+session_start();
 
 $logica = new ProveedorLogica();
 
@@ -23,6 +26,15 @@ if (!$material) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $logica->eliminarAlerta($id);
+
+    (new HistorialMovimientos())->registrar([
+        'modulo'           => 'alertas_stock',
+        'accion'           => 'eliminar',
+        'id_registro'      => $id,
+        'descripcion'      => "Se desactivó la alerta de stock mínimo de '{$material['nombre_material']}'",
+        'datos_anteriores' => $material,
+        'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+    ]);
 
     header("Location: lista_alertas.php");
     exit;

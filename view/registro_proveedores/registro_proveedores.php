@@ -2,6 +2,7 @@
 
 require_once "../../app/verificar_sesion.php";
 require_once __DIR__ . '/../../app/logica_proveedores.php';
+require_once __DIR__ . '/../../app/HistorialMovimientos.php';
 
 $mensaje = '';
 
@@ -32,13 +33,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($resultado) {
             $mensaje = "Proveedor registrado correctamente";
+
+            (new HistorialMovimientos())->registrar([
+                'modulo'       => 'proveedores',
+                'accion'       => 'crear',
+                'descripcion'  => "Se registró el proveedor '{$nombre_empresa}'",
+                'datos_nuevos' => [
+                    'nombre_empresa'     => $nombre_empresa,
+                    'contacto_nombre'    => $contacto_nombre,
+                    'contacto_apellido'  => $contacto_apellido,
+                    'telefono'           => $telefono,
+                    'email'              => $email,
+                    'nit'                => $nit,
+                    'direccion'          => $direccion,
+                ],
+                'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+            ]);
         } else {
             $mensaje = "Error al registrar proveedor";
         }
-    } catch (Exception $e) {
+        } catch (Exception $e) {
         $mensaje = $e->getMessage();
     }
-}
+} 
 ?>
 
 <!DOCTYPE html>

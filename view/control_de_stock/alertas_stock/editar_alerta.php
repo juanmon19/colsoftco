@@ -1,6 +1,9 @@
 <?php
 
 require_once '../../../app/logica_proveedores.php';
+require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
+
+session_start();
 
 $logica = new ProveedorLogica();
 
@@ -9,10 +12,22 @@ $id = $_GET['id'];
 $material = $logica->obtenerMateriaPorId($id);
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    $stockMinimoAnterior = $material['stock_minimo'] ?? null;
+
     $logica->actualizarStockMinimo(
         $id,
         $_POST['stock_minimo']
     );
+
+    (new HistorialMovimientos())->registrar([
+        'modulo'           => 'alertas_stock',
+        'accion'           => 'editar',
+        'id_registro'      => $id,
+        'descripcion'      => "Se actualizó el stock mínimo de '{$material['nombre_material']}'",
+        'datos_anteriores' => ['stock_minimo' => $stockMinimoAnterior],
+        'datos_nuevos'     => ['stock_minimo' => $_POST['stock_minimo']],
+        'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+    ]);
 
     header("Location: lista_alertas.php");
     exit;
