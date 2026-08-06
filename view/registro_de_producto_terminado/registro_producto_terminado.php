@@ -1,7 +1,16 @@
 <?php
 
 require_once "../../app/verificar_sesion.php";
+require_once '../../config/conexion.php';
 
+$db = new Conexion();
+$conn = $db->getConnection();
+
+$modelos = $conn->query("
+    SELECT id_modelo, nombre_modelo
+    FROM modelos_colchon
+    ORDER BY nombre_modelo
+")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -30,9 +39,9 @@ require_once "../../app/verificar_sesion.php";
       <div class="title-underline"></div>
     </div>
 
-      <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-          Cerrar sesión
-      </button>
+    <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+      Cerrar sesión
+    </button>
   </header>
 
   <!-- ── BODY ── -->
@@ -53,7 +62,16 @@ require_once "../../app/verificar_sesion.php";
 
             <div class="form-group full">
               <label for="producto">Producto</label>
-              <input type="text" id="producto" placeholder="Nombre del producto" />
+              
+              <select id="input-producto" name="id_modelo" required>
+                <option value="">Seleccione un producto</option>
+
+                <?php foreach ($modelos as $modelo): ?>
+                  <option value="<?= $modelo['id_modelo'] ?>">
+                    <?= htmlspecialchars($modelo['nombre_modelo']) ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
             </div>
 
             <div class="form-group full">
@@ -111,7 +129,10 @@ require_once "../../app/verificar_sesion.php";
       }
 
       // Aquí iría la llamada al backend
-      console.log('Producto registrado:', { producto, cantidad: Number(cantidad) });
+      console.log('Producto registrado:', {
+        producto,
+        cantidad: Number(cantidad)
+      });
 
       limpiar();
       mostrarToast('✔ Producto registrado exitosamente.');
@@ -134,7 +155,9 @@ require_once "../../app/verificar_sesion.php";
         'color:#c0392b;font-size:12px;font-weight:600;margin-top:3px;display:block;';
 
       input.parentNode.appendChild(msg);
-      input.addEventListener('input', quitarErrores, { once: true });
+      input.addEventListener('input', quitarErrores, {
+        once: true
+      });
     }
 
     /**
@@ -168,12 +191,11 @@ require_once "../../app/verificar_sesion.php";
         toast.style.display = 'none';
       }, 3000);
     }
-
   </script>
-<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-  
-<script src="../../public/js/app.js"></script>
+  <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+  <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+
+  <script src="../../public/js/app.js"></script>
 </body>
 
 </html>

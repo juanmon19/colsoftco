@@ -4,12 +4,14 @@ require_once "../../app/verificar_sesion.php";
 require_once '../../config/conexion.php';
 require_once __DIR__ . '/../../app/HistorialMovimientos.php';
 
+
 $db = new Conexion();
 $conn = $db->getConnection();
 
 $unidades = $conn->query("SELECT * FROM unidades_medida")->fetchAll(PDO::FETCH_ASSOC);
 $proveedores = $conn->query("SELECT * FROM proveedores")->fetchAll(PDO::FETCH_ASSOC);
-
+$materias_primas = $conn->query("SELECT id_material, nombre_material FROM materias_primas")
+    ->fetchAll(PDO::FETCH_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $nombre_material = $_POST['nombre_material'];
@@ -105,20 +107,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label for="producto">Producto</label>
                                 <div class="select-wrap">
                                     <!-- Corrección de id="unidad" a id="producto" -->
-                                    <select id="producto">
+                                    <select id="producto" name="id_material" required>
                                         <option value="">-- Seleccione --</option>
-                                        <option>Espuma de poliuretano</option>
-                                        <option>Tela Jacquard</option>
-                                        <option>Resortes Bonell</option>
-                                        <option>Espuma</option>
-                                        <option>Fieltro aislante</option>
-                                        <option>Pegante industrial</option>
-                                        <option>Hilo de costura</option>
-                                        <option>Espuma viscoelástica</option>
-                                        <option>Tela antideslizante</option>
-                                        <option>Borde perimetral</option>
-                                        <option>Empaque plástico</option>
-                                        <option>Tela</option>
+
+                                        <?php foreach ($materias_primas as $material): ?>
+                                            <option value="<?= $material['id_material'] ?>">
+                                                <?= htmlspecialchars($material['nombre_material']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+
                                     </select>
                                 </div>
                             </div>
@@ -216,7 +213,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 return;
             }
 
-            console.log({ producto, cantidad: Number(cantidad) });
+            console.log({
+                producto,
+                cantidad: Number(cantidad)
+            });
             limpiar();
             mostrarToast("✔ Producto registrado exitosamente.");
         }
@@ -233,14 +233,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             msg.style.cssText = "color:#c0392b;font-size:12px;font-weight:600;margin-top:3px;display:block;";
 
             input.parentNode.appendChild(msg);
-            input.addEventListener("input", quitarErrores, { once: true });
+            input.addEventListener("input", quitarErrores, {
+                once: true
+            });
         }
 
         function quitarErrores() {
             document.querySelectorAll(".field-error").forEach((el) => el.remove());
             ["producto", "cantidad"].forEach((id) => {
                 const inp = document.getElementById(id);
-                if(inp) {
+                if (inp) {
                     inp.style.borderColor = "";
                     inp.style.boxShadow = "";
                 }
@@ -260,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-    
+
     <script src="../../public/js/app.js"></script>
 </body>
 
