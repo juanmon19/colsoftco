@@ -35,7 +35,6 @@ require_once "../../app/verificar_sesion.php";
 
             <nav class="nav" id="navMenu">
                 <button class="nav-item"onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>
-                <button class="nav-item"onclick="window.location.href='../registro_proveedores/registro_proveedores.php'">Registrar Proveedor</button>
                 <button class="nav-item"onclick="window.location.href='../historial_movimientos/historial.php'">Historial de Movimientos</button>
                 <button class="nav-item"onclick="window.location.href='../generar_informe/generar_informe.php'">Generar Informe</button>
                 <button class="nav-item"onclick="window.location.href='../registromp/registromp.php'">Registrar Materia Prima</button>
