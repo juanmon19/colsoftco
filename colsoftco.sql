@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-08-2026 a las 06:11:22
+-- Tiempo de generación: 06-08-2026 a las 09:54:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -35,6 +35,34 @@ CREATE TABLE `areas` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `historial_movimientos`
+--
+
+CREATE TABLE `historial_movimientos` (
+  `id` int(11) NOT NULL,
+  `modulo` varchar(50) NOT NULL,
+  `accion` varchar(50) NOT NULL,
+  `id_registro` int(11) DEFAULT NULL,
+  `descripcion` text NOT NULL,
+  `datos_anteriores` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`datos_anteriores`)),
+  `datos_nuevos` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`datos_nuevos`)),
+  `usuario_id` int(11) DEFAULT NULL,
+  `usuario_nombre` varchar(100) NOT NULL,
+  `ip` varchar(45) DEFAULT NULL,
+  `fecha_hora` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `historial_movimientos`
+--
+
+INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `descripcion`, `datos_anteriores`, `datos_nuevos`, `usuario_id`, `usuario_nombre`, `ip`, `fecha_hora`) VALUES
+(1, 'materia_prima', 'editar', 9, 'Se actualizó la materia prima \'Borde perimetral\'', NULL, '{\"nombre_material\":\"Borde perimetral\",\"stock_actual\":\"180.00\",\"stock_minimo\":\"40.00\",\"id_unidad\":\"2\",\"id_proveedor\":\"3\"}', NULL, 'Jafet Pineda', '::1', '2026-08-06 02:28:15'),
+(2, 'proveedores', 'crear', NULL, 'Se registró el proveedor \'Res\'', NULL, '{\"nombre_empresa\":\"Res\",\"contacto_nombre\":\"David\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3116364875\",\"email\":\"jafetgatitos06@gmail.com\",\"nit\":\"455492131245\",\"direccion\":\"Cl. 14 #107-54\"}', NULL, 'Jafet Pineda', '::1', '2026-08-06 02:42:38');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `materias_primas`
 --
 
@@ -60,9 +88,9 @@ INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`,
 (6, 'Hilo de costura', 80.00, 15.00, 3, 2),
 (7, 'Espuma viscoelastica', 60.00, 30.00, 1, 1),
 (8, 'Tela antideslizante', 200.00, 40.00, 2, 2),
-(9, 'Borde perimetral', 180.00, 30.00, 2, 3),
+(9, 'Borde perimetral', 180.00, 40.00, 2, 3),
 (10, 'Empaque plastico', 400.00, 80.00, 2, 4),
-(11, 'Tela ', 100.00, 20.00, 2, 2);
+(11, 'Tela ', 100.00, 30.00, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -91,52 +119,6 @@ INSERT INTO `modelos_colchon` (`id_modelo`, `nombre_modelo`, `descripcion`, `ser
 (9, 'Doble', NULL, 'MOD-DOBLE'),
 (10, 'Queen', NULL, 'MOD-QUEEN'),
 (11, 'King', NULL, 'MOD-KING');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `movimientos_inventario`
---
-
-CREATE TABLE `movimientos_inventario` (
-  `id_movimiento` int(11) NOT NULL,
-  `id_material` int(11) DEFAULT NULL,
-  `id_area_origen` int(11) DEFAULT NULL,
-  `id_area_destino` int(11) DEFAULT NULL,
-  `cantidad` decimal(12,2) NOT NULL,
-  `tipo_movimiento` enum('ENTRADA','SALIDA','TRASLADO') NOT NULL,
-  `fecha_movimiento` timestamp NOT NULL DEFAULT current_timestamp(),
-  `id_usuario` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Disparadores `movimientos_inventario`
---
-DELIMITER $$
-CREATE TRIGGER `check_stock_minimo` AFTER INSERT ON `movimientos_inventario` FOR EACH ROW BEGIN
-    DECLARE stock_actual_var DECIMAL(12,2);
-    DECLARE stock_min_var DECIMAL(12,2);
-    DECLARE nombre_mat_var VARCHAR(100);
-
-    -- 1. Obtenemos los datos actuales del material afectado
-    SELECT stock_actual, stock_minimo, nombre_material 
-    INTO stock_actual_var, stock_min_var, nombre_mat_var
-    FROM Materias_Primas 
-    WHERE id_material = NEW.id_material;
-
-    -- 2. Si el stock es menor o igual al mínimo, generamos la alerta
-    IF stock_actual_var <= stock_min_var THEN
-        INSERT INTO Notificaciones (id_material, mensaje)
-        VALUES (
-            NEW.id_material, 
-            CONCAT('ALERTA: El material "', nombre_mat_var, 
-                   '" ha alcanzado su nivel crítico. Stock actual: ', 
-                   stock_actual_var)
-        );
-    END IF;
-END
-$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -194,7 +176,8 @@ INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit`, `direccion`,
 (2, 'Textiles Andinos SAS', '800234567-2', 'Medellín, Antioquia', 'Producción de textiles para la industria colchonera', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com'),
 (3, 'Resortes Nacionales SAS', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com'),
 (4, 'Insumos Industriales SAS', '900456789-4', 'Barranquilla, Atlántico', 'Distribución de insumos industriales', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com'),
-(5, 'Espumas y Colchones del Norte S.A.S.', '901456789-3', 'Carrera 15 # 45-20, Bogotá, Colombia', 'Proveedor especializado en espuma de poliuretano, telas para colchonería, resortes y materias primas para la fabricación de colchones y muebles.', 'Carlos', 'Ramírez', '3204567890', 'compras@espumasnorte.com');
+(5, 'Espumas y Colchones del Norte S.A.S.', '901456789-3', 'Carrera 15 # 45-20, Bogotá, Colombia', 'Proveedor especializado en espuma de poliuretano, telas para colchonería, resortes y materias primas para la fabricación de colchones y muebles.', 'Carlos', 'Ramírez', '3204567890', 'compras@espumasnorte.com'),
+(7, 'Res', '455492131245', 'Cl. 14 #107-54', 'Resortes Especializados', 'David', 'Pineda', '3116364875', 'jafetgatitos06@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -378,6 +361,16 @@ ALTER TABLE `areas`
   ADD PRIMARY KEY (`id_area`);
 
 --
+-- Indices de la tabla `historial_movimientos`
+--
+ALTER TABLE `historial_movimientos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_modulo` (`modulo`),
+  ADD KEY `idx_accion` (`accion`),
+  ADD KEY `idx_fecha` (`fecha_hora`),
+  ADD KEY `idx_usuario` (`usuario_id`);
+
+--
 -- Indices de la tabla `materias_primas`
 --
 ALTER TABLE `materias_primas`
@@ -391,16 +384,6 @@ ALTER TABLE `materias_primas`
 ALTER TABLE `modelos_colchon`
   ADD PRIMARY KEY (`id_modelo`),
   ADD UNIQUE KEY `serial` (`serial`);
-
---
--- Indices de la tabla `movimientos_inventario`
---
-ALTER TABLE `movimientos_inventario`
-  ADD PRIMARY KEY (`id_movimiento`),
-  ADD KEY `id_material` (`id_material`),
-  ADD KEY `id_area_origen` (`id_area_origen`),
-  ADD KEY `id_area_destino` (`id_area_destino`),
-  ADD KEY `id_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `notificaciones`
@@ -456,6 +439,12 @@ ALTER TABLE `areas`
   MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `historial_movimientos`
+--
+ALTER TABLE `historial_movimientos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `materias_primas`
 --
 ALTER TABLE `materias_primas`
@@ -466,12 +455,6 @@ ALTER TABLE `materias_primas`
 --
 ALTER TABLE `modelos_colchon`
   MODIFY `id_modelo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-
---
--- AUTO_INCREMENT de la tabla `movimientos_inventario`
---
-ALTER TABLE `movimientos_inventario`
-  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `notificaciones`
@@ -489,7 +472,7 @@ ALTER TABLE `pedidos_proveedor`
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `receta_colchon`
@@ -519,15 +502,6 @@ ALTER TABLE `usuarios`
 ALTER TABLE `materias_primas`
   ADD CONSTRAINT `materias_primas_ibfk_1` FOREIGN KEY (`id_unidad`) REFERENCES `unidades_medida` (`id_unidad`),
   ADD CONSTRAINT `materias_primas_ibfk_2` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedores` (`id_proveedor`);
-
---
--- Filtros para la tabla `movimientos_inventario`
---
-ALTER TABLE `movimientos_inventario`
-  ADD CONSTRAINT `movimientos_inventario_ibfk_1` FOREIGN KEY (`id_material`) REFERENCES `materias_primas` (`id_material`),
-  ADD CONSTRAINT `movimientos_inventario_ibfk_2` FOREIGN KEY (`id_area_origen`) REFERENCES `areas` (`id_area`),
-  ADD CONSTRAINT `movimientos_inventario_ibfk_3` FOREIGN KEY (`id_area_destino`) REFERENCES `areas` (`id_area`),
-  ADD CONSTRAINT `movimientos_inventario_ibfk_4` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
 
 --
 -- Filtros para la tabla `notificaciones`
