@@ -1,6 +1,9 @@
 <?php
 
 require_once '../../../app/logica_proveedores.php';
+require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
+
+session_start();
 
 $logica = new ProveedorLogica();
 
@@ -24,6 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $logica->eliminarAlerta($id);
 
+    (new HistorialMovimientos())->registrar([
+        'modulo'           => 'alertas_stock',
+        'accion'           => 'eliminar',
+        'id_registro'      => $id,
+        'descripcion'      => "Se desactivó la alerta de stock mínimo de '{$material['nombre_material']}'",
+        'datos_anteriores' => $material,
+        'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+    ]);
+
     header("Location: lista_alertas.php");
     exit;
 }
@@ -35,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eliminar Alerta</title>
     <link rel="stylesheet" href="alertas.css">
 </head>
@@ -42,7 +55,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 
 <header>
-    <h1>Eliminar Alerta de Stock</h1>
+    <div class="logo">
+        <a href="lista_alertas.php">
+            <img src="../../../public/imagenes/logo.png" alt="logo">
+        </a>
+    </div>
+    
+    <div class="header-title">
+        <h1>Eliminar Alerta de Stock</h1>
+    </div>
+
+    <div style="width: 50px; flex-shrink: 0;"></div>
 </header>
 
 <div class="container">

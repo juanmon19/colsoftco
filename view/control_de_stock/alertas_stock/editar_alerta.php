@@ -1,6 +1,9 @@
 <?php
 
 require_once '../../../app/logica_proveedores.php';
+require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
+
+session_start();
 
 $logica = new ProveedorLogica();
 
@@ -8,12 +11,23 @@ $id = $_GET['id'];
 
 $material = $logica->obtenerMateriaPorId($id);
 
-if($_SERVER['REQUEST_METHOD']=="POST")
-{
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    $stockMinimoAnterior = $material['stock_minimo'] ?? null;
+
     $logica->actualizarStockMinimo(
         $id,
         $_POST['stock_minimo']
     );
+
+    (new HistorialMovimientos())->registrar([
+        'modulo'           => 'alertas_stock',
+        'accion'           => 'editar',
+        'id_registro'      => $id,
+        'descripcion'      => "Se actualizó el stock mínimo de '{$material['nombre_material']}'",
+        'datos_anteriores' => ['stock_minimo' => $stockMinimoAnterior],
+        'datos_nuevos'     => ['stock_minimo' => $_POST['stock_minimo']],
+        'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+    ]);
 
     header("Location: lista_alertas.php");
     exit;
@@ -23,68 +37,82 @@ if($_SERVER['REQUEST_METHOD']=="POST")
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Editar Alerta</title>
 
-<link rel="stylesheet" href="alertas.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Alerta</title>
+
+    <link rel="stylesheet" href="alertas.css">
 </head>
+
 <body>
 
-<header>
-    <h1>Editar Stock Mínimo</h1>
-</header>
-
-<div class="container">
-
-    <div class="card">
-
-        <div class="card-header">
-            Actualizar Alerta
+    <header>
+        <div class="logo">
+            <a href="lista_alertas.php">
+                <img src="../../../public/imagenes/logo.png" alt="logo">
+            </a>
+        </div>
+        
+        <div class="header-title">
+            <h1>Editar Stock Mínimo</h1>
         </div>
 
-        <div class="card-body">
+        <div style="width: 50px; flex-shrink: 0;"></div>
+    </header>
 
-            <form method="POST">
+    <div class="container">
 
-                <div class="form-group">
-                    <label>Material</label>
-                    <input type="text"
-                           class="form-control"
-                           value="<?= $material['nombre_material'] ?>"
-                           readonly>
-                </div>
+        <div class="card">
 
-                <div class="form-group">
-                    <label>Stock Mínimo</label>
-                    <input type="number"
-                           name="stock_minimo"
-                           class="form-control"
-                           value="<?= $material['stock_minimo'] ?>"
-                           required>
-                </div>
+            <div class="card-header">
+                Actualizar Alerta
+            </div>
 
-                <div class="botones">
+            <div class="card-body">
 
-                    <a href="lista_alertas.php"
-                       class="btn btn-volver">
-                        ← Volver
-                    </a>
+                <form method="POST">
 
-                    <button type="submit"
+                    <div class="form-group">
+                        <label>Material</label>
+                        <input type="text"
+                            class="form-control"
+                            value="<?= $material['nombre_material'] ?>"
+                            readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stock Mínimo</label>
+                        <input type="number"
+                            name="stock_minimo"
+                            class="form-control"
+                            value="<?= $material['stock_minimo'] ?>"
+                            required>
+                    </div>
+
+                    <div class="botones">
+
+                        <a href="lista_alertas.php"
+                            class="btn btn-volver">
+                            ← Volver
+                        </a>
+
+                        <button type="submit"
                             class="btn btn-guardar">
-                        Guardar Cambios
-                    </button>
+                            Guardar Cambios
+                        </button>
 
-                </div>
+                    </div>
 
-            </form>
+                </form>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
 </body>
+
 </html>

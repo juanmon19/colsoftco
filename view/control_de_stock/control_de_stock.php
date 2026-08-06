@@ -1,3 +1,9 @@
+<?php
+
+require_once "../../app/verificar_sesion.php";
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -5,22 +11,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="controlstock.css">
-  <title>control de stock</title>
+  <title>Control de stock</title>
 </head>
 
 <body>
 
   <header>
-    <a class="logo" href="../panel_admin/panel_admin.html">
-      <img src="../../public/imagenes/logo.png" alt="logo">
-    </a>
+    <div class="logo">
+      <a href="../panel_admin/panel_admin.php">
+        <img src="../../public/imagenes/logo.png" alt="logo">
+      </a>
+    </div>
 
-    <span class="header-title">Control de Stock</span>
+    <div class="header-title">
+        <h1>Control de Stock</h1>
+    </div>
 
     <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
       Cerrar sesión
     </button>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 20280bdb7681e20d508d82ed4fe0a4b948dbf84f
   </header>
 
   <div class="page-body">
@@ -41,7 +54,7 @@
                 <label for="producto">Producto</label>
                 <div class="select-wrap">
                   <select id="producto" name="producto">
-                    </option>
+                    <option value="">-- Seleccione --</option>
                     <option>Espuma de poliuretano</option>
                     <option>Tela Jacquard</option>
                     <option>Resortes Bonell </option>
@@ -99,10 +112,10 @@
               </div>
             </div>
           </form>
-          </form>
+
+          <hr class="form-divider" style="margin: 30px 0;" />
 
           <div class="acciones-stock">
-
             <button type="button" class="btn btn-primary"
               onclick="window.location.href='inventario/registrar_stock.php'">
               Registrar Stock
@@ -117,66 +130,78 @@
               onclick="window.location.href='inventario/lista_inventario.php'">
               Ver Inventario
             </button>
-
           </div>
 
         </div>
-
       </div>
     </div>
   </div>
 
-  </div>
-  </div>
+  <footer>
+    <div class="footer-divider"></div>
+
+    <div class="footer-top">
+      <div>
+        <p class="footer-brand-name">COLSOFTCO</p>
+        <p class="footer-brand-sub">Sistema de Gestión</p>
+        <p class="footer-brand-desc">
+          Sistema de gestión y administración de materias primas para Max&Flex.
+          Eficiencia en inventarios y movimientos empresariales.
+        </p>
+      </div>
+
+      <div>
+        <p class="footer-col-title">Contacto</p>
+        <div class="footer-contact-item">📍 Bogotá, Colombia</div>
+        <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
+        <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
+        <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+      <span>Desarrollado por <strong>Equipo SENA</strong></span>
+    </div>
+  </footer>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    // 1. CAPTURA DE ELEMENTOS: Obtención de los componentes esenciales por ID
     const form = document.getElementById('regForm');
     const toast = document.getElementById('toast');
 
-    // 2. ESCUCHA DE EVENTOS: Controla el envío del formulario
     form.addEventListener('submit', function(e) {
-      // Evita el refresco automático de la página al presionar "Registrar"
       e.preventDefault();
 
-      // Obtiene los valores actuales escritos/seleccionados por el usuario
       const producto = document.getElementById('producto').value;
       const unidad = document.getElementById('unidad').value;
       const cantidad = document.getElementById('cantidad').value;
 
-      // Validaciones lógicas individuales mediante ventanas JavaScript de alerta
       if (!producto) {
         alert('Por favor seleccione un producto.');
         return;
-      } // Cancela ejecución si falta producto
+      } 
       if (!unidad) {
         alert('Por favor seleccione la unidad de medida.');
         return;
-      } // Cancela si falta unidad
+      } 
       if (cantidad === '' || Number(cantidad) < 0) {
         alert('Ingrese una cantidad mínima válida (número mayor o igual a 0).');
-        return; // Cancela si la cantidad está vacía o es negativa
+        return; 
       }
 
-      // Si pasa todas las validaciones, muestra el aviso flotante y limpia los inputs
       showToast('✔ Materia prima registrada correctamente.');
       form.reset();
     });
 
-    // 3. MÉTODO AUXILIAR: Permite blanquear el formulario desde el botón "Limpiar"
     function resetForm() {
       form.reset();
     }
 
-    // 4. MÉTODO AUXILIAR: Administra la visibilidad y temporizador del Toast informativo
     function showToast(mensaje) {
-      // Asigna el texto personalizado recibido o uno por defecto
       toast.textContent = mensaje || '✔ Operación exitosa.';
-      // Hace visible el bloque flotante cambiando su propiedad display CSS
       toast.style.display = 'block';
-      // Configura un temporizador para ocultarlo automáticamente tras 3.5 segundos (3500 ms)
       setTimeout(function() {
         toast.style.display = 'none';
       }, 3500);
@@ -184,8 +209,8 @@
   </script>
   <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
   <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/app.js"></script>
+  
+  <script src="../../public/js/app.js"></script>
 </body>
 
 </html>

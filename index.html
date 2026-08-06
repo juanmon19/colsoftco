@@ -4,29 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Max&Flex - Inicio</title>
+    <title>COLSOFTCO - Inicio</title>
     <link href="index/index.css" rel="stylesheet">
-
 </head>
 
 <body>
 
-    <!-- HEADER con logo adentro -->
+    <!-- HEADER -->
     <header>
-        <!-- Logo dentro del header -->
-        <div class="header">
-
-            <div class="logo">
-                <img src="public/imagenes/logo.png">
-            </div>
+        <div class="logo">
+            <img src="public/imagenes/logo.png" alt="Logo">
         </div>
 
         <!-- Título centrado -->
         <span class="header-title">Bienvenido</span>
 
-        <!-- Botones Login / Registrarse -->
+        <!-- Boton Login  -->
         <div class="header-actions">
-            <a href="view/login/login.html" class="btn-header">Login</a>
+            <a href="view/login/login.php" class="btn-header">Login</a>
         </div>
     </header>
 
@@ -35,17 +30,13 @@
 
         <!-- Banner / imagen -->
         <div class="banner">
-            <!--
-            Si tienes un banner, reemplaza el div de abajo con:
-            <img src="assets/img/banner.jpg" alt="Banner Max&Flex">
-        -->
-            <div class="banner-placeholder">
-                <svg viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="1" y="1" width="98" height="78" rx="3" stroke="#999" stroke-width="2" />
-                    <line x1="1" y1="1" x2="99" y2="79" stroke="#999" stroke-width="1.5" />
-                    <line x1="99" y1="1" x2="1" y2="79" stroke="#999" stroke-width="1.5" />
-                </svg>
-            </div>
+            <img src="public/imagenes/banner.png" alt="Banner Max&Flex">
+            <!-- Si la imagen no carga, se mostrará este SVG de respaldo (opcional) -->
+            <svg viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                <rect x="1" y="1" width="98" height="78" rx="3" stroke="#999" stroke-width="2" />
+                <line x1="1" y1="1" x2="99" y2="79" stroke="#999" stroke-width="1.5" />
+                <line x1="99" y1="1" x2="1" y2="79" stroke="#999" stroke-width="1.5" />
+            </svg>
         </div>
 
         <!-- Tarjeta Quiénes Somos -->
@@ -65,6 +56,35 @@
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+
+    <footer>
+        <div class="footer-divider"></div>
+
+        <div class="footer-top">
+            <div>
+                <p class="footer-brand-name">COLSOFTCO</p>
+                <p class="footer-brand-sub">Sistema de Gestión</p>
+                <p class="footer-brand-desc">
+                    Sistema de gestión y administración de materias primas para Max&Flex. 
+                    Eficiencia en inventarios y movimientos empresariales.
+                </p>
+            </div>
+
+            <div>
+                <p class="footer-col-title">Contacto</p>
+                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
+                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
+                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
+                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>Desarrollado por <strong>Equipo SENA</strong></span>
+        </div>
+    </footer>
+
 </body>
 
 </html>

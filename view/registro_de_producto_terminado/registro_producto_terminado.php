@@ -1,11 +1,17 @@
+<?php
+
+require_once "../../app/verificar_sesion.php";
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>REGISTRO DE PRODUCTOS TERMINADOS</title>
-  <link href="registrodeproductoterminado.css" rel="stylesheet">
+  <title>Registro de productos terminados</title>
+  <link href="registro_producto_terminado.css" rel="stylesheet">
 </head>
 
 
@@ -13,7 +19,7 @@
 
   <header>
     <div class="logo">
-      <a href="../panel_admin/panel_admin.html">
+      <a href="../panel_admin/panel_admin.php">
         <img src="../../public/imagenes/logo.png" alt="logo">
       </a>
     </div>
@@ -23,6 +29,10 @@
       <h1>Registro de Productos terminados</h1>
       <div class="title-underline"></div>
     </div>
+
+      <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+          Cerrar sesión
+      </button>
   </header>
 
   <!-- ── BODY ── -->
@@ -162,8 +172,8 @@
   </script>
 <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
 <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/app.js"></script>
+  
+<script src="../../public/js/app.js"></script>
 </body>
 
 </html>

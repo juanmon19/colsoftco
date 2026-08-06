@@ -1,0 +1,303 @@
+/* ============================================
+   Historial de Movimientos - COLSOFTCO
+   ============================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef2ff;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #1f2937;
+}
+
+/* ---------- Header (igual al resto de módulos) ---------- */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0A1F44;
+    padding: 10px 15px;
+    min-height: 70px;
+    border-bottom: 4px solid #D4AF37;
+    gap: 10px;
+}
+
+header .logo { display: flex; align-items: center; flex-shrink: 0; }
+header .logo img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 2px solid #D4AF37;
+    background: white;
+}
+
+.header-title { flex: 1; text-align: center; overflow: hidden; }
+.header-title h1 {
+    margin: 0;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.3s;
+    flex-shrink: 0;
+}
+.btn-logout:hover { background-color: #fff; }
+
+/* ---------- Cuerpo ---------- */
+.page-body {
+    flex: 1;
+    padding: 30px 15px;
+}
+
+.content {
+    margin: 0 auto;
+    max-width: 1150px;
+    width: 100%;
+}
+
+.tarjeta {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .1);
+    padding: 24px;
+    margin-bottom: 22px;
+}
+
+.tarjeta h2 {
+    margin: 0 0 6px;
+    color: #0A1F44;
+    font-size: 20px;
+}
+
+.subtitulo {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* ---------- Filtros ---------- */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.campo-filtro {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    min-width: 150px;
+}
+
+.campo-filtro label {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #0A1F44;
+}
+
+.campo-filtro input,
+.campo-filtro select {
+    padding: 9px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 13px;
+    background: #fff;
+}
+
+.campo-filtro input:focus,
+.campo-filtro select:focus {
+    outline: none;
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.25);
+}
+
+.campo-buscar {
+    flex-grow: 1;
+    min-width: 220px;
+}
+
+.acciones-filtro {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.btn {
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #0A1F44;
+    color: #D4AF37;
+}
+.btn-primary:hover { background: #132a5c; }
+
+.btn-outline {
+    background: #fff;
+    color: #0A1F44;
+    border: 1px solid #0A1F44;
+}
+.btn-outline:hover { background: #f1f5f9; }
+
+/* ---------- Tabla ---------- */
+.tabla-wrapper {
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.tabla-historial {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+}
+
+.tabla-historial thead {
+    background: #0A1F44;
+}
+
+.tabla-historial thead th {
+    color: #D4AF37;
+    text-align: left;
+    padding: 12px 14px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.tabla-historial tbody tr {
+    border-bottom: 1px solid #eef0f2;
+}
+
+.tabla-historial tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.tabla-historial td {
+    padding: 11px 14px;
+    vertical-align: top;
+}
+
+.sin-resultados {
+    text-align: center;
+    color: #9ca3af;
+    padding: 30px !important;
+    font-style: italic;
+}
+
+/* ---------- Badges de acción ---------- */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge-crear    { background: #dcfce7; color: #15803d; }
+.badge-editar   { background: #fef3c7; color: #b45309; }
+.badge-eliminar { background: #fee2e2; color: #b91c1c; }
+.badge-entrada  { background: #dbeafe; color: #1d4ed8; }
+.badge-salida   { background: #ede9fe; color: #6d28d9; }
+.badge-default  { background: #e5e7eb; color: #374151; }
+
+/* ---------- Detalle expandible ---------- */
+.btn-detalle {
+    background: #eef2ff;
+    color: #0A1F44;
+    border: 1px solid #c7d2fe;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.btn-detalle:hover { background: #e0e7ff; }
+
+.detalle-oculto {
+    display: none;
+    margin-top: 8px;
+    background: #0A1F44;
+    color: #d1d5db;
+    padding: 10px;
+    border-radius: 6px;
+    max-width: 320px;
+}
+.detalle-visible { display: block; }
+
+.detalle-oculto pre {
+    margin: 4px 0 10px;
+    font-size: 11.5px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* ---------- Paginación ---------- */
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.pagina-link {
+    color: #0A1F44;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+}
+.pagina-link:hover { text-decoration: underline; }
+
+.pagina-actual { font-size: 13px; color: #6b7280; }
+
+.total-resultados {
+    text-align: right;
+    font-size: 12.5px;
+    color: #9ca3af;
+    margin-top: 12px;
+}
+
+/* ---------- Footer (igual al resto de módulos) ---------- */
+footer { background: #0D1B3E; color: #ffffff; width: 100%; margin-top: auto; flex-shrink: 0; }
+.footer-divider { width: 100%; height: 3px; background: linear-gradient(90deg, #C9A227, #E8C84A, #C9A227); }
+.footer-top { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 1.5rem 3rem 1.2rem; border-bottom: 1px solid rgba(201, 162, 39, 0.3); }
+.footer-brand-name { font-size: 22px; font-weight: 700; color: #C9A227; letter-spacing: 2px; margin: 0 0 4px; }
+.footer-brand-sub { font-size: 11px; letter-spacing: 3px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; margin: 0 0 12px; }
+.footer-brand-desc { font-size: 13px; color: rgba(255, 255, 255, 0.65); line-height: 1.6; max-width: 280px; margin: 0; }
+.footer-col-title { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #C9A227; border-bottom: 2px solid #C9A227; display: inline-block; padding-bottom: 6px; margin-bottom: 16px; }
+.footer-contact-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 13px; color: rgba(255, 255, 255, 0.65); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 3rem; background: rgba(0, 0, 0, 0.25); flex-wrap: wrap; gap: 8px; }
+.footer-bottom span { font-size: 12px; color: rgba(255, 255, 255, 0.4); }
+.footer-bottom strong { color: #C9A227; }
+
+@media (max-width: 768px) {
+    .footer-top { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
+    .footer-bottom { justify-content: center; text-align: center; padding: 0.8rem 1.5rem; }
+    .filtros { flex-direction: column; }
+    .acciones-filtro { flex-direction: row; }
+}

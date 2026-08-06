@@ -23,7 +23,7 @@ if (isset($_POST['login'])) {
         );
     } else {
         $_SESSION['error'] = 'Ingrese sus credenciales';
-        header("location:../view/login/login.html");
+        header("location:../view/login/login.php");
     }
 }
 
@@ -58,7 +58,7 @@ if (isset($_POST['registro'])) {
 
     $_SESSION['mensaje'] = $Mensaje;
 
-    header("location:../view/registro/registro.html");
+    header("location:../view/registro/registro.php");
 }
 //function saveUser este metodo es para registrar los usuarios
 function saveUser(array $datos)
@@ -125,26 +125,26 @@ function login(array $credenciales)
                 $Rol = $_SESSION['rol'];
 
                 if ($Rol == 'administrador') {
-                    header("location:../view/panel_admin/panel_admin.html");
+                    header("location:../view/panel_admin/panel_admin.php");
                 } elseif ($Rol == 'bodeguero') {
-                    header("location:../view/panel_bodeguero/panel_bodeguero.html");
+                    header("location:../view/panel_bodeguero/panel_bodeguero.php");
                 } elseif ($Rol == 'operario') {
-                    header("location:../view/panel_operario/panel_operario.html");
+                    header("location:../view/panel_operario/panel_operario.php");
                 }
 
                 exit();
         
             } else {
                 $_SESSION['error'] = 'Error en el password';
-                header("location:../view/login/login.html");
+                header("location:../view/login/login.php");
             }
         } else {
             $_SESSION['error'] = 'Error en el documento';
-            header("location:../view/login/login.html");
+            header("location:../view/login/login.php");
         }
     } else {
         $_SESSION['error'] = 'Error, no existe ese usuario';
-        header("location:../view/login/login.html");
+        header("location:../view/login/login.php");
     }
 }
 

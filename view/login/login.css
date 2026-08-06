@@ -1,204 +1,295 @@
 * {
-
     box-sizing: border-box;
-
 }
-
 
 /* ===== GENERAL ===== */
-
 body {
-
     font-family: Arial, Helvetica, sans-serif;
-
     background-color: #f4f4f4;
-
     margin: 0;
-
     font-size: 14px;
-
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
+.mensaje-error{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:6px;
+    background:#fdecea;
+    color:#b71c1c;
+    border:1px solid #f5c6cb;
+    text-align:center;
+    font-size:14px;
+    font-weight:600;
+}
 
+.mensaje-exito{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:6px;
+    background:#e8f5e9;
+    color:#1b5e20;
+    border:1px solid #c3e6cb;
+    text-align:center;
+    font-size:14px;
+    font-weight:600;
+}
+
+.login-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px; /* El padding horizontal evita que se pegue a los bordes en móviles */
+}
+
+/* ===== CABECERA ===== */
 .header {
-
     background-color: #0A1F44;
-
     color: white;
-
-    padding: 20px;
-
-    text-align: center;
-
-    font-size: 29px;
-
-    font-weight: bold;
-
+    padding: 0 20px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
-
 }
 
+.header-title {
+    font-size: 29px;
+    font-weight: bold;
+    text-align: center;
+}
 
 .logo {
-
     position: absolute;
-
     left: 20px;
-
     top: 50%;
-
     transform: translateY(-50%);
-
 }
-
 
 .logo img {
-
     width: 75px;
-
     cursor: pointer;
-
-    margin-top: 10px;
-
+    margin-top: 5px;
 }
-
 
 /* ===== CONTENEDOR LOGIN ===== */
-
 .login-container {
-
     background: #0A1F44;
-
     padding: 50px;
-
     border-radius: 10px;
-
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-
-    width: 400px;
-
-
-    margin: 120px auto;
-
+    width: 100%; /* Ajuste responsivo */
+    max-width: 400px; /* Límite para pantallas grandes */
 }
-
 
 /* ===== TÍTULO ===== */
-
 .login-container h2 {
-
     color: white;
-
     text-align: center;
-
     margin-bottom: 20px;
-
     font-size: 20px;
-
 }
-
 
 /* ===== INPUTS ===== */
-
 .input-group {
-
     margin-bottom: 15px;
-
 }
-
 
 .input-group label {
-
     color: white;
-
     display: block;
-
     font-size: 14px;
-
     margin-bottom: 5px;
-
 }
-
 
 .input-group input {
-
-    width: 100%;
-    /* Ahora igual que el botón */
-
+    width: 100%; 
     padding: 8px;
-
     border: 1px solid #ccc;
-
     border-radius: 5px;
-
     font-size: 14px;
-
 }
-
 
 /* ===== BOTÓN ===== */
-
 .btn {
-
-    width: 100%;
-    /* Igual ancho */
-
+    width: 100%; 
     padding: 10px;
-
     background: #D4AF37;
-
     border: none;
-
     color: black;
-
     font-size: 14px;
-
+    font-weight: bold;
     border-radius: 5px;
-
     cursor: pointer;
-
-    margin-top: 10px;
-    /* Separación del input */
-
+    margin-top: 10px; 
+    transition: background 0.3s ease;
 }
-
 
 .btn:hover {
-
     background: white;
-
 }
-
 
 /* ===== ERROR ===== */
-
 .error {
-
     color: red;
-
     font-size: 14px;
-
     text-align: center;
-
     margin-top: 10px;
-
 }
-/* ===== ENLACE RECUPERAR CONTRASEÑA ===== */
 
+/* ===== ENLACE RECUPERAR CONTRASEÑA ===== */
 .forgot-container {
     text-align: center;
-    margin-top: 20px; /* Separación respecto al botón de ingresar */
+    margin-top: 20px; 
 }
 
 .forgot-link {
-    color: #ffffff; /* Texto blanco para que resalte sobre el azul oscuro */
-    text-decoration: none; /* Quita la línea de abajo por defecto */
+    color: #ffffff; 
+    text-decoration: none; 
     font-size: 13px;
     display: inline-block;
     transition: color 0.3s ease;
 }
 
 .forgot-link:hover {
-    color: #D4AF37; /* Cambia al dorado de tu botón al pasar el cursor */
-    text-decoration: underline; /* Agrega el subrayado solo en el hover */
+    color: #D4AF37; 
+    text-decoration: underline; 
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background: #0D1B3E;
+    color: #ffffff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+}
+
+.footer-divider {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #C9A227, #E8C84A, #C9A227);
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 1.5rem 3rem 1.2rem;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+}
+
+.footer-brand-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #C9A227;
+    letter-spacing: 2px;
+    margin: 0 0 4px;
+}
+
+.footer-brand-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+}
+
+.footer-brand-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.6;
+    max-width: 280px;
+    margin: 0;
+}
+
+.footer-col-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #C9A227;
+    border-bottom: 2px solid #C9A227;
+    display: inline-block;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 3rem;
+    background: rgba(0, 0, 0, 0.25);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.footer-bottom span {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.footer-bottom strong {
+    color: #C9A227;
+}
+
+
+/* =========================================
+   MEDIA QUERIES (DISEÑO RESPONSIVO)
+   ========================================= */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 768px) {
+    .footer-top {
+        grid-template-columns: 1fr; /* El footer pasa a 1 sola columna */
+        gap: 1.5rem;
+        padding: 1.5rem 1.5rem 1.2rem;
+    }
+
+    .footer-bottom {
+        padding: 0.8rem 1.5rem;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* Teléfonos móviles */
+@media (max-width: 480px) {
+    .header {
+        padding: 0 10px;
+    }
+
+    .header-title {
+        font-size: 18px; /* Título más pequeño para evitar desbordamientos */
+        margin-left: 50px; /* Evita que el texto choque con el logo */
+    }
+
+    .logo img {
+        width: 50px; /* Logo más sutil en móviles */
+    }
+
+    .login-container {
+        padding: 30px 20px; /* Menos espacio interno en el cuadro azul */
+    }
+
+    .login-wrapper {
+        padding: 20px 15px; 
+    }
 }

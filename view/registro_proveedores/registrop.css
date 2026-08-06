@@ -7,8 +7,12 @@
 
 body {
     background: #eef1f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
+<<<<<<< HEAD
 .btn-logout {
     background-color: #D4AF37;
     color: #0A1F44;
@@ -22,10 +26,14 @@ body {
     margin-left: auto
 }
 
+=======
+/* ===== CABECERA ===== */
+>>>>>>> 20280bdb7681e20d508d82ed4fe0a4b948dbf84f
 header {
     background: #0A1F44;
     display: flex;
     align-items: center;
+<<<<<<< HEAD
     justify-content: center;
     padding: 10px 20px;
     height: 70px;
@@ -33,6 +41,22 @@ header {
     top: 0;
     z-index: 100;
     color: white;
+=======
+    justify-content: space-between;
+    padding: 10px 20px;
+    min-height: 70px; 
+    position: relative; /* <-- Cambiamos 'sticky' por 'relative' */
+    /* top: 0; <-- Puedes borrar esta línea, ya no la necesitamos */
+    z-index: 100;
+    color: white;
+    flex-wrap: wrap; 
+    gap: 10px;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+>>>>>>> 20280bdb7681e20d508d82ed4fe0a4b948dbf84f
 }
 
 .logo-area img {
@@ -41,17 +65,70 @@ header {
     align-items: center;
 }
 
-header h1 {
-    font-size: 30px;
-    font-weight: bold;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+/* ===== CABECERA ===== */
+header {
+    background-color: #0A1F44;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    min-height: 66px; 
+    border-bottom: 3px solid #d4af37;
+    position: relative; /* <-- Se mantiene relativo para que no baje al hacer scroll */
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(11, 61, 145, .35);
+    flex-wrap: wrap; 
+    gap: 10px;
 }
 
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 75px;
+    cursor: pointer;
+    display: block;
+}
+
+.header-title {
+    flex: 1;
+    text-align: center;
+}
+
+.header-title h1 {
+    font-size: 16px; 
+    font-weight: 900;
+    color: white;
+    text-transform: uppercase;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, .3);
+    margin: 0;
+}
+
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+
+.btn-logout:hover {
+    background-color: #fff;
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
 .contenedor-principal {
-    max-width: 900px;
-    margin: 25px auto;
+    max-width: 800px; /* Aumentado ligeramente para mejor vista en PC */
+    width: 90%; /* En lugar de 70% para que use bien el espacio en móviles */
+    margin: 30px auto;
+    flex: 1;
 }
 
 .acciones-superior {
@@ -59,18 +136,22 @@ header h1 {
 }
 
 .btn-volver {
+    display: inline-block;
     text-decoration: none;
     background: #0A1F44;
     color: white;
     padding: 12px 20px;
     border-radius: 8px;
     font-weight: bold;
+    transition: 0.3s ease;
 }
 
 .btn-volver:hover {
-    opacity: .9;
+    background: #081935;
+    opacity: 0.9;
 }
 
+/* ===== FORMULARIO ===== */
 .card-formulario {
     background: white;
     border-radius: 10px;
@@ -85,34 +166,45 @@ header h1 {
     align-items: center;
     gap: 15px;
     padding: 18px 25px;
+    border-bottom: 3px solid #D4AF37;
 }
 
+<<<<<<< HEAD
 
+=======
+.barra-amarilla {
+    width: 5px;
+    height: 30px;
+    background: #D4AF37;
+    border-radius: 5px;
+}
+>>>>>>> 20280bdb7681e20d508d82ed4fe0a4b948dbf84f
 
 .card-header h2 {
-    font-size: 22px;
+    font-size: 20px;
 }
 
 form {
-    padding: 30px;
+    padding: 25px;
 }
 
 .grid-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 15px 20px;
 }
 
 .field-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .field-group label {
-    font-weight: bold;
+    font-size: 13px;
+    font-weight: 700;
     color: #0A1F44;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-transform: uppercase;
 }
 
@@ -120,9 +212,19 @@ form {
 .field-group textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #cbd5e1;
+    border: 1.5px solid #cbd5e1;
     border-radius: 6px;
     font-size: 14px;
+    background: #fafbfd;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.field-group input:focus,
+.field-group textarea:focus {
+    outline: none;
+    border-color: #0A1F44;
+    box-shadow: 0 0 0 3px rgba(10, 31, 68, .13);
+    background: #fff;
 }
 
 .field-group textarea {
@@ -138,12 +240,17 @@ form {
 
 .btn-limpiar {
     padding: 12px 30px;
-    border: 1px solid #0A1F44;
+    border: 1.5px solid #0A1F44;
     background: white;
     color: #0A1F44;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-limpiar:hover {
+    background: #f4f6fb;
 }
 
 .btn-registrar {
@@ -154,6 +261,12 @@ form {
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-registrar:hover {
+    background: #081935;
+    transform: translateY(-1px);
 }
 
 .mensaje {
@@ -162,16 +275,150 @@ form {
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
+    font-weight: bold;
+    border-left: 4px solid #28a745;
 }
 
-@media(max-width:768px) {
+/* ===== FOOTER ===== */
+footer {
+    background: #0D1B3E;
+    color: #ffffff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+    flex-shrink: 0;
+}
 
+.footer-divider {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #C9A227, #E8C84A, #C9A227);
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 1.5rem 3rem 1.2rem;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+}
+
+.footer-brand-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #C9A227;
+    letter-spacing: 2px;
+    margin: 0 0 4px;
+}
+
+.footer-brand-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+}
+
+.footer-brand-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.6;
+    max-width: 280px;
+    margin: 0;
+}
+
+.footer-col-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #C9A227;
+    border-bottom: 2px solid #C9A227;
+    display: inline-block;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 3rem;
+    background: rgba(0, 0, 0, 0.25);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.footer-bottom span {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.footer-bottom strong {
+    color: #C9A227;
+}
+
+/* =========================================
+   MEDIA QUERIES (DISEÑO RESPONSIVO)
+   ========================================= */
+
+@media (max-width: 768px) {
     .grid-form {
         grid-template-columns: 1fr;
     }
-
-    header h1 {
-        font-size: 24px;
+    
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
     }
 
+    .footer-bottom {
+        justify-content: center;
+        text-align: center;
+        padding: 0.8rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        padding: 15px 10px;
+    }
+
+    header h1 {
+        font-size: 18px;
+        margin: 10px 0;
+    }
+
+    .btn-logout {
+        margin: 0 auto;
+    }
+
+    .card-header h2 {
+        font-size: 16px;
+    }
+
+    form {
+        padding: 15px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-limpiar, .btn-registrar {
+        width: 100%;
+        text-align: center;
+    }
 }

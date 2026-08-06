@@ -26,8 +26,12 @@ body {
   background: var(--gray-bg);
   min-height: 100vh;
   color: var(--blue);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
 }
 
+<<<<<<< HEAD
 /* ══ HEADER ══ */
 
 .btn-logout {
@@ -42,71 +46,79 @@ body {
     transition: 0.3s;
     margin-left: auto
 }
+=======
+/* =========================================================
+   HEADER ESTANDARIZADO
+========================================================= */
+>>>>>>> 20280bdb7681e20d508d82ed4fe0a4b948dbf84f
 
 header {
-  background: var(--blue);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  height: 66px;
-  border-bottom: 3px solid var(--gold);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 12px rgba(11,61,145,.35);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0A1F44;
+    padding: 10px 15px;
+    height: 70px; 
+    max-height: 70px;
+    position: sticky; 
+    top: 0;
+    z-index: 100;
+    border-bottom: 4px solid #D4AF37; 
+    gap: 10px; 
+    overflow: hidden; 
 }
 
-.logo {
-  position: relative;
-  left: 2px;
-  top: 52%;
-  transform: translateY(-50%);
+header .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; 
 }
 
-.logo img {
-  width: 60px;
-  cursor: pointer;
-  margin-top: 10px;
+header .logo img {
+    width: 50px; 
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #d4af37;
+    background: white;
 }
 
-/* Título central en el header */
 .header-title {
-  font-family: var(--font);
-  font-size: var(--h1);
-  font-weight: 900;
-  color: var(--white);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  text-shadow: 0 2px 10px rgba(0,0,0,.3);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+    flex: 1; 
+    text-align: center;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* User badge */
-.user-badge {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--white);
-  font-size: 13px;
-  font-weight: 700;
-  flex-shrink: 0;
+header h1 {
+    margin: 0;
+    color: white;
+    font-size: 16px; 
+    font-weight: bold;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    line-height: 1;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
-.avatar-sm {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--gold);
-  color: var(--blue-dark);
-  font-weight: 900;
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid rgba(255,255,255,.55);
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.3s;
+    flex-shrink: 0; 
+}
+
+.btn-logout:hover {
+    background-color: #fff;
 }
 
 /* ══ CUERPO ══ */
@@ -116,40 +128,23 @@ header {
   margin: 30px auto;
   gap: 22px;
   padding: 0 24px 44px;
+  flex: 1;
+  width: 100%;
 }
 
-/* ══ SIDEBAR ══ */
-aside {
-  width: 210px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.btn-volver{
+    display:inline-block;
+    background:#0A1F44;
+    color:white;
+    text-decoration:none;
+    padding:12px 22px;
+    border-radius:8px;
+    font-weight:bold;
+    transition:.3s;
 }
 
-aside a {
-  display: block;
-  background: var(--blue);
-  color: var(--white);
-  text-decoration: none;
-  text-align: center;
-  padding: 11px 10px;
-  border-radius: 4px;
-  font-size: var(--btn);
-  font-weight: 700;
-  transition: background .18s, color .18s, transform .12s;
-  border-left: 4px solid transparent;
-}
-
-aside a:hover {
-  background: var(--blue-light);
-  transform: translateX(3px);
-}
-
-aside a.active {
-  background: var(--gold);
-  color: var(--blue-dark);
-  border-left-color: var(--blue-dark);
+.btn-volver:hover{
+    background:#081935;
 }
 
 /* ══ CONTENIDO ══ */
@@ -299,6 +294,7 @@ input:focus, select:focus {
   font-weight: 700;
   cursor: pointer;
   transition: background .18s, transform .1s, box-shadow .18s;
+  text-align: center;
 }
 
 .btn-outline {
@@ -323,6 +319,13 @@ input:focus, select:focus {
 
 .btn-primary:active { transform: translateY(0); }
 
+.acciones-stock {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
 /* ══ TOAST ══ */
 .toast {
   display: none;
@@ -339,62 +342,146 @@ input:focus, select:focus {
   box-shadow: 0 4px 18px rgba(0,0,0,.22);
   z-index: 999;
 }
-.acciones-superior{
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    margin-bottom:25px;
+
+/* ===== FOOTER ESTANDARIZADO ===== */
+footer {
+    background: #0D1B3E;
+    color: #ffffff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+    flex-shrink: 0;
 }
 
-.btn-menu{
-    background:#0A1F44;
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:bold;
-    transition:.3s;
+.footer-divider {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #C9A227, #E8C84A, #C9A227);
 }
 
-.btn-menu:hover{
-    background:#D4AF37;
-    color:#0A1F44;
-}
-.container{
-    width:90%;
-    max-width:900px;
-    margin:40px auto;
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 1.5rem 3rem 1.2rem;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.3);
 }
 
-.btn-volver{
-    display:inline-block;
-    background:#0A1F44;
-    color:white;
-    text-decoration:none;
-    padding:12px 22px;
-    border-radius:8px;
-    font-weight:bold;
-    margin-bottom:20px;
-    transition:.3s;
+.footer-brand-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #C9A227;
+    letter-spacing: 2px;
+    margin: 0 0 4px;
 }
 
-.btn-volver:hover{
-    background:#081935;
+.footer-brand-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    margin: 0 0 12px;
 }
 
-.form-card{
-    background:white;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
+.footer-brand-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.6;
+    max-width: 280px;
+    margin: 0;
 }
 
-.form-header{
-    background:#0A1F44;
-    color:white;
-    padding:18px 25px;
-    font-size:22px;
-    font-weight:bold;
-    border-bottom:3px solid #D4AF37;
+.footer-col-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #C9A227;
+    border-bottom: 2px solid #C9A227;
+    display: inline-block;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 3rem;
+    background: rgba(0, 0, 0, 0.25);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.footer-bottom span {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.footer-bottom strong {
+    color: #C9A227;
+}
+
+/* =========================================
+   MEDIA QUERIES (DISEÑO RESPONSIVO MÓVIL)
+   ========================================= */
+
+@media (max-width: 800px) {
+  .page-body {
+    flex-direction: column;
+    padding: 0 12px 32px;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 1.5rem 1.2rem;
+  }
+
+  .footer-bottom {
+    padding: 0.8rem 1.5rem;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  
+  header h1 {
+      font-size: 14px !important;
+  }
+
+  .form-body {
+    padding: 20px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  .acciones-stock {
+    flex-direction: column;
+  }
+
+  .acciones-stock .btn {
+    width: 100%;
+  }
 }
