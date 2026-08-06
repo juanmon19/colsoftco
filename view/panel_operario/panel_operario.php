@@ -121,12 +121,11 @@ require_once "../../app/verificar_sesion.php";
 
 
                 <button
-                    onclick="window.location.href='../lista_verificacion/lista_verificacion.php'">
+                    onclick="window.location.href='../historial_movimientos/historial.php'">
 
                     <span>☑</span>
 
-                    Lista de Verificación
-
+                    Historial de movimientos
                 </button>
 
 
