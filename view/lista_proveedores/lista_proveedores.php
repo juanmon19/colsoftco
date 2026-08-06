@@ -46,13 +46,13 @@ $proveedores = $logica->getProveedores();
             </div>
 
             <div class="actions">
-                <button class="btn-action" onclick="window.location.href='../registro_proveedores/registro_proveedores.php'">
+                <button class="btn-action" onclick="window.location.href='registro_proveedores.php'">
                     Registrar Proveedor
                 </button>
 
                 <button class="btn-action"
-                    onclick="window.location.href='../lista_verificacion/lista_verificacion.php'">
-                    Generar lista de verificación
+                    onclick="window.location.href='../historial_movimientos/historial.php'">
+                    historial de movimientos
                 </button>
             </div>
 
