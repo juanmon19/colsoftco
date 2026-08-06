@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-08-2026 a las 09:54:06
+-- Tiempo de generación: 06-08-2026 a las 23:10:56
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -90,7 +90,7 @@ INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`,
 (8, 'Tela antideslizante', 200.00, 40.00, 2, 2),
 (9, 'Borde perimetral', 180.00, 40.00, 2, 3),
 (10, 'Empaque plastico', 400.00, 80.00, 2, 4),
-(11, 'Tela ', 100.00, 30.00, 2, 2);
+(11, 'Tela', 100.00, 30.00, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -101,7 +101,6 @@ INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`,
 CREATE TABLE `modelos_colchon` (
   `id_modelo` int(11) NOT NULL,
   `nombre_modelo` varchar(80) NOT NULL,
-  `descripcion` text DEFAULT NULL,
   `serial` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -109,16 +108,16 @@ CREATE TABLE `modelos_colchon` (
 -- Volcado de datos para la tabla `modelos_colchon`
 --
 
-INSERT INTO `modelos_colchon` (`id_modelo`, `nombre_modelo`, `descripcion`, `serial`) VALUES
-(1, 'Sueño Plus', 'Colchón de espuma de alta calidad', 'COL-0001'),
-(2, 'Descanso Real', 'Colchón ortopédico de firmeza media', 'COL-0002'),
-(3, 'Confort Total', 'Colchón con espuma viscoelástica', 'COL-0003'),
-(4, 'Premium Gold', 'Colchón de lujo con doble acolchado', 'COL-0004'),
-(5, 'Sencillo', NULL, ''),
-(8, 'Semidoble', NULL, 'MOD-SEMIDOBLE'),
-(9, 'Doble', NULL, 'MOD-DOBLE'),
-(10, 'Queen', NULL, 'MOD-QUEEN'),
-(11, 'King', NULL, 'MOD-KING');
+INSERT INTO `modelos_colchon` (`id_modelo`, `nombre_modelo`, `serial`) VALUES
+(1, 'Sueño Plus', 'COL-0001'),
+(2, 'Descanso Real', 'COL-0002'),
+(3, 'Confort Total', 'COL-0003'),
+(4, 'Premium Gold', 'COL-0004'),
+(5, 'Sencillo', ''),
+(8, 'Semidoble', 'MOD-SEMIDOBLE'),
+(9, 'Doble', 'MOD-DOBLE'),
+(10, 'Queen', 'MOD-QUEEN'),
+(11, 'King', 'MOD-KING');
 
 -- --------------------------------------------------------
 
@@ -346,7 +345,7 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
 (7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'administrador', '$2y$10$WIOrMUGxtSwEkYs4M0GgOuVfDrb9x6e4P7uVC6hvp8GxRE3oHV2ue', '1', '189510a696b40e8fe8fad52f932f321cb629de31456b124461fc2fc44fa6f3f1', '1785468187'),
-(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'operario', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
+(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'administrador', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
 (10, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
 (14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
 
