@@ -113,18 +113,45 @@ class InventarioLogica
         ]);
     }
 
-    public function eliminarMaterial($id)
+    /* Verificar si la materia prima está en una receta */
+    public function materialTieneReceta($id)
     {
         $sql = "
-        DELETE FROM materias_primas
-        WHERE id_material=?
+        SELECT COUNT(*)
+        FROM receta_colchon
+        WHERE id_material = ?
         ";
 
         $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$id]);
 
-        return $stmt->execute([$id]);
+        return $stmt->fetchColumn() > 0;
     }
 
+  public function eliminarMaterial($id)
+{
+    $sql = "
+        SELECT COUNT(*)
+        FROM receta_colchon
+        WHERE id_material = ?
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute([$id]);
+
+    if ($stmt->fetchColumn() > 0) {
+        return false;
+    }
+
+    $sql = "
+        DELETE FROM materias_primas
+        WHERE id_material = ?
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+
+    return $stmt->execute([$id]);
+}
     public function obtenerUnidades()
     {
         $stmt = $this->conn->query("

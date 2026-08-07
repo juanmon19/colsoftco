@@ -1,51 +1,59 @@
 <?php
 
-require_once '../../../config/conexion.php';
+require_once '../../../app/logica_inventario.php';
 require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
 
 session_start();
 
-$db = new Conexion();
-$conn = $db->getConnection();
+$logica = new InventarioLogica();
 
 if (!isset($_GET['id'])) {
     header("Location: lista_inventario.php");
-    exit();
+    exit;
 }
 
-$id = $_GET['id'];
+$id = (int) $_GET['id'];
 
-/* Obtener datos del material */
-$sql = "SELECT * FROM materias_primas WHERE id_material = ?";
-$stmt = $conn->prepare($sql);
-$stmt->execute([$id]);
-
-$material = $stmt->fetch(PDO::FETCH_ASSOC);
+$material = $logica->obtenerMaterial($id);
 
 if (!$material) {
     header("Location: lista_inventario.php");
-    exit();
+    exit;
 }
 
-/* Confirmar eliminación */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $sql = "DELETE FROM materias_primas WHERE id_material = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$id]);
+    // Verificar si la materia prima está siendo utilizada en una receta
+    if ($logica->materialTieneReceta($id)) {
+        header("Location: lista_inventario.php?error=material_en_receta");
+        exit;
+    }
 
+    // Solo se elimina si no está relacionada con una receta
+    $eliminado = $logica->eliminarMaterial($id);
+
+    if (!$eliminado) {
+        header("Location: lista_inventario.php?error=no_se_pudo_eliminar");
+        exit;
+    }
+
+    // Registrar en historial
     (new HistorialMovimientos())->registrar([
         'modulo'           => 'materia_prima',
         'accion'           => 'eliminar',
         'id_registro'      => $id,
         'descripcion'      => "Se eliminó la materia prima '{$material['nombre_material']}'",
         'datos_anteriores' => $material,
-        'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+        'usuario_nombre'   => trim(
+            ($_SESSION['nombre'] ?? '') . ' ' .
+            ($_SESSION['apellido'] ?? '')
+        ) ?: 'Sistema',
     ]);
 
     header("Location: lista_inventario.php");
-    exit();
+    exit;
 }
+
 ?>
 
 <!DOCTYPE html>

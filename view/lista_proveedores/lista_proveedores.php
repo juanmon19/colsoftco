@@ -137,26 +137,39 @@ $proveedores = $logica->getProveedores();
 
                         <div class="provider-buttons">
 
-                            <div class="btn-group-top">
+                            <div class="provider-buttons">
 
-                                <button class="btn-card" onclick="editarProveedor(<?php echo $proveedor['id_proveedor']; ?>)">
-                                    Editar
-                                </button>
+                                <div class="btn-group-top">
 
-                                <button class="btn-card" onclick="eliminarProveedor(<?php echo $proveedor['id_proveedor']; ?>)">
-                                    Eliminar
-                                </button>
+                                    <!-- EDITAR PROVEEDOR -->
+                                    <a
+                                        href="editar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                        class="btn-card">
+                                        Editar
+                                    </a>
+
+                                    <!-- ELIMINAR PROVEEDOR -->
+                                    <a
+                                        href="eliminar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                        class="btn-card">
+                                        Eliminar
+                                    </a>
+
+                                </div>
+
+                                <a
+                                    href="../registro_proveedores/hacer_pedido.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                    class="btn-card btn-card-large">
+                                    Hacer Pedido
+                                </a>
+
+                                <a
+                                    href="../registro_proveedores/contactar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                    class="btn-card btn-card-large">
+                                    Contactar
+                                </a>
 
                             </div>
-
-                            <button class="btn-card btn-card-large">
-                                Hacer Pedido
-                            </button>
-
-                            <button class="btn-card btn-card-large">
-                                Contactar
-                            </button>
-
                         </div>
 
                     </div>
