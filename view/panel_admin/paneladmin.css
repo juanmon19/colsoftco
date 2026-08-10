@@ -41,8 +41,11 @@ button{cursor:pointer}
 .sidebar{
     width:276px;
     min-width:276px;
-    min-height:100vh;
-    position:relative;
+    height:100vh;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
     z-index:20;
     background:linear-gradient(180deg,#061c3a 0%,#082a53 100%);
     color:#fff;
@@ -169,11 +172,16 @@ button{cursor:pointer}
 /* ================= MAIN ================= */
 
 .main{
-    min-width:0;
-    flex:1;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
+    margin-left: 276px;
+    width: calc(100% - 276px);
+
+    height: 100vh;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
 }
 
 /* ================= HEADER ================= */
@@ -181,6 +189,11 @@ button{cursor:pointer}
 .topbar{
     height:105px;
     min-height:105px;
+    position:fixed;
+    top:0;
+    right:0;
+    left:276px;
+    z-index:15;
     background:linear-gradient(105deg,#061d3c,#062047);
     display:flex;
     align-items:center;
@@ -252,9 +265,22 @@ button{cursor:pointer}
 /* ================= CONTENT ================= */
 
 .content{
-    flex:1;
-    padding:35px 38px 27px;
-    min-width:0;
+    margin-top: 105px;
+    margin-bottom: 67px;
+
+    padding: 35px 38px 27px;
+
+    width: 100%;
+
+    flex: 1;
+
+    min-width: 0;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    box-sizing: border-box;
 }
 
 .hero-grid{
@@ -588,6 +614,11 @@ button{cursor:pointer}
 footer{
     min-height:67px;
     height:67px;
+    position:fixed;
+    left:276px;
+    right:0;
+    bottom:0;
+    z-index:15;
     background:#071d3c;
     color:#aeb9c9;
     display:flex;
@@ -607,6 +638,24 @@ footer b{color:#e6b300}
     .sidebar{
         width:240px;
         min-width:240px;
+    }
+
+    .main{
+        margin-left:240px;
+        width:calc(100% - 240px);
+    }
+
+    .topbar{
+        left:240px;
+    }
+
+    .content{
+        min-height:calc(100vh - 172px);
+        height:auto;
+    }
+
+    footer{
+        left:240px;
     }
 
     .hero-grid{
@@ -695,7 +744,9 @@ footer b{color:#e6b300}
 
     .main{
         width:100%;
+        margin-left:0;
         min-height:100vh;
+        height:100vh;
     }
 
     .topbar{
@@ -703,7 +754,11 @@ footer b{color:#e6b300}
         min-height:82px;
         padding:0 22px;
         padding-left:62px;
-        position:relative;
+        position:fixed;
+        top:0;
+        left:0;
+        right:0;
+        z-index:15;
     }
 
     .mobile-open{
@@ -727,7 +782,15 @@ footer b{color:#e6b300}
     }
 
     .content{
+        margin-top:82px;
+        margin-bottom:65px;
+        height:calc(100vh - 147px);
         padding:25px 20px;
+    }
+
+    footer{
+        left:0;
+        right:0;
     }
 }
 
@@ -975,6 +1038,8 @@ footer b{color:#e6b300}
     }
 
     footer{
+        left:0;
+        right:0;
         height:auto;
         min-height:65px;
         padding:12px 14px;
@@ -1017,4 +1082,34 @@ footer b{color:#e6b300}
     .stat-content strong{
         font-size:19px;
     }
+}
+
+/* ===============================
+   ESTADOS DE CARGA DE MÓDULOS
+   =============================== */
+
+.modulo-cargando,
+.modulo-error {
+    min-height:300px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:var(--text);
+}
+
+.modulo-cargando p {
+    font-size:15px;
+    font-weight:600;
+}
+
+.modulo-error h2 {
+    margin:0 0 10px;
+    color:var(--navy);
+}
+
+.modulo-error p {
+    margin:0;
+    color:var(--muted);
 }

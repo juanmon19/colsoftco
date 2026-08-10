@@ -8,242 +8,249 @@ $proveedores = $logica->getProveedores();
 
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
+<link rel="stylesheet" href="lista_proveedores.css">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colsoftco - Lista de Proveedores</title>
-    <link href="lista_proveedores.css" rel="stylesheet">
-</head>
+<div class="lista-proveedores">
 
-<body>
+    <div class="controls-container">
 
-    <header class="header">
-        <div class="logo">
-            <a href="../../app/ir_panel.php">
-                <img src="../../public/imagenes/logo.png" alt="logo">
-            </a>
+        <div class="tabs">
+            <button class="tab active" type="button">
+                Todos
+            </button>
         </div>
 
-        <div class="header-title">
-            <h1>Lista de Proveedores</h1>
-        </div>
+        <div class="actions">
 
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
+            <button
+                class="btn-action"
+                type="button"
+                onclick="cargarModulo('../lista_proveedores/registro_proveedores.php')">
+                Registrar Proveedor
+            </button>
 
-    </header>
-
-    <main class="content">
-
-        <div class="controls-container">
-
-            <div class="tabs">
-                <button class="tab active">Todos</button>
-            </div>
-
-            <div class="actions">
-                <button class="btn-action" onclick="window.location.href='registro_proveedores.php'">
-                    Registrar Proveedor
-                </button>
-
-                <button class="btn-action"
-                    onclick="window.location.href='../historial_movimientos/historial.php'">
-                    historial de movimientos
-                </button>
-            </div>
+            <button
+                class="btn-action"
+                type="button"
+                onclick="cargarModulo('../historial_movimientos/historial_movimientos.php')">
+                Historial de movimientos
+            </button>
 
         </div>
 
-        <div class="provider-list">
+    </div>
 
-            <?php if (count($proveedores) > 0): ?>
 
-                <?php foreach ($proveedores as $proveedor): ?>
+    <div class="provider-list">
 
-                    <div class="provider-card">
+        <?php if (count($proveedores) > 0): ?>
 
-                        <div class="provider-logo">
+            <?php foreach ($proveedores as $proveedor): ?>
 
-                            <div style="
-                                font-weight:bold;
-                                font-size:24px;
-                                color:#2E8B57;
-                                text-align:center;
-                            ">
-                                <?php
-                                echo strtoupper(substr(
+                <div class="provider-card">
+
+                    <div class="provider-logo">
+
+                        <div style="
+                            font-weight: bold;
+                            font-size: 24px;
+                            color: #2E8B57;
+                            text-align: center;
+                        ">
+                            <?php
+                            echo strtoupper(
+                                substr(
                                     $proveedor['nombre_empresa'],
                                     0,
                                     3
-                                ));
-                                ?>
-                            </div>
-
-                        </div>
-
-                        <div class="provider-info">
-
-                            <p>
-                                <strong>Proveedor:</strong>
-                                <?php echo htmlspecialchars($proveedor['nombre_empresa']); ?>
-                            </p>
-
-                            <?php if (isset($proveedor['nit'])): ?>
-                                <p>
-                                    <strong>NIT:</strong>
-                                    <?php echo htmlspecialchars($proveedor['nit']); ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <?php if (isset($proveedor['direccion'])): ?>
-                                <p>
-                                    <strong>Dirección:</strong>
-                                    <?php echo htmlspecialchars($proveedor['direccion']); ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <?php if (isset($proveedor['descripcion_empresa'])): ?>
-                                <p>
-                                    <strong>Descripción:</strong>
-                                    <?php echo htmlspecialchars($proveedor['descripcion_empresa']); ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <p>
-                                <strong>Contacto:</strong>
-                                <?php
-                                echo htmlspecialchars(
-                                    $proveedor['contacto_nombre'] . ' ' .
-                                        $proveedor['contacto_apellido']
-                                );
-                                ?>
-                            </p>
-
-                            <p>
-                                <strong>Correo:</strong>
-                                <?php echo htmlspecialchars($proveedor['email']); ?>
-                            </p>
-
-                            <p>
-                                <strong>Teléfono:</strong>
-                                <?php echo htmlspecialchars($proveedor['telefono']); ?>
-                            </p>
-
-                        </div>
-
-                        <div class="provider-buttons">
-
-                            <div class="btn-group-top">
-
-                                <button class="btn-card" onclick="editarProveedor(<?php echo $proveedor['id_proveedor']; ?>)">
-                                    Editar
-                                </button>
-
-                                <button class="btn-card" onclick="eliminarProveedor(<?php echo $proveedor['id_proveedor']; ?>)">
-                                    Eliminar
-                                </button>
-
-                            </div>
-
-                            <button class="btn-card btn-card-large">
-                                Hacer Pedido
-                            </button>
-
-                            <button class="btn-card btn-card-large">
-                                Contactar
-                            </button>
-
+                                )
+                            );
+                            ?>
                         </div>
 
                     </div>
 
-                <?php endforeach; ?>
-
-            <?php else: ?>
-
-                <div class="provider-card">
 
                     <div class="provider-info">
 
                         <p>
-                            No existen proveedores registrados.
+                            <strong>Proveedor:</strong>
+                            <?php
+                            echo htmlspecialchars(
+                                $proveedor['nombre_empresa']
+                            );
+                            ?>
                         </p>
+
+
+                        <?php if (isset($proveedor['nit'])): ?>
+
+                            <p>
+                                <strong>NIT:</strong>
+                                <?php
+                                echo htmlspecialchars(
+                                    $proveedor['nit']
+                                );
+                                ?>
+                            </p>
+
+                        <?php endif; ?>
+
+
+                        <?php if (isset($proveedor['direccion'])): ?>
+
+                            <p>
+                                <strong>Dirección:</strong>
+                                <?php
+                                echo htmlspecialchars(
+                                    $proveedor['direccion']
+                                );
+                                ?>
+                            </p>
+
+                        <?php endif; ?>
+
+
+                        <?php if (isset($proveedor['descripcion_empresa'])): ?>
+
+                            <p>
+                                <strong>Descripción:</strong>
+                                <?php
+                                echo htmlspecialchars(
+                                    $proveedor['descripcion_empresa']
+                                );
+                                ?>
+                            </p>
+
+                        <?php endif; ?>
+
+
+                        <p>
+                            <strong>Contacto:</strong>
+
+                            <?php
+                            echo htmlspecialchars(
+                                $proveedor['contacto_nombre'] . ' ' .
+                                $proveedor['contacto_apellido']
+                            );
+                            ?>
+                        </p>
+
+
+                        <p>
+                            <strong>Correo:</strong>
+
+                            <?php
+                            echo htmlspecialchars(
+                                $proveedor['email']
+                            );
+                            ?>
+                        </p>
+
+
+                        <p>
+                            <strong>Teléfono:</strong>
+
+                            <?php
+                            echo htmlspecialchars(
+                                $proveedor['telefono']
+                            );
+                            ?>
+                        </p>
+
+                    </div>
+
+
+                    <div class="provider-buttons">
+
+                        <div class="btn-group-top">
+
+                            <button
+                                class="btn-card"
+                                type="button"
+                                onclick="editarProveedor(<?php echo $proveedor['id_proveedor']; ?>)">
+                                Editar
+                            </button>
+
+
+                            <button
+                                class="btn-card"
+                                type="button"
+                                onclick="eliminarProveedor(<?php echo $proveedor['id_proveedor']; ?>)">
+                                Eliminar
+                            </button>
+
+                        </div>
+
+
+                        <button
+                            class="btn-card btn-card-large"
+                            type="button">
+                            Hacer Pedido
+                        </button>
+
+
+                        <button
+                            class="btn-card btn-card-large"
+                            type="button">
+                            Contactar
+                        </button>
 
                     </div>
 
                 </div>
 
-            <?php endif; ?>
+            <?php endforeach; ?>
 
-        </div>
 
-    </main>
+        <?php else: ?>
 
-    <footer>
-        <div class="footer-divider"></div>
+            <div class="provider-card">
 
-        <div class="footer-top">
+                <div class="provider-info">
 
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex.
-                    Eficiencia en inventarios y movimientos empresariales.
-                </p>
+                    <p>
+                        No existen proveedores registrados.
+                    </p>
+
+                </div>
+
             </div>
 
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
+        <?php endif; ?>
 
-        </div>
+    </div>
 
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>Equipo SENA</strong></span>
-        </div>
-    </footer>
+</div>
 
-    <script>
-        function editarProveedor(id) {
 
-            window.location.href =
-                "../registro_proveedores/editar_proveedor.php?id=" + id;
-        }
+<script>
 
-        function eliminarProveedor(id) {
+function editarProveedor(id) {
 
-            window.location.href =
-                "../registro_proveedores/eliminar_proveedor.php?id=" + id;
-        }
+    window.location.href =
+        "../lista_proveedores/editar_proveedor.php?id=" + id;
+}
 
-        document.querySelectorAll('.tab').forEach(tab => {
 
-            tab.addEventListener('click', function() {
+function eliminarProveedor(id) {
 
-                document.querySelectorAll('.tab')
-                    .forEach(t => t.classList.remove('active'));
+    window.location.href =
+        "../lista_proveedores/eliminar_proveedor.php?id=" + id;
+}
 
-                this.classList.add('active');
-            });
 
-        });
-    </script>
+document.querySelectorAll('.tab').forEach(tab => {
 
-    <script src="../../public/js/app.js"></script>
+    tab.addEventListener('click', function() {
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+        document.querySelectorAll('.tab')
+            .forEach(t => t.classList.remove('active'));
 
-</body>
+        this.classList.add('active');
 
-</html>
+    });
+
+});
+
+</script>
