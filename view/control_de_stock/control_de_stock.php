@@ -30,10 +30,6 @@ require_once "../../app/verificar_sesion.php";
     <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
       Cerrar sesión
     </button>
-<<<<<<< HEAD
-
-=======
->>>>>>> 20280bdb7681e20d508d82ed4fe0a4b948dbf84f
   </header>
 
   <div class="page-body">

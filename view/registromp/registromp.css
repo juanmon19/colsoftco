@@ -291,21 +291,6 @@ select:focus {
   }
 }
 
-<<<<<<< HEAD
-/* RESPONSIVE */
-
-@media (max-width:800px) {
-
-    .page-body {
-        flex-direction: column;
-        padding: 0 12px 32px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-=======
 /* ===== FOOTER ===== */
 footer {
   background: #0D1B3E;
@@ -446,5 +431,4 @@ footer {
   .btn {
     width: 100%;
   }
->>>>>>> 20280bdb7681e20d508d82ed4fe0a4b948dbf84f
 }
