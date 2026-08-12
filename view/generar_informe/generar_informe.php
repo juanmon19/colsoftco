@@ -4,40 +4,7 @@ require_once "../../app/verificar_sesion.php";
 
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generar Informe</title>
-    <link href="generar_informe.css" rel="stylesheet">
-    <!-- SheetJS para exportar Excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" crossorigin="anonymous"></script>
-    <!-- jsPDF para exportar PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
-    <!-- jsPDF-AutoTable para tablas bonitas en PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"
-        crossorigin="anonymous"></script>
-</head>
-
-<body>
-    <header>
-        <div class="logo">
-            <a class="logo" href="../../app/ir_panel.php">
-                <img src="../../public/imagenes/logo.png" alt="logo">
-            </a>
-        </div>
-
-        <div class="header-title">
-            <h1>Informes</h1>
-            <div class="title-underline"></div>
-        </div>
-
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
-    </header>
+<link rel="stylesheet" href="generar_informe.css">
 
     <div class="contenido">
 
@@ -119,33 +86,6 @@ require_once "../../app/verificar_sesion.php";
 
     </div><!-- /contenido -->
 
-    <footer>
-        <div class="footer-divider"></div>
-
-        <div class="footer-top">
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex.
-                    Eficiencia en inventarios y movimientos empresariales.
-                </p>
-            </div>
-
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>Equipo SENA</strong></span>
-        </div>
-    </footer>
 
     <script>
         /* ═══════════════════════════════════════
@@ -316,11 +256,6 @@ require_once "../../app/verificar_sesion.php";
             }
         });
     </script>
-
-    <script src="../../public/js/app.js"></script>
     
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-</body>
-
-</html>

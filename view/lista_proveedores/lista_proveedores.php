@@ -32,7 +32,7 @@ $proveedores = $logica->getProveedores();
             <button
                 class="btn-action"
                 type="button"
-                onclick="cargarModulo('../historial_movimientos/historial_movimientos.php')">
+                onclick="cargarModulo('../historial_movimientos/historial.php')">
                 Historial de movimientos
             </button>
 
