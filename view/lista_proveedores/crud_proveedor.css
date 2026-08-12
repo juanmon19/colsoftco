@@ -19,26 +19,26 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #0A1F44;
+    background-color: #0a1f44;
     padding: 10px 15px;
-    height: 70px; 
+    height: 70px;
     max-height: 70px;
-    position: sticky; 
+    position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 4px solid #D4AF37; 
-    gap: 10px; 
-    overflow: hidden; 
+    border-bottom: 4px solid #d4af37;
+    gap: 10px;
+    overflow: hidden;
 }
 
 .header .logo {
     display: flex;
     align-items: center;
-    flex-shrink: 0; 
+    flex-shrink: 0;
 }
 
 .header .logo img {
-    width: 50px; 
+    width: 50px;
     height: 50px;
     border-radius: 50%;
     border: 2px solid #d4af37;
@@ -46,7 +46,7 @@ body {
 }
 
 .header-title {
-    flex: 1; 
+    flex: 1;
     text-align: center;
     overflow: hidden;
     display: flex;
@@ -57,19 +57,19 @@ body {
 .header-title h1 {
     margin: 0;
     color: white;
-    font-size: 16px; 
+    font-size: 16px;
     font-weight: bold;
-    white-space: nowrap; 
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
     line-height: 1;
     letter-spacing: 2px;
     text-transform: uppercase;
 }
 
 .btn-logout {
-    background-color: #D4AF37;
-    color: #0A1F44;
+    background-color: #d4af37;
+    color: #0a1f44;
     border: none;
     padding: 8px 12px;
     border-radius: 5px;
@@ -77,7 +77,7 @@ body {
     font-size: 13px;
     font-weight: bold;
     transition: 0.3s;
-    flex-shrink: 0; 
+    flex-shrink: 0;
 }
 
 .btn-logout:hover {
@@ -98,11 +98,11 @@ body {
     background: #fff;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0,0,0,.1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
-    background: #0A1F44;
+    background: #0a1f44;
     color: white;
     padding: 18px 25px;
     font-size: 22px;
@@ -119,7 +119,7 @@ body {
 }
 
 .card-body h2 {
-    color: #0A1F44;
+    color: #0a1f44;
     margin-bottom: 20px;
 }
 
@@ -144,7 +144,7 @@ body {
 
 .campo label {
     margin-bottom: 8px;
-    color: #0A1F44;
+    color: #0a1f44;
     font-weight: bold;
     font-size: 13px;
     text-transform: uppercase;
@@ -166,6 +166,98 @@ body {
 
 .full {
     grid-column: 1/3;
+}
+
+/* =========================
+   IMAGEN DEL PROVEEDOR
+========================= */
+.imagen-section {
+    margin-bottom: 5px;
+}
+
+.imagen-proveedor-row {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.imagen-preview {
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: 2px solid #d4af37;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.imagen-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.imagen-placeholder {
+    color: #94a3b8;
+    font-size: 12px;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.imagen-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.imagen-input-wrapper input[type="file"] {
+    display: none;
+}
+
+.imagen-input-wrapper .imagen-file-label {
+    display: inline-block;
+    width: fit-content;
+    background: #0a1f44;
+    color: #ffffff;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: 0.3s;
+    margin-bottom: 0;
+}
+
+.imagen-input-wrapper .imagen-file-label:hover {
+    background: #081732;
+}
+
+.imagen-file-name {
+    font-size: 13px;
+    color: #475569;
+}
+
+.imagen-input-wrapper small {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+    .imagen-proveedor-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 /* =========================
@@ -195,7 +287,7 @@ body {
 }
 
 .btn-guardar {
-    background: #0A1F44;
+    background: #0a1f44;
     color: white;
 }
 
@@ -214,7 +306,7 @@ body {
 
 .btn-volver {
     display: inline-block;
-    background: #0A1F44;
+    background: #0a1f44;
     color: white;
     text-decoration: none;
     padding: 10px 18px;
@@ -229,8 +321,8 @@ body {
 
 .btn-volver-secundario {
     background: transparent;
-    color: #0A1F44;
-    border: 1px solid #0A1F44;
+    color: #0a1f44;
+    border: 1px solid #0a1f44;
     padding: 11px 18px;
     border-radius: 6px;
     font-weight: bold;
@@ -245,7 +337,7 @@ body {
 /* =========================
    MEDIA QUERIES (FORMULARIO)
 ========================= */
-@media(max-width: 768px) {
+@media (max-width: 768px) {
     .form-grid {
         grid-template-columns: 1fr;
     }
@@ -273,9 +365,9 @@ body {
    FOOTER
 ========================= */
 footer {
-    background: #0D1B3E;
+    background: #0d1b3e;
     color: #ffffff;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: "Segoe UI", Arial, sans-serif;
     width: 100%;
     box-sizing: border-box;
     margin-top: 0;
@@ -285,7 +377,7 @@ footer {
 .footer-divider {
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, #C9A227, #E8C84A, #C9A227);
+    background: linear-gradient(90deg, #c9a227, #e8c84a, #c9a227);
 }
 
 .footer-top {
@@ -299,7 +391,7 @@ footer {
 .footer-brand-name {
     font-size: 22px;
     font-weight: 700;
-    color: #C9A227;
+    color: #c9a227;
     letter-spacing: 2px;
     margin: 0 0 4px;
 }
@@ -325,8 +417,8 @@ footer {
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #C9A227;
-    border-bottom: 2px solid #C9A227;
+    color: #c9a227;
+    border-bottom: 2px solid #c9a227;
     display: inline-block;
     padding-bottom: 6px;
     margin-bottom: 16px;
@@ -357,21 +449,21 @@ footer {
 }
 
 .footer-bottom strong {
-    color: #C9A227;
+    color: #c9a227;
 }
 
 /* =========================
    MEDIA QUERIES MÓVIL (FOOTER)
 ========================= */
 @media (max-width: 768px) {
-    .footer-top { 
-        grid-template-columns: 1fr; 
-        gap: 1.5rem; 
-        padding: 1.5rem; 
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
     }
-    .footer-bottom { 
-        justify-content: center; 
-        text-align: center; 
-        padding: 0.8rem 1.5rem; 
+    .footer-bottom {
+        justify-content: center;
+        text-align: center;
+        padding: 0.8rem 1.5rem;
     }
 }

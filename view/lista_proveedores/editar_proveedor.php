@@ -17,6 +17,67 @@ if (!$proveedor) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    $imagen = $proveedor['imagen'] ?? null;
+
+    // =====================================
+    // CAMBIAR IMAGEN SI SE SELECCIONÓ UNA
+    // =====================================
+
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+
+        $archivo = $_FILES['imagen'];
+
+        // Extensiones permitidas
+        $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
+
+        $extension = strtolower(
+            pathinfo($archivo['name'], PATHINFO_EXTENSION)
+        );
+
+        if (!in_array($extension, $extensionesPermitidas)) {
+            die("Formato de imagen no permitido.");
+        }
+
+        // Validar tamaño máximo: 2 MB
+        if ($archivo['size'] > 2 * 1024 * 1024) {
+            die("La imagen no puede superar los 2 MB.");
+        }
+
+        // Carpeta donde se guardan las imágenes
+        $carpetaImagenes = __DIR__ . '/../../public/imagenes/proveedores/';
+
+        // Crear carpeta si no existe
+        if (!is_dir($carpetaImagenes)) {
+            mkdir($carpetaImagenes, 0777, true);
+        }
+
+        // Nombre único
+        $nuevoNombre = 'proveedor_' . $id . '_' . time() . '.' . $extension;
+
+        $rutaDestino = $carpetaImagenes . $nuevoNombre;
+
+        // Mover imagen
+        if (!move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+            die("No se pudo guardar la nueva imagen.");
+        }
+
+        // Eliminar imagen anterior
+        if (!empty($imagen)) {
+
+            $imagenAnterior = $carpetaImagenes . $imagen;
+
+            if (file_exists($imagenAnterior)) {
+                unlink($imagenAnterior);
+            }
+        }
+
+        $imagen = $nuevoNombre;
+    }
+
+    // =====================================
+    // ACTUALIZAR PROVEEDOR
+    // =====================================
+
     $logica->actualizarProveedor(
         $id,
         $_POST['nombre_empresa'],
@@ -26,33 +87,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['email'],
         $_POST['nit'],
         $_POST['direccion'],
-        $_POST['descripcion_empresa']
+        $_POST['descripcion_empresa'],
+        $imagen
     );
 
+    // =====================================
+    // HISTORIAL
+    // =====================================
+
     (new HistorialMovimientos())->registrar([
-        'modulo'           => 'proveedores',
-        'accion'           => 'editar',
-        'id_registro'      => $id,
-        'descripcion'      => "Se actualizó el proveedor '{$_POST['nombre_empresa']}'",
+        'modulo'          => 'proveedores',
+        'accion'          => 'editar',
+        'id_registro'     => $id,
+        'descripcion'     => "Se actualizó el proveedor '{$_POST['nombre_empresa']}'",
         'datos_anteriores' => $proveedor,
-        'datos_nuevos'     => $_POST,
-        'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+        'datos_nuevos'    => $_POST,
+        'usuario_nombre'  => trim(
+            ($_SESSION['nombre'] ?? '') . ' ' .
+                ($_SESSION['apellido'] ?? '')
+        ) ?: 'Sistema',
     ]);
 
     header("Location: ../lista_proveedores/lista_proveedores.php");
     exit;
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Editar Proveedor</title>
 
-<link rel="stylesheet" href="crud_proveedor.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Proveedor</title>
+
+    <link rel="stylesheet" href="crud_proveedor.css">
 
 </head>
+
 <body>
 
     <header class="header">
@@ -87,9 +159,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="card-body">
 
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
 
                     <div class="form-grid">
+
+                        <div class="campo full imagen-section">
+                            <label>Imagen del Proveedor</label>
+
+                            <div class="imagen-proveedor-row">
+
+                                <div class="imagen-preview">
+                                    <?php if (!empty($proveedor['imagen'])): ?>
+                                        <img
+                                            src="../../public/imagenes/proveedores/<?php echo htmlspecialchars($proveedor['imagen']); ?>"
+                                            alt="Imagen del proveedor">
+                                    <?php else: ?>
+                                        <span class="imagen-placeholder">Sin imagen</span>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="imagen-input-wrapper">
+                                    <label for="imagenInput" class="imagen-file-label">
+                                        Seleccionar imagen
+                                    </label>
+                                    <input
+                                        id="imagenInput"
+                                        type="file"
+                                        name="imagen"
+                                        accept=".jpg,.jpeg,.png,.webp">
+                                    <span id="imagenFileName" class="imagen-file-name">Ningún archivo seleccionado</span>
+
+                                    <small>
+                                        Selecciona una nueva imagen solamente si deseas reemplazar la actual.
+                                        Máximo 2 MB.
+                                    </small>
+                                </div>
+
+                            </div>
+                        </div>
 
                         <div class="campo">
                             <label>Nombre Empresa</label>
@@ -170,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </button>
 
                         <a href="../lista_proveedores/lista_proveedores.php"
-                           class="btn btn-volver-secundario">
+                            class="btn btn-volver-secundario">
                             Cancelar
                         </a>
 
@@ -211,7 +318,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </footer>
 
+    <script>
+        const imagenInput = document.getElementById('imagenInput');
+        const imagenFileName = document.getElementById('imagenFileName');
+
+        if (imagenInput && imagenFileName) {
+            imagenInput.addEventListener('change', () => {
+                imagenFileName.textContent = imagenInput.files.length ?
+                    imagenInput.files[0].name :
+                    'Ningún archivo seleccionado';
+            });
+        }
+    </script>
+
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 </body>
+
 </html>

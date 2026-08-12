@@ -247,6 +247,98 @@ form {
     border-left: 4px solid #28a745;
 }
 
+/* =========================
+   IMAGEN DEL PROVEEDOR
+========================= */
+.imagen-section {
+    margin-bottom: 20px;
+}
+
+.imagen-proveedor-row {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.imagen-preview {
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: 2px solid #d4af37;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+}
+
+.imagen-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.imagen-placeholder {
+    color: #94a3b8;
+    font-size: 12px;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.imagen-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.imagen-input-wrapper input[type="file"] {
+    display: none;
+}
+
+.imagen-input-wrapper .imagen-file-label {
+    display: inline-block;
+    width: fit-content;
+    background: #0A1F44;
+    color: #ffffff;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    transition: 0.3s;
+    margin-bottom: 0;
+}
+
+.imagen-input-wrapper .imagen-file-label:hover {
+    background: #081732;
+}
+
+.imagen-file-name {
+    font-size: 13px;
+    color: #475569;
+}
+
+.imagen-input-wrapper small {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+@media(max-width: 480px) {
+    .imagen-proveedor-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
 /* ===== FOOTER ===== */
 footer {
     background: #0D1B3E;

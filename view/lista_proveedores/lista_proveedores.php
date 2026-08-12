@@ -58,33 +58,84 @@ $proveedores = $logica->getProveedores();
 
         </div>
 
-        <div class="provider-list">
+        <!-- =========================
+             BARRA DE FILTROS
+        ========================== -->
+        <div class="filtros-container">
+
+            <div class="filtro-busqueda">
+                <input
+                    type="text"
+                    id="inputBusquedaProveedor"
+                    placeholder="Buscar por nombre, NIT o contacto...">
+            </div>
+
+            <div class="filtro-orden">
+                <label for="selectOrden">Ordenar:</label>
+                <select id="selectOrden">
+                    <option value="az">Nombre (A-Z)</option>
+                    <option value="za">Nombre (Z-A)</option>
+                </select>
+            </div>
+
+            <button type="button" id="btnLimpiarFiltros" class="btn-limpiar-filtros">
+                Limpiar filtros
+            </button>
+
+        </div>
+
+        <p id="mensajeSinResultados" class="mensaje-sin-resultados" style="display:none;">
+            No se encontraron proveedores que coincidan con la búsqueda.
+        </p>
+
+        <div class="provider-list" id="listaProveedores">
 
             <?php if (count($proveedores) > 0): ?>
 
                 <?php foreach ($proveedores as $proveedor): ?>
 
-                    <div class="provider-card">
+                    <div class="provider-card"
+                        data-nombre="<?php echo htmlspecialchars(strtolower($proveedor['nombre_empresa'])); ?>"
+                        data-nit="<?php echo htmlspecialchars(strtolower($proveedor['nit'] ?? '')); ?>"
+                        data-contacto="<?php echo htmlspecialchars(strtolower($proveedor['contacto_nombre'] . ' ' . $proveedor['contacto_apellido'])); ?>">
 
+                        <!-- =========================
+             IMAGEN DEL PROVEEDOR
+        ========================== -->
                         <div class="provider-logo">
 
-                            <div style="
-                                font-weight:bold;
-                                font-size:24px;
-                                color:#2E8B57;
-                                text-align:center;
-                            ">
-                                <?php
-                                echo strtoupper(substr(
-                                    $proveedor['nombre_empresa'],
-                                    0,
-                                    3
-                                ));
-                                ?>
-                            </div>
+                            <?php if (!empty($proveedor['imagen'])): ?>
+
+                                <img
+                                    src="../../public/imagenes/proveedores/<?php echo htmlspecialchars($proveedor['imagen']); ?>"
+                                    alt="<?php echo htmlspecialchars($proveedor['nombre_empresa']); ?>"
+                                    class="provider-logo-img">
+
+                            <?php else: ?>
+
+                                <div style="
+                    font-weight: bold;
+                    font-size: 24px;
+                    color: #2E8B57;
+                    text-align: center;
+                ">
+                                    <?php
+                                    echo strtoupper(substr(
+                                        $proveedor['nombre_empresa'],
+                                        0,
+                                        3
+                                    ));
+                                    ?>
+                                </div>
+
+                            <?php endif; ?>
 
                         </div>
 
+
+                        <!-- =========================
+            INFORMACIÓN DEL PROVEEDOR
+        ========================== -->
                         <div class="provider-info">
 
                             <p>
@@ -135,41 +186,40 @@ $proveedores = $logica->getProveedores();
 
                         </div>
 
+
+                        <!-- =========================
+             BOTONES
+        ========================== -->
                         <div class="provider-buttons">
 
-                            <div class="provider-buttons">
+                            <div class="btn-group-top">
 
-                                <div class="btn-group-top">
-
-                                    <!-- EDITAR PROVEEDOR -->
-                                    <a
-                                        href="editar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
-                                        class="btn-card">
-                                        Editar
-                                    </a>
-
-                                    <!-- ELIMINAR PROVEEDOR -->
-                                    <a
-                                        href="eliminar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
-                                        class="btn-card">
-                                        Eliminar
-                                    </a>
-
-                                </div>
-
-                                <a
-                                    href="../registro_proveedores/hacer_pedido.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
-                                    class="btn-card btn-card-large">
-                                    Hacer Pedido
+                                <a href="editar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>" class="btn-card">
+                                    Editar
                                 </a>
 
                                 <a
-                                    href="../registro_proveedores/contactar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
-                                    class="btn-card btn-card-large">
-                                    Contactar
+                                    href="eliminar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                    class="btn-card">
+                                    Eliminar
                                 </a>
 
                             </div>
+
+                            <!-- HACER PEDIDO -->
+                            <a
+                                href="../registro_proveedores/hacer_pedido.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                class="btn-card btn-card-large">
+                                Hacer Pedido
+                            </a>
+
+                            <!-- CONTACTAR -->
+                            <a
+                                href="../registro_proveedores/contactar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                class="btn-card btn-card-large">
+                                Contactar
+                            </a>
+
                         </div>
 
                     </div>
@@ -227,12 +277,6 @@ $proveedores = $logica->getProveedores();
     </footer>
 
     <script>
-        function editarProveedor(id) {
-
-            window.location.href =
-                "../registro_proveedores/editar_proveedor.php?id=" + id;
-        }
-
         function eliminarProveedor(id) {
 
             window.location.href =
@@ -250,6 +294,83 @@ $proveedores = $logica->getProveedores();
             });
 
         });
+
+        // =========================
+        // FILTROS: BÚSQUEDA + ORDEN ALFABÉTICO
+        // =========================
+        (function() {
+
+            const inputBusqueda = document.getElementById('inputBusquedaProveedor');
+            const selectOrden = document.getElementById('selectOrden');
+            const btnLimpiar = document.getElementById('btnLimpiarFiltros');
+            const contenedorLista = document.getElementById('listaProveedores');
+            const mensajeSinResultados = document.getElementById('mensajeSinResultados');
+
+            if (!contenedorLista) return;
+
+            const tarjetas = Array.from(
+                contenedorLista.querySelectorAll('.provider-card[data-nombre]')
+            );
+
+            function aplicarFiltros() {
+
+                const texto = inputBusqueda.value.trim().toLowerCase();
+                let visibles = 0;
+
+                tarjetas.forEach(tarjeta => {
+
+                    const nombre = tarjeta.dataset.nombre || '';
+                    const nit = tarjeta.dataset.nit || '';
+                    const contacto = tarjeta.dataset.contacto || '';
+
+                    const coincide =
+                        texto === '' ||
+                        nombre.includes(texto) ||
+                        nit.includes(texto) ||
+                        contacto.includes(texto);
+
+                    tarjeta.style.display = coincide ? '' : 'none';
+
+                    if (coincide) visibles++;
+                });
+
+                mensajeSinResultados.style.display = visibles === 0 ? 'block' : 'none';
+            }
+
+            function aplicarOrden() {
+
+                const orden = selectOrden.value;
+
+                const tarjetasOrdenadas = [...tarjetas].sort((a, b) => {
+
+                    const nombreA = a.dataset.nombre || '';
+                    const nombreB = b.dataset.nombre || '';
+
+                    return orden === 'az'
+                        ? nombreA.localeCompare(nombreB)
+                        : nombreB.localeCompare(nombreA);
+                });
+
+                tarjetasOrdenadas.forEach(tarjeta => {
+                    contenedorLista.appendChild(tarjeta);
+                });
+            }
+
+            inputBusqueda.addEventListener('input', aplicarFiltros);
+
+            selectOrden.addEventListener('change', aplicarOrden);
+
+            btnLimpiar.addEventListener('click', () => {
+                inputBusqueda.value = '';
+                selectOrden.value = 'az';
+                aplicarFiltros();
+                aplicarOrden();
+            });
+
+            // Orden inicial A-Z al cargar la página
+            aplicarOrden();
+
+        })();
     </script>
 
     <script src="../../public/js/app.js"></script>

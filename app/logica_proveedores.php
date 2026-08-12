@@ -28,7 +28,8 @@ class ProveedorLogica
                 email,
                 nit,
                 direccion,
-                descripcion_empresa
+                descripcion_empresa,
+                imagen
             FROM proveedores
             ORDER BY nombre_empresa ASC
         ";
@@ -72,33 +73,36 @@ class ProveedorLogica
         string $email,
         string $nit,
         string $direccion,
-        string $descripcion
+        string $descripcion,
+        string $imagen
     ): bool {
 
         $sql = "
-            INSERT INTO proveedores
-            (
-                nombre_empresa,
-                contacto_nombre,
-                contacto_apellido,
-                telefono,
-                email,
-                nit,
-                direccion,
-                descripcion_empresa
-            )
-            VALUES
-            (
-                :nombre_empresa,
-                :contacto_nombre,
-                :contacto_apellido,
-                :telefono,
-                :email,
-                :nit,
-                :direccion,
-                :descripcion_empresa
-            )
-        ";
+    INSERT INTO proveedores
+    (
+        nombre_empresa,
+        contacto_nombre,
+        contacto_apellido,
+        telefono,
+        email,
+        nit,
+        direccion,
+        descripcion_empresa,
+        imagen
+    )
+    VALUES
+    (
+        :nombre_empresa,
+        :contacto_nombre,
+        :contacto_apellido,
+        :telefono,
+        :email,
+        :nit,
+        :direccion,
+        :descripcion_empresa,
+        :imagen
+    )
+";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -110,7 +114,8 @@ class ProveedorLogica
             ':email' => $email,
             ':nit' => $nit,
             ':direccion' => $direccion,
-            ':descripcion_empresa' => $descripcion
+            ':descripcion_empresa' => $descripcion,
+            ':imagen' => $imagen
         ]);
     }
 
@@ -127,22 +132,24 @@ class ProveedorLogica
         string $email,
         string $nit,
         string $direccion,
-        string $descripcion
+        string $descripcion,
+        ?string $imagen
     ): bool {
 
         $sql = "
-            UPDATE proveedores
-            SET
-                nombre_empresa = :nombre_empresa,
-                contacto_nombre = :contacto_nombre,
-                contacto_apellido = :contacto_apellido,
-                telefono = :telefono,
-                email = :email,
-                nit = :nit,
-                direccion = :direccion,
-                descripcion_empresa = :descripcion_empresa
-            WHERE id_proveedor = :id
-        ";
+    UPDATE proveedores
+    SET
+        nombre_empresa = :nombre_empresa,
+        contacto_nombre = :contacto_nombre,
+        contacto_apellido = :contacto_apellido,
+        telefono = :telefono,
+        email = :email,
+        nit = :nit,
+        direccion = :direccion,
+        descripcion_empresa = :descripcion_empresa,
+        imagen = :imagen
+    WHERE id_proveedor = :id
+";
 
         $stmt = $this->conn->prepare($sql);
 
@@ -155,7 +162,8 @@ class ProveedorLogica
             ':email' => $email,
             ':nit' => $nit,
             ':direccion' => $direccion,
-            ':descripcion_empresa' => $descripcion
+            ':descripcion_empresa' => $descripcion,
+            ':imagen' => $imagen
         ]);
     }
 
@@ -177,53 +185,53 @@ class ProveedorLogica
         ]);
     }
 
-public function obtenerAlertasStock()
-{
-    $sql = "SELECT *
+    public function obtenerAlertasStock()
+    {
+        $sql = "SELECT *
             FROM materias_primas
             WHERE stock_actual <= stock_minimo
             ORDER BY stock_actual ASC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->execute();
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-public function obtenerMateriaPorId($id)
-{
-    $sql = "SELECT *
+    public function obtenerMateriaPorId($id)
+    {
+        $sql = "SELECT *
             FROM materias_primas
             WHERE id_material = ?";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->execute([$id]);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$id]);
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
-public function actualizarStockMinimo($id, $stockMinimo)
-{
-    $sql = "UPDATE materias_primas
+    public function actualizarStockMinimo($id, $stockMinimo)
+    {
+        $sql = "UPDATE materias_primas
             SET stock_minimo = ?
             WHERE id_material = ?";
 
-    $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
-    return $stmt->execute([
-        $stockMinimo,
-        $id
-    ]);
-}
+        return $stmt->execute([
+            $stockMinimo,
+            $id
+        ]);
+    }
 
-public function eliminarAlerta($id)
-{
-    $sql = "UPDATE materias_primas
+    public function eliminarAlerta($id)
+    {
+        $sql = "UPDATE materias_primas
             SET stock_minimo = 0
             WHERE id_material = ?";
 
-    $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare($sql);
 
-    return $stmt->execute([$id]);
-}
+        return $stmt->execute([$id]);
+    }
 }
