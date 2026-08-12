@@ -44,26 +44,70 @@ endif;
 
 // --- BLOQUE 2: GUARDAR NUEVA CONTRASEÑA ---
 if (isset($_POST['save'])):
-    // ¡ATENCIÓN! Aquí deberías validar también el $_POST['token'] antes de cambiar nada
+
     if (!empty($_POST['id']) && !empty($_POST['password'])) {
-        $new_password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+
+        $Password = $_POST['password'];
         $id = $_POST['id'];
-        
-        $Usuario = ConsultaUsuarioPorId($id); 
+
+        // Validar requisitos de la contraseña
+        if (strlen($Password) < 8) {
+            $_SESSION['error'] = 'La contraseña debe tener mínimo 8 caracteres.';
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            exit();
+        }
+
+        if (!preg_match('/[A-Z]/', $Password)) {
+            $_SESSION['error'] = 'La contraseña debe tener al menos una letra mayúscula.';
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            exit();
+        }
+
+        if (!preg_match('/[a-z]/', $Password)) {
+            $_SESSION['error'] = 'La contraseña debe tener al menos una letra minúscula.';
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            exit();
+        }
+
+        if (!preg_match('/[0-9]/', $Password)) {
+            $_SESSION['error'] = 'La contraseña debe tener al menos un número.';
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            exit();
+        }
+
+        if (!preg_match('/[\W_]/', $Password)) {
+            $_SESSION['error'] = 'La contraseña debe tener al menos un carácter especial.';
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            exit();
+        }
+
+        $new_password = password_hash($Password, PASSWORD_BCRYPT);
+
+        $Usuario = ConsultaUsuarioPorId($id);
+
         if (count($Usuario) > 0) {
+
             updateUserID($new_password, $id);
+
             $_SESSION['response'] = 'Contraseña actualizada con éxito.';
             header("Location: ../view/login/login.php?message=success_password");
             exit();
+
         } else {
-            $_SESSION['response'] = 'No existe el usuario';
+
+            $_SESSION['error'] = 'No existe el usuario';
+
         }
+
     } else {
-        $_SESSION['response'] = 'Datos inválidos';
+
+        $_SESSION['error'] = 'Datos inválidos';
+
     }
 
     header("Location: ../view/recuperar_contrasena/recuperar_contrasena.php?message=error");
     exit();
+
 endif;
 
 

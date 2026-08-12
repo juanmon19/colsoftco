@@ -55,7 +55,7 @@ if (count($data) > 0):
 
     <header class="header">
         <div class="logo">
-            <a href="../../login/login.html">
+            <a href="../login/login.php">
                 <img src="../../public/imagenes/logo.png" alt="logo">
             </a>
         </div>
@@ -148,7 +148,7 @@ if (count($data) > 0):
 
 <?php
 else:
-    header("Location: ../../login/login.html");
+    header("Location: ../login/login.php");
     exit();
 endif;
 ?>

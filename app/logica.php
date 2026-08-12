@@ -39,7 +39,36 @@ if (isset($_POST['registro'])) {
     $Rol = $_POST['rol'] ?? '';
     $Password = $_POST['password'] ?? '';
 
+// Validar requisitos de la contraseña
+if (strlen($Password) < 8) {
+    $_SESSION['mensaje'] = 'La contraseña debe tener mínimo 8 caracteres.';
+    header("location:../view/registro/registro.php");
+    exit();
+}
 
+if (!preg_match('/[A-Z]/', $Password)) {
+    $_SESSION['mensaje'] = 'La contraseña debe tener al menos una letra mayúscula.';
+    header("location:../view/registro/registro.php");
+    exit();
+}
+
+if (!preg_match('/[a-z]/', $Password)) {
+    $_SESSION['mensaje'] = 'La contraseña debe tener al menos una letra minúscula.';
+    header("location:../view/registro/registro.php");
+    exit();
+}
+
+if (!preg_match('/[0-9]/', $Password)) {
+    $_SESSION['mensaje'] = 'La contraseña debe tener al menos un número.';
+    header("location:../view/registro/registro.php");
+    exit();
+}
+
+if (!preg_match('/[\W_]/', $Password)) {
+    $_SESSION['mensaje'] = 'La contraseña debe tener al menos un carácter especial.';
+    header("location:../view/registro/registro.php");
+    exit();
+}
 
     // var_dump($Rol);
     // die();
