@@ -1,6 +1,43 @@
 <?php
 
 require_once "../../app/verificar_sesion.php";
+require_once __DIR__ . '/../../app/logica_inventario.php';
+require_once __DIR__ . '/../../app/alerta_stock.php';
+
+$logicaInventario = new InventarioLogica();
+$logicaAlerta = new AlertaStockLogica();
+
+$materiales = $logicaInventario->listarMateriales();
+
+$mensaje = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+  $idMaterial = $_POST['producto'] ?? '';
+  $cantidadMinima = $_POST['cantidad'] ?? '';
+  $notificarEmail = isset($_POST['notif']) && in_array('email', $_POST['notif']);
+  $correoNotificacion = trim($_POST['correo_notificacion'] ?? '');
+
+  if ($idMaterial === '' || $cantidadMinima === '') {
+    $mensaje = "Selecciona un producto e ingresa la cantidad mínima.";
+  } elseif ($notificarEmail && $correoNotificacion === '') {
+    $mensaje = "Ingresa el correo donde deseas recibir la notificación.";
+  } else {
+
+    $logicaAlerta->guardarConfiguracion(
+      $idMaterial,
+      $cantidadMinima,
+      $notificarEmail,
+      $correoNotificacion
+    );
+
+    // Revisa de inmediato si con este mínimo el material ya está en alerta
+    $logicaAlerta->verificarStock($idMaterial);
+
+    $mensaje = "Configuración de stock mínimo guardada correctamente.";
+    $materiales = $logicaInventario->listarMateriales();
+  }
+}
 
 ?>
 
@@ -24,7 +61,7 @@ require_once "../../app/verificar_sesion.php";
     </div>
 
     <div class="header-title">
-        <h1>Control de Stock</h1>
+      <h1>Control de Stock</h1>
     </div>
 
     <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
@@ -36,6 +73,12 @@ require_once "../../app/verificar_sesion.php";
 
     <div class="content" style="margin: 0 auto; max-width: 1000px; width: 100%;">
 
+      <?php if (!empty($mensaje)): ?>
+        <div class="mensaje-stock">
+          <?= htmlspecialchars($mensaje) ?>
+        </div>
+      <?php endif; ?>
+
       <div class="form-card">
         <div class="form-header">
           <span class="form-header-bar"></span>
@@ -43,47 +86,28 @@ require_once "../../app/verificar_sesion.php";
         </div>
 
         <div class="form-body">
-          <form id="regForm">
+          <form id="regForm" method="POST">
             <div class="form-grid">
 
               <div class="form-group">
                 <label for="producto">Producto</label>
                 <div class="select-wrap">
-                  <select id="producto" name="producto">
+                  <select id="producto" name="producto" required>
                     <option value="">-- Seleccione --</option>
-                    <option>Espuma de poliuretano</option>
-                    <option>Tela Jacquard</option>
-                    <option>Resortes Bonell </option>
-                    <option>Espuma </option>
-                    <option>Fieltro aislante </option>
-                    <option>Pegante industrial </option>
-                    <option>Hilo de costura </option>
-                    <option>Espuma viscoelástica </option>
-                    <option>Tela antideslizante </option>
-                    <option>Borde perimetral </option>
-                    <option>Empaque plástico </option>
-                    <option>Tela </option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="unidad">Unidad de medida</label>
-                <div class="select-wrap">
-                  <select id="unidad" name="unidad">
-                    <option value="">-- Seleccione --</option>
-                    <option value="metro">(metro) M</option>
-                    <option value="kg">(kilogramo) Kg</option>
-                    <option value="unidad">(unidad) Und</option>
-                    <option value="litro">(litro) L</option>
-                    <option value="cm">(centímetro) Cm</option>
+                    <?php foreach ($materiales as $material): ?>
+                      <option value="<?= (int)$material['id_material'] ?>">
+                        <?= htmlspecialchars($material['nombre_material']) ?>
+                        (stock actual: <?= htmlspecialchars($material['stock_actual']) ?>
+                        <?= htmlspecialchars($material['nombre_unidad'] ?? '') ?>)
+                      </option>
+                    <?php endforeach; ?>
                   </select>
                 </div>
               </div>
 
               <div class="form-group full">
                 <label for="cantidad">Cantidad mínima</label>
-                <input type="number" id="cantidad" name="cantidad" min="0" placeholder="Ingrese la cantidad mínima" />
+                <input type="number" id="cantidad" name="cantidad" min="0" step="0.01" placeholder="Ingrese la cantidad mínima" required />
               </div>
 
               <hr class="form-divider" />
@@ -92,13 +116,14 @@ require_once "../../app/verificar_sesion.php";
                 <label>Seleccione dónde recibir la notificación</label>
                 <div class="check-options">
                   <label class="check-opt">
-                    <input type="checkbox" id="chkEmail" name="notif" value="email" />
+                    <input type="checkbox" id="chkEmail" name="notif[]" value="email" />
                     <span>Correo Electrónico</span>
                   </label>
-                  <label class="check-opt">
-                    <input type="checkbox" id="chkSms" name="notif" value="sms" />
-                    <span>Mensaje de Texto</span>
-                  </label>
+                </div>
+
+                <div class="form-group full" id="campoCorreo" style="display:none; margin-top: 12px;">
+                  <label for="correo_notificacion">Correo de notificación</label>
+                  <input type="email" id="correo_notificacion" name="correo_notificacion" placeholder="correo@empresa.com">
                 </div>
               </div>
 
@@ -161,51 +186,47 @@ require_once "../../app/verificar_sesion.php";
     </div>
   </footer>
 
-  <div class="toast" id="toast"></div>
-
   <script>
     const form = document.getElementById('regForm');
-    const toast = document.getElementById('toast');
+    const chkEmail = document.getElementById('chkEmail');
+    const campoCorreo = document.getElementById('campoCorreo');
+    const inputCorreo = document.getElementById('correo_notificacion');
+
+    chkEmail.addEventListener('change', function() {
+      campoCorreo.style.display = this.checked ? 'block' : 'none';
+      inputCorreo.required = this.checked;
+    });
 
     form.addEventListener('submit', function(e) {
-      e.preventDefault();
-
       const producto = document.getElementById('producto').value;
-      const unidad = document.getElementById('unidad').value;
       const cantidad = document.getElementById('cantidad').value;
 
       if (!producto) {
         alert('Por favor seleccione un producto.');
+        e.preventDefault();
         return;
-      } 
-      if (!unidad) {
-        alert('Por favor seleccione la unidad de medida.');
-        return;
-      } 
+      }
       if (cantidad === '' || Number(cantidad) < 0) {
         alert('Ingrese una cantidad mínima válida (número mayor o igual a 0).');
-        return; 
+        e.preventDefault();
+        return;
       }
-
-      showToast('✔ Materia prima registrada correctamente.');
-      form.reset();
+      if (chkEmail.checked && inputCorreo.value.trim() === '') {
+        alert('Ingrese el correo donde desea recibir la notificación.');
+        e.preventDefault();
+        return;
+      }
+      // Si todo está bien, el formulario se envía normalmente al servidor.
     });
 
     function resetForm() {
       form.reset();
-    }
-
-    function showToast(mensaje) {
-      toast.textContent = mensaje || '✔ Operación exitosa.';
-      toast.style.display = 'block';
-      setTimeout(function() {
-        toast.style.display = 'none';
-      }, 3500);
+      campoCorreo.style.display = 'none';
     }
   </script>
   <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
   <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-  
+
   <script src="../../public/js/app.js"></script>
 </body>
 
