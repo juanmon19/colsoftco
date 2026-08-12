@@ -1,6 +1,124 @@
 <?php
 
 require_once "../../app/verificar_sesion.php";
+require_once __DIR__ . '/../../config/conexion.php';
+require_once __DIR__ . '/../../app/HistorialMovimientos.php';
+
+$db = new Conexion();
+$conn = $db->getConnection();
+
+$usuarioNombre = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema';
+
+/**
+ * ==== ENDPOINT AJAX ====
+ * Esta misma página atiende las acciones de agregar / actualizar / eliminar
+ * que dispara el JavaScript de abajo. Siempre responde JSON y termina.
+ */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
+    header('Content-Type: application/json; charset=utf-8');
+
+    $accion = $_POST['ajax_action'];
+
+    try {
+        switch ($accion) {
+
+            case 'add': {
+                $nombre = trim($_POST['nombre'] ?? '');
+                $cantidad = $_POST['cantidad'] ?? '';
+
+                if ($nombre === '' || $cantidad === '' || !is_numeric($cantidad) || $cantidad < 0) {
+                    echo json_encode(['ok' => false, 'error' => 'Datos inválidos.']);
+                    exit();
+                }
+
+                $stmt = $conn->prepare(
+                    "INSERT INTO productos_terminados (nombre_producto, stock_actual) VALUES (:nombre, :cantidad)"
+                );
+                $stmt->execute([':nombre' => $nombre, ':cantidad' => $cantidad]);
+                $idProducto = $conn->lastInsertId();
+
+                (new HistorialMovimientos())->registrar([
+                    'modulo'         => 'producto_terminado',
+                    'accion'         => 'crear',
+                    'id_registro'    => $idProducto,
+                    'descripcion'    => "Se agregó el producto terminado '{$nombre}' con stock {$cantidad}",
+                    'datos_nuevos'   => ['nombre_producto' => $nombre, 'stock_actual' => $cantidad],
+                    'usuario_nombre' => $usuarioNombre,
+                ]);
+
+                echo json_encode(['ok' => true]);
+                exit();
+            }
+
+            case 'edit': {
+                $id = $_POST['id'] ?? '';
+                $nombre = trim($_POST['nombre'] ?? '');
+                $cantidad = $_POST['cantidad'] ?? '';
+
+                if ($id === '' || $nombre === '' || $cantidad === '' || !is_numeric($cantidad) || $cantidad < 0) {
+                    echo json_encode(['ok' => false, 'error' => 'Datos inválidos.']);
+                    exit();
+                }
+
+                $stmt = $conn->prepare(
+                    "UPDATE productos_terminados SET nombre_producto = :nombre, stock_actual = :cantidad WHERE id_producto = :id"
+                );
+                $stmt->execute([':nombre' => $nombre, ':cantidad' => $cantidad, ':id' => $id]);
+
+                (new HistorialMovimientos())->registrar([
+                    'modulo'         => 'producto_terminado',
+                    'accion'         => 'actualizar',
+                    'id_registro'    => $id,
+                    'descripcion'    => "Se actualizó el producto terminado '{$nombre}' a stock {$cantidad}",
+                    'datos_nuevos'   => ['nombre_producto' => $nombre, 'stock_actual' => $cantidad],
+                    'usuario_nombre' => $usuarioNombre,
+                ]);
+
+                echo json_encode(['ok' => true]);
+                exit();
+            }
+
+            case 'delete': {
+                $id = $_POST['id'] ?? '';
+
+                if ($id === '') {
+                    echo json_encode(['ok' => false, 'error' => 'ID inválido.']);
+                    exit();
+                }
+
+                $stmt = $conn->prepare("SELECT nombre_producto FROM productos_terminados WHERE id_producto = :id");
+                $stmt->execute([':id' => $id]);
+                $producto = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $stmt = $conn->prepare("DELETE FROM productos_terminados WHERE id_producto = :id");
+                $stmt->execute([':id' => $id]);
+
+                (new HistorialMovimientos())->registrar([
+                    'modulo'         => 'producto_terminado',
+                    'accion'         => 'eliminar',
+                    'id_registro'    => $id,
+                    'descripcion'    => "Se eliminó el producto terminado '" . ($producto['nombre_producto'] ?? $id) . "'",
+                    'usuario_nombre' => $usuarioNombre,
+                ]);
+
+                echo json_encode(['ok' => true]);
+                exit();
+            }
+
+            default:
+                echo json_encode(['ok' => false, 'error' => 'Acción no reconocida.']);
+                exit();
+        }
+    } catch (Exception $e) {
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+        exit();
+    }
+}
+
+// ==== CARGA INICIAL DE LA TABLA ====
+$productosDb = $conn->query(
+    "SELECT id_producto, nombre_producto, stock_actual FROM productos_terminados ORDER BY nombre_producto"
+)->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!doctype html>
@@ -61,9 +179,11 @@ require_once "../../app/verificar_sesion.php";
                 />
                 <label>Cantidad</label>
                 <input
-                    type="text"
+                    type="number"
                     id="input-cantidad"
-                    placeholder="Ej: 23 Unidades"
+                    min="0"
+                    step="0.01"
+                    placeholder="Ej: 23"
                 />
                 <div class="modal-actions">
                     <button class="btn-cancel" onclick="closeModal()">
@@ -100,36 +220,35 @@ require_once "../../app/verificar_sesion.php";
 
         <script>
             // ===== DATA =====
-            // Estructura de persistencia local temporal (Simulación de base de datos relacional mediante objetos)
-            let productos = [
-                { id: 1, nombre: "Colchon Queen", cantidad: "x23 Unidades" },
-                {
-                    id: 2,
-                    nombre: "Colchon Semidobile",
-                    cantidad: "x29 Unidades",
-                },
-                { id: 3, nombre: "Colchon Doble", cantidad: "x33 Unidades" },
-                { id: 4, nombre: "Colchon Sencillo", cantidad: "x43 Unidades" },
-            ];
+            // Los productos ya no viven solo en memoria: se cargan desde la
+            // base de datos (tabla productos_terminados) al renderizar la página.
+            let productos = <?= json_encode(array_map(function ($p) {
+                return [
+                    'id' => (int) $p['id_producto'],
+                    'nombre' => $p['nombre_producto'],
+                    'cantidad' => (float) $p['stock_actual'],
+                ];
+            }, $productosDb), JSON_UNESCAPED_UNICODE) ?>;
 
-            // Apuntadores de estado globales para control de operaciones concurrentes
-            let nextId = 5; // Llave primaria auto-incremental asignada a nuevos registros
             let editingId = null; // Identificador numérico del objeto en edición (Permanece en null en inserciones)
             let deletingId = null; // Almacenador temporal del ID agendado para descarte definitivo
 
+            function formatCantidad(n) {
+                const num = Number(n);
+                const texto = Number.isInteger(num) ? num : num.toFixed(2);
+                return `x${texto} Unidades`;
+            }
+
             // ===== RENDER =====
-            // Función dedicada a la reconstrucción adaptativa de la tabla en el documento HTML
             function renderTabla() {
                 const tbody = document.getElementById("tabla-body");
-                tbody.innerHTML = ""; // Limpieza de nodos hijos para evitar concatenaciones redundantes
+                tbody.innerHTML = "";
 
-                // Iteración secuencial de cada elemento del almacén de productos
                 productos.forEach((p, i) => {
                     const tr = document.createElement("tr");
-                    // Estructuración sintáctica de celdas con template literals e inyección de botones
                     tr.innerHTML = `
                     <td>${i + 1}. ${p.nombre}</td>
-                    <td>${p.cantidad}</td>
+                    <td>${formatCantidad(p.cantidad)}</td>
                     <td>
                         <div class="action-cell">
                             <button class="btn-actualizar" onclick="openEditModal(${p.id})">Actualizar</button>
@@ -137,65 +256,69 @@ require_once "../../app/verificar_sesion.php";
                         </div>
                     </td>
                 `;
-                    tbody.appendChild(tr); // Vinculación física del tr estructurado al contenedor tbody
+                    tbody.appendChild(tr);
                 });
 
-                // ===== FILAS VACÍAS DECORATIVAS =====
-                // Bloque lógico para asegurar un mínimo visual estricto de 10 filas fijas en la interfaz
                 const emptyRows = Math.max(0, 10 - productos.length);
                 for (let i = 0; i < emptyRows; i++) {
                     const tr = document.createElement("tr");
-                    tr.className = "empty-row"; // Identificador CSS especializado para filas sin datos (.empty-row)
+                    tr.className = "empty-row";
                     tr.innerHTML = `<td>&nbsp;</td><td></td><td></td>`;
                     tbody.appendChild(tr);
                 }
             }
 
             // ===== MODALS =====
-            // Prepara los componentes del formulario para la adición de un nuevo artículo
             function openAddModal() {
-                editingId = null; // Restablece estado global a inserción pura
+                editingId = null;
                 document.getElementById("modal-title").textContent =
                     "Agregar Producto";
                 document.getElementById("input-producto").value = "";
                 document.getElementById("input-cantidad").value = "";
-                document.getElementById("modal-form").classList.add("active"); // Inyecta la propiedad visible (.active)
+                document.getElementById("modal-form").classList.add("active");
             }
 
-            // Recupera datos de un producto específico y reconfigura el modal en modalidad de edición
             function openEditModal(id) {
-                const p = productos.find((x) => x.id === id); // Localización por comparación estricta de ID
+                const p = productos.find((x) => x.id === id);
                 if (!p) return;
-                editingId = id; // Setea el identificador global de edición
+                editingId = id;
                 document.getElementById("modal-title").textContent =
                     "Actualizar Producto";
                 document.getElementById("input-producto").value = p.nombre;
                 document.getElementById("input-cantidad").value = p.cantidad;
-                document.getElementById("modal-form").classList.add("active"); // Muestra ventana flotante de datos
+                document.getElementById("modal-form").classList.add("active");
             }
 
-            // Gestiona la asignación y apertura de confirmación previo a la baja del registro
             function openDeleteModal(id) {
                 const p = productos.find((x) => x.id === id);
                 if (!p) return;
-                deletingId = id; // Retiene en memoria el ID a eliminar
+                deletingId = id;
                 document.getElementById("confirm-msg").textContent =
                     `¿Estás seguro de eliminar "${p.nombre}"?`;
                 document
                     .getElementById("modal-confirm")
-                    .classList.add("active"); // Despliega modal de confirmación
+                    .classList.add("active");
             }
 
-            // Cierra masivamente todas las ventanas modales del entorno removiendo la clase activa
             function closeModal() {
                 document
                     .querySelectorAll(".modal-overlay")
                     .forEach((m) => m.classList.remove("active"));
             }
 
+            // ===== HELPER AJAX =====
+            async function llamarServidor(datos) {
+                const body = new URLSearchParams(datos);
+                const res = await fetch(window.location.pathname, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body,
+                });
+                return res.json();
+            }
+
             // ===== ACCIONES =====
-            // Centraliza la persistencia o reescritura de los datos capturados del formulario
-            function guardarProducto() {
+            async function guardarProducto() {
                 const nombre = document
                     .getElementById("input-producto")
                     .value.trim();
@@ -203,54 +326,89 @@ require_once "../../app/verificar_sesion.php";
                     .getElementById("input-cantidad")
                     .value.trim();
 
-                // Validación restrictiva contra strings vacíos o con puros espacios
-                if (!nombre || !cantidad) {
-                    showToast("Complete todos los campos.");
+                if (!nombre || cantidad === "" || isNaN(cantidad) || Number(cantidad) < 0) {
+                    showToast("Complete todos los campos con datos válidos.");
+                    return;
+                }
+
+                let resultado;
+                if (editingId === null) {
+                    resultado = await llamarServidor({
+                        ajax_action: "add",
+                        nombre,
+                        cantidad,
+                    });
+                } else {
+                    resultado = await llamarServidor({
+                        ajax_action: "edit",
+                        id: editingId,
+                        nombre,
+                        cantidad,
+                    });
+                }
+
+                if (!resultado.ok) {
+                    showToast(resultado.error || "No se pudo guardar el producto.");
                     return;
                 }
 
                 if (editingId === null) {
-                    // Bifurcación: Registro e inserción de ítem nuevo
-                    productos.push({ id: nextId++, nombre, cantidad });
                     showToast("Producto agregado.");
                 } else {
-                    // Bifurcación: Sobreescritura del ítem mutado en edición
                     const p = productos.find((x) => x.id === editingId);
                     if (p) {
                         p.nombre = nombre;
-                        p.cantidad = cantidad;
+                        p.cantidad = Number(cantidad);
                     }
                     showToast("Producto actualizado.");
+                    closeModal();
+                    renderTabla();
+                    return;
                 }
-                closeModal(); // Oculta modales activos
-                renderTabla(); // Re-renderiza el árbol de datos
+
+                closeModal();
+                await recargarProductos();
             }
 
-            // Ejecuta la depuración del producto del array mediante exclusión controlada
-            function confirmarEliminacion() {
-                // Filtra y genera una nueva colección omitiendo la id coincidente
+            async function confirmarEliminacion() {
+                const resultado = await llamarServidor({
+                    ajax_action: "delete",
+                    id: deletingId,
+                });
+
+                if (!resultado.ok) {
+                    showToast(resultado.error || "No se pudo eliminar el producto.");
+                    closeModal();
+                    return;
+                }
+
                 productos = productos.filter((x) => x.id !== deletingId);
-                closeModal(); // Cierra modales
-                renderTabla(); // Actualiza la vista tabular de datos
+                closeModal();
+                renderTabla();
                 showToast("Producto eliminado.");
             }
 
+            // Vuelve a pedir la lista completa al servidor (usado tras agregar,
+            // para obtener el id_producto real que asignó la base de datos).
+            async function recargarProductos() {
+                window.location.reload();
+            }
+
             // ===== TOAST =====
-            // Inicializa y temporiza los cuadros emergentes asíncronos de estado
             function showToast(msg) {
                 const t = document.getElementById("toast");
                 t.textContent = msg;
-                t.classList.add("show"); // Hace emerger visualmente el cuadro mediante CSS (.show)
-                // Desactiva la clase e invisibiliza el elemento transcurridos 2.5 segundos (2500 ms)
+                t.classList.add("show");
                 setTimeout(() => t.classList.remove("show"), 2500);
             }
 
-            // Agrega un escuchador para cerrar las ventanas modales si el usuario da clic fuera de ellas
             document.querySelectorAll(".modal-overlay").forEach((overlay) => {
                 overlay.addEventListener("click", (e) => {
                     if (e.target === overlay) closeModal();
                 });
             });
+
+            renderTabla();
         </script>
         <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
         <script

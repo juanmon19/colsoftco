@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-08-2026 a las 09:54:06
+-- Tiempo de generación: 12-08-2026 a las 03:07:18
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -58,7 +58,15 @@ CREATE TABLE `historial_movimientos` (
 
 INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `descripcion`, `datos_anteriores`, `datos_nuevos`, `usuario_id`, `usuario_nombre`, `ip`, `fecha_hora`) VALUES
 (1, 'materia_prima', 'editar', 9, 'Se actualizó la materia prima \'Borde perimetral\'', NULL, '{\"nombre_material\":\"Borde perimetral\",\"stock_actual\":\"180.00\",\"stock_minimo\":\"40.00\",\"id_unidad\":\"2\",\"id_proveedor\":\"3\"}', NULL, 'Jafet Pineda', '::1', '2026-08-06 02:28:15'),
-(2, 'proveedores', 'crear', NULL, 'Se registró el proveedor \'Res\'', NULL, '{\"nombre_empresa\":\"Res\",\"contacto_nombre\":\"David\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3116364875\",\"email\":\"jafetgatitos06@gmail.com\",\"nit\":\"455492131245\",\"direccion\":\"Cl. 14 #107-54\"}', NULL, 'Jafet Pineda', '::1', '2026-08-06 02:42:38');
+(2, 'proveedores', 'crear', NULL, 'Se registró el proveedor \'Res\'', NULL, '{\"nombre_empresa\":\"Res\",\"contacto_nombre\":\"David\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3116364875\",\"email\":\"jafetgatitos06@gmail.com\",\"nit\":\"455492131245\",\"direccion\":\"Cl. 14 #107-54\"}', NULL, 'Jafet Pineda', '::1', '2026-08-06 02:42:38'),
+(3, 'materia_prima', 'crear', 13, 'Se registró la materia prima \'Fieltro aislante\' con stock inicial de 20', NULL, '{\"nombre_material\":\"Fieltro aislante\",\"stock_actual\":\"20\",\"stock_minimo\":0,\"id_unidad\":\"3\",\"id_proveedor\":\"4\"}', NULL, 'Jafet Pineda', '::1', '2026-08-11 19:42:16'),
+(4, 'producto_terminado', 'crear', 1, 'Se registró producción de 20 unidades de \'Colchon Queen\'', NULL, '{\"nombre_producto\":\"Colchon Queen\",\"cantidad\":\"20\"}', NULL, 'Jafet Pineda', '::1', '2026-08-11 19:52:11'),
+(5, 'producto_terminado', 'crear', 2, 'Se agregó el producto terminado \'Colchon King\' con stock 12', NULL, '{\"nombre_producto\":\"Colchon King\",\"stock_actual\":\"12\"}', NULL, 'Jafet Pineda', '::1', '2026-08-11 19:56:06'),
+(6, 'producto_terminado', 'crear', 3, 'Se registró producción de 15 unidades de \'Colchon Normal\'', NULL, '{\"nombre_producto\":\"Colchon Normal\",\"cantidad\":\"15\"}', NULL, 'Jafet Pineda', '::1', '2026-08-11 19:56:39'),
+(7, 'producto_terminado', 'crear', 1, 'Se registró producción de 4576 unidades de \'Colchon Queen\'', NULL, '{\"nombre_producto\":\"Colchon Queen\",\"cantidad\":\"4576\"}', NULL, 'Jafet Pineda', '::1', '2026-08-11 19:58:06'),
+(8, 'producto_terminado', 'actualizar', 1, 'Se actualizó el producto terminado \'Colchon Queen\' a stock 68887', NULL, '{\"nombre_producto\":\"Colchon Queen\",\"stock_actual\":\"68887\"}', NULL, 'Jafet Pineda', '::1', '2026-08-11 19:58:27'),
+(9, 'producto_terminado', 'actualizar', 1, 'Se actualizó el producto terminado \'Colchon Queen\' a stock 20', NULL, '{\"nombre_producto\":\"Colchon Queen\",\"stock_actual\":\"20\"}', NULL, 'Jafet Pineda', '::1', '2026-08-11 19:58:45'),
+(10, 'proveedores', 'crear', NULL, 'Se registró el proveedor \'Resortes Especiales S.A.S\'', NULL, '{\"nombre_empresa\":\"Resortes Especiales S.A.S\",\"contacto_nombre\":\"Jafet\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3116364875\",\"email\":\"jafetdavidpi@gmail.com\",\"nit\":\"83947593487\",\"direccion\":\"Cl 14 107-54\"}', NULL, 'Jafet Pineda', '::1', '2026-08-11 20:02:36');
 
 -- --------------------------------------------------------
 
@@ -90,7 +98,8 @@ INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`,
 (8, 'Tela antideslizante', 200.00, 40.00, 2, 2),
 (9, 'Borde perimetral', 180.00, 40.00, 2, 3),
 (10, 'Empaque plastico', 400.00, 80.00, 2, 4),
-(11, 'Tela ', 100.00, 30.00, 2, 2);
+(11, 'Tela ', 100.00, 30.00, 2, 2),
+(13, 'Fieltro aislante', 20.00, 0.00, 3, 4);
 
 -- --------------------------------------------------------
 
@@ -152,6 +161,29 @@ CREATE TABLE `pedidos_proveedor` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `productos_terminados`
+--
+
+CREATE TABLE `productos_terminados` (
+  `id_producto` int(11) NOT NULL,
+  `nombre_producto` varchar(100) NOT NULL,
+  `stock_actual` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `stock_minimo` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `productos_terminados`
+--
+
+INSERT INTO `productos_terminados` (`id_producto`, `nombre_producto`, `stock_actual`, `stock_minimo`, `fecha_creacion`) VALUES
+(1, 'Colchon Queen', 20.00, 0.00, '2026-08-11 19:52:11'),
+(2, 'Colchon King', 12.00, 0.00, '2026-08-11 19:56:06'),
+(3, 'Colchon Normal', 15.00, 0.00, '2026-08-11 19:56:39');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `proveedores`
 --
 
@@ -177,7 +209,8 @@ INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit`, `direccion`,
 (3, 'Resortes Nacionales SAS', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com'),
 (4, 'Insumos Industriales SAS', '900456789-4', 'Barranquilla, Atlántico', 'Distribución de insumos industriales', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com'),
 (5, 'Espumas y Colchones del Norte S.A.S.', '901456789-3', 'Carrera 15 # 45-20, Bogotá, Colombia', 'Proveedor especializado en espuma de poliuretano, telas para colchonería, resortes y materias primas para la fabricación de colchones y muebles.', 'Carlos', 'Ramírez', '3204567890', 'compras@espumasnorte.com'),
-(7, 'Res', '455492131245', 'Cl. 14 #107-54', 'Resortes Especializados', 'David', 'Pineda', '3116364875', 'jafetgatitos06@gmail.com');
+(7, 'Res', '455492131245', 'Cl. 14 #107-54', 'Resortes Especializados', 'David', 'Pineda', '3116364875', 'jafetgatitos06@gmail.com'),
+(8, 'Resortes Especiales S.A.S', '83947593487', 'Cl 14 107-54', 'Empresa de resortes reforzados', 'Jafet', 'Pineda', '3116364875', 'jafetdavidpi@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -347,7 +380,7 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
 (7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'administrador', '$2y$10$WIOrMUGxtSwEkYs4M0GgOuVfDrb9x6e4P7uVC6hvp8GxRE3oHV2ue', '1', '189510a696b40e8fe8fad52f932f321cb629de31456b124461fc2fc44fa6f3f1', '1785468187'),
 (8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'operario', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
-(10, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
+(10, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', 'administrador', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
 (14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
 
 --
@@ -401,6 +434,13 @@ ALTER TABLE `pedidos_proveedor`
   ADD KEY `id_material` (`id_material`);
 
 --
+-- Indices de la tabla `productos_terminados`
+--
+ALTER TABLE `productos_terminados`
+  ADD PRIMARY KEY (`id_producto`),
+  ADD UNIQUE KEY `uq_nombre_producto` (`nombre_producto`);
+
+--
 -- Indices de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
@@ -442,13 +482,13 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `historial_movimientos`
 --
 ALTER TABLE `historial_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `materias_primas`
 --
 ALTER TABLE `materias_primas`
-  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `modelos_colchon`
@@ -469,10 +509,16 @@ ALTER TABLE `pedidos_proveedor`
   MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `productos_terminados`
+--
+ALTER TABLE `productos_terminados`
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `receta_colchon`

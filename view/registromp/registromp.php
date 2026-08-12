@@ -10,57 +10,74 @@ $conn = $db->getConnection();
 $unidades = $conn->query("SELECT * FROM unidades_medida")->fetchAll(PDO::FETCH_ASSOC);
 $proveedores = $conn->query("SELECT * FROM proveedores")->fetchAll(PDO::FETCH_ASSOC);
 
+$mensaje = '';
+$mensajeTipo = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $nombre_material = $_POST['nombre_material'];
-    $stock_actual = $_POST['stock_actual'];
-    $stock_minimo = $_POST['stock_minimo'];
-    $id_unidad = $_POST['id_unidad'];
-    $id_proveedor = $_POST['id_proveedor'];
+    $nombre_material = trim($_POST['nombre_material'] ?? '');
+    $stock_actual = $_POST['stock_actual'] ?? '';
+    $id_unidad = $_POST['id_unidad'] ?? '';
+    $id_proveedor = $_POST['id_proveedor'] ?? '';
 
-    $sql = "INSERT INTO materias_primas
-            (
-                nombre_material,
-                stock_actual,
-                stock_minimo,
-                id_unidad,
-                id_proveedor
-            )
-            VALUES
-            (
-                :nombre_material,
-                :stock_actual,
-                :stock_minimo,
-                :id_unidad,
-                :id_proveedor
-            )";
+    // El formulario ya no pide stock mínimo, pero la columna en la BD es
+    // NOT NULL sin valor por defecto, así que se envía 0 automáticamente.
+    $stock_minimo = 0;
 
-    $stmt = $conn->prepare($sql);
+    if ($nombre_material === '' || $stock_actual === '' || $id_unidad === '' || $id_proveedor === '') {
+        $mensaje = 'Por favor complete todos los campos obligatorios.';
+        $mensajeTipo = 'error';
+    } else {
+        try {
+            $sql = "INSERT INTO materias_primas
+                    (
+                        nombre_material,
+                        stock_actual,
+                        stock_minimo,
+                        id_unidad,
+                        id_proveedor
+                    )
+                    VALUES
+                    (
+                        :nombre_material,
+                        :stock_actual,
+                        :stock_minimo,
+                        :id_unidad,
+                        :id_proveedor
+                    )";
 
-    $stmt->execute([
-        ':nombre_material' => $nombre_material,
-        ':stock_actual' => $stock_actual,
-        ':stock_minimo' => $stock_minimo,
-        ':id_unidad' => $id_unidad,
-        ':id_proveedor' => $id_proveedor
-    ]);
+            $stmt = $conn->prepare($sql);
 
-    (new HistorialMovimientos())->registrar([
-        'modulo'       => 'materia_prima',
-        'accion'       => 'crear',
-        'id_registro'  => $conn->lastInsertId(),
-        'descripcion'  => "Se registró la materia prima '{$nombre_material}' con stock inicial de {$stock_actual}",
-        'datos_nuevos' => [
-            'nombre_material' => $nombre_material,
-            'stock_actual'    => $stock_actual,
-            'stock_minimo'    => $stock_minimo,
-            'id_unidad'       => $id_unidad,
-            'id_proveedor'    => $id_proveedor,
-        ],
-        'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
-    ]);
+            $stmt->execute([
+                ':nombre_material' => $nombre_material,
+                ':stock_actual' => $stock_actual,
+                ':stock_minimo' => $stock_minimo,
+                ':id_unidad' => $id_unidad,
+                ':id_proveedor' => $id_proveedor
+            ]);
 
-    exit();
+            (new HistorialMovimientos())->registrar([
+                'modulo'       => 'materia_prima',
+                'accion'       => 'crear',
+                'id_registro'  => $conn->lastInsertId(),
+                'descripcion'  => "Se registró la materia prima '{$nombre_material}' con stock inicial de {$stock_actual}",
+                'datos_nuevos' => [
+                    'nombre_material' => $nombre_material,
+                    'stock_actual'    => $stock_actual,
+                    'stock_minimo'    => $stock_minimo,
+                    'id_unidad'       => $id_unidad,
+                    'id_proveedor'    => $id_proveedor,
+                ],
+                'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+            ]);
+
+            $mensaje = "Materia prima '{$nombre_material}' registrada correctamente.";
+            $mensajeTipo = 'ok';
+        } catch (Exception $e) {
+            $mensaje = 'Error al registrar la materia prima: ' . $e->getMessage();
+            $mensajeTipo = 'error';
+        }
+    }
 }
 ?>
 <!doctype html>
@@ -99,13 +116,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="form-body">
-                    <form id="regForm">
+                    <?php if ($mensaje): ?>
+                        <div class="mensaje mensaje-<?= $mensajeTipo ?>" style="margin-bottom:16px;padding:10px 14px;border-radius:6px;font-weight:600;
+                            <?= $mensajeTipo === 'ok' ? 'background:#e5f7ec;color:#1e7e42;' : 'background:#fdecea;color:#c0392b;' ?>">
+                            <?= htmlspecialchars($mensaje) ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <form id="regForm" method="POST">
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="producto">Producto</label>
                                 <div class="select-wrap">
-                                    <!-- Corrección de id="unidad" a id="producto" -->
-                                    <select id="producto">
+                                    <select id="producto" name="nombre_material" required>
                                         <option value="">-- Seleccione --</option>
                                         <option>Espuma de poliuretano</option>
                                         <option>Tela Jacquard</option>
@@ -126,19 +149,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="form-group">
                                 <label for="unidad">Unidad de medida</label>
                                 <div class="select-wrap">
-                                    <select id="unidad">
+                                    <select id="unidad" name="id_unidad" required>
                                         <option value="">-- Seleccione --</option>
-                                        <option>Metro (M)</option>
-                                        <option>Kilogramo (Kg)</option>
-                                        <option>Unidad (Und)</option>
-                                        <option>Litro (L)</option>
+                                        <?php foreach ($unidades as $unidad): ?>
+                                            <option value="<?= $unidad['id_unidad'] ?>">
+                                                <?= htmlspecialchars($unidad['nombre_unidad']) ?> (<?= htmlspecialchars($unidad['sigla']) ?>)
+                                            </option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="cantidad">Cantidad</label>
-                                <input type="number" id="cantidad" min="0" placeholder="Ingrese la cantidad" />
+                                <input type="number" id="cantidad" name="stock_actual" min="0" step="0.01" placeholder="Ingrese la cantidad" required />
                             </div>
 
                             <div class="form-group full">
@@ -147,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <option value="">Seleccione</option>
                                     <?php foreach ($proveedores as $proveedor): ?>
                                         <option value="<?= $proveedor['id_proveedor'] ?>">
-                                            <?= $proveedor['nombre_empresa'] ?> - <?= $proveedor['descripcion_empresa'] ?>
+                                            <?= htmlspecialchars($proveedor['nombre_empresa']) ?> - <?= htmlspecialchars($proveedor['descripcion_empresa']) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -157,8 +181,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <hr class="form-divider" />
 
                         <div class="form-actions">
-                            <button type="button" class="btn btn-outline" onclick="limpiar()">Limpiar</button>
-                            <button type="button" class="btn btn-primary" onclick="registrar()">Registrar</button>
+                            <button type="reset" class="btn btn-outline">Limpiar</button>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
                         </div>
                     </form>
                 </div>
@@ -191,76 +215,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </footer>
 
-    <div class="toast" id="toast">✔ Producto registrado exitosamente.</div>
-
-    <script>
-        function limpiar() {
-            document.getElementById("producto").value = "";
-            document.getElementById("cantidad").value = "";
-            quitarErrores();
-        }
-
-        function registrar() {
-            const producto = document.getElementById("producto").value.trim();
-            const cantidad = document.getElementById("cantidad").value.trim();
-
-            quitarErrores();
-
-            if (!producto) {
-                mostrarError("producto", "Por favor ingrese el nombre del producto.");
-                return;
-            }
-
-            if (!cantidad || isNaN(cantidad) || Number(cantidad) < 0) {
-                mostrarError("cantidad", "Por favor ingrese una cantidad válida.");
-                return;
-            }
-
-            console.log({ producto, cantidad: Number(cantidad) });
-            limpiar();
-            mostrarToast("✔ Producto registrado exitosamente.");
-        }
-
-        function mostrarError(inputId, mensaje) {
-            const input = document.getElementById(inputId);
-            input.style.borderColor = "#c0392b";
-            input.style.boxShadow = "0 0 0 3px rgba(192,57,43,.15)";
-            input.focus();
-
-            const msg = document.createElement("span");
-            msg.className = "field-error";
-            msg.textContent = mensaje;
-            msg.style.cssText = "color:#c0392b;font-size:12px;font-weight:600;margin-top:3px;display:block;";
-
-            input.parentNode.appendChild(msg);
-            input.addEventListener("input", quitarErrores, { once: true });
-        }
-
-        function quitarErrores() {
-            document.querySelectorAll(".field-error").forEach((el) => el.remove());
-            ["producto", "cantidad"].forEach((id) => {
-                const inp = document.getElementById(id);
-                if(inp) {
-                    inp.style.borderColor = "";
-                    inp.style.boxShadow = "";
-                }
-            });
-        }
-
-        function mostrarToast(texto) {
-            const toast = document.getElementById("toast");
-            toast.textContent = texto;
-            toast.style.display = "block";
-            clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => {
-                toast.style.display = "none";
-            }, 3000);
-        }
-    </script>
-
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-    
+
     <script src="../../public/js/app.js"></script>
 </body>
 

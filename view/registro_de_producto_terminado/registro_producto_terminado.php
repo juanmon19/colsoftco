@@ -1,7 +1,78 @@
 <?php
 
 require_once "../../app/verificar_sesion.php";
+require_once __DIR__ . '/../../config/conexion.php';
+require_once __DIR__ . '/../../app/HistorialMovimientos.php';
 
+$db = new Conexion();
+$conn = $db->getConnection();
+
+$mensaje = '';
+$mensajeTipo = '';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $nombre_producto = trim($_POST['producto'] ?? '');
+    $cantidad = $_POST['cantidad'] ?? '';
+
+    if ($nombre_producto === '' || $cantidad === '' || !is_numeric($cantidad) || $cantidad < 0) {
+        $mensaje = 'Por favor ingrese un producto y una cantidad válida.';
+        $mensajeTipo = 'error';
+    } else {
+        try {
+            $conn->beginTransaction();
+
+            // Mismo patrón "upsert" que usa app/logica_colchones.php al fabricar:
+            // si el producto ya existe se suma al stock, si no, se crea.
+            $stmt = $conn->prepare(
+                "SELECT id_producto, stock_actual FROM productos_terminados WHERE nombre_producto = :nombre LIMIT 1"
+            );
+            $stmt->execute([':nombre' => $nombre_producto]);
+            $existente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($existente) {
+                $stmt = $conn->prepare(
+                    "UPDATE productos_terminados SET stock_actual = stock_actual + :cantidad WHERE id_producto = :id"
+                );
+                $stmt->execute([
+                    ':cantidad' => $cantidad,
+                    ':id' => $existente['id_producto'],
+                ]);
+                $idProducto = $existente['id_producto'];
+            } else {
+                $stmt = $conn->prepare(
+                    "INSERT INTO productos_terminados (nombre_producto, stock_actual) VALUES (:nombre, :cantidad)"
+                );
+                $stmt->execute([
+                    ':nombre' => $nombre_producto,
+                    ':cantidad' => $cantidad,
+                ]);
+                $idProducto = $conn->lastInsertId();
+            }
+
+            $conn->commit();
+
+            (new HistorialMovimientos())->registrar([
+                'modulo'       => 'producto_terminado',
+                'accion'       => 'crear',
+                'id_registro'  => $idProducto,
+                'descripcion'  => "Se registró producción de {$cantidad} unidades de '{$nombre_producto}'",
+                'datos_nuevos' => [
+                    'nombre_producto' => $nombre_producto,
+                    'cantidad'        => $cantidad,
+                ],
+                'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+            ]);
+
+            $mensaje = "Producto '{$nombre_producto}' registrado correctamente.";
+            $mensajeTipo = 'ok';
+        } catch (Exception $e) {
+            $conn->rollBack();
+            $mensaje = 'Error al registrar el producto: ' . $e->getMessage();
+            $mensajeTipo = 'error';
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -49,127 +120,41 @@ require_once "../../app/verificar_sesion.php";
         </div>
 
         <div class="form-body">
-          <div class="form-grid">
+          <?php if ($mensaje): ?>
+              <div class="mensaje mensaje-<?= $mensajeTipo ?>" style="margin-bottom:16px;padding:10px 14px;border-radius:6px;font-weight:600;
+                  <?= $mensajeTipo === 'ok' ? 'background:#e5f7ec;color:#1e7e42;' : 'background:#fdecea;color:#c0392b;' ?>">
+                  <?= htmlspecialchars($mensaje) ?>
+              </div>
+          <?php endif; ?>
 
-            <div class="form-group full">
-              <label for="producto">Producto</label>
-              <input type="text" id="producto" placeholder="Nombre del producto" />
+          <form id="regForm" method="POST">
+            <div class="form-grid">
+
+              <div class="form-group full">
+                <label for="producto">Producto</label>
+                <input type="text" id="producto" name="producto" placeholder="Nombre del producto" required />
+              </div>
+
+              <div class="form-group full">
+                <label for="cantidad">Cantidad</label>
+                <input type="number" id="cantidad" name="cantidad" placeholder="Ingrese la cantidad" min="0" step="0.01" required />
+              </div>
+
+              <hr class="form-divider" />
+
+              <div class="form-actions">
+                <button type="reset" class="btn btn-outline">Limpiar</button>
+                <button type="submit" class="btn btn-primary">Registrar</button>
+              </div>
+
             </div>
-
-            <div class="form-group full">
-              <label for="cantidad">Cantidad</label>
-              <input type="number" id="cantidad" placeholder="Ingrese la cantidad" min="0" />
-            </div>
-
-            <hr class="form-divider" />
-
-            <div class="form-actions">
-              <button class="btn btn-outline" onclick="limpiar()">Limpiar</button>
-              <button class="btn btn-primary" onclick="registrar()">Registrar</button>
-            </div>
-
-          </div>
+          </form>
         </div>
       </div>
 
     </main>
   </div>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast">✔ Producto registrado exitosamente.</div>
-
-  <script>
-    // ══════════════════════════════════════
-    //  PANEL BODEGUERO – panel_bodeguero.js
-    // ══════════════════════════════════════
-    /**
-     * Limpia los campos del formulario.
-     */
-    function limpiar() {
-      document.getElementById('producto').value = '';
-      document.getElementById('cantidad').value = '';
-      quitarErrores();
-    }
-
-    /**
-     * Valida y registra el producto.
-     */
-    function registrar() {
-      const producto = document.getElementById('producto').value.trim();
-      const cantidad = document.getElementById('cantidad').value.trim();
-
-      quitarErrores();
-
-      if (!producto) {
-        mostrarError('producto', 'Por favor ingrese el nombre del producto.');
-        return;
-      }
-
-      if (!cantidad || isNaN(cantidad) || Number(cantidad) < 0) {
-        mostrarError('cantidad', 'Por favor ingrese una cantidad válida.');
-        return;
-      }
-
-      // Aquí iría la llamada al backend
-      console.log('Producto registrado:', { producto, cantidad: Number(cantidad) });
-
-      limpiar();
-      mostrarToast('✔ Producto registrado exitosamente.');
-    }
-
-    /**
-     * Resalta el campo con error y muestra mensaje debajo.
-     */
-    function mostrarError(inputId, mensaje) {
-      const input = document.getElementById(inputId);
-
-      input.style.borderColor = '#c0392b';
-      input.style.boxShadow = '0 0 0 3px rgba(192,57,43,.15)';
-      input.focus();
-
-      const msg = document.createElement('span');
-      msg.className = 'field-error';
-      msg.textContent = mensaje;
-      msg.style.cssText =
-        'color:#c0392b;font-size:12px;font-weight:600;margin-top:3px;display:block;';
-
-      input.parentNode.appendChild(msg);
-      input.addEventListener('input', quitarErrores, { once: true });
-    }
-
-    /**
-     * Elimina estilos de error del formulario.
-     */
-    function quitarErrores() {
-      document.querySelectorAll('.field-error').forEach(el => el.remove());
-      ['producto', 'cantidad'].forEach(id => {
-        const inp = document.getElementById(id);
-        if (inp) {
-          inp.style.borderColor = '';
-          inp.style.boxShadow = '';
-        }
-      });
-    }
-
-    /**
-     * Muestra el toast de notificación por 3 segundos.
-     */
-    function mostrarToast(texto) {
-      const toast = document.getElementById('toast');
-      toast.textContent = texto;
-      toast.style.display = 'block';
-
-      toast.style.animation = 'none';
-      void toast.offsetWidth;
-      toast.style.animation = '';
-
-      clearTimeout(toast._timer);
-      toast._timer = setTimeout(() => {
-        toast.style.display = 'none';
-      }, 3000);
-    }
-
-  </script>
 <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
 <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
   
