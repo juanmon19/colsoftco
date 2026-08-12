@@ -162,6 +162,115 @@ body {
     background: #eee;
 }
 
+/* ===== BARRA DE FILTROS ===== */
+.filtros-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.filtro-busqueda {
+    flex: 1;
+    min-width: 220px;
+}
+
+.filtro-busqueda input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 13px;
+    background: #fafbfd;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.filtro-busqueda input:focus {
+    outline: none;
+    border-color: #0A1F44;
+    box-shadow: 0 0 0 3px rgba(10, 31, 68, .13);
+    background: #fff;
+}
+
+.filtro-orden {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.filtro-orden label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #0A1F44;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.filtro-orden select {
+    padding: 8px 10px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 13px;
+    background: #fafbfd;
+    color: #333;
+    cursor: pointer;
+}
+
+.filtro-orden select:focus {
+    outline: none;
+    border-color: #0A1F44;
+}
+
+.btn-limpiar-filtros {
+    padding: 9px 16px;
+    border: 1.5px solid #0A1F44;
+    background: #fff;
+    color: #0A1F44;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-limpiar-filtros:hover {
+    background: #f4f6fb;
+}
+
+.mensaje-sin-resultados {
+    background: #fff8e1;
+    border-left: 4px solid #D4AF37;
+    color: #5a4a1a;
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .filtros-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtro-orden {
+        justify-content: space-between;
+    }
+
+    .filtro-orden select {
+        flex: 1;
+    }
+}
+
 /* ===== CARDS PROVEEDORES ===== */
 .provider-list {
     display: flex;
@@ -219,11 +328,16 @@ body {
     justify-content: space-between;
     width: 150px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
 }
 
 .btn-group-top {
     display: flex;
     gap: 5px;
+    position: relative;
+    z-index: 20;
 }
 
 .btn-group-top button {
@@ -241,6 +355,11 @@ body {
     color: #333;
     transition: all 0.2s;
     text-align: center;
+    text-decoration: none;
+    display: block;
+    position: relative;
+    z-index: 20;
+    pointer-events: auto;
 }
 
 .btn-card:hover {

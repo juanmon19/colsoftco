@@ -17,45 +17,123 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $direccion = trim($_POST['direccion']);
     $descripcion_empresa = trim($_POST['descripcion_empresa']);
 
-    try {
-        $logica = new ProveedorLogica();
+try {
 
-        $resultado = $logica->registrarProveedor(
-            $nombre_empresa,
-            $contacto_nombre,
-            $contacto_apellido,
-            $telefono,
-            $email,
-            $nit,
-            $direccion,
-            $descripcion_empresa
-        );
+    // =====================================
+    // VALIDAR IMAGEN
+    // =====================================
 
-        if ($resultado) {
-            $mensaje = "Proveedor registrado correctamente";
-
-            (new HistorialMovimientos())->registrar([
-                'modulo'       => 'proveedores',
-                'accion'       => 'crear',
-                'descripcion'  => "Se registró el proveedor '{$nombre_empresa}'",
-                'datos_nuevos' => [
-                    'nombre_empresa'     => $nombre_empresa,
-                    'contacto_nombre'    => $contacto_nombre,
-                    'contacto_apellido'  => $contacto_apellido,
-                    'telefono'           => $telefono,
-                    'email'              => $email,
-                    'nit'                => $nit,
-                    'direccion'          => $direccion,
-                ],
-                'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
-            ]);
-        } else {
-            $mensaje = "Error al registrar proveedor";
-        }
-        } catch (Exception $e) {
-        $mensaje = $e->getMessage();
+    if (!isset($_FILES['imagen']) || $_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
+        throw new Exception("Debe seleccionar una imagen para el proveedor.");
     }
-} 
+
+    $imagen = $_FILES['imagen'];
+
+    // Máximo 2 MB
+    if ($imagen['size'] > 2 * 1024 * 1024) {
+        throw new Exception("La imagen no puede superar los 2 MB.");
+    }
+
+    // Validar que realmente sea una imagen
+    $tipoImagen = getimagesize($imagen['tmp_name']);
+
+    if ($tipoImagen === false) {
+        throw new Exception("El archivo seleccionado no es una imagen válida.");
+    }
+
+    // Validar extensión
+    $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
+
+    $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
+
+    if (!in_array($extension, $extensionesPermitidas, true)) {
+        throw new Exception("Solo se permiten imágenes JPG, PNG o WEBP.");
+    }
+
+    // =====================================
+    // CREAR NOMBRE ÚNICO
+    // =====================================
+
+    $nombreImagen = 'proveedor_' . uniqid() . '.' . $extension;
+
+    // =====================================
+    // RUTA DE DESTINO
+    // =====================================
+
+    $carpetaImagenes = __DIR__ . '/../../public/imagenes/proveedores/';
+
+    // Crear carpeta si no existe
+    if (!is_dir($carpetaImagenes)) {
+        mkdir($carpetaImagenes, 0755, true);
+    }
+
+    $rutaImagen = $carpetaImagenes . $nombreImagen;
+
+    // =====================================
+    // GUARDAR IMAGEN
+    // =====================================
+
+    if (!move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
+        throw new Exception("No fue posible guardar la imagen.");
+    }
+
+    // =====================================
+    // REGISTRAR PROVEEDOR
+    // =====================================
+
+    $logica = new ProveedorLogica();
+
+    $resultado = $logica->registrarProveedor(
+    $nombre_empresa,
+    $contacto_nombre,
+    $contacto_apellido,
+    $telefono,
+    $email,
+    $nit,
+    $direccion,
+    $descripcion_empresa,
+    $nombreImagen
+);
+
+    // Si falla el registro, eliminamos la imagen
+    if (!$resultado) {
+        if (file_exists($rutaImagen)) {
+            unlink($rutaImagen);
+        }
+
+        $mensaje = "Error al registrar proveedor";
+    } else {
+
+        $mensaje = "Proveedor registrado correctamente";
+
+        (new HistorialMovimientos())->registrar([
+            'modulo'       => 'proveedores',
+            'accion'       => 'crear',
+            'descripcion'  => "Se registró el proveedor '{$nombre_empresa}'",
+            'datos_nuevos' => [
+                'nombre_empresa'     => $nombre_empresa,
+                'contacto_nombre'    => $contacto_nombre,
+                'contacto_apellido'  => $contacto_apellido,
+                'telefono'           => $telefono,
+                'email'              => $email,
+                'nit'                => $nit,
+                'direccion'          => $direccion,
+                'imagen'             => $nombreImagen
+            ],
+            'usuario_nombre' => trim(
+                ($_SESSION['nombre'] ?? '') . ' ' .
+                ($_SESSION['apellido'] ?? '')
+            ) ?: 'Sistema',
+        ]);
+    }
+
+} catch (Exception $e) {
+    $mensaje = $e->getMessage();
+}
+
+
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -70,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
 
-   <header>
+    <header>
         <div class="logo">
             <a href="../panel_admin/panel_admin.php">
                 <img src="../../public/imagenes/logo.png" alt="Logo">
@@ -107,7 +185,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2>Registrar Nuevo Proveedor</h2>
             </div>
 
-            <form method="POST" id="formProveedor">
+            <form method="POST" enctype="multipart/form-data" id="formProveedor">
+
+                <div class="field-group imagen-section">
+                    <label>Logo / Imagen del Proveedor</label>
+
+                    <div class="imagen-proveedor-row">
+
+                        <div class="imagen-preview" id="imagenPreviewBox">
+                            <span class="imagen-placeholder">Sin imagen</span>
+                            <img id="imagenPreviewImg" src="" alt="Vista previa" style="display:none;">
+                        </div>
+
+                        <div class="imagen-input-wrapper">
+                            <label for="imagen" class="imagen-file-label">
+                                Seleccionar imagen
+                            </label>
+                            <input
+                                type="file"
+                                id="imagen"
+                                name="imagen"
+                                accept="image/jpeg,image/png,image/webp"
+                                required>
+                            <span id="imagenFileName" class="imagen-file-name">Ningún archivo seleccionado</span>
+
+                            <small>
+                                Formatos permitidos: JPG, PNG o WEBP. Máximo 2 MB.
+                            </small>
+                        </div>
+
+                    </div>
+                </div>
 
                 <div class="grid-form">
 
@@ -157,6 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="reset" class="btn-limpiar">
                         Limpiar
                     </button>
+
                     <button type="submit" class="btn-registrar">
                         Registrar
                     </button>
@@ -197,6 +306,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="../../public/js/validacionesProveedor.js"></script>
 
     <script>
+        const imagenInput = document.getElementById('imagen');
+        const imagenFileName = document.getElementById('imagenFileName');
+        const imagenPreviewImg = document.getElementById('imagenPreviewImg');
+        const imagenPlaceholder = document.querySelector('#imagenPreviewBox .imagen-placeholder');
+
+        if (imagenInput) {
+            imagenInput.addEventListener('change', () => {
+                if (imagenInput.files.length) {
+                    const archivo = imagenInput.files[0];
+                    imagenFileName.textContent = archivo.name;
+
+                    const lector = new FileReader();
+                    lector.onload = (e) => {
+                        imagenPreviewImg.src = e.target.result;
+                        imagenPreviewImg.style.display = 'block';
+                        imagenPlaceholder.style.display = 'none';
+                    };
+                    lector.readAsDataURL(archivo);
+                } else {
+                    imagenFileName.textContent = 'Ningún archivo seleccionado';
+                    imagenPreviewImg.style.display = 'none';
+                    imagenPlaceholder.style.display = 'block';
+                }
+            });
+        }
+
         function mostrarError(id, mensaje) {
             const input = document.getElementById(id);
             input.style.border = "2px solid #dc3545";
@@ -220,9 +355,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function limpiarErrores() {
             document.querySelectorAll(".mensaje-error").forEach(e => e.remove());
             document.querySelectorAll("#formProveedor input, #formProveedor textarea")
-            .forEach(campo => {
-                campo.style.border = "";
-            });
+                .forEach(campo => {
+                    campo.style.border = "";
+                });
         }
 
         const formulario = document.getElementById("formProveedor");
@@ -236,9 +371,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const correo = document.getElementById("email").value;
             const direccion = document.getElementById("direccion").value;
             const descripcion = document.getElementById("descripcion_empresa").value;
-            
+
             limpiarErrores();
-            
+
             if (!expresiones.empresa.test(nombreEmpresa)) {
                 mostrarError("nombre_empresa", "Ingrese un nombre de empresa válido.");
                 e.preventDefault();
@@ -283,7 +418,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 
     <script src="../../public/js/app.js"></script>
-    
+
 </body>
 
 </html>
