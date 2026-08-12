@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-08-2026 a las 03:07:18
+-- Tiempo de generación: 12-08-2026 a las 04:00:53
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -110,7 +110,6 @@ INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`,
 CREATE TABLE `modelos_colchon` (
   `id_modelo` int(11) NOT NULL,
   `nombre_modelo` varchar(80) NOT NULL,
-  `descripcion` text DEFAULT NULL,
   `serial` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -118,16 +117,16 @@ CREATE TABLE `modelos_colchon` (
 -- Volcado de datos para la tabla `modelos_colchon`
 --
 
-INSERT INTO `modelos_colchon` (`id_modelo`, `nombre_modelo`, `descripcion`, `serial`) VALUES
-(1, 'Sueño Plus', 'Colchón de espuma de alta calidad', 'COL-0001'),
-(2, 'Descanso Real', 'Colchón ortopédico de firmeza media', 'COL-0002'),
-(3, 'Confort Total', 'Colchón con espuma viscoelástica', 'COL-0003'),
-(4, 'Premium Gold', 'Colchón de lujo con doble acolchado', 'COL-0004'),
-(5, 'Sencillo', NULL, ''),
-(8, 'Semidoble', NULL, 'MOD-SEMIDOBLE'),
-(9, 'Doble', NULL, 'MOD-DOBLE'),
-(10, 'Queen', NULL, 'MOD-QUEEN'),
-(11, 'King', NULL, 'MOD-KING');
+INSERT INTO `modelos_colchon` (`id_modelo`, `nombre_modelo`, `serial`) VALUES
+(1, 'Sueño Plus', 'COL-0001'),
+(2, 'Descanso Real', 'COL-0002'),
+(3, 'Confort Total', 'COL-0003'),
+(4, 'Premium Gold', 'COL-0004'),
+(5, 'Sencillo', ''),
+(8, 'Semidoble', 'MOD-SEMIDOBLE'),
+(9, 'Doble', 'MOD-DOBLE'),
+(10, 'Queen', 'MOD-QUEEN'),
+(11, 'King', 'MOD-KING');
 
 -- --------------------------------------------------------
 

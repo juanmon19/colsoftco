@@ -10,6 +10,16 @@ $conn = $db->getConnection();
 $unidades = $conn->query("SELECT * FROM unidades_medida")->fetchAll(PDO::FETCH_ASSOC);
 $proveedores = $conn->query("SELECT * FROM proveedores")->fetchAll(PDO::FETCH_ASSOC);
 
+/*
+ * CONEXIÓN DEL DESPLEGABLE DE PRODUCTOS
+ * Se obtienen las materias primas directamente
+ * desde la base de datos.
+ */
+$materias_primas = $conn->query("
+    SELECT id_material, nombre_material
+    FROM materias_primas
+")->fetchAll(PDO::FETCH_ASSOC);
+
 $mensaje = '';
 $mensajeTipo = '';
 
@@ -80,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
+
 <!doctype html>
 <html lang="es">
 
@@ -125,24 +136,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     <form id="regForm" method="POST">
                         <div class="form-grid">
+
                             <div class="form-group">
                                 <label for="producto">Producto</label>
                                 <div class="select-wrap">
+
                                     <select id="producto" name="nombre_material" required>
+
                                         <option value="">-- Seleccione --</option>
-                                        <option>Espuma de poliuretano</option>
-                                        <option>Tela Jacquard</option>
-                                        <option>Resortes Bonell</option>
-                                        <option>Espuma</option>
-                                        <option>Fieltro aislante</option>
-                                        <option>Pegante industrial</option>
-                                        <option>Hilo de costura</option>
-                                        <option>Espuma viscoelástica</option>
-                                        <option>Tela antideslizante</option>
-                                        <option>Borde perimetral</option>
-                                        <option>Empaque plástico</option>
-                                        <option>Tela</option>
+
+                                        <?php foreach ($materias_primas as $material): ?>
+
+                                            <option value="<?= htmlspecialchars($material['nombre_material']) ?>">
+                                                <?= htmlspecialchars($material['nombre_material']) ?>
+                                            </option>
+
+                                        <?php endforeach; ?>
+
                                     </select>
+
                                 </div>
                             </div>
 
@@ -151,31 +163,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <div class="select-wrap">
                                     <select id="unidad" name="id_unidad" required>
                                         <option value="">-- Seleccione --</option>
+
                                         <?php foreach ($unidades as $unidad): ?>
+
                                             <option value="<?= $unidad['id_unidad'] ?>">
                                                 <?= htmlspecialchars($unidad['nombre_unidad']) ?> (<?= htmlspecialchars($unidad['sigla']) ?>)
                                             </option>
+
                                         <?php endforeach; ?>
+
                                     </select>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="cantidad">Cantidad</label>
-                                <input type="number" id="cantidad" name="stock_actual" min="0" step="0.01" placeholder="Ingrese la cantidad" required />
+                                <input
+                                    type="number"
+                                    id="cantidad"
+                                    name="stock_actual"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="Ingrese la cantidad"
+                                    required
+                                />
                             </div>
 
                             <div class="form-group full">
                                 <label>Proveedor</label>
+
                                 <select name="id_proveedor" required>
+
                                     <option value="">Seleccione</option>
+
                                     <?php foreach ($proveedores as $proveedor): ?>
+
                                         <option value="<?= $proveedor['id_proveedor'] ?>">
-                                            <?= htmlspecialchars($proveedor['nombre_empresa']) ?> - <?= htmlspecialchars($proveedor['descripcion_empresa']) ?>
+                                            <?= htmlspecialchars($proveedor['nombre_empresa']) ?> -
+                                            <?= htmlspecialchars($proveedor['descripcion_empresa']) ?>
                                         </option>
+
                                     <?php endforeach; ?>
+
                                 </select>
+
                             </div>
+
                         </div>
 
                         <hr class="form-divider" />
@@ -184,6 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <button type="reset" class="btn btn-outline">Limpiar</button>
                             <button type="submit" class="btn btn-primary">Registrar</button>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -192,33 +226,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <footer>
         <div class="footer-divider"></div>
+
         <div class="footer-top">
+
             <div>
                 <p class="footer-brand-name">COLSOFTCO</p>
                 <p class="footer-brand-sub">Sistema de Gestión</p>
+
                 <p class="footer-brand-desc">
                     Sistema de gestión y administración de materias primas para Max&Flex.
                     Eficiencia en inventarios y movimientos empresariales.
                 </p>
             </div>
+
             <div>
                 <p class="footer-col-title">Contacto</p>
+
                 <div class="footer-contact-item">📍 Bogotá, Colombia</div>
                 <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
                 <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
                 <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
             </div>
+
         </div>
+
         <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>Equipo SENA</strong></span>
+            <span>
+                © 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.
+            </span>
+
+            <span>
+                Desarrollado por <strong>Equipo SENA</strong>
+            </span>
         </div>
     </footer>
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+
+    <script
+        src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js"
+        defer>
+    </script>
 
     <script src="../../public/js/app.js"></script>
+
 </body>
 
 </html>
