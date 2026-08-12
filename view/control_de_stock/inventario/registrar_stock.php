@@ -2,6 +2,7 @@
 
 require_once '../../../config/conexion.php';
 require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
+require_once __DIR__ . '/../../../app/alerta_stock.php';
 
 session_start();
 
@@ -62,6 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
     ]);
 
+    // Si el material ya nace con stock por debajo del mínimo, avisa de inmediato
+    (new AlertaStockLogica())->verificarStock($idNuevoMaterial);
+
     header("Location: lista_inventario.php");
     exit();
 }
@@ -96,10 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="page-body">
 
         <div class="content" style="margin: 0 auto; max-width: 1000px; width: 100%;">
-            
+
             <!-- ÚNICO BOTÓN DE VOLVER (Alineado a la izquierda sin estirarse) -->
             <div style="text-align: left; margin-bottom: 20px;">
-                
+
                 <a href="../control_de_stock.php" class="btn-volver">
                     ← Volver
                 </a>
@@ -146,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label>Stock mínimo</label>
                                 <input type="number" name="stock_minimo" step="0.01" required>
                             </div>
-                            
+
                             <div class="form-group full">
                                 <label>Proveedor</label>
                                 <div class="select-wrap">
@@ -161,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     </select>
                                 </div>
                             </div>
-                            
+
                         </div>
 
                         <div class="form-actions" style="margin-top: 20px;">
@@ -206,8 +210,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-    
+
     <script src="../../../public/js/app.js"></script>
 
 </body>
+
 </html>

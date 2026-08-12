@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-08-2026 a las 22:27:37
+-- Tiempo de generación: 12-08-2026 a las 23:20:21
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -100,7 +100,8 @@ INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `d
 (41, 'proveedores', 'editar', 2, 'Se actualizó el proveedor \'\'', '{\"id_proveedor\":2,\"nombre_empresa\":\"Textiles Andinos SAS\",\"nit\":\"800234567-2\",\"direccion\":\"Medellín, Antioquia\",\"descripcion_empresa\":\"Producción de textiles para la industria colchonera\",\"contacto_nombre\":\"Laura\",\"contacto_apellido\":\"Gomez\",\"telefono\":\"3102222222\",\"email\":\"contacto@textilesandinos.com\",\"imagen\":null}', '[]', NULL, 'Santiago Avellaneda', '::1', '2026-08-12 14:24:13'),
 (42, 'proveedores', 'editar', 2, 'Se actualizó el proveedor \'\'', '{\"id_proveedor\":2,\"nombre_empresa\":\"Textiles Andinos SAS\",\"nit\":\"800234567-2\",\"direccion\":\"Medellín, Antioquia\",\"descripcion_empresa\":\"Producción de textiles para la industria colchonera\",\"contacto_nombre\":\"Laura\",\"contacto_apellido\":\"Gomez\",\"telefono\":\"3102222222\",\"email\":\"contacto@textilesandinos.com\",\"imagen\":null}', '[]', NULL, 'Santiago Avellaneda', '::1', '2026-08-12 14:27:55'),
 (43, 'proveedores', 'editar', 2, 'Se actualizó el proveedor \'Textiles Andinos SAS\'', '{\"id_proveedor\":2,\"nombre_empresa\":\"Textiles Andinos SAS\",\"nit\":\"800234567-2\",\"direccion\":\"Medellín, Antioquia\",\"descripcion_empresa\":\"Producción de textiles para la industria colchonera\",\"contacto_nombre\":\"Laura\",\"contacto_apellido\":\"Gomez\",\"telefono\":\"3102222222\",\"email\":\"contacto@textilesandinos.com\",\"imagen\":null}', '{\"nombre_empresa\":\"Textiles Andinos SAS\",\"nit\":\"800234567-2\",\"contacto_nombre\":\"Laura\",\"contacto_apellido\":\"Gomez\",\"telefono\":\"3102222222\",\"email\":\"contacto@textilesandinos.com\",\"direccion\":\"Medellín, Antioquia\",\"descripcion_empresa\":\"Producción de textiles para la industria colchonera\"}', NULL, 'Santiago Avellaneda', '::1', '2026-08-12 14:43:47'),
-(44, 'proveedores', 'eliminar', 10, 'Se eliminó el proveedor \'Textiles andino\'', '{\"id_proveedor\":10,\"nombre_empresa\":\"Textiles andino\",\"nit\":\"123456789123\",\"direccion\":\"Cra 43 No 12-23\",\"descripcion_empresa\":\"Empresa de textiles\",\"contacto_nombre\":\"Nicolay\",\"contacto_apellido\":\"Polas\",\"telefono\":\"3124567898\",\"email\":\"nicorr@gmail.com\",\"imagen\":\"proveedor_6a7cb248cbea8.jpg\"}', NULL, NULL, 'Santiago Avellaneda', '::1', '2026-08-12 14:43:52');
+(44, 'proveedores', 'eliminar', 10, 'Se eliminó el proveedor \'Textiles andino\'', '{\"id_proveedor\":10,\"nombre_empresa\":\"Textiles andino\",\"nit\":\"123456789123\",\"direccion\":\"Cra 43 No 12-23\",\"descripcion_empresa\":\"Empresa de textiles\",\"contacto_nombre\":\"Nicolay\",\"contacto_apellido\":\"Polas\",\"telefono\":\"3124567898\",\"email\":\"nicorr@gmail.com\",\"imagen\":\"proveedor_6a7cb248cbea8.jpg\"}', NULL, NULL, 'Santiago Avellaneda', '::1', '2026-08-12 14:43:52'),
+(45, 'materia_prima', 'editar', 4, 'Se actualizó la materia prima \'Fieltro aislante\'', NULL, '{\"nombre_material\":\"Fieltro aislante\",\"stock_actual\":\"1\",\"stock_minimo\":\"15.00\",\"id_unidad\":\"2\",\"id_proveedor\":\"1\"}', NULL, 'Santiago Avellaneda', '::1', '2026-08-12 16:15:54');
 
 -- --------------------------------------------------------
 
@@ -114,26 +115,29 @@ CREATE TABLE `materias_primas` (
   `stock_actual` decimal(12,2) DEFAULT 0.00,
   `stock_minimo` decimal(12,2) NOT NULL,
   `id_unidad` int(11) DEFAULT NULL,
-  `id_proveedor` int(11) DEFAULT NULL
+  `id_proveedor` int(11) DEFAULT NULL,
+  `notificar_email` tinyint(1) NOT NULL DEFAULT 0,
+  `correo_notificacion` varchar(150) DEFAULT NULL,
+  `alerta_enviada` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `materias_primas`
 --
 
-INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`, `stock_minimo`, `id_unidad`, `id_proveedor`) VALUES
-(1, 'Espuma de poliuretano', 50.00, 0.00, 1, 1),
-(2, 'Tela Jacquard', 300.00, 50.00, 2, 2),
-(3, 'Resortes Bonnell', 1200.00, 300.00, 3, 3),
-(4, 'Fieltro aislante', 250.00, 50.00, 2, 1),
-(5, 'Pegante industrial', 100.00, 20.00, 4, 4),
-(6, 'Hilo de costura', 80.00, 15.00, 3, 2),
-(7, 'Espuma viscoelastica', 60.00, 30.00, 1, 1),
-(8, 'Tela antideslizante', 200.00, 40.00, 2, 2),
-(9, 'Borde perimetral', 180.00, 40.00, 2, 3),
-(10, 'Empaque plastico', 400.00, 80.00, 2, 4),
-(11, 'Tela ', 100.00, 30.00, 2, 2),
-(13, 'Fieltro aislante', 20.00, 0.00, 3, 4);
+INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`, `stock_minimo`, `id_unidad`, `id_proveedor`, `notificar_email`, `correo_notificacion`, `alerta_enviada`) VALUES
+(1, 'Espuma de poliuretano', 50.00, 0.00, 1, 1, 0, NULL, 0),
+(2, 'Tela Jacquard', 300.00, 50.00, 2, 2, 0, NULL, 0),
+(3, 'Resortes Bonnell', 1200.00, 300.00, 3, 3, 0, NULL, 0),
+(4, 'Fieltro aislante', 1.00, 15.00, 2, 1, 1, 'nicolaspolo096@gmail.com', 0),
+(5, 'Pegante industrial', 100.00, 20.00, 4, 4, 0, NULL, 0),
+(6, 'Hilo de costura', 80.00, 15.00, 3, 2, 0, NULL, 0),
+(7, 'Espuma viscoelastica', 60.00, 30.00, 1, 1, 0, NULL, 0),
+(8, 'Tela antideslizante', 200.00, 40.00, 2, 2, 0, NULL, 0),
+(9, 'Borde perimetral', 180.00, 40.00, 2, 3, 0, NULL, 0),
+(10, 'Empaque plastico', 400.00, 80.00, 2, 4, 0, NULL, 0),
+(11, 'Tela ', 100.00, 30.00, 2, 2, 0, NULL, 0),
+(13, 'Fieltro aislante', 20.00, 0.00, 3, 4, 0, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -516,7 +520,7 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `historial_movimientos`
 --
 ALTER TABLE `historial_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT de la tabla `materias_primas`
