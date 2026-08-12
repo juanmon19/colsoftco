@@ -440,7 +440,7 @@ button{cursor:pointer}
 .task-row{
     min-height:53px;
     display:grid;
-    grid-template-columns:minmax(145px,1.65fr) minmax(75px,.9fr) minmax(100px,1.05fr) minmax(80px,.8fr) 20px;
+    grid-template-columns:minmax(145px,1.65fr) minmax(75px,.9fr) minmax(100px,1.05fr) minmax(80px,.8fr) 28px;
     align-items:center;
     column-gap:15px;
     border-bottom:1px solid #e9edf2;
@@ -475,8 +475,7 @@ button{cursor:pointer}
     font-weight:600;
 }
 
-.priority.medium,
-.status{
+.priority.medium{
     background:#fff4d9;
     color:#d89b12;
 }
@@ -491,10 +490,103 @@ button{cursor:pointer}
     color:#42a657;
 }
 
+.status.pendiente{
+    background:#fff4d9;
+    color:#d89b12;
+}
+
+.status.por-hacer{
+    background:#e9f1ff;
+    color:#3678e7;
+}
+
+.status.terminado{
+    background:#e2f7e6;
+    color:#42a657;
+}
+
+/* ============ ACCIONES / MENÚ DE EDICIÓN DE TAREAS ============ */
+
+.task-actions{
+    position:relative;
+    display:flex;
+    justify-content:center;
+}
+
 .dots{
+    border:0;
+    background:transparent;
     text-align:center;
     font-size:21px;
+    line-height:1;
     color:#112b4e;
+    padding:4px 6px;
+    border-radius:6px;
+}
+
+.dots:hover{
+    background:#eef2f7;
+}
+
+.edit-menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 6px);
+    right:0;
+    z-index:30;
+    width:190px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    box-shadow:0 8px 24px rgba(13,35,67,.16);
+    padding:14px;
+}
+
+.edit-menu.open{
+    display:block;
+}
+
+.edit-menu-group{
+    margin-bottom:12px;
+}
+
+.edit-menu-group:last-of-type{
+    margin-bottom:14px;
+}
+
+.edit-menu-group label{
+    display:block;
+    margin-bottom:5px;
+    color:#69768a;
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+}
+
+.edit-menu-group select{
+    width:100%;
+    padding:7px 8px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:#fff;
+    color:var(--text);
+    font-size:12px;
+}
+
+.edit-apply{
+    width:100%;
+    border:0;
+    border-radius:7px;
+    background:var(--navy);
+    color:#fff;
+    padding:8px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.edit-apply:hover{
+    background:var(--navy-2);
 }
 
 .all-tasks{
@@ -757,19 +849,54 @@ footer b{color:#e6b300}
     }
 
     .task-row{
-        grid-template-columns:minmax(145px,1.5fr) minmax(70px,.7fr) minmax(95px,.9fr) 20px;
+        display:grid;
+        grid-template-columns:auto auto 1fr auto;
+        grid-template-areas:
+            "title title title actions"
+            "priority status . ."
+            "date date date date";
+        row-gap:8px;
+        column-gap:10px;
+        padding:12px 2px;
+        align-items:center;
     }
 
-    .task-row>*:nth-child(4){
+    .task-row.heading{
         display:none;
     }
 
-    .task-row.heading>*:nth-child(4){
-        display:none;
+    .task-row>strong{
+        grid-area:title;
+        white-space:normal;
     }
 
-    .task-row>*:nth-child(5){
-        grid-column:4;
+    .task-row>span:nth-child(2){
+        grid-area:priority;
+        justify-self:start;
+    }
+
+    .task-row>span:nth-child(3){
+        grid-area:date;
+        justify-self:start;
+        color:var(--muted);
+        font-size:11px;
+    }
+
+    .task-row>span:nth-child(3)::before{
+        content:"Vence: ";
+        font-weight:700;
+        color:#334364;
+    }
+
+    .task-row>span:nth-child(4){
+        grid-area:status;
+        justify-self:start;
+    }
+
+    .task-row>.task-actions{
+        grid-area:actions;
+        justify-self:end;
+        align-self:start;
     }
 }
 
@@ -906,31 +1033,18 @@ footer b{color:#e6b300}
         font-size:18px;
     }
 
-    .task-table{
-        overflow-x:auto;
-    }
-
     .task-row{
-        min-width:430px;
-        grid-template-columns:1.45fr .7fr .9fr 20px;
-        column-gap:9px;
+        padding:11px 2px;
+        row-gap:6px;
         font-size:10px;
     }
 
-    .task-row>*:nth-child(4){
-        display:none;
-    }
-
-    .task-row.heading>*:nth-child(4){
-        display:none;
-    }
-
-    .task-row>*:nth-child(5){
-        grid-column:4;
-    }
-
-    .task-row strong{
+    .task-row>span:nth-child(3){
         font-size:10px;
+    }
+
+    .task-row>strong{
+        font-size:11px;
     }
 
     .priority,.status{
@@ -983,6 +1097,76 @@ footer b{color:#e6b300}
         gap:5px;
         text-align:center;
         line-height:1.4;
+    }
+}
+
+/* ============ MENÚ DE EDICIÓN RESPONSIVE ============ */
+
+.menu-overlay{
+    display:none;
+}
+
+/* TABLET / MÓVIL: el menú pasa de dropdown flotante a hoja centrada */
+@media (max-width:760px){
+    .menu-overlay.show{
+        display:block;
+        position:fixed;
+        inset:0;
+        background:rgba(6,20,40,.55);
+        z-index:90;
+    }
+
+    .edit-menu{
+        position:fixed;
+        top:50%;
+        left:50%;
+        right:auto;
+        transform:translate(-50%,-50%) scale(.96);
+        width:min(320px,88vw);
+        z-index:100;
+        padding:18px;
+        border-radius:14px;
+        opacity:0;
+        pointer-events:none;
+        transition:opacity .16s ease, transform .16s ease;
+        box-shadow:0 20px 50px rgba(6,20,40,.35);
+    }
+
+    .edit-menu.open{
+        display:block;
+        opacity:1;
+        pointer-events:auto;
+        transform:translate(-50%,-50%) scale(1);
+    }
+
+    .edit-menu-group{
+        margin-bottom:16px;
+    }
+
+    .edit-menu-group label{
+        font-size:11px;
+    }
+
+    .edit-menu-group select{
+        padding:11px 10px;
+        font-size:14px;
+    }
+
+    .edit-apply{
+        padding:12px;
+        font-size:14px;
+    }
+
+    .dots{
+        font-size:24px;
+        padding:8px 10px;
+    }
+}
+
+@media (max-width:380px){
+    .edit-menu{
+        width:90vw;
+        padding:16px;
     }
 }
 

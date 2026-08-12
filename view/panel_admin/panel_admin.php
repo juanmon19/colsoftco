@@ -16,6 +16,8 @@ require_once "../../app/verificar_sesion.php";
 
 <body>
 
+    <div class="menu-overlay" id="menuOverlay"></div>
+
     <div class="app">
 
         <!-- SIDEBAR -->
@@ -34,15 +36,15 @@ require_once "../../app/verificar_sesion.php";
             </button>
 
             <nav class="nav" id="navMenu">
-                <button class="nav-item"onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>
-                <button class="nav-item"onclick="window.location.href='../historial_movimientos/historial.php'">Historial de Movimientos</button>
-                <button class="nav-item"onclick="window.location.href='../generar_informe/generar_informe.php'">Generar Informe</button>
-                <button class="nav-item"onclick="window.location.href='../registromp/registromp.php'">Registrar Materia Prima</button>
-                <button class="nav-item"onclick="window.location.href='../control_de_stock/control_de_stock.php'">Control de Stock</button>
-                <button class="nav-item"onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">Inventario de Materia Prima</button>
-                <button class="nav-item"onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
-                <button class="nav-item"onclick="window.location.href='../registro_de_producto_terminado/registro_producto_terminado.php'">Registrar Producto Terminado</button>
-                <button class="nav-item"onclick="window.location.href='../receta_de_colchones/receta_colchones.php'">Receta de Colchones</button>
+                <button class="nav-item" onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>
+                <button class="nav-item" onclick="window.location.href='../historial_movimientos/historial.php'">Historial de Movimientos</button>
+                <button class="nav-item" onclick="window.location.href='../generar_informe/generar_informe.php'">Generar Informe</button>
+                <button class="nav-item" onclick="window.location.href='../registromp/registromp.php'">Registrar Materia Prima</button>
+                <button class="nav-item" onclick="window.location.href='../control_de_stock/control_de_stock.php'">Control de Stock</button>
+                <button class="nav-item" onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">Inventario de Materia Prima</button>
+                <button class="nav-item" onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
+                <button class="nav-item" onclick="window.location.href='../registro_de_producto_terminado/registro_producto_terminado.php'">Registrar Producto Terminado</button>
+                <button class="nav-item" onclick="window.location.href='../receta_de_colchones/receta_colchones.php'">Receta de Colchones</button>
             </nav>
 
             <div class="help-box">
@@ -71,7 +73,7 @@ require_once "../../app/verificar_sesion.php";
 
                     <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
                         Cerrar sesión
-                    </button> 
+                    </button>
                 </div>
             </header>
 
@@ -156,40 +158,145 @@ require_once "../../app/verificar_sesion.php";
                                 <strong>Solicitar espuma</strong>
                                 <span><em class="priority medium">Media</em></span>
                                 <span>20 May 2026</span>
-                                <span><em class="status">Pendiente</em></span>
-                                <span class="dots">⋮</span>
+                                <span><em class="status pendiente">Pendiente</em></span>
+                                <div class="task-actions">
+                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
+                                    <div class="edit-menu">
+                                        <div class="edit-menu-group">
+                                            <label>Estado</label>
+                                            <select class="edit-status">
+                                                <option value="pendiente" selected>Pendiente</option>
+                                                <option value="por-hacer">Por hacer</option>
+                                                <option value="terminado">Terminado</option>
+                                            </select>
+                                        </div>
+                                        <div class="edit-menu-group">
+                                            <label>Prioridad</label>
+                                            <select class="edit-priority">
+                                                <option value="low">Baja</option>
+                                                <option value="medium" selected>Media</option>
+                                                <option value="high">Alta</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="edit-apply">Guardar</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="task-row">
                                 <strong>Pedido N° 346</strong>
                                 <span><em class="priority high">Alta</em></span>
                                 <span>18 May 2026</span>
-                                <span><em class="status">Pendiente</em></span>
-                                <span class="dots">⋮</span>
+                                <span><em class="status pendiente">Pendiente</em></span>
+                                <div class="task-actions">
+                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
+                                    <div class="edit-menu">
+                                        <div class="edit-menu-group">
+                                            <label>Estado</label>
+                                            <select class="edit-status">
+                                                <option value="pendiente" selected>Pendiente</option>
+                                                <option value="por-hacer">Por hacer</option>
+                                                <option value="terminado">Terminado</option>
+                                            </select>
+                                        </div>
+                                        <div class="edit-menu-group">
+                                            <label>Prioridad</label>
+                                            <select class="edit-priority">
+                                                <option value="low">Baja</option>
+                                                <option value="medium">Media</option>
+                                                <option value="high" selected>Alta</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="edit-apply">Guardar</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="task-row">
                                 <strong>Verificar inventario</strong>
                                 <span><em class="priority medium">Media</em></span>
                                 <span>21 May 2026</span>
-                                <span><em class="status">Pendiente</em></span>
-                                <span class="dots">⋮</span>
+                                <span><em class="status pendiente">Pendiente</em></span>
+                                <div class="task-actions">
+                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
+                                    <div class="edit-menu">
+                                        <div class="edit-menu-group">
+                                            <label>Estado</label>
+                                            <select class="edit-status">
+                                                <option value="pendiente" selected>Pendiente</option>
+                                                <option value="por-hacer">Por hacer</option>
+                                                <option value="terminado">Terminado</option>
+                                            </select>
+                                        </div>
+                                        <div class="edit-menu-group">
+                                            <label>Prioridad</label>
+                                            <select class="edit-priority">
+                                                <option value="low">Baja</option>
+                                                <option value="medium" selected>Media</option>
+                                                <option value="high">Alta</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="edit-apply">Guardar</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="task-row">
                                 <strong>Supervisar el área de producción</strong>
                                 <span><em class="priority high">Alta</em></span>
                                 <span>19 May 2026</span>
-                                <span><em class="status">Pendiente</em></span>
-                                <span class="dots">⋮</span>
+                                <span><em class="status pendiente">Pendiente</em></span>
+                                <div class="task-actions">
+                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
+                                    <div class="edit-menu">
+                                        <div class="edit-menu-group">
+                                            <label>Estado</label>
+                                            <select class="edit-status">
+                                                <option value="pendiente" selected>Pendiente</option>
+                                                <option value="por-hacer">Por hacer</option>
+                                                <option value="terminado">Terminado</option>
+                                            </select>
+                                        </div>
+                                        <div class="edit-menu-group">
+                                            <label>Prioridad</label>
+                                            <select class="edit-priority">
+                                                <option value="low">Baja</option>
+                                                <option value="medium">Media</option>
+                                                <option value="high" selected>Alta</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="edit-apply">Guardar</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="task-row">
                                 <strong>Contactar proveedor N° 12</strong>
                                 <span><em class="priority low">Baja</em></span>
                                 <span>22 May 2026</span>
-                                <span><em class="status">Pendiente</em></span>
-                                <span class="dots">⋮</span>
+                                <span><em class="status pendiente">Pendiente</em></span>
+                                <div class="task-actions">
+                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
+                                    <div class="edit-menu">
+                                        <div class="edit-menu-group">
+                                            <label>Estado</label>
+                                            <select class="edit-status">
+                                                <option value="pendiente" selected>Pendiente</option>
+                                                <option value="por-hacer">Por hacer</option>
+                                                <option value="terminado">Terminado</option>
+                                            </select>
+                                        </div>
+                                        <div class="edit-menu-group">
+                                            <label>Prioridad</label>
+                                            <select class="edit-priority">
+                                                <option value="low" selected>Baja</option>
+                                                <option value="medium">Media</option>
+                                                <option value="high">Alta</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="edit-apply">Guardar</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -292,6 +399,82 @@ require_once "../../app/verificar_sesion.php";
         });
     </script>
 
+    <script>
+        // ================= EDICIÓN DE TAREAS (ESTADO Y PRIORIDAD) =================
+
+        const statusLabels = {
+            'pendiente': 'Pendiente',
+            'por-hacer': 'Por hacer',
+            'terminado': 'Terminado'
+        };
+
+        const priorityLabels = {
+            'low': 'Baja',
+            'medium': 'Media',
+            'high': 'Alta'
+        };
+
+        const menuOverlay = document.getElementById('menuOverlay');
+
+        function actualizarOverlay() {
+            const hayMenuAbierto = document.querySelector('.edit-menu.open') !== null;
+            menuOverlay.classList.toggle('show', hayMenuAbierto);
+        }
+
+        function cerrarTodosLosMenus(exceptoMenu) {
+            document.querySelectorAll('.edit-menu.open').forEach((menu) => {
+                if (menu !== exceptoMenu) {
+                    menu.classList.remove('open');
+                    const boton = menu.previousElementSibling;
+                    if (boton) boton.setAttribute('aria-expanded', 'false');
+                }
+            });
+            actualizarOverlay();
+        }
+
+        document.querySelectorAll('.task-row').forEach((fila) => {
+            const boton = fila.querySelector('.dots');
+            const menu = fila.querySelector('.edit-menu');
+            if (!boton || !menu) return;
+
+            boton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const abierto = menu.classList.contains('open');
+                cerrarTodosLosMenus(menu);
+                menu.classList.toggle('open', !abierto);
+                boton.setAttribute('aria-expanded', String(!abierto));
+                actualizarOverlay();
+            });
+
+            const btnGuardar = menu.querySelector('.edit-apply');
+            const selectEstado = menu.querySelector('.edit-status');
+            const selectPrioridad = menu.querySelector('.edit-priority');
+
+            btnGuardar.addEventListener('click', () => {
+                const nuevoEstado = selectEstado.value;
+                const nuevaPrioridad = selectPrioridad.value;
+
+                const spanEstado = fila.querySelector('.status');
+                spanEstado.className = 'status ' + nuevoEstado;
+                spanEstado.textContent = statusLabels[nuevoEstado];
+
+                const spanPrioridad = fila.querySelector('.priority');
+                spanPrioridad.className = 'priority ' + nuevaPrioridad;
+                spanPrioridad.textContent = priorityLabels[nuevaPrioridad];
+
+                menu.classList.remove('open');
+                boton.setAttribute('aria-expanded', 'false');
+                actualizarOverlay();
+            });
+
+            menu.addEventListener('click', (e) => e.stopPropagation());
+        });
+
+        menuOverlay.addEventListener('click', () => cerrarTodosLosMenus(null));
+        document.addEventListener('click', () => cerrarTodosLosMenus(null));
+    </script>
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 </body>
 
 </html>

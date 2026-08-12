@@ -144,16 +144,16 @@ if ($accion === 'fabricar') {
         /* Ajusta tabla/columnas si tu inventario de productos
            terminados usa otro nombre o estructura distinta. */
         $stmt = $db->prepare(
-            "SELECT id_producto FROM productos_terminados WHERE nombre_producto = :nombre LIMIT 1"
+            "SELECT id_producto FROM productos_terminados WHERE id_modelo = :id_modelo LIMIT 1"
         );
-        $stmt->execute([':nombre' => $resultado['nombre_producto']]);
+        $stmt->execute([':id_modelo' => $resultado['id_modelo']]);
         $existente = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($existente) {
             $stmt = $db->prepare(
                 "UPDATE productos_terminados
-                 SET stock_actual = stock_actual + :cantidad
-                 WHERE id_producto = :id"
+         SET stock_actual = stock_actual + :cantidad
+         WHERE id_producto = :id"
             );
             $stmt->execute([
                 ':cantidad' => $resultado['cantidad'],
@@ -161,12 +161,13 @@ if ($accion === 'fabricar') {
             ]);
         } else {
             $stmt = $db->prepare(
-                "INSERT INTO productos_terminados (nombre_producto, stock_actual)
-                 VALUES (:nombre, :cantidad)"
+                "INSERT INTO productos_terminados (nombre_producto, id_modelo, stock_actual)
+         VALUES (:nombre, :id_modelo, :cantidad)"
             );
             $stmt->execute([
-                ':nombre'   => $resultado['nombre_producto'],
-                ':cantidad' => $resultado['cantidad'],
+                ':nombre'    => $resultado['nombre_producto'],
+                ':id_modelo' => $resultado['id_modelo'],
+                ':cantidad'  => $resultado['cantidad'],
             ]);
         }
 
@@ -182,7 +183,7 @@ if ($accion === 'fabricar') {
                 'accion'      => 'salida',
                 'id_registro' => $mat['id_material'],
                 'descripcion' => "Salida de {$mat['cantidad_requerida']} {$mat['unidad']} de '{$mat['nombre_material']}' "
-                                . "para fabricar {$resultado['cantidad']} unidades de '{$resultado['nombre_producto']}'",
+                    . "para fabricar {$resultado['cantidad']} unidades de '{$resultado['nombre_producto']}'",
                 'datos_anteriores' => ['stock_actual' => $mat['cantidad_disponible']],
                 'datos_nuevos'     => ['stock_actual' => $mat['cantidad_disponible'] - $mat['cantidad_requerida']],
                 'usuario_nombre'   => $usuarioNombre,
@@ -203,7 +204,6 @@ if ($accion === 'fabricar') {
             'ok'      => true,
             'mensaje' => "Se fabricaron {$resultado['cantidad']} unidades de {$resultado['nombre_producto']} correctamente.",
         ]);
-
     } catch (Exception $e) {
         $db->rollBack();
         echo json_encode(['ok' => false, 'error' => 'Error al fabricar: ' . $e->getMessage()]);
