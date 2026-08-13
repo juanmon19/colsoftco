@@ -49,35 +49,45 @@ if (isset($_POST['save'])):
 
         $Password = $_POST['password'];
         $id = $_POST['id'];
+        $token = $_POST['token'] ?? '';
+
+        // Verificar que el token siga siendo válido
+        $Usuario = verificarToken($id, $token);
+
+        if (!$Usuario) {
+            $_SESSION['error'] = 'El enlace de recuperación ha expirado o no es válido.';
+            header("Location: ../view/login/login.php");
+    exit();
+}
 
         // Validar requisitos de la contraseña
         if (strlen($Password) < 8) {
             $_SESSION['error'] = 'La contraseña debe tener mínimo 8 caracteres.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
         if (!preg_match('/[A-Z]/', $Password)) {
             $_SESSION['error'] = 'La contraseña debe tener al menos una letra mayúscula.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
         if (!preg_match('/[a-z]/', $Password)) {
             $_SESSION['error'] = 'La contraseña debe tener al menos una letra minúscula.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
         if (!preg_match('/[0-9]/', $Password)) {
             $_SESSION['error'] = 'La contraseña debe tener al menos un número.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
         if (!preg_match('/[\W_]/', $Password)) {
             $_SESSION['error'] = 'La contraseña debe tener al menos un carácter especial.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id);
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
@@ -88,6 +98,9 @@ if (isset($_POST['save'])):
         if (count($Usuario) > 0) {
 
             updateUserID($new_password, $id);
+
+            // Invalidar el token después de usarlo
+            invalidarToken($id);
 
             $_SESSION['response'] = 'Contraseña actualizada con éxito.';
             header("Location: ../view/login/login.php?message=success_password");
@@ -203,5 +216,67 @@ function EnviarCorreoResetPassword($Correo, $NombreReceptor, $userid, $token_Use
         $mail->send();
     } catch (Exception $e) {
         error_log("Mailer Error: {$mail->ErrorInfo}");
+    }
+}
+
+function verificarToken($id, $token)
+{
+    $conex = new Conexion();
+
+    $sql = "SELECT * FROM usuarios
+            WHERE id_usuario = :id
+            AND token_password = :token
+            AND expired_session > :tiempo";
+
+    try {
+        $pps = $conex->getConnection()->prepare($sql);
+
+        $tiempo = time();
+
+        $pps->bindParam(':id', $id);
+        $pps->bindParam(':token', $token);
+        $pps->bindParam(':tiempo', $tiempo);
+
+        $pps->execute();
+
+        return $pps->fetch(PDO::FETCH_OBJ);
+
+    } catch (\Throwable $th) {
+
+        error_log($th->getMessage());
+        return false;
+
+    } finally {
+
+        $conex->closeDataBase();
+    }
+}
+
+function invalidarToken($id)
+{
+    $conex = new Conexion();
+
+    $sql = "UPDATE usuarios
+            SET token_password = NULL,
+                expired_session = 0,
+                request_password = 0
+            WHERE id_usuario = :id";
+
+    try {
+
+        $pps = $conex->getConnection()->prepare($sql);
+
+        $pps->bindParam(':id', $id);
+
+        return $pps->execute();
+
+    } catch (\Throwable $th) {
+
+        error_log($th->getMessage());
+        return false;
+
+    } finally {
+
+        $conex->closeDataBase();
     }
 }

@@ -95,6 +95,12 @@ if (count($data) > 0):
                         type="hidden"
                         name="id"
                         value="<?php echo $_GET['id']; ?>">
+
+                    <input
+                        type="hidden"
+                        name="token"
+                        value="<?php echo $_GET['token']; ?>">
+                        
                 </div>
 
                 <button type="submit" name="save" class="btn">
