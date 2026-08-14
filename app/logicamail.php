@@ -48,6 +48,7 @@ if (isset($_POST['save'])):
     if (!empty($_POST['id']) && !empty($_POST['password'])) {
 
         $Password = $_POST['password'];
+        $ConfirmarPassword = $_POST['new_password'] ?? '';
         $id = $_POST['id'];
         $token = $_POST['token'] ?? '';
 
@@ -59,6 +60,13 @@ if (isset($_POST['save'])):
             header("Location: ../view/login/login.php");
     exit();
 }
+
+        // Verificar que las contraseñas coincidan
+        if ($Password !== $ConfirmarPassword) {
+            $_SESSION['error'] = 'Las contraseñas no coinciden.';
+            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
+            exit();
+        }
 
         // Validar requisitos de la contraseña
         if (strlen($Password) < 8) {

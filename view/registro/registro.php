@@ -41,7 +41,7 @@ require_once "../../app/verificar_sesion.php";
         </div>
 
         <?php
-         if (isset($_SESSION['mensaje'])): ?>
+            if (isset($_SESSION['mensaje'])): ?>
             <div class="mensaje">
                 <?php echo $_SESSION['mensaje']; ?>
             </div>
@@ -144,20 +144,189 @@ require_once "../../app/verificar_sesion.php";
         </div>
     </footer>
 
-    <script>
-        document.getElementById("formRegistro").addEventListener("submit", function(e){
+    <script src="../../public/js/validacionesRegistro.js"></script>
 
-            let password = document.getElementById("password").value;
-            let confirmar = document.getElementById("confirmar").value;
+<script>
 
-            if(password !== confirmar){
+    function mostrarError(id, mensaje) {
 
-                e.preventDefault();
+        const input = document.getElementById(id);
 
-                alert("Las contraseñas no coinciden");
-            }
-        });
-    </script>
+        input.style.border = "2px solid #dc3545";
+
+        const errorExistente =
+            input.parentNode.querySelector(".mensaje-error");
+
+        if (errorExistente) {
+            errorExistente.remove();
+        }
+
+        const error = document.createElement("small");
+
+        error.className = "mensaje-error";
+        error.textContent = mensaje;
+        error.style.color = "#dc3545";
+        error.style.display = "block";
+        error.style.marginTop = "5px";
+        error.style.fontSize = "13px";
+
+        input.parentNode.appendChild(error);
+    }
+
+
+        function limpiarErrores() {
+
+            document.querySelectorAll(".mensaje-error")
+                .forEach(e => e.remove());
+
+            document.querySelectorAll("#formRegistro input")
+                .forEach(campo => {
+                    campo.style.border = "";
+                });
+        }
+
+
+    const formulario = document.getElementById("formRegistro");
+
+
+    formulario.addEventListener("submit", function(e) {
+
+        const documento =
+            document.getElementById("documento").value;
+
+        const nombre =
+            document.getElementById("nombre").value;
+
+        const apellido =
+            document.getElementById("apellido").value;
+
+        const correo =
+            document.getElementById("contacto").value;
+
+        const password =
+            document.getElementById("password").value;
+
+        const confirmar =
+            document.getElementById("confirmar").value;
+
+
+        limpiarErrores();
+
+
+        // DOCUMENTO
+        if (!expresiones.documento.test(documento)) {
+
+            mostrarError(
+                "documento",
+                "Ingrese un documento válido (6 a 12 números)."
+            );
+
+            e.preventDefault();
+            return;
+        }
+
+
+        // NOMBRE
+        if (!expresiones.nombre.test(nombre)) {
+
+            mostrarError(
+                "nombre",
+                "Ingrese un nombre válido."
+            );
+
+            e.preventDefault();
+            return;
+        }
+
+
+        // APELLIDO
+        if (!expresiones.apellido.test(apellido)) {
+
+            mostrarError(
+                "apellido",
+                "Ingrese un apellido válido."
+            );
+
+            e.preventDefault();
+            return;
+        }
+
+
+        // CORREO
+        if (!expresiones.correo.test(correo)) {
+
+            mostrarError(
+                "contacto",
+                "Ingrese un correo electrónico válido."
+            );
+
+            e.preventDefault();
+            return;
+        }
+
+
+// CONTRASEÑA
+if (password.length < 8) {
+
+    mostrarError(
+        "password",
+        "La contraseña debe tener mínimo 8 caracteres."
+    );
+
+    e.preventDefault();
+
+} else if (!/[A-Z]/.test(password)) {
+
+    mostrarError(
+        "password",
+        "La contraseña debe tener al menos una letra mayúscula."
+    );
+
+    e.preventDefault();
+
+} else if (!/[a-z]/.test(password)) {
+
+    mostrarError(
+        "password",
+        "La contraseña debe tener al menos una letra minúscula."
+    );
+
+    e.preventDefault();
+
+} else if (!/[0-9]/.test(password)) {
+
+    mostrarError(
+        "password",
+        "La contraseña debe tener al menos un número."
+    );
+
+    e.preventDefault();
+
+} else if (!/[\W_]/.test(password)) {
+
+    mostrarError(
+        "password",
+        "La contraseña debe tener al menos un carácter especial."
+    );
+
+    e.preventDefault();
+}
+
+
+// CONFIRMAR CONTRASEÑA
+if (password !== confirmar) {
+
+    mostrarError(
+        "confirmar",
+        "Las contraseñas no coinciden."
+    );
+
+    e.preventDefault();
+}
+
+    });
+
+</script>
 
     <script src="../../public/js/app.js"></script>
 
