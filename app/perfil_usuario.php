@@ -1,17 +1,31 @@
 <?php
 
 header('Content-Type: application/json');
-require_once "../../app/verificar_sesion.php";
-require_once "../../config/conexion.php";
-
+require_once __DIR__ . "/verificar_sesion.php";
+require_once __DIR__ . "/../config/conexion.php";
 $conexion = new Conexion();
 $db = $conexion->getConnection();
 
-
+// 1. Intentamos obtener el ID si existe, o el documento/email de la sesión
 $idUsuario = $_SESSION['id_usuario'] ?? $_SESSION['id'] ?? $_SESSION['usuario_id'] ?? null;
+$documentoSesion = $_SESSION['documento'] ?? null;
+$emailSesion = $_SESSION['email'] ?? null;
 
+// 2. Si no hay ID, lo buscamos en la base de datos
+if (!$idUsuario && ($documentoSesion || $emailSesion)) {
+    $stmtId = $db->prepare("SELECT id_usuario FROM usuarios WHERE documento = :doc OR email = :email LIMIT 1");
+    $stmtId->execute([':doc' => $documentoSesion, ':email' => $emailSesion]);
+    $idUsuario = $stmtId->fetchColumn();
+    
+    // ¡NUEVO! Lo guardamos en la sesión para estabilizarlo
+    if ($idUsuario) {
+        $_SESSION['id_usuario'] = $idUsuario;
+    }
+}
+
+// 3. Verificamos que exista
 if (!$idUsuario) {
-    echo json_encode(['ok' => false, 'error' => 'Sesión no válida.']);
+    echo json_encode(['ok' => false, 'error' => 'Sesión no válida o usuario no encontrado.']);
     exit();
 }
 
@@ -103,8 +117,8 @@ if ($accion === 'foto') {
         exit();
     }
 
-    if ($archivo['size'] > 3 * 1024 * 1024) {
-        echo json_encode(['ok' => false, 'error' => 'La imagen no puede pesar más de 3MB.']);
+    if ($archivo['size'] > 7 * 1024 * 1024) {
+        echo json_encode(['ok' => false, 'error' => 'La imagen no puede pesar más de 7MB.']);
         exit();
     }
 
@@ -125,9 +139,30 @@ if ($accion === 'foto') {
         @unlink($carpetaFotos . $fotoAnterior);
     }
 
-    $stmt = $db->prepare("UPDATE usuarios SET foto = :foto WHERE id_usuario = :id");
-    $stmt->execute([':foto' => $nombreArchivo, ':id' => $idUsuario]);
+    // 1. FORZAMOS EL ID A NÚMERO ENTERO PARA EVITAR CONFLICTOS CON PDO
+    $idUsuarioInt = (int) $idUsuario;
 
+    // 2. PREPARAMOS EL UPDATE
+    $stmt = $db->prepare("UPDATE usuarios SET foto = :foto WHERE id_usuario = :id");
+    $exito = $stmt->execute([
+        ':foto' => $nombreArchivo, 
+        ':id' => $idUsuarioInt
+    ]);
+
+    // 3. SI HAY UN ERROR DE SINTAXIS, NOS AVISARÁ
+    if (!$exito) {
+        $errorDB = $stmt->errorInfo();
+        echo json_encode(['ok' => false, 'error' => 'Error de Base de Datos: ' . $errorDB[2]]);
+        exit();
+    }
+
+    // 4. SI LA BASE DE DATOS IGNORA EL UPDATE, TAMBIÉN NOS AVISARÁ
+    if ($stmt->rowCount() === 0) {
+        echo json_encode(['ok' => false, 'error' => 'Fallo al guardar en BD. Verifica el ID: ' . $idUsuarioInt]);
+        exit();
+    }
+
+    // SI TODO SALE BIEN, RETORNA EL ÉXITO AL JAVASCRIPT
     echo json_encode([
         'ok'   => true,
         'foto' => $nombreArchivo,

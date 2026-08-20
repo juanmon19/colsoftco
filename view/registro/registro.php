@@ -95,6 +95,38 @@ require_once "../../app/verificar_sesion.php";
             font-size: 12px;
             color: #9a9a9a;
         }
+
+        /* --- ESTILOS PARA EL OJITO --- */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 40px; 
+            box-sizing: border-box;
+        }
+
+        .btn-ojito {
+            position: absolute;
+            right: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            outline: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .btn-ojito:hover {
+            background: #f0f2f5;
+        }
     </style>
 </head>
 
@@ -195,14 +227,21 @@ require_once "../../app/verificar_sesion.php";
                         </select>
                     </div>
 
+                    <!-- Campos de contraseñas con el wrapper para el botón -->
                     <div class="field-group">
                         <label>Contraseña</label>
-                        <input type="password" id="password" name="password" required>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" name="password" required>
+                            <button type="button" class="btn-ojito" id="btn-ojo-pass"></button>
+                        </div>
                     </div>
 
                     <div class="field-group">
                         <label>Confirmar Contraseña</label>
-                        <input type="password" id="confirmar" required>
+                        <div class="password-wrapper">
+                            <input type="password" id="confirmar" required>
+                            <button type="button" class="btn-ojito" id="btn-ojo-conf"></button>
+                        </div>
                     </div>
 
                 </div>
@@ -447,66 +486,94 @@ require_once "../../app/verificar_sesion.php";
         }
 
 
-// CONTRASEÑA
-if (password.length < 8) {
+        // CONTRASEÑA
+        if (password.length < 8) {
 
-    mostrarError(
-        "password",
-        "La contraseña debe tener mínimo 8 caracteres."
-    );
+            mostrarError(
+                "password",
+                "La contraseña debe tener mínimo 8 caracteres."
+            );
 
-    e.preventDefault();
+            e.preventDefault();
 
-} else if (!/[A-Z]/.test(password)) {
+        } else if (!/[A-Z]/.test(password)) {
 
-    mostrarError(
-        "password",
-        "La contraseña debe tener al menos una letra mayúscula."
-    );
+            mostrarError(
+                "password",
+                "La contraseña debe tener al menos una letra mayúscula."
+            );
 
-    e.preventDefault();
+            e.preventDefault();
 
-} else if (!/[a-z]/.test(password)) {
+        } else if (!/[a-z]/.test(password)) {
 
-    mostrarError(
-        "password",
-        "La contraseña debe tener al menos una letra minúscula."
-    );
+            mostrarError(
+                "password",
+                "La contraseña debe tener al menos una letra minúscula."
+            );
 
-    e.preventDefault();
+            e.preventDefault();
 
-} else if (!/[0-9]/.test(password)) {
+        } else if (!/[0-9]/.test(password)) {
 
-    mostrarError(
-        "password",
-        "La contraseña debe tener al menos un número."
-    );
+            mostrarError(
+                "password",
+                "La contraseña debe tener al menos un número."
+            );
 
-    e.preventDefault();
+            e.preventDefault();
 
-} else if (!/[\W_]/.test(password)) {
+        } else if (!/[\W_]/.test(password)) {
 
-    mostrarError(
-        "password",
-        "La contraseña debe tener al menos un carácter especial."
-    );
+            mostrarError(
+                "password",
+                "La contraseña debe tener al menos un carácter especial."
+            );
 
-    e.preventDefault();
-}
+            e.preventDefault();
+        }
 
 
-// CONFIRMAR CONTRASEÑA
-if (password !== confirmar) {
+        // CONFIRMAR CONTRASEÑA
+        if (password !== confirmar) {
 
-    mostrarError(
-        "confirmar",
-        "Las contraseñas no coinciden."
-    );
+            mostrarError(
+                "confirmar",
+                "Las contraseñas no coinciden."
+            );
 
-    e.preventDefault();
-}
+            e.preventDefault();
+        }
 
     });
+
+    // --- LÓGICA DEL OJITO CON VECTORES SVG ---
+    function configurarOjito(inputId, btnId) {
+        const input = document.getElementById(inputId);
+        const btn = document.getElementById(btnId);
+
+        // SVG del ojo abierto (color oscuro #1c2b36)
+        const ojoAbierto = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1c2b36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+        
+        // SVG del ojo con la línea roja atravesada (usando el rojo #dc3545 de tus alertas)
+        const ojoCerrado = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1c2b36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23" stroke="#dc3545" stroke-width="2.5"></line></svg>`;
+
+        // Estado inicial del botón
+        btn.innerHTML = ojoAbierto;
+
+        btn.addEventListener("click", function() {
+            if (input.type === "password") {
+                input.type = "text";
+                btn.innerHTML = ojoCerrado; // Cambia al ojo tachado con línea roja
+            } else {
+                input.type = "password";
+                btn.innerHTML = ojoAbierto; // Vuelve al ojo normal
+            }
+        });
+    }
+
+    configurarOjito("password", "btn-ojo-pass");
+    configurarOjito("confirmar", "btn-ojo-conf");
 
 </script>
 

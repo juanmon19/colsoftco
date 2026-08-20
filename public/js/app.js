@@ -17,42 +17,6 @@ function cerrarSesion() {
 document.addEventListener("DOMContentLoaded", () => {
 
     // ===============================
-    // BOTÓN CERRAR SESIÓN
-    // ===============================
-    const header = document.querySelector(".header");
-
-    if (header && !document.getElementById("btnLogout")) {
-
-        const logoutBtn = document.createElement("button");
-
-        logoutBtn.id = "btnLogout";
-        logoutBtn.textContent = "Cerrar Sesión";
-
-        logoutBtn.style.position = "absolute";
-        logoutBtn.style.right = "20px";
-        logoutBtn.style.top = "50%";
-        logoutBtn.style.transform = "translateY(-50%)";
-        logoutBtn.style.padding = "8px 15px";
-        logoutBtn.style.backgroundColor = "#D4AF37";
-        logoutBtn.style.color = "#0A1F44";
-        logoutBtn.style.border = "none";
-        logoutBtn.style.borderRadius = "5px";
-        logoutBtn.style.cursor = "pointer";
-        logoutBtn.style.fontWeight = "bold";
-        logoutBtn.style.fontSize = "14px";
-
-        logoutBtn.addEventListener("mouseover", () => {
-            logoutBtn.style.backgroundColor = "white";
-        });
-
-        logoutBtn.addEventListener("mouseout", () => {
-            logoutBtn.style.backgroundColor = "#D4AF37";
-        });
-
-        logoutBtn.addEventListener("click", cerrarSesion);
-
-        header.appendChild(logoutBtn);
-    }
 
     // ===============================
     // TOAST NOTIFICACIONES
