@@ -141,12 +141,13 @@ if ($accion === 'fabricar') {
             ]);
         }
 
-        /* Ajusta tabla/columnas si tu inventario de productos
-           terminados usa otro nombre o estructura distinta. */
+        /* La tabla productos_terminados no tiene columna id_modelo,
+           el producto existente se identifica por nombre_producto
+           (mismo patrón que usa registro_producto_terminado.php). */
         $stmt = $db->prepare(
-            "SELECT id_producto FROM productos_terminados WHERE id_modelo = :id_modelo LIMIT 1"
+            "SELECT id_producto FROM productos_terminados WHERE nombre_producto = :nombre LIMIT 1"
         );
-        $stmt->execute([':id_modelo' => $resultado['id_modelo']]);
+        $stmt->execute([':nombre' => $resultado['nombre_producto']]);
         $existente = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($existente) {
@@ -161,12 +162,11 @@ if ($accion === 'fabricar') {
             ]);
         } else {
             $stmt = $db->prepare(
-                "INSERT INTO productos_terminados (nombre_producto, id_modelo, stock_actual)
-         VALUES (:nombre, :id_modelo, :cantidad)"
+                "INSERT INTO productos_terminados (nombre_producto, stock_actual)
+         VALUES (:nombre, :cantidad)"
             );
             $stmt->execute([
                 ':nombre'    => $resultado['nombre_producto'],
-                ':id_modelo' => $resultado['id_modelo'],
                 ':cantidad'  => $resultado['cantidad'],
             ]);
         }
