@@ -111,7 +111,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <header class="header">
         <div class="logo">
-            <a href="../../app/ir_panel.php">
+            <a href="../../../app/ir_panel.php">
                 <img src="../../../public/imagenes/logo.png" alt="logo">
             </a>
         </div>

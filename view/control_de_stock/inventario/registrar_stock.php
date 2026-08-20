@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
 
         <div class="header-title">
-            <h1>Registrar Materia Prima</h1>
+            <h1>Registrar stock</h1>
         </div>
 
         <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="form-header">
                     <span class="form-header-bar"></span>
-                    Registro de Materia Prima
+                    Registro stock
                 </div>
 
                 <div class="form-body">

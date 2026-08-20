@@ -12,6 +12,90 @@ require_once "../../app/verificar_sesion.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuarios </title>
     <link href="registro.css" rel="stylesheet">
+
+    <style>
+        .campo-imagen {
+            margin-bottom: 20px;
+        }
+
+        .campo-imagen > label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .imagen-upload-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #f7f8fa;
+            border: 1px solid #e2e5eb;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .imagen-preview {
+            width: 110px;
+            height: 110px;
+            flex-shrink: 0;
+            border: 2px solid #f2c14e;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .imagen-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .imagen-preview span {
+            color: #9a9a9a;
+            font-size: 13px;
+            text-align: center;
+            padding: 0 8px;
+        }
+
+        .imagen-controles {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .btn-seleccionar-imagen {
+            display: inline-block;
+            width: fit-content;
+            background: #0d1b3d;
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-seleccionar-imagen:hover {
+            background: #16255c;
+        }
+
+        .imagen-controles input[type="file"] {
+            display: none;
+        }
+
+        .texto-archivo {
+            font-size: 13px;
+            color: #333;
+        }
+
+        .texto-ayuda {
+            font-size: 12px;
+            color: #9a9a9a;
+        }
+    </style>
 </head>
 
 <body>
@@ -55,9 +139,25 @@ require_once "../../app/verificar_sesion.php";
                 <h2>Registrar Nuevo Usuario</h2>
             </div>
 
-            <form id="formRegistro" method="POST" action="../../app/logica.php">
+            <form id="formRegistro" method="POST" action="../../app/logica.php" enctype="multipart/form-data">
 
                 <input type="hidden" name="registro" value="1">
+
+                <div class="campo-imagen">
+                    <label>Imagen del Usuario</label>
+                    <div class="imagen-upload-wrapper">
+                        <div class="imagen-preview" id="previewContenedor">
+                            <img id="previewImagen" src="" alt="Vista previa" style="display:none;">
+                            <span id="previewTexto">Sin imagen</span>
+                        </div>
+                        <div class="imagen-controles">
+                            <label for="foto" class="btn-seleccionar-imagen">Seleccionar Imagen</label>
+                            <input type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg">
+                            <span id="nombreArchivo" class="texto-archivo">Ningún archivo seleccionado</span>
+                            <small class="texto-ayuda">Formatos permitidos: JPG, PNG. Máximo 2 MB.</small>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="grid-form">
 
@@ -79,6 +179,11 @@ require_once "../../app/verificar_sesion.php";
                     <div class="field-group">
                         <label>Apellido</label>
                         <input type="text" id="apellido" name="apellido" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label>Teléfono</label>
+                        <input type="text" id="telefono" name="telefono">
                     </div>
 
                     <div class="field-group full">
@@ -186,6 +291,54 @@ require_once "../../app/verificar_sesion.php";
         }
 
 
+    // VISTA PREVIA DE IMAGEN
+    const inputFoto = document.getElementById("foto");
+    const previewImagen = document.getElementById("previewImagen");
+    const previewTexto = document.getElementById("previewTexto");
+    const nombreArchivo = document.getElementById("nombreArchivo");
+
+    inputFoto.addEventListener("change", function() {
+
+        const archivo = this.files[0];
+
+        if (!archivo) {
+            previewImagen.style.display = "none";
+            previewTexto.style.display = "block";
+            nombreArchivo.textContent = "Ningún archivo seleccionado";
+            return;
+        }
+
+        const tiposPermitidos = ["image/png", "image/jpeg", "image/jpg"];
+
+        if (!tiposPermitidos.includes(archivo.type)) {
+            mostrarError("foto", "Formato no válido. Solo se permiten JPG o PNG.");
+            this.value = "";
+            return;
+        }
+
+        if (archivo.size > 2 * 1024 * 1024) {
+            mostrarError("foto", "La imagen no debe superar los 2 MB.");
+            this.value = "";
+            return;
+        }
+
+        const errorPrevio = inputFoto.parentNode.querySelector(".mensaje-error");
+        if (errorPrevio) errorPrevio.remove();
+
+        nombreArchivo.textContent = archivo.name;
+
+        const lector = new FileReader();
+
+        lector.onload = function(e) {
+            previewImagen.src = e.target.result;
+            previewImagen.style.display = "block";
+            previewTexto.style.display = "none";
+        };
+
+        lector.readAsDataURL(archivo);
+    });
+
+
     const formulario = document.getElementById("formRegistro");
 
 
@@ -211,6 +364,19 @@ require_once "../../app/verificar_sesion.php";
 
 
         limpiarErrores();
+
+
+        // FOTO OBLIGATORIA
+        if (inputFoto.files.length === 0) {
+
+            mostrarError(
+                "foto",
+                "Debe seleccionar una imagen para el usuario."
+            );
+
+            e.preventDefault();
+            return;
+        }
 
 
         // DOCUMENTO
@@ -245,6 +411,22 @@ require_once "../../app/verificar_sesion.php";
             mostrarError(
                 "apellido",
                 "Ingrese un apellido válido."
+            );
+
+            e.preventDefault();
+            return;
+        }
+
+
+        // TELÉFONO
+        const telefono =
+            document.getElementById("telefono").value;
+
+        if (telefono.trim() !== "" && !/^[0-9]{7,10}$/.test(telefono)) {
+
+            mostrarError(
+                "telefono",
+                "Ingrese un teléfono válido (7 a 10 números)."
             );
 
             e.preventDefault();

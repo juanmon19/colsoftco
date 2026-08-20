@@ -155,13 +155,12 @@ function construirQuery(array $filtros, int $pagina): string
                                 <th>Acción</th>
                                 <th>Descripción</th>
                                 <th>Usuario</th>
-                                <th>Detalle</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (count($movimientos) === 0): ?>
                                 <tr>
-                                    <td colspan="6" class="sin-resultados">
+                                    <td colspan="5" class="sin-resultados">
                                         No se encontraron movimientos con los filtros seleccionados.
                                     </td>
                                 </tr>
@@ -173,26 +172,6 @@ function construirQuery(array $filtros, int $pagina): string
                                         <td><span class="<?= claseAccion($mov['accion']) ?>"><?= htmlspecialchars(ucfirst($mov['accion'])) ?></span></td>
                                         <td><?= htmlspecialchars($mov['descripcion']) ?></td>
                                         <td><?= htmlspecialchars($mov['usuario_nombre']) ?></td>
-                                        <td>
-                                            <?php if ($mov['datos_anteriores'] || $mov['datos_nuevos']): ?>
-                                                <button type="button" class="btn-detalle"
-                                                    onclick="mostrarDetalle(<?= (int) $mov['id'] ?>)">
-                                                    Ver
-                                                </button>
-                                                <div id="detalle-<?= (int) $mov['id'] ?>" class="detalle-oculto">
-                                                    <?php if ($mov['datos_anteriores']): ?>
-                                                        <strong>Antes:</strong>
-                                                        <pre><?= htmlspecialchars(json_encode(json_decode($mov['datos_anteriores']), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) ?></pre>
-                                                    <?php endif; ?>
-                                                    <?php if ($mov['datos_nuevos']): ?>
-                                                        <strong>Después:</strong>
-                                                        <pre><?= htmlspecialchars(json_encode(json_decode($mov['datos_nuevos']), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) ?></pre>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php else: ?>
-                                                —
-                                            <?php endif; ?>
-                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -244,13 +223,6 @@ function construirQuery(array $filtros, int $pagina): string
             <span>Desarrollado por <strong>Equipo SENA</strong></span>
         </div>
     </footer>
-
-    <script>
-        function mostrarDetalle(id) {
-            const el = document.getElementById('detalle-' + id);
-            el.classList.toggle('detalle-visible');
-        }
-    </script>
 
     <script src="../../public/js/app.js"></script>
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
