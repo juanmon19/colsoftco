@@ -12,7 +12,7 @@ SELECT
     stock_actual,
     stock_minimo
 FROM materias_primas
-ORDER BY nombre_material ASC
+ORDER BY id_material ASC
 ";
 
 $stmt = $conn->prepare($sql);

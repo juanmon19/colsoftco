@@ -2,6 +2,7 @@
 
 require_once '../../../config/conexion.php';
 require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
+require_once __DIR__ . '/../../../app/alerta_stock.php';
 
 session_start();
 
@@ -11,6 +12,11 @@ $conn = $db->getConnection();
 $id = $_GET['id'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    // Guardamos el estado ANTES de actualizar, para el historial
+    $stmtAntes = $conn->prepare("SELECT * FROM materias_primas WHERE id_material = :id");
+    $stmtAntes->execute([':id' => $id]);
+    $materialAntes = $stmtAntes->fetch(PDO::FETCH_ASSOC);
 
     $nombre_material = $_POST['nombre_material'];
     $stock_actual = $_POST['stock_actual'];
@@ -53,6 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ],
         'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
     ]);
+
+    // Revisa si con este cambio el material queda en (o sale de) alerta de stock mínimo
+    (new AlertaStockLogica())->verificarStock($id);
 
     header("Location: lista_inventario.php");
     exit();

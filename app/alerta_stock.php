@@ -180,6 +180,7 @@ class AlertaStockLogica
             $mail->Password   = PASSWORD;
             $mail->SMTPSecure = 'tls';
             $mail->Port       = 587;
+            $mail->CharSet    = 'UTF-8';
 
             $mail->setFrom('colsoftco4@gmail.com', 'Colsoftco - Alertas de Stock');
             $mail->addAddress($correoDestino);
