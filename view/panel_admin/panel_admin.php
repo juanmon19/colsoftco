@@ -1,6 +1,21 @@
 <?php
 
 require_once "../../app/verificar_sesion.php";
+require_once "../../config/conexion.php";
+
+$conexion = new Conexion();
+$db = $conexion->getConnection();
+
+$inventarioTotal  = (float) $db->query("SELECT COALESCE(SUM(stock_actual), 0) FROM materias_primas")->fetchColumn();
+$proveedoresTotal = (int) $db->query("SELECT COUNT(*) FROM proveedores")->fetchColumn();
+$productosTotal   = (float) $db->query("SELECT COALESCE(SUM(stock_actual), 0) FROM productos_terminados")->fetchColumn();
+
+/* Si aún no has corrido crear_tabla_tareas.sql, esto no rompe la página */
+try {
+    $tareasPendientes = (int) $db->query("SELECT COUNT(*) FROM tareas WHERE estado = 'pendiente'")->fetchColumn();
+} catch (Exception $e) {
+    $tareasPendientes = 0;
+}
 
 ?>
 
@@ -12,11 +27,153 @@ require_once "../../app/verificar_sesion.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrador - COLSOFTCO</title>
     <link rel="stylesheet" href="paneladmin.css">
+    <style>
+        .btn-nueva-tarea {
+            margin-left: auto;
+            padding: 8px 14px;
+            border: 1px solid #1e3a8a;
+            background: #1e3a8a;
+            color: #fff;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-nueva-tarea:hover {
+            background: #16296b;
+        }
+
+        .title-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .edit-delete {
+            margin-top: 6px;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #dc2626;
+            background: #fff;
+            color: #dc2626;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .edit-delete:hover {
+            background: #fef2f2;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-tarea {
+            background: #fff;
+            border-radius: 10px;
+            padding: 24px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-tarea h3 {
+            margin: 0 0 16px;
+            font-size: 18px;
+            color: #1e293b;
+        }
+
+        .modal-tarea label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .modal-tarea input,
+        .modal-tarea select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #d7dee7;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #f8fafc;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-actions .btn-outline {
+            padding: 9px 16px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-actions .btn-primary {
+            padding: 9px 16px;
+            border: none;
+            background: #1e3a8a;
+            color: #fff;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
     <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- ══ MODAL NUEVA TAREA ══ -->
+    <div class="modal-overlay" id="modalTareaOverlay">
+        <div class="modal-tarea">
+            <h3>Registrar nueva tarea</h3>
+
+            <form id="formNuevaTarea">
+                <label for="tareaTitulo">Título</label>
+                <input type="text" id="tareaTitulo" list="sugerenciasTareas"
+                    placeholder="Ej. Solicitar espuma" autocomplete="off" required>
+                <datalist id="sugerenciasTareas"></datalist>
+
+                <label for="tareaPrioridad">Prioridad</label>
+                <select id="tareaPrioridad">
+                    <option value="low">Baja</option>
+                    <option value="medium" selected>Media</option>
+                    <option value="high">Alta</option>
+                </select>
+
+                <label for="tareaVencimiento">Fecha de vencimiento</label>
+                <input type="date" id="tareaVencimiento">
+
+                <div class="modal-actions">
+                    <button type="button" id="btnCancelarTarea" class="btn-outline">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar tarea</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div class="app">
 
@@ -99,7 +256,7 @@ require_once "../../app/verificar_sesion.php";
                         <article class="stat">
                             <div class="stat-content">
                                 <span>Tareas pendientes</span>
-                                <strong>5</strong>
+                                <strong id="statTareas"><?= $tareasPendientes ?></strong>
                                 <i class="stat-icon yellow">▣</i>
                             </div>
                             <a href="#tareas">Ver detalles <b>›</b></a>
@@ -108,7 +265,7 @@ require_once "../../app/verificar_sesion.php";
                         <article class="stat">
                             <div class="stat-content">
                                 <span>Inventario total</span>
-                                <strong>1,240</strong>
+                                <strong id="statInventario"><?= number_format($inventarioTotal, 0, ',', '.') ?></strong>
                                 <i class="stat-icon green">◇</i>
                             </div>
                             <a href="../inventario_materia_prima/inventario_materia_prima.php">Ver inventario
@@ -118,7 +275,7 @@ require_once "../../app/verificar_sesion.php";
                         <article class="stat">
                             <div class="stat-content">
                                 <span>Proveedores</span>
-                                <strong>36</strong>
+                                <strong id="statProveedores"><?= $proveedoresTotal ?></strong>
                                 <i class="stat-icon purple">♙</i>
                             </div>
                             <a href="../lista_proveedores/lista_proveedores.php">Ver proveedores <b>›</b></a>
@@ -127,7 +284,7 @@ require_once "../../app/verificar_sesion.php";
                         <article class="stat">
                             <div class="stat-content">
                                 <span>Productos</span>
-                                <strong>320</strong>
+                                <strong id="statProductos"><?= number_format($productosTotal, 0, ',', '.') ?></strong>
                                 <i class="stat-icon blue">◇</i>
                             </div>
                             <a href="../inventario_productos_terminados/inventario_productos_terminados.php">Ver
@@ -143,6 +300,7 @@ require_once "../../app/verificar_sesion.php";
                     <article class="tasks card" id="tareas">
                         <div class="title-row">
                             <h3><span>▣</span> Tareas Pendientes</h3>
+                            <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
                         </div>
 
                         <div class="task-table">
@@ -154,153 +312,10 @@ require_once "../../app/verificar_sesion.php";
                                 <span></span>
                             </div>
 
-                            <div class="task-row">
-                                <strong>Solicitar espuma</strong>
-                                <span><em class="priority medium">Media</em></span>
-                                <span>20 May 2026</span>
-                                <span><em class="status pendiente">Pendiente</em></span>
-                                <div class="task-actions">
-                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
-                                    <div class="edit-menu">
-                                        <div class="edit-menu-group">
-                                            <label>Estado</label>
-                                            <select class="edit-status">
-                                                <option value="pendiente" selected>Pendiente</option>
-                                                <option value="por-hacer">Por hacer</option>
-                                                <option value="terminado">Terminado</option>
-                                            </select>
-                                        </div>
-                                        <div class="edit-menu-group">
-                                            <label>Prioridad</label>
-                                            <select class="edit-priority">
-                                                <option value="low">Baja</option>
-                                                <option value="medium" selected>Media</option>
-                                                <option value="high">Alta</option>
-                                            </select>
-                                        </div>
-                                        <button type="button" class="edit-apply">Guardar</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="task-row">
-                                <strong>Pedido N° 346</strong>
-                                <span><em class="priority high">Alta</em></span>
-                                <span>18 May 2026</span>
-                                <span><em class="status pendiente">Pendiente</em></span>
-                                <div class="task-actions">
-                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
-                                    <div class="edit-menu">
-                                        <div class="edit-menu-group">
-                                            <label>Estado</label>
-                                            <select class="edit-status">
-                                                <option value="pendiente" selected>Pendiente</option>
-                                                <option value="por-hacer">Por hacer</option>
-                                                <option value="terminado">Terminado</option>
-                                            </select>
-                                        </div>
-                                        <div class="edit-menu-group">
-                                            <label>Prioridad</label>
-                                            <select class="edit-priority">
-                                                <option value="low">Baja</option>
-                                                <option value="medium">Media</option>
-                                                <option value="high" selected>Alta</option>
-                                            </select>
-                                        </div>
-                                        <button type="button" class="edit-apply">Guardar</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="task-row">
-                                <strong>Verificar inventario</strong>
-                                <span><em class="priority medium">Media</em></span>
-                                <span>21 May 2026</span>
-                                <span><em class="status pendiente">Pendiente</em></span>
-                                <div class="task-actions">
-                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
-                                    <div class="edit-menu">
-                                        <div class="edit-menu-group">
-                                            <label>Estado</label>
-                                            <select class="edit-status">
-                                                <option value="pendiente" selected>Pendiente</option>
-                                                <option value="por-hacer">Por hacer</option>
-                                                <option value="terminado">Terminado</option>
-                                            </select>
-                                        </div>
-                                        <div class="edit-menu-group">
-                                            <label>Prioridad</label>
-                                            <select class="edit-priority">
-                                                <option value="low">Baja</option>
-                                                <option value="medium" selected>Media</option>
-                                                <option value="high">Alta</option>
-                                            </select>
-                                        </div>
-                                        <button type="button" class="edit-apply">Guardar</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="task-row">
-                                <strong>Supervisar el área de producción</strong>
-                                <span><em class="priority high">Alta</em></span>
-                                <span>19 May 2026</span>
-                                <span><em class="status pendiente">Pendiente</em></span>
-                                <div class="task-actions">
-                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
-                                    <div class="edit-menu">
-                                        <div class="edit-menu-group">
-                                            <label>Estado</label>
-                                            <select class="edit-status">
-                                                <option value="pendiente" selected>Pendiente</option>
-                                                <option value="por-hacer">Por hacer</option>
-                                                <option value="terminado">Terminado</option>
-                                            </select>
-                                        </div>
-                                        <div class="edit-menu-group">
-                                            <label>Prioridad</label>
-                                            <select class="edit-priority">
-                                                <option value="low">Baja</option>
-                                                <option value="medium">Media</option>
-                                                <option value="high" selected>Alta</option>
-                                            </select>
-                                        </div>
-                                        <button type="button" class="edit-apply">Guardar</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="task-row">
-                                <strong>Contactar proveedor N° 12</strong>
-                                <span><em class="priority low">Baja</em></span>
-                                <span>22 May 2026</span>
-                                <span><em class="status pendiente">Pendiente</em></span>
-                                <div class="task-actions">
-                                    <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
-                                    <div class="edit-menu">
-                                        <div class="edit-menu-group">
-                                            <label>Estado</label>
-                                            <select class="edit-status">
-                                                <option value="pendiente" selected>Pendiente</option>
-                                                <option value="por-hacer">Por hacer</option>
-                                                <option value="terminado">Terminado</option>
-                                            </select>
-                                        </div>
-                                        <div class="edit-menu-group">
-                                            <label>Prioridad</label>
-                                            <select class="edit-priority">
-                                                <option value="low" selected>Baja</option>
-                                                <option value="medium">Media</option>
-                                                <option value="high">Alta</option>
-                                            </select>
-                                        </div>
-                                        <button type="button" class="edit-apply">Guardar</button>
-                                    </div>
-                                </div>
+                            <div id="taskTableBody">
+                                <p class="placeholder">Cargando tareas...</p>
                             </div>
                         </div>
-
-                        <button class="all-tasks" type="button">Ver todas las tareas <b>›</b></button>
                     </article>
 
                     <aside class="right">
@@ -400,7 +415,7 @@ require_once "../../app/verificar_sesion.php";
     </script>
 
     <script>
-        // ================= EDICIÓN DE TAREAS (ESTADO Y PRIORIDAD) =================
+        // ================= TAREAS: CARGA, CREACIÓN, EDICIÓN Y BORRADO (AJAX) =================
 
         const statusLabels = {
             'pendiente': 'Pendiente',
@@ -415,6 +430,26 @@ require_once "../../app/verificar_sesion.php";
         };
 
         const menuOverlay = document.getElementById('menuOverlay');
+        const taskTableBody = document.getElementById('taskTableBody');
+        const statTareas = document.getElementById('statTareas');
+        const statInventario = document.getElementById('statInventario');
+        const statProveedores = document.getElementById('statProveedores');
+        const statProductos = document.getElementById('statProductos');
+
+        let tareasCache = [];
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str ?? '';
+            return div.innerHTML;
+        }
+
+        function formatearFecha(fechaISO) {
+            if (!fechaISO) return 'Sin fecha';
+            const [y, m, d] = fechaISO.split('-');
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            return `${d} ${meses[parseInt(m, 10) - 1]} ${y}`;
+        }
 
         function actualizarOverlay() {
             const hayMenuAbierto = document.querySelector('.edit-menu.open') !== null;
@@ -432,46 +467,272 @@ require_once "../../app/verificar_sesion.php";
             actualizarOverlay();
         }
 
-        document.querySelectorAll('.task-row').forEach((fila) => {
-            const boton = fila.querySelector('.dots');
-            const menu = fila.querySelector('.edit-menu');
-            if (!boton || !menu) return;
+        function renderTareas(tareas) {
+            if (!tareas.length) {
+                taskTableBody.innerHTML = '<p class="placeholder">No hay tareas registradas.</p>';
+                return;
+            }
 
-            boton.addEventListener('click', (e) => {
+            taskTableBody.innerHTML = tareas.map(t => `
+                <div class="task-row" data-id="${t.id_tarea}">
+                    <strong>${escapeHtml(t.titulo)}</strong>
+                    <span><em class="priority ${t.prioridad}">${priorityLabels[t.prioridad]}</em></span>
+                    <span>${formatearFecha(t.fecha_vencimiento)}</span>
+                    <span><em class="status ${t.estado}">${statusLabels[t.estado]}</em></span>
+                    <div class="task-actions">
+                        <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
+                        <div class="edit-menu">
+                            <div class="edit-menu-group">
+                                <label>Estado</label>
+                                <select class="edit-status">
+                                    <option value="pendiente" ${t.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                                    <option value="por-hacer" ${t.estado === 'por-hacer' ? 'selected' : ''}>Por hacer</option>
+                                    <option value="terminado" ${t.estado === 'terminado' ? 'selected' : ''}>Terminado</option>
+                                </select>
+                            </div>
+                            <div class="edit-menu-group">
+                                <label>Prioridad</label>
+                                <select class="edit-priority">
+                                    <option value="low" ${t.prioridad === 'low' ? 'selected' : ''}>Baja</option>
+                                    <option value="medium" ${t.prioridad === 'medium' ? 'selected' : ''}>Media</option>
+                                    <option value="high" ${t.prioridad === 'high' ? 'selected' : ''}>Alta</option>
+                                </select>
+                            </div>
+                            <button type="button" class="edit-apply">Guardar</button>
+                            <button type="button" class="edit-delete">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function cargarTareas() {
+            try {
+                const resp = await fetch('../../app/logica_tareas.php?accion=listar');
+                const data = await resp.json();
+
+                if (!data.ok) {
+                    taskTableBody.innerHTML = '<p class="placeholder">No se pudieron cargar las tareas.</p>';
+                    return;
+                }
+
+                tareasCache = data.tareas;
+                renderTareas(tareasCache);
+            } catch (e) {
+                taskTableBody.innerHTML = '<p class="placeholder">Error de conexión al cargar tareas.</p>';
+                console.error(e);
+            }
+        }
+
+        async function actualizarStats() {
+            try {
+                const resp = await fetch('../../app/dashboard_stats.php');
+                const data = await resp.json();
+                if (!data.ok) return;
+
+                if (statTareas) statTareas.textContent = Number(data.tareas_pendientes).toLocaleString('es-CO');
+                if (statInventario) statInventario.textContent = Number(data.inventario_total).toLocaleString('es-CO');
+                if (statProveedores) statProveedores.textContent = Number(data.proveedores).toLocaleString('es-CO');
+                if (statProductos) statProductos.textContent = Number(data.productos).toLocaleString('es-CO');
+            } catch (e) {
+                console.error('Error al actualizar estadísticas', e);
+            }
+        }
+
+        async function guardarCambiosTarea(boton) {
+            const fila = boton.closest('.task-row');
+            const id = fila.dataset.id;
+            const estado = fila.querySelector('.edit-status').value;
+            const prioridad = fila.querySelector('.edit-priority').value;
+
+            try {
+                const resp = await fetch('../../app/logica_tareas.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `accion=actualizar&id_tarea=${encodeURIComponent(id)}&estado=${encodeURIComponent(estado)}&prioridad=${encodeURIComponent(prioridad)}`
+                });
+                const data = await resp.json();
+
+                if (data.ok) {
+                    await cargarTareas();
+                    actualizarStats();
+                } else {
+                    alert(data.error || 'No se pudo actualizar la tarea.');
+                }
+            } catch (e) {
+                alert('Error de conexión al actualizar la tarea.');
+                console.error(e);
+            }
+        }
+
+        async function eliminarTarea(boton) {
+            const fila = boton.closest('.task-row');
+            const id = fila.dataset.id;
+
+            if (!confirm('¿Eliminar esta tarea?')) return;
+
+            try {
+                const resp = await fetch('../../app/logica_tareas.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `accion=eliminar&id_tarea=${encodeURIComponent(id)}`
+                });
+                const data = await resp.json();
+
+                if (data.ok) {
+                    await cargarTareas();
+                    actualizarStats();
+                } else {
+                    alert(data.error || 'No se pudo eliminar la tarea.');
+                }
+            } catch (e) {
+                alert('Error de conexión al eliminar la tarea.');
+                console.error(e);
+            }
+        }
+
+        // Delegación de eventos: los task-row se crean dinámicamente
+        document.addEventListener('click', (e) => {
+            const boton = e.target.closest('.dots');
+            if (boton && taskTableBody.contains(boton)) {
                 e.stopPropagation();
+                const menu = boton.nextElementSibling;
                 const abierto = menu.classList.contains('open');
                 cerrarTodosLosMenus(menu);
                 menu.classList.toggle('open', !abierto);
                 boton.setAttribute('aria-expanded', String(!abierto));
                 actualizarOverlay();
-            });
+                return;
+            }
 
-            const btnGuardar = menu.querySelector('.edit-apply');
-            const selectEstado = menu.querySelector('.edit-status');
-            const selectPrioridad = menu.querySelector('.edit-priority');
+            const guardar = e.target.closest('.edit-apply');
+            if (guardar) {
+                e.stopPropagation();
+                guardarCambiosTarea(guardar);
+                return;
+            }
 
-            btnGuardar.addEventListener('click', () => {
-                const nuevoEstado = selectEstado.value;
-                const nuevaPrioridad = selectPrioridad.value;
+            const eliminar = e.target.closest('.edit-delete');
+            if (eliminar) {
+                e.stopPropagation();
+                eliminarTarea(eliminar);
+                return;
+            }
 
-                const spanEstado = fila.querySelector('.status');
-                spanEstado.className = 'status ' + nuevoEstado;
-                spanEstado.textContent = statusLabels[nuevoEstado];
+            if (e.target.closest('.edit-menu')) {
+                e.stopPropagation();
+                return;
+            }
 
-                const spanPrioridad = fila.querySelector('.priority');
-                spanPrioridad.className = 'priority ' + nuevaPrioridad;
-                spanPrioridad.textContent = priorityLabels[nuevaPrioridad];
-
-                menu.classList.remove('open');
-                boton.setAttribute('aria-expanded', 'false');
-                actualizarOverlay();
-            });
-
-            menu.addEventListener('click', (e) => e.stopPropagation());
+            cerrarTodosLosMenus(null);
         });
 
         menuOverlay.addEventListener('click', () => cerrarTodosLosMenus(null));
-        document.addEventListener('click', () => cerrarTodosLosMenus(null));
+
+        // ================= MODAL: REGISTRAR NUEVA TAREA =================
+
+        const btnNuevaTarea = document.getElementById('btnNuevaTarea');
+        const modalTareaOverlay = document.getElementById('modalTareaOverlay');
+        const formNuevaTarea = document.getElementById('formNuevaTarea');
+        const btnCancelarTarea = document.getElementById('btnCancelarTarea');
+        const sugerenciasTareas = document.getElementById('sugerenciasTareas');
+        const inputTareaTitulo = document.getElementById('tareaTitulo');
+        const selectTareaPrioridad = document.getElementById('tareaPrioridad');
+        const inputTareaVencimiento = document.getElementById('tareaVencimiento');
+
+        const sugerenciasFijas = [
+            'Solicitar materia prima',
+            'Verificar inventario',
+            'Supervisar producción',
+            'Contactar proveedor',
+            'Generar informe de stock',
+            'Revisar pedidos pendientes',
+            'Programar mantenimiento de maquinaria'
+        ];
+
+        async function cargarSugerencias() {
+            let sugerencias = [...sugerenciasFijas];
+
+            try {
+                const resp = await fetch('../../app/logica_tareas.php?accion=sugerencias');
+                const data = await resp.json();
+                if (data.ok && Array.isArray(data.sugerencias)) {
+                    sugerencias = [...new Set([...sugerencias, ...data.sugerencias])];
+                }
+            } catch (e) {
+                // si falla, se usan solo las sugerencias fijas
+            }
+
+            sugerenciasTareas.innerHTML = sugerencias.map(s => `<option value="${escapeHtml(s)}"></option>`).join('');
+        }
+
+        btnNuevaTarea.addEventListener('click', () => {
+            modalTareaOverlay.classList.add('show');
+            cargarSugerencias();
+            inputTareaTitulo.focus();
+        });
+
+        btnCancelarTarea.addEventListener('click', () => {
+            modalTareaOverlay.classList.remove('show');
+            formNuevaTarea.reset();
+        });
+
+        modalTareaOverlay.addEventListener('click', (e) => {
+            if (e.target === modalTareaOverlay) {
+                modalTareaOverlay.classList.remove('show');
+            }
+        });
+
+        formNuevaTarea.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const titulo = inputTareaTitulo.value.trim();
+            const prioridad = selectTareaPrioridad.value;
+            const vencimiento = inputTareaVencimiento.value;
+
+            if (!titulo) return;
+
+            try {
+                const resp = await fetch('../../app/logica_tareas.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `accion=crear&titulo=${encodeURIComponent(titulo)}&prioridad=${encodeURIComponent(prioridad)}&fecha_vencimiento=${encodeURIComponent(vencimiento)}`
+                });
+                const data = await resp.json();
+
+                if (data.ok) {
+                    modalTareaOverlay.classList.remove('show');
+                    formNuevaTarea.reset();
+                    await cargarTareas();
+                    actualizarStats();
+                } else {
+                    alert(data.error || 'No se pudo registrar la tarea.');
+                }
+            } catch (e) {
+                alert('Error de conexión al registrar la tarea.');
+                console.error(e);
+            }
+        });
+
+        // ================= CARGA INICIAL Y AUTO-ACTUALIZACIÓN =================
+
+        cargarTareas();
+
+        // Refresca las 4 tarjetas y la lista de tareas cada 20 segundos,
+        // así el panel refleja cambios hechos desde cualquier otro módulo
+        // (ventas, inventario, proveedores) sin que el usuario recargue.
+        setInterval(() => {
+            actualizarStats();
+            cargarTareas();
+        }, 20000);
+
+        // También se actualiza al volver a esta pestaña del navegador
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                actualizarStats();
+                cargarTareas();
+            }
+        });
     </script>
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
