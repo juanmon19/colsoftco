@@ -27,187 +27,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrador - COLSOFTCO</title>
     <link rel="stylesheet" href="paneladmin.css">
-    <style>
-        .btn-nueva-tarea {
-            margin-left: auto;
-            padding: 8px 14px;
-            border: 1px solid #1e3a8a;
-            background: #1e3a8a;
-            color: #fff;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .btn-nueva-tarea:hover {
-            background: #16296b;
-        }
-
-        .title-row {
-            display: flex;
-            align-items: center;
-        }
-
-        .edit-delete {
-            margin-top: 6px;
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #dc2626;
-            background: #fff;
-            color: #dc2626;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .edit-delete:hover {
-            background: #fef2f2;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-        .modal-tarea {
-            background: #fff;
-            border-radius: 10px;
-            padding: 24px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-tarea h3 {
-            margin: 0 0 16px;
-            font-size: 18px;
-            color: #1e293b;
-        }
-
-        .modal-tarea label {
-            display: block;
-            margin-top: 12px;
-            margin-bottom: 6px;
-            font-weight: 700;
-            font-size: 13px;
-            color: #1e293b;
-        }
-
-        .modal-tarea input,
-        .modal-tarea select {
-            width: 100%;
-            padding: 9px 12px;
-            border: 1px solid #d7dee7;
-            border-radius: 6px;
-            font-size: 14px;
-            background: #f8fafc;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .modal-actions .btn-outline {
-            padding: 9px 16px;
-            border: 1px solid #cbd5e1;
-            background: #fff;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .modal-actions .btn-primary {
-            padding: 9px 16px;
-            border: none;
-            background: #1e3a8a;
-            color: #fff;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        /* ---- Menú desplegable de perfil (header) ---- */
-        .perfil-menu { position: relative; margin-left: 12px; }
-        .perfil-trigger {
-            display: flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0;
-            background: #fff; padding: 6px 10px 6px 6px; border-radius: 999px; cursor: pointer;
-        }
-        .avatar-header { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-        .perfil-trigger-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
-        .perfil-trigger-text strong { font-size: 12px; color: #1e293b; }
-        .perfil-trigger-text small { font-size: 11px; color: #64748b; }
-        .perfil-caret { font-size: 12px; color: #64748b; }
-
-        .perfil-dropdown {
-            display: none; position: absolute; right: 0; top: calc(100% + 8px);
-            background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,.15); width: 230px; padding: 8px; z-index: 60;
-        }
-        .perfil-dropdown.open { display: block; }
-        .perfil-dropdown button {
-            width: 100%; text-align: left; padding: 10px 12px; border: none; background: transparent;
-            border-radius: 6px; font-size: 13px; font-weight: 600; color: #1e293b; cursor: pointer;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .perfil-dropdown button:hover { background: #f1f5f9; }
-        .perfil-dropdown-divider { height: 1px; background: #e2e8f0; margin: 6px 4px; }
-        .perfil-dropdown-logout { color: #dc2626 !important; }
-        .perfil-dropdown-logout:hover { background: #fef2f2 !important; }
-
-        .modal-perfil-foto { display: flex; align-items: center; gap: 14px; margin-top: 4px; }
-        .modal-perfil-foto img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; }
-        .modal-perfil-foto button { padding: 8px 12px; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; }
-
-        /* ================= TEMA OSCURO (aplica a todo el sistema) ================= */
-        html[data-tema="oscuro"] { color-scheme: dark; }
-        html[data-tema="oscuro"] body { background: #0f172a; }
-        html[data-tema="oscuro"] .app { background: #0f172a; }
-        html[data-tema="oscuro"] .sidebar { background: #111827; border-color: #1f2937; }
-        html[data-tema="oscuro"] .nav-item { color: #e2e8f0; }
-        html[data-tema="oscuro"] .nav-item:hover { background: #1f2937; }
-        html[data-tema="oscuro"] .topbar { background: #111827; border-color: #1f2937; }
-        html[data-tema="oscuro"] .welcome h1,
-        html[data-tema="oscuro"] .welcome p { color: #e2e8f0; }
-        html[data-tema="oscuro"] .profile,
-        html[data-tema="oscuro"] .stat,
-        html[data-tema="oscuro"] .card,
-        html[data-tema="oscuro"] .tasks,
-        html[data-tema="oscuro"] .quick,
-        html[data-tema="oscuro"] .contact {
-            background: #111827; border-color: #1f2937; color: #e2e8f0;
-        }
-        html[data-tema="oscuro"] .profile-data h2,
-        html[data-tema="oscuro"] .stat strong,
-        html[data-tema="oscuro"] h3 { color: #f1f5f9; }
-        html[data-tema="oscuro"] .task-row { background: #0f172a; border-color: #1f2937; }
-        html[data-tema="oscuro"] footer { background: #111827; border-color: #1f2937; color: #94a3b8; }
-        html[data-tema="oscuro"] .modal-tarea,
-        html[data-tema="oscuro"] .perfil-dropdown,
-        html[data-tema="oscuro"] .edit-menu {
-            background: #111827; border-color: #1f2937; color: #e2e8f0;
-        }
-        html[data-tema="oscuro"] .modal-tarea input,
-        html[data-tema="oscuro"] .modal-tarea select {
-            background: #0f172a; border-color: #334155; color: #e2e8f0;
-        }
-        html[data-tema="oscuro"] .perfil-trigger { background: #0f172a; border-color: #334155; }
-        html[data-tema="oscuro"] .perfil-dropdown button { color: #e2e8f0; }
-        html[data-tema="oscuro"] .perfil-dropdown button:hover { background: #1f2937; }
-    </style>
+    
     <script>
         /* Aplica el tema guardado ANTES de pintar la página, para evitar parpadeo */
         (function () {
@@ -325,6 +145,7 @@ try {
         <div class="main">
 
             <!-- HEADER -->
+           <!-- HEADER -->
             <header class="topbar">
                 <button class="mobile-open" id="mobileOpen" type="button" aria-label="Abrir menú">☰</button>
 
@@ -334,9 +155,7 @@ try {
                 </div>
 
                 <div class="header-actions">
-                    <a href="../registro/registro.php" class="btn-header">Registrar</a>
-
-                    <!-- MENÚ DE PERFIL DESPLEGABLE -->
+                    <!-- MENÚ DE PERFIL DESPLEGABLE ÚNICO -->
                     <div class="perfil-menu" id="perfilMenu">
                         <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
                             <img id="avatarHeader" class="avatar-header" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
@@ -348,6 +167,10 @@ try {
                         </button>
 
                         <div class="perfil-dropdown" id="perfilDropdown">
+                            <!-- Nueva opción de Registrar -->
+                            <button type="button" onclick="window.location.href='../registro/registro.php'">
+                                ➕ Registrar usuario
+                            </button>
                             <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
                             <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
                             <button type="button" id="btnTemaOscuro">
@@ -359,10 +182,6 @@ try {
                     </div>
 
                     <input type="file" id="inputFotoPerfil" accept="image/png, image/jpeg, image/webp" hidden>
-
-                    <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-                        Cerrar sesión
-                    </button>
                 </div>
             </header>
 
