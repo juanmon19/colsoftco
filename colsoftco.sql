@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-08-2026 a las 23:20:21
+-- Tiempo de generación: 20-08-2026 a las 06:45:45
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -101,7 +101,9 @@ INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `d
 (42, 'proveedores', 'editar', 2, 'Se actualizó el proveedor \'\'', '{\"id_proveedor\":2,\"nombre_empresa\":\"Textiles Andinos SAS\",\"nit\":\"800234567-2\",\"direccion\":\"Medellín, Antioquia\",\"descripcion_empresa\":\"Producción de textiles para la industria colchonera\",\"contacto_nombre\":\"Laura\",\"contacto_apellido\":\"Gomez\",\"telefono\":\"3102222222\",\"email\":\"contacto@textilesandinos.com\",\"imagen\":null}', '[]', NULL, 'Santiago Avellaneda', '::1', '2026-08-12 14:27:55'),
 (43, 'proveedores', 'editar', 2, 'Se actualizó el proveedor \'Textiles Andinos SAS\'', '{\"id_proveedor\":2,\"nombre_empresa\":\"Textiles Andinos SAS\",\"nit\":\"800234567-2\",\"direccion\":\"Medellín, Antioquia\",\"descripcion_empresa\":\"Producción de textiles para la industria colchonera\",\"contacto_nombre\":\"Laura\",\"contacto_apellido\":\"Gomez\",\"telefono\":\"3102222222\",\"email\":\"contacto@textilesandinos.com\",\"imagen\":null}', '{\"nombre_empresa\":\"Textiles Andinos SAS\",\"nit\":\"800234567-2\",\"contacto_nombre\":\"Laura\",\"contacto_apellido\":\"Gomez\",\"telefono\":\"3102222222\",\"email\":\"contacto@textilesandinos.com\",\"direccion\":\"Medellín, Antioquia\",\"descripcion_empresa\":\"Producción de textiles para la industria colchonera\"}', NULL, 'Santiago Avellaneda', '::1', '2026-08-12 14:43:47'),
 (44, 'proveedores', 'eliminar', 10, 'Se eliminó el proveedor \'Textiles andino\'', '{\"id_proveedor\":10,\"nombre_empresa\":\"Textiles andino\",\"nit\":\"123456789123\",\"direccion\":\"Cra 43 No 12-23\",\"descripcion_empresa\":\"Empresa de textiles\",\"contacto_nombre\":\"Nicolay\",\"contacto_apellido\":\"Polas\",\"telefono\":\"3124567898\",\"email\":\"nicorr@gmail.com\",\"imagen\":\"proveedor_6a7cb248cbea8.jpg\"}', NULL, NULL, 'Santiago Avellaneda', '::1', '2026-08-12 14:43:52'),
-(45, 'materia_prima', 'editar', 4, 'Se actualizó la materia prima \'Fieltro aislante\'', NULL, '{\"nombre_material\":\"Fieltro aislante\",\"stock_actual\":\"1\",\"stock_minimo\":\"15.00\",\"id_unidad\":\"2\",\"id_proveedor\":\"1\"}', NULL, 'Santiago Avellaneda', '::1', '2026-08-12 16:15:54');
+(45, 'materia_prima', 'editar', 4, 'Se actualizó la materia prima \'Fieltro aislante\'', NULL, '{\"nombre_material\":\"Fieltro aislante\",\"stock_actual\":\"1\",\"stock_minimo\":\"15.00\",\"id_unidad\":\"2\",\"id_proveedor\":\"1\"}', NULL, 'Santiago Avellaneda', '::1', '2026-08-12 16:15:54'),
+(46, 'materia_prima', 'editar', 1, 'Se actualizó la materia prima \'Espuma de poliuretano\'', '{\"id_material\":1,\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"0.00\",\"id_unidad\":1,\"id_proveedor\":1,\"notificar_email\":0,\"correo_notificacion\":null,\"alerta_enviada\":0}', '{\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"110.00\",\"id_unidad\":\"1\",\"id_proveedor\":\"1\"}', NULL, 'Juan Montaño', '::1', '2026-08-19 23:06:44'),
+(47, 'materia_prima', 'editar', 1, 'Se actualizó la materia prima \'Espuma de poliuretano\'', '{\"id_material\":1,\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"110.00\",\"id_unidad\":1,\"id_proveedor\":1,\"notificar_email\":0,\"correo_notificacion\":null,\"alerta_enviada\":1}', '{\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"110.00\",\"id_unidad\":\"1\",\"id_proveedor\":\"1\"}', NULL, 'Juan Montaño', '::1', '2026-08-19 23:07:08');
 
 -- --------------------------------------------------------
 
@@ -126,7 +128,7 @@ CREATE TABLE `materias_primas` (
 --
 
 INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`, `stock_minimo`, `id_unidad`, `id_proveedor`, `notificar_email`, `correo_notificacion`, `alerta_enviada`) VALUES
-(1, 'Espuma de poliuretano', 50.00, 0.00, 1, 1, 0, NULL, 0),
+(1, 'Espuma de poliuretano', 50.00, 110.00, 1, 1, 0, NULL, 1),
 (2, 'Tela Jacquard', 300.00, 50.00, 2, 2, 0, NULL, 0),
 (3, 'Resortes Bonnell', 1200.00, 300.00, 3, 3, 0, NULL, 0),
 (4, 'Fieltro aislante', 1.00, 15.00, 2, 1, 1, 'nicolaspolo096@gmail.com', 0),
@@ -179,6 +181,13 @@ CREATE TABLE `notificaciones` (
   `fecha_generada` timestamp NOT NULL DEFAULT current_timestamp(),
   `leida` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `notificaciones`
+--
+
+INSERT INTO `notificaciones` (`id_notificacion`, `id_material`, `mensaje`, `fecha_generada`, `leida`) VALUES
+(1, 1, 'El material \'Espuma de poliuretano\' alcanzó su stock mínimo (actual: 50.00, mínimo: 110.00).', '2026-08-20 04:06:44', 0);
 
 -- --------------------------------------------------------
 
@@ -373,6 +382,32 @@ INSERT INTO `receta_colchon` (`id_receta`, `id_modelo`, `id_material`, `cantidad
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tareas`
+--
+
+CREATE TABLE `tareas` (
+  `id_tarea` int(11) NOT NULL,
+  `titulo` varchar(150) NOT NULL,
+  `prioridad` enum('low','medium','high') NOT NULL DEFAULT 'medium',
+  `fecha_vencimiento` date DEFAULT NULL,
+  `estado` enum('pendiente','por-hacer','terminado') NOT NULL DEFAULT 'pendiente',
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tareas`
+--
+
+INSERT INTO `tareas` (`id_tarea`, `titulo`, `prioridad`, `fecha_vencimiento`, `estado`, `fecha_creacion`) VALUES
+(1, 'Solicitar espuma', 'medium', '2026-05-20', 'pendiente', '2026-08-19 23:35:28'),
+(2, 'Pedido N° 346', 'high', '2026-05-18', 'pendiente', '2026-08-19 23:35:28'),
+(3, 'Verificar inventario', 'medium', '2026-05-21', 'pendiente', '2026-08-19 23:35:28'),
+(4, 'Supervisar el área de producción', 'high', '2026-05-19', 'pendiente', '2026-08-19 23:35:28'),
+(5, 'Contactar proveedor N° 12', 'low', '2026-05-22', 'pendiente', '2026-08-19 23:35:28');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `unidades_medida`
 --
 
@@ -493,6 +528,12 @@ ALTER TABLE `receta_colchon`
   ADD KEY `id_material` (`id_material`);
 
 --
+-- Indices de la tabla `tareas`
+--
+ALTER TABLE `tareas`
+  ADD PRIMARY KEY (`id_tarea`);
+
+--
 -- Indices de la tabla `unidades_medida`
 --
 ALTER TABLE `unidades_medida`
@@ -520,7 +561,7 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `historial_movimientos`
 --
 ALTER TABLE `historial_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT de la tabla `materias_primas`
@@ -538,7 +579,7 @@ ALTER TABLE `modelos_colchon`
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos_proveedor`
@@ -563,6 +604,12 @@ ALTER TABLE `proveedores`
 --
 ALTER TABLE `receta_colchon`
   MODIFY `id_receta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+
+--
+-- AUTO_INCREMENT de la tabla `tareas`
+--
+ALTER TABLE `tareas`
+  MODIFY `id_tarea` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `unidades_medida`
