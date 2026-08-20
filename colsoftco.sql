@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-08-2026 a las 06:45:45
+-- Tiempo de generación: 20-08-2026 a las 07:50:41
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -439,6 +439,8 @@ CREATE TABLE `usuarios` (
   `documento` varchar(15) NOT NULL,
   `nombre` varchar(30) NOT NULL,
   `apellido` varchar(30) NOT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
   `rol` enum('administrador','bodeguero','operario','') NOT NULL,
   `password_hash` varchar(60) NOT NULL,
   `request_password` enum('0','1') NOT NULL DEFAULT '0',
@@ -450,11 +452,11 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
-(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'administrador', '$2y$10$WIOrMUGxtSwEkYs4M0GgOuVfDrb9x6e4P7uVC6hvp8GxRE3oHV2ue', '1', '189510a696b40e8fe8fad52f932f321cb629de31456b124461fc2fc44fa6f3f1', '1785468187'),
-(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'administrador', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
-(10, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', 'administrador', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
-(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
+INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `foto`, `telefono`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
+(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', NULL, NULL, 'administrador', '$2y$10$WIOrMUGxtSwEkYs4M0GgOuVfDrb9x6e4P7uVC6hvp8GxRE3oHV2ue', '1', '189510a696b40e8fe8fad52f932f321cb629de31456b124461fc2fc44fa6f3f1', '1785468187'),
+(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', NULL, NULL, 'administrador', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
+(10, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', NULL, NULL, 'administrador', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
+(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
 
 --
 -- Índices para tablas volcadas
