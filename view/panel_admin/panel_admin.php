@@ -139,7 +139,84 @@ try {
             font-weight: 700;
             cursor: pointer;
         }
+
+        /* ---- Menú desplegable de perfil (header) ---- */
+        .perfil-menu { position: relative; margin-left: 12px; }
+        .perfil-trigger {
+            display: flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0;
+            background: #fff; padding: 6px 10px 6px 6px; border-radius: 999px; cursor: pointer;
+        }
+        .avatar-header { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .perfil-trigger-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+        .perfil-trigger-text strong { font-size: 12px; color: #1e293b; }
+        .perfil-trigger-text small { font-size: 11px; color: #64748b; }
+        .perfil-caret { font-size: 12px; color: #64748b; }
+
+        .perfil-dropdown {
+            display: none; position: absolute; right: 0; top: calc(100% + 8px);
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,.15); width: 230px; padding: 8px; z-index: 60;
+        }
+        .perfil-dropdown.open { display: block; }
+        .perfil-dropdown button {
+            width: 100%; text-align: left; padding: 10px 12px; border: none; background: transparent;
+            border-radius: 6px; font-size: 13px; font-weight: 600; color: #1e293b; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .perfil-dropdown button:hover { background: #f1f5f9; }
+        .perfil-dropdown-divider { height: 1px; background: #e2e8f0; margin: 6px 4px; }
+        .perfil-dropdown-logout { color: #dc2626 !important; }
+        .perfil-dropdown-logout:hover { background: #fef2f2 !important; }
+
+        .modal-perfil-foto { display: flex; align-items: center; gap: 14px; margin-top: 4px; }
+        .modal-perfil-foto img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; }
+        .modal-perfil-foto button { padding: 8px 12px; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; }
+
+        /* ================= TEMA OSCURO (aplica a todo el sistema) ================= */
+        html[data-tema="oscuro"] { color-scheme: dark; }
+        html[data-tema="oscuro"] body { background: #0f172a; }
+        html[data-tema="oscuro"] .app { background: #0f172a; }
+        html[data-tema="oscuro"] .sidebar { background: #111827; border-color: #1f2937; }
+        html[data-tema="oscuro"] .nav-item { color: #e2e8f0; }
+        html[data-tema="oscuro"] .nav-item:hover { background: #1f2937; }
+        html[data-tema="oscuro"] .topbar { background: #111827; border-color: #1f2937; }
+        html[data-tema="oscuro"] .welcome h1,
+        html[data-tema="oscuro"] .welcome p { color: #e2e8f0; }
+        html[data-tema="oscuro"] .profile,
+        html[data-tema="oscuro"] .stat,
+        html[data-tema="oscuro"] .card,
+        html[data-tema="oscuro"] .tasks,
+        html[data-tema="oscuro"] .quick,
+        html[data-tema="oscuro"] .contact {
+            background: #111827; border-color: #1f2937; color: #e2e8f0;
+        }
+        html[data-tema="oscuro"] .profile-data h2,
+        html[data-tema="oscuro"] .stat strong,
+        html[data-tema="oscuro"] h3 { color: #f1f5f9; }
+        html[data-tema="oscuro"] .task-row { background: #0f172a; border-color: #1f2937; }
+        html[data-tema="oscuro"] footer { background: #111827; border-color: #1f2937; color: #94a3b8; }
+        html[data-tema="oscuro"] .modal-tarea,
+        html[data-tema="oscuro"] .perfil-dropdown,
+        html[data-tema="oscuro"] .edit-menu {
+            background: #111827; border-color: #1f2937; color: #e2e8f0;
+        }
+        html[data-tema="oscuro"] .modal-tarea input,
+        html[data-tema="oscuro"] .modal-tarea select {
+            background: #0f172a; border-color: #334155; color: #e2e8f0;
+        }
+        html[data-tema="oscuro"] .perfil-trigger { background: #0f172a; border-color: #334155; }
+        html[data-tema="oscuro"] .perfil-dropdown button { color: #e2e8f0; }
+        html[data-tema="oscuro"] .perfil-dropdown button:hover { background: #1f2937; }
     </style>
+    <script>
+        /* Aplica el tema guardado ANTES de pintar la página, para evitar parpadeo */
+        (function () {
+            const temaGuardado = localStorage.getItem('colsoftco_tema');
+            if (temaGuardado === 'oscuro') {
+                document.documentElement.setAttribute('data-tema', 'oscuro');
+            }
+        })();
+    </script>
 </head>
 
 <body>
@@ -170,6 +247,37 @@ try {
                 <div class="modal-actions">
                     <button type="button" id="btnCancelarTarea" class="btn-outline">Cancelar</button>
                     <button type="submit" class="btn-primary">Guardar tarea</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ══ MODAL EDITAR PERFIL ══ -->
+    <div class="modal-overlay" id="modalPerfilOverlay">
+        <div class="modal-tarea">
+            <h3>Editar mis datos</h3>
+
+            <div class="modal-perfil-foto">
+                <img id="fotoPerfilModal" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
+            </div>
+
+            <form id="formEditarPerfil">
+                <label for="perfilNombre">Nombre</label>
+                <input type="text" id="perfilNombre" required>
+
+                <label for="perfilApellido">Apellido</label>
+                <input type="text" id="perfilApellido" required>
+
+                <label for="perfilEmail">Correo electrónico</label>
+                <input type="email" id="perfilEmail" required>
+
+                <label for="perfilTelefono">Teléfono</label>
+                <input type="text" id="perfilTelefono" placeholder="Ej. 3001234567">
+
+                <div class="modal-actions">
+                    <button type="button" id="btnCancelarPerfil" class="btn-outline">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar cambios</button>
                 </div>
             </form>
         </div>
@@ -228,6 +336,30 @@ try {
                 <div class="header-actions">
                     <a href="../registro/registro.php" class="btn-header">Registrar</a>
 
+                    <!-- MENÚ DE PERFIL DESPLEGABLE -->
+                    <div class="perfil-menu" id="perfilMenu">
+                        <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
+                            <img id="avatarHeader" class="avatar-header" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                            <span class="perfil-trigger-text">
+                                <strong id="nombreHeaderCorto">Juan Jose</strong>
+                                <small>Administrador</small>
+                            </span>
+                            <span class="perfil-caret">⌄</span>
+                        </button>
+
+                        <div class="perfil-dropdown" id="perfilDropdown">
+                            <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
+                            <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
+                            <button type="button" id="btnTemaOscuro">
+                                <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
+                            </button>
+                            <div class="perfil-dropdown-divider"></div>
+                            <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
+                        </div>
+                    </div>
+
+                    <input type="file" id="inputFotoPerfil" accept="image/png, image/jpeg, image/webp" hidden>
+
                     <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
                         Cerrar sesión
                     </button>
@@ -240,13 +372,13 @@ try {
                 <section class="hero-grid">
 
                     <article class="profile">
-                        <img src="../../public/imagenes/usuario.png" alt="Juan Jose Montaño">
+                        <img id="fotoPerfilGrande" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
 
                         <div class="profile-data">
-                            <h2>Juan Jose Montaño</h2>
+                            <h2 id="nombreCompletoPerfil">Juan Jose Montaño</h2>
                             <p class="role"><b>Rol:</b> Administrador</p>
-                            <p><span class="small-icon">✉</span> juanjosemon19@gmail.com</p>
-                            <p><span class="small-icon">⌕</span> +57 322-903-5224</p>
+                            <p><span class="small-icon">✉</span> <span id="emailPerfil">juanjosemon19@gmail.com</span></p>
+                            <p><span class="small-icon">⌕</span> <span id="telefonoPerfil">+57 322-903-5224</span></p>
                             <p><span class="small-icon">⌖</span> Bogotá, Colombia</p>
                         </div>
                     </article>
@@ -733,6 +865,167 @@ try {
                 cargarTareas();
             }
         });
+    </script>
+    <script>
+        // ================= MENÚ DE PERFIL: DATOS, FOTO Y TEMA =================
+
+        const btnPerfilMenu = document.getElementById('btnPerfilMenu');
+        const perfilDropdown = document.getElementById('perfilDropdown');
+        const btnCambiarFoto = document.getElementById('btnCambiarFoto');
+        const btnCambiarFotoModal = document.getElementById('btnCambiarFotoModal');
+        const inputFotoPerfil = document.getElementById('inputFotoPerfil');
+        const btnEditarDatos = document.getElementById('btnEditarDatos');
+        const btnTemaOscuro = document.getElementById('btnTemaOscuro');
+        const temaIconoTexto = document.getElementById('temaIconoTexto');
+
+        const modalPerfilOverlay = document.getElementById('modalPerfilOverlay');
+        const formEditarPerfil = document.getElementById('formEditarPerfil');
+        const btnCancelarPerfil = document.getElementById('btnCancelarPerfil');
+        const perfilNombre = document.getElementById('perfilNombre');
+        const perfilApellido = document.getElementById('perfilApellido');
+        const perfilEmail = document.getElementById('perfilEmail');
+        const perfilTelefono = document.getElementById('perfilTelefono');
+
+        const avatarHeader = document.getElementById('avatarHeader');
+        const fotoPerfilGrande = document.getElementById('fotoPerfilGrande');
+        const fotoPerfilModal = document.getElementById('fotoPerfilModal');
+        const nombreHeaderCorto = document.getElementById('nombreHeaderCorto');
+        const nombreCompletoPerfil = document.getElementById('nombreCompletoPerfil');
+        const emailPerfil = document.getElementById('emailPerfil');
+        const telefonoPerfil = document.getElementById('telefonoPerfil');
+
+        function togglePerfilDropdown() {
+            const abierto = perfilDropdown.classList.contains('open');
+            perfilDropdown.classList.toggle('open', !abierto);
+            btnPerfilMenu.setAttribute('aria-expanded', String(!abierto));
+        }
+        function cerrarPerfilDropdown() {
+            perfilDropdown.classList.remove('open');
+            btnPerfilMenu.setAttribute('aria-expanded', 'false');
+        }
+
+        btnPerfilMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            togglePerfilDropdown();
+        });
+        perfilDropdown.addEventListener('click', (e) => e.stopPropagation());
+        document.addEventListener('click', () => cerrarPerfilDropdown());
+
+        async function cargarPerfil() {
+            try {
+                const resp = await fetch('../../app/perfil_usuario.php?accion=obtener');
+                const data = await resp.json();
+                if (!data.ok) return;
+
+                const u = data.usuario;
+                const nombreCompleto = `${u.nombre} ${u.apellido}`;
+
+                nombreHeaderCorto.textContent = u.nombre;
+                nombreCompletoPerfil.textContent = nombreCompleto;
+                if (emailPerfil) emailPerfil.textContent = u.email || '';
+                if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '';
+
+                if (u.foto) {
+                    const url = `../../public/imagenes/perfiles/${u.foto}`;
+                    avatarHeader.src = url;
+                    fotoPerfilGrande.src = url;
+                    fotoPerfilModal.src = url;
+                }
+
+                perfilNombre.value = u.nombre || '';
+                perfilApellido.value = u.apellido || '';
+                perfilEmail.value = u.email || '';
+                perfilTelefono.value = u.telefono || '';
+            } catch (e) {
+                console.error('No se pudo cargar el perfil', e);
+            }
+        }
+
+        function abrirSelectorFoto() {
+            cerrarPerfilDropdown();
+            inputFotoPerfil.click();
+        }
+        btnCambiarFoto.addEventListener('click', abrirSelectorFoto);
+        btnCambiarFotoModal.addEventListener('click', abrirSelectorFoto);
+
+        inputFotoPerfil.addEventListener('change', async () => {
+            const archivo = inputFotoPerfil.files[0];
+            if (!archivo) return;
+
+            const formData = new FormData();
+            formData.append('accion', 'foto');
+            formData.append('foto', archivo);
+
+            try {
+                const resp = await fetch('../../app/perfil_usuario.php', { method: 'POST', body: formData });
+                const data = await resp.json();
+                if (data.ok) {
+                    avatarHeader.src = data.url;
+                    fotoPerfilGrande.src = data.url;
+                    fotoPerfilModal.src = data.url;
+                } else {
+                    alert(data.error || 'No se pudo actualizar la foto.');
+                }
+            } catch (e) {
+                alert('Error de conexión al subir la foto.');
+                console.error(e);
+            } finally {
+                inputFotoPerfil.value = '';
+            }
+        });
+
+        btnEditarDatos.addEventListener('click', () => {
+            cerrarPerfilDropdown();
+            modalPerfilOverlay.classList.add('show');
+        });
+        btnCancelarPerfil.addEventListener('click', () => modalPerfilOverlay.classList.remove('show'));
+        modalPerfilOverlay.addEventListener('click', (e) => {
+            if (e.target === modalPerfilOverlay) modalPerfilOverlay.classList.remove('show');
+        });
+
+        formEditarPerfil.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const resp = await fetch('../../app/perfil_usuario.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `accion=actualizar&nombre=${encodeURIComponent(perfilNombre.value.trim())}` +
+                          `&apellido=${encodeURIComponent(perfilApellido.value.trim())}` +
+                          `&email=${encodeURIComponent(perfilEmail.value.trim())}` +
+                          `&telefono=${encodeURIComponent(perfilTelefono.value.trim())}`
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    modalPerfilOverlay.classList.remove('show');
+                    cargarPerfil();
+                } else {
+                    alert(data.error || 'No se pudieron guardar los cambios.');
+                }
+            } catch (e) {
+                alert('Error de conexión al guardar los cambios.');
+                console.error(e);
+            }
+        });
+
+        function aplicarTextoTema() {
+            const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
+            temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : '🌙 Activar tema oscuro';
+        }
+
+        btnTemaOscuro.addEventListener('click', () => {
+            const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
+            if (esOscuro) {
+                document.documentElement.removeAttribute('data-tema');
+                localStorage.setItem('colsoftco_tema', 'claro');
+            } else {
+                document.documentElement.setAttribute('data-tema', 'oscuro');
+                localStorage.setItem('colsoftco_tema', 'oscuro');
+            }
+            aplicarTextoTema();
+        });
+
+        aplicarTextoTema();
+        cargarPerfil();
     </script>
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>

@@ -14,6 +14,165 @@ require_once "../../app/verificar_sesion.php";
     <title>Panel Operario - Max & Flex</title>
 
     <link rel="stylesheet" href="panel_operario.css">
+    <style>
+        /* ===== Estilos añadidos: tareas dinámicas, menú de perfil y tema oscuro ===== */
+
+        .btn-nueva-tarea {
+            margin-left: auto;
+            padding: 8px 14px;
+            border: 1px solid #1e3a8a;
+            background: #1e3a8a;
+            color: #fff;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .btn-nueva-tarea:hover { background: #16296b; }
+
+        .section-title-row { display: flex; align-items: center; width: 100%; }
+
+        .task-actions { position: relative; margin-left: auto; }
+        .task-dots {
+            border: none; background: transparent; cursor: pointer;
+            font-size: 18px; color: #64748b; padding: 4px 8px; border-radius: 6px;
+        }
+        .task-dots:hover { background: #f1f5f9; }
+
+        .edit-menu {
+            display: none; position: absolute; right: 0; top: 100%;
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,.12); padding: 12px; width: 200px; z-index: 50;
+        }
+        .edit-menu.open { display: block; }
+        .edit-menu-group { margin-bottom: 10px; }
+        .edit-menu-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #1e293b; }
+        .edit-menu-group select {
+            width: 100%; padding: 6px 8px; border: 1px solid #d7dee7; border-radius: 6px; font-size: 13px;
+        }
+        .edit-apply, .edit-delete {
+            width: 100%; padding: 8px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; margin-top: 4px;
+        }
+        .edit-apply { border: 1px solid #1e3a8a; background: #1e3a8a; color: #fff; }
+        .edit-apply:hover { background: #16296b; }
+        .edit-delete { border: 1px solid #dc2626; background: #fff; color: #dc2626; }
+        .edit-delete:hover { background: #fef2f2; }
+
+        .menu-overlay { position: fixed; inset: 0; background: transparent; display: none; z-index: 40; }
+        .menu-overlay.show { display: block; }
+
+        .task .priority.low { color: #15803d; background: #dcfce7; }
+        .task .priority.medium { color: #b45309; background: #fef3c7; }
+        .task .priority.high { color: #b91c1c; background: #fee2e2; }
+        .task .priority { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+
+        .status { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+        .status.pendiente { color: #b45309; background: #fef3c7; }
+        .status.por-hacer { color: #1d4ed8; background: #dbeafe; }
+        .status.terminado { color: #15803d; background: #dcfce7; }
+
+        .placeholder { padding: 16px; color: #64748b; font-size: 14px; }
+
+        /* ---- Modal genérico (nueva tarea / editar perfil) ---- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: #fff; border-radius: 10px; padding: 24px; width: 100%;
+            max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,.2);
+        }
+        .modal-box h3 { margin: 0 0 16px; font-size: 18px; color: #1e293b; }
+        .modal-box label { display: block; margin-top: 12px; margin-bottom: 6px; font-weight: 700; font-size: 13px; color: #1e293b; }
+        .modal-box input, .modal-box select {
+            width: 100%; padding: 9px 12px; border: 1px solid #d7dee7; border-radius: 6px; font-size: 14px; background: #f8fafc;
+        }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .modal-actions .btn-outline { padding: 9px 16px; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; font-weight: 700; cursor: pointer; }
+        .modal-actions .btn-primary { padding: 9px 16px; border: none; background: #1e3a8a; color: #fff; border-radius: 6px; font-weight: 700; cursor: pointer; }
+
+        .modal-perfil-foto { display: flex; align-items: center; gap: 14px; margin-top: 4px; }
+        .modal-perfil-foto img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; }
+        .modal-perfil-foto button { padding: 8px 12px; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; }
+
+        /* ---- Menú desplegable de perfil (header) ---- */
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .perfil-menu { position: relative; }
+        .perfil-trigger {
+            display: flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0;
+            background: #fff; padding: 6px 10px 6px 6px; border-radius: 999px; cursor: pointer;
+        }
+        .avatar-header { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .perfil-trigger-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+        .perfil-trigger-text strong { font-size: 12px; color: #1e293b; }
+        .perfil-trigger-text small { font-size: 11px; color: #64748b; }
+        .perfil-caret { font-size: 12px; color: #64748b; }
+
+        .perfil-dropdown {
+            display: none; position: absolute; right: 0; top: calc(100% + 8px);
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,.15); width: 230px; padding: 8px; z-index: 60;
+        }
+        .perfil-dropdown.open { display: block; }
+        .perfil-dropdown button {
+            width: 100%; text-align: left; padding: 10px 12px; border: none; background: transparent;
+            border-radius: 6px; font-size: 13px; font-weight: 600; color: #1e293b; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .perfil-dropdown button:hover { background: #f1f5f9; }
+        .perfil-dropdown-divider { height: 1px; background: #e2e8f0; margin: 6px 4px; }
+        .perfil-dropdown-logout { color: #dc2626 !important; }
+        .perfil-dropdown-logout:hover { background: #fef2f2 !important; }
+
+        /* ================= TEMA OSCURO (aplica a todo el sistema) ================= */
+        html[data-tema="oscuro"] { color-scheme: dark; }
+        html[data-tema="oscuro"] body { background: #0f172a; }
+        html[data-tema="oscuro"] .contenedor { background: #0f172a; }
+        html[data-tema="oscuro"] .sidebar { background: #111827; border-color: #1f2937; }
+        html[data-tema="oscuro"] .sidebar-links button { color: #e2e8f0; }
+        html[data-tema="oscuro"] .sidebar-links button:hover { background: #1f2937; }
+        html[data-tema="oscuro"] .header { background: #111827; border-color: #1f2937; }
+        html[data-tema="oscuro"] .header-left h1,
+        html[data-tema="oscuro"] .header-left p { color: #e2e8f0; }
+        html[data-tema="oscuro"] .profile-card,
+        html[data-tema="oscuro"] .summary-card,
+        html[data-tema="oscuro"] .card,
+        html[data-tema="oscuro"] .tareas,
+        html[data-tema="oscuro"] .quick-actions,
+        html[data-tema="oscuro"] .contact-card {
+            background: #111827; border-color: #1f2937; color: #e2e8f0;
+        }
+        html[data-tema="oscuro"] .info-usuario h2,
+        html[data-tema="oscuro"] .summary-card strong,
+        html[data-tema="oscuro"] h3 { color: #f1f5f9; }
+        html[data-tema="oscuro"] .task { background: #0f172a; border-color: #1f2937; }
+        html[data-tema="oscuro"] .task-main strong { color: #f1f5f9; }
+        html[data-tema="oscuro"] .task-main span { color: #94a3b8; }
+        html[data-tema="oscuro"] footer { background: #111827; border-color: #1f2937; color: #94a3b8; }
+        html[data-tema="oscuro"] .modal-box,
+        html[data-tema="oscuro"] .perfil-dropdown,
+        html[data-tema="oscuro"] .edit-menu {
+            background: #111827; border-color: #1f2937; color: #e2e8f0;
+        }
+        html[data-tema="oscuro"] .modal-box input,
+        html[data-tema="oscuro"] .modal-box select,
+        html[data-tema="oscuro"] .edit-menu-group select {
+            background: #0f172a; border-color: #334155; color: #e2e8f0;
+        }
+        html[data-tema="oscuro"] .perfil-trigger { background: #0f172a; border-color: #334155; }
+        html[data-tema="oscuro"] .perfil-dropdown button { color: #e2e8f0; }
+        html[data-tema="oscuro"] .perfil-dropdown button:hover { background: #1f2937; }
+    </style>
+    <script>
+        /* Aplica el tema guardado ANTES de pintar la página, para evitar parpadeo */
+        (function () {
+            const temaGuardado = localStorage.getItem('colsoftco_tema');
+            if (temaGuardado === 'oscuro') {
+                document.documentElement.setAttribute('data-tema', 'oscuro');
+            }
+        })();
+    </script>
 </head>
 
 <body>
@@ -24,34 +183,41 @@ require_once "../../app/verificar_sesion.php";
 
     <header class="header">
 
-        <button
-            class="mobile-open"
-            id="mobileOpen"
-            type="button"
-            aria-label="Abrir menú">
-            ☰
-        </button>
+        <button class="mobile-open" id="mobileOpen" type="button" aria-label="Abrir menú">☰</button>
 
         <div class="header-left">
-
-            <h1>
-                BIENVENIDO, JAFET DAVID
-            </h1>
-
-            <p>
-                Operario
-            </p>
-
+            <h1 id="saludoHeader">BIENVENIDO, JAFET DAVID</h1>
+            <p>Operario</p>
         </div>
 
-        <button
-            id="btnLogout"
-            class="btn-logout"
-            onclick="cerrarSesion()">
+        <div class="header-actions">
 
-            Cerrar sesión
+            <!-- MENÚ DE PERFIL DESPLEGABLE -->
+            <div class="perfil-menu" id="perfilMenu">
+                <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
+                    <img id="avatarHeader" class="avatar-header" src="../../public/imagenes/operario.jpg" alt="Foto de perfil">
+                    <span class="perfil-trigger-text">
+                        <strong id="nombreHeaderCorto">Jafet David</strong>
+                        <small>Operario</small>
+                    </span>
+                    <span class="perfil-caret">⌄</span>
+                </button>
 
-        </button>
+                <div class="perfil-dropdown" id="perfilDropdown">
+                    <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
+                    <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
+                    <button type="button" id="btnTemaOscuro">
+                        <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
+                    </button>
+                    <div class="perfil-dropdown-divider"></div>
+                    <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
+                </div>
+            </div>
+
+            <input type="file" id="inputFotoPerfil" accept="image/png, image/jpeg, image/webp" hidden>
+
+            <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
 
     </header>
 
@@ -62,154 +228,62 @@ require_once "../../app/verificar_sesion.php";
 
     <div class="contenedor">
 
-
         <!-- =================================================
              SIDEBAR
         ================================================== -->
 
-        <aside
-            class="sidebar"
-            id="sidebar">
-
-
-            <!-- LOGO -->
+        <aside class="sidebar" id="sidebar">
 
             <div class="brand">
-
-                <img
-                    src="../../public/imagenes/logo.png"
-                    alt="Logo COLSOFTCO">
-
+                <img src="../../public/imagenes/logo.png" alt="Logo COLSOFTCO">
                 <div>
-
-                    <strong>
-                        COLSOFTCO
-                    </strong>
-
-                    <span>
-                        Sistema de Gestión
-                    </span>
-
+                    <strong>COLSOFTCO</strong>
+                    <span>Sistema de Gestión</span>
                 </div>
-
             </div>
 
-
-            <!-- BOTÓN MÓVIL -->
-
-            <button
-                class="mobile-menu"
-                id="menuToggle"
-                type="button">
-
-                <span>
-                    ☰ Menú
-                </span>
-
-                <span>
-                    ▾
-                </span>
-
+            <button class="mobile-menu" id="menuToggle" type="button">
+                <span>☰ Menú</span>
+                <span>▾</span>
             </button>
 
+            <nav class="sidebar-links" id="sidebarLinks">
 
-            <!-- MENÚ -->
-
-            <nav
-                class="sidebar-links"
-                id="sidebarLinks">
-
-
-                <button
-                    onclick="window.location.href='../historial_movimientos/historial.php'">
-
-                    <span>☑</span>
-
-                    Historial de movimientos
+                <button onclick="window.location.href='../historial_movimientos/historial.php'">
+                    <span>☑</span> Historial de movimientos
                 </button>
 
-
-                <button
-                    onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
-
-                    <span>♙</span>
-
-                    Lista de Proveedores
-
+                <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
+                    <span>♙</span> Lista de Proveedores
                 </button>
 
-
-                <button
-                    onclick="window.location.href='../registromp/registromp.php'">
-
-                    <span>＋</span>
-
-                    Registrar Materia Prima
-
+                <button onclick="window.location.href='../registromp/registromp.php'">
+                    <span>＋</span> Registrar Materia Prima
                 </button>
 
-
-                <button
-                    onclick="window.location.href='../generar_informe/generar_informe.php'">
-
-                    <span>▤</span>
-
-                    Generar Informe
-
+                <button onclick="window.location.href='../generar_informe/generar_informe.php'">
+                    <span>▤</span> Generar Informe
                 </button>
 
-
-                <button
-                    onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
-
-                    <span>◇</span>
-
-                    Inventario de Materia Prima
-
+                <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
+                    <span>◇</span> Inventario de Materia Prima
                 </button>
 
-
-                <button
-                    onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">
-
-                    <span>□</span>
-
-                    Inventario de Productos
-
+                <button onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">
+                    <span>□</span> Inventario de Productos
                 </button>
 
-
-                <button
-                    onclick="window.location.href='../receta_de_colchones/receta_colchones.php'">
-
-                    <span>⚙</span>
-
-                    Receta de Colchones
-
+                <button onclick="window.location.href='../receta_de_colchones/receta_colchones.php'">
+                    <span>⚙</span> Receta de Colchones
                 </button>
-
 
             </nav>
 
-
-            <!-- AYUDA -->
-
             <div class="help-box">
-
-                <strong>
-                    ¿Necesitas ayuda?
-                </strong>
-
-                <p>
-                    Nuestro equipo está para apoyarte.
-                </p>
-
-                <a href="mailto:contacto@colsoftco.com">
-                    Contáctanos
-                </a>
-
+                <strong>¿Necesitas ayuda?</strong>
+                <p>Nuestro equipo está para apoyarte.</p>
+                <a href="mailto:contacto@colsoftco.com">Contáctanos</a>
             </div>
-
 
         </aside>
 
@@ -220,536 +294,225 @@ require_once "../../app/verificar_sesion.php";
 
         <main class="contenido">
 
-
             <!-- PERFIL -->
-
             <section class="profile-card">
 
-
-                <img
-                    src="../../public/imagenes/operario.jpg"
-                    alt="Jafet David Pineda Céspedes">
-
+                <img id="fotoPerfilGrande" src="../../public/imagenes/operario.jpg" alt="Foto de perfil">
 
                 <div class="info-usuario">
 
-
                     <div class="profile-heading">
-
                         <div>
-
-                            <h2>
-                                Jafet David Pineda Céspedes
-                            </h2>
-
-                            <p>
-                                <strong>Rol:</strong>
-                                Operario
-                            </p>
-
+                            <h2 id="nombreCompletoPerfil">Jafet David Pineda Céspedes</h2>
+                            <p><strong>Rol:</strong> Operario</p>
                         </div>
 
-
                         <span class="online">
-
                             <i></i>
-
                             Activo
-
                         </span>
-
                     </div>
-
 
                     <div class="profile-details">
-
-                        <span>
-                            ▣ Área de producción
-                        </span>
-
-                        <span>
-                            ◇ Control de inventario
-                        </span>
-
-                        <span>
-                            ⌖ Bogotá, Colombia
-                        </span>
-
+                        <span>▣ Área de producción</span>
+                        <span>◇ Control de inventario</span>
+                        <span>⌖ Bogotá, Colombia</span>
                     </div>
-
 
                 </div>
 
-
             </section>
 
-
-            <!-- =================================================
-                 TARJETAS
-            ================================================== -->
-
+            <!-- TARJETAS (datos reales) -->
             <section class="summary-grid">
 
-
                 <article class="summary-card">
-
-                    <div class="summary-icon yellow">
-                        ☑
-                    </div>
-
-                    <span>
-                        Tareas pendientes
-                    </span>
-
-                    <strong>
-                        5
-                    </strong>
-
-                    <small>
-                        Actividades por realizar
-                    </small>
-
+                    <div class="summary-icon yellow">☑</div>
+                    <span>Tareas pendientes</span>
+                    <strong id="statTareas">0</strong>
+                    <small>Actividades por realizar</small>
                 </article>
 
-
                 <article class="summary-card">
-
-                    <div class="summary-icon green">
-                        ◇
-                    </div>
-
-                    <span>
-                        Inventario
-                    </span>
-
-                    <strong>
-                        1,240
-                    </strong>
-
-                    <small>
-                        Existencias registradas
-                    </small>
-
+                    <div class="summary-icon green">◇</div>
+                    <span>Materia prima</span>
+                    <strong id="statInventario">0</strong>
+                    <small>Existencias registradas</small>
                 </article>
 
-
                 <article class="summary-card">
-
-                    <div class="summary-icon purple">
-                        ▣
-                    </div>
-
-                    <span>
-                        Pedidos
-                    </span>
-
-                    <strong>
-                        8
-                    </strong>
-
-                    <small>
-                        Por despachar
-                    </small>
-
+                    <div class="summary-icon purple">▣</div>
+                    <span>Productos terminados</span>
+                    <strong id="statProductos">0</strong>
+                    <small>Unidades disponibles</small>
                 </article>
 
-
                 <article class="summary-card">
-
-                    <div class="summary-icon blue">
-                        ⚠
-                    </div>
-
-                    <span>
-                        Novedades
-                    </span>
-
-                    <strong>
-                        2
-                    </strong>
-
-                    <small>
-                        Requieren seguimiento
-                    </small>
-
+                    <div class="summary-icon blue">♙</div>
+                    <span>Proveedores</span>
+                    <strong id="statProveedores">0</strong>
+                    <small>Registrados en el sistema</small>
                 </article>
-
 
             </section>
 
 
-            <!-- =================================================
-                 DASHBOARD
-            ================================================== -->
-
+            <!-- DASHBOARD -->
             <section class="dashboard-grid">
 
-
                 <!-- TAREAS -->
-
                 <article class="tareas card">
 
-
-                    <div class="section-title">
-
+                    <div class="section-title section-title-row">
                         <div>
-
-                            <span class="section-icon">
-                                ☑
-                            </span>
-
+                            <span class="section-icon">☑</span>
                             <div>
-
-                                <h3>
-                                    Tareas Pendientes
-                                </h3>
-
-                                <p>
-                                    Actividades asignadas al operario
-                                </p>
-
+                                <h3>Tareas Pendientes</h3>
+                                <p>Actividades asignadas al operario</p>
                             </div>
-
                         </div>
-
-
-                        <span class="task-count">
-                            5 pendientes
-                        </span>
-
+                        <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
                     </div>
 
-
-                    <div class="tasks-list">
-
-
-                        <!-- TAREA 1 -->
-
-                        <div class="task">
-
-                            <div class="task-number">
-                                01
-                            </div>
-
-                            <div class="task-main">
-
-                                <strong>
-                                    Controlar inventario
-                                </strong>
-
-                                <span>
-                                    Revisar existencias y movimientos
-                                </span>
-
-                            </div>
-
-                            <span class="priority high">
-                                Alta
-                            </span>
-
-                            <span class="task-date">
-                                Pendiente
-                            </span>
-
-                        </div>
-
-
-                        <!-- TAREA 2 -->
-
-                        <div class="task">
-
-                            <div class="task-number">
-                                02
-                            </div>
-
-                            <div class="task-main">
-
-                                <strong>
-                                    Recibir mercancía
-                                </strong>
-
-                                <span>
-                                    Verificar mercancía recibida
-                                </span>
-
-                            </div>
-
-                            <span class="priority medium">
-                                Media
-                            </span>
-
-                            <span class="task-date">
-                                Pendiente
-                            </span>
-
-                        </div>
-
-
-                        <!-- TAREA 3 -->
-
-                        <div class="task">
-
-                            <div class="task-number">
-                                03
-                            </div>
-
-                            <div class="task-main">
-
-                                <strong>
-                                    Despachar pedidos
-                                </strong>
-
-                                <span>
-                                    Preparar y entregar pedidos
-                                </span>
-
-                            </div>
-
-                            <span class="priority high">
-                                Alta
-                            </span>
-
-                            <span class="task-date">
-                                Pendiente
-                            </span>
-
-                        </div>
-
-
-                        <!-- TAREA 4 -->
-
-                        <div class="task">
-
-                            <div class="task-number">
-                                04
-                            </div>
-
-                            <div class="task-main">
-
-                                <strong>
-                                    Organizar la bodega
-                                </strong>
-
-                                <span>
-                                    Mantener materiales correctamente ubicados
-                                </span>
-
-                            </div>
-
-                            <span class="priority low">
-                                Baja
-                            </span>
-
-                            <span class="task-date">
-                                Pendiente
-                            </span>
-
-                        </div>
-
-
-                        <!-- TAREA 5 -->
-
-                        <div class="task">
-
-                            <div class="task-number">
-                                05
-                            </div>
-
-                            <div class="task-main">
-
-                                <strong>
-                                    Reportar novedades
-                                </strong>
-
-                                <span>
-                                    Registrar novedades encontradas
-                                </span>
-
-                            </div>
-
-                            <span class="priority medium">
-                                Media
-                            </span>
-
-                            <span class="task-date">
-                                Pendiente
-                            </span>
-
-                        </div>
-
-
+                    <div class="tasks-list" id="tasksListBody">
+                        <p class="placeholder">Cargando tareas...</p>
                     </div>
-
 
                 </article>
 
 
-                <!-- =================================================
-                     COLUMNA DERECHA
-                ================================================== -->
-
+                <!-- COLUMNA DERECHA -->
                 <aside class="side-content">
 
-
                     <!-- ACCIONES -->
-
                     <article class="quick-actions card">
 
-
                         <div class="section-title compact">
-
                             <div>
-
-                                <span class="section-icon">
-                                    ϟ
-                                </span>
-
+                                <span class="section-icon">ϟ</span>
                                 <div>
-
-                                    <h3>
-                                        Acciones rápidas
-                                    </h3>
-
-                                    <p>
-                                        Funciones frecuentes
-                                    </p>
-
+                                    <h3>Acciones rápidas</h3>
+                                    <p>Funciones frecuentes</p>
                                 </div>
-
                             </div>
-
                         </div>
-
 
                         <div class="quick-grid">
 
-
-                            <button
-                                onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
-
-                                <span class="quick-icon blue">
-                                    ◇
-                                </span>
-
-                                <strong>
-                                    Ver inventario
-                                </strong>
-
+                            <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
+                                <span class="quick-icon blue">◇</span>
+                                <strong>Ver inventario</strong>
                             </button>
 
-
-                            <button
-                                onclick="window.location.href='../registromp/registromp.php'">
-
-                                <span class="quick-icon green">
-                                    ＋
-                                </span>
-
-                                <strong>
-                                    Registrar materia prima
-                                </strong>
-
+                            <button onclick="window.location.href='../registromp/registromp.php'">
+                                <span class="quick-icon green">＋</span>
+                                <strong>Registrar materia prima</strong>
                             </button>
 
-
-                            <button
-                                onclick="window.location.href='../lista_verificacion/lista_verificacion.php'">
-
-                                <span class="quick-icon yellow">
-                                    ☑
-                                </span>
-
-                                <strong>
-                                    Lista de verificación
-                                </strong>
-
+                            <button onclick="window.location.href='../lista_verificacion/lista_verificacion.php'">
+                                <span class="quick-icon yellow">☑</span>
+                                <strong>Lista de verificación</strong>
                             </button>
 
-
-                            <button
-                                onclick="window.location.href='../generar_informe/generar_informe.php'">
-
-                                <span class="quick-icon purple">
-                                    ▤
-                                </span>
-
-                                <strong>
-                                    Generar informe
-                                </strong>
-
+                            <button onclick="window.location.href='../generar_informe/generar_informe.php'">
+                                <span class="quick-icon purple">▤</span>
+                                <strong>Generar informe</strong>
                             </button>
-
 
                         </div>
 
-
                     </article>
-
 
                     <!-- CONTACTO -->
-
                     <article class="contact-card card">
 
-
                         <div class="section-title compact">
-
                             <div>
-
-                                <span class="section-icon">
-                                    ⌕
-                                </span>
-
+                                <span class="section-icon">⌕</span>
                                 <div>
-
-                                    <h3>
-                                        Información de contacto
-                                    </h3>
-
-                                    <p>
-                                        Soporte y atención
-                                    </p>
-
+                                    <h3>Información de contacto</h3>
+                                    <p>Soporte y atención</p>
                                 </div>
-
                             </div>
-
                         </div>
-
 
                         <div class="contact-list">
-
-                            <p>
-                                📍 Bogotá, Colombia
-                            </p>
-
-                            <p>
-                                ✉ contacto@colsoftco.com
-                            </p>
-
-                            <p>
-                                📞 +57 (1) 234-5678
-                            </p>
-
-                            <p>
-                                🕐 Lun - Vie: 8:00 am - 6:00 pm
-                            </p>
-
+                            <p>📍 Bogotá, Colombia</p>
+                            <p>✉ contacto@colsoftco.com</p>
+                            <p>📞 +57 (1) 234-5678</p>
+                            <p>🕐 Lun - Vie: 8:00 am - 6:00 pm</p>
                         </div>
 
-
                     </article>
-
 
                 </aside>
 
-
             </section>
-
 
         </main>
 
-
     </div>
+
+
+    <!-- ══ MODAL NUEVA TAREA ══ -->
+    <div class="modal-overlay" id="modalTareaOverlay">
+        <div class="modal-box">
+            <h3>Registrar nueva tarea</h3>
+            <form id="formNuevaTarea">
+                <label for="tareaTitulo">Título</label>
+                <input type="text" id="tareaTitulo" list="sugerenciasTareas" placeholder="Ej. Controlar inventario" autocomplete="off" required>
+                <datalist id="sugerenciasTareas"></datalist>
+
+                <label for="tareaPrioridad">Prioridad</label>
+                <select id="tareaPrioridad">
+                    <option value="low">Baja</option>
+                    <option value="medium" selected>Media</option>
+                    <option value="high">Alta</option>
+                </select>
+
+                <label for="tareaVencimiento">Fecha de vencimiento</label>
+                <input type="date" id="tareaVencimiento">
+
+                <div class="modal-actions">
+                    <button type="button" id="btnCancelarTarea" class="btn-outline">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar tarea</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ══ MODAL EDITAR PERFIL ══ -->
+    <div class="modal-overlay" id="modalPerfilOverlay">
+        <div class="modal-box">
+            <h3>Editar mis datos</h3>
+
+            <div class="modal-perfil-foto">
+                <img id="fotoPerfilModal" src="../../public/imagenes/operario.jpg" alt="Foto de perfil">
+                <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
+            </div>
+
+            <form id="formEditarPerfil">
+                <label for="perfilNombre">Nombre</label>
+                <input type="text" id="perfilNombre" required>
+
+                <label for="perfilApellido">Apellido</label>
+                <input type="text" id="perfilApellido" required>
+
+                <label for="perfilEmail">Correo electrónico</label>
+                <input type="email" id="perfilEmail" required>
+
+                <label for="perfilTelefono">Teléfono</label>
+                <input type="text" id="perfilTelefono" placeholder="Ej. 3001234567">
+
+                <div class="modal-actions">
+                    <button type="button" id="btnCancelarPerfil" class="btn-outline">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
 
 
     <!-- =====================================================
@@ -792,69 +555,470 @@ require_once "../../app/verificar_sesion.php";
     ====================================================== -->
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-
-    <script
-        src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js"
-        defer>
-    </script>
-
+    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
     <script src="../../public/js/app.js"></script>
 
-
     <script>
-
-        const sidebar =
-            document.getElementById("sidebar");
-
-        const mobileOpen =
-            document.getElementById("mobileOpen");
-
-        const menuToggle =
-            document.getElementById("menuToggle");
-
-        const sidebarLinks =
-            document.getElementById("sidebarLinks");
-
-
-        /* Abrir sidebar */
+        const sidebar = document.getElementById("sidebar");
+        const mobileOpen = document.getElementById("mobileOpen");
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebarLinks = document.getElementById("sidebarLinks");
 
         mobileOpen.addEventListener("click", function () {
-
             sidebar.classList.add("mobile-visible");
-
         });
-
-
-        /* Abrir menú interno */
 
         menuToggle.addEventListener("click", function () {
-
             sidebarLinks.classList.toggle("abierto");
-
         });
 
-
-        /* Cerrar sidebar al hacer clic fuera */
-
         document.addEventListener("click", function (event) {
-
             if (
                 window.innerWidth <= 900 &&
                 sidebar.classList.contains("mobile-visible") &&
                 !sidebar.contains(event.target) &&
                 event.target !== mobileOpen
             ) {
-
                 sidebar.classList.remove("mobile-visible");
+            }
+        });
+    </script>
 
+    <script>
+        // ================= TAREAS: CARGA, CREACIÓN, EDICIÓN Y BORRADO (AJAX) =================
+
+        const statusLabels = { 'pendiente': 'Pendiente', 'por-hacer': 'Por hacer', 'terminado': 'Terminado' };
+        const priorityLabels = { 'low': 'Baja', 'medium': 'Media', 'high': 'Alta' };
+
+        const menuOverlay = document.getElementById('menuOverlay');
+        const tasksListBody = document.getElementById('tasksListBody');
+        const statTareas = document.getElementById('statTareas');
+        const statInventario = document.getElementById('statInventario');
+        const statProveedores = document.getElementById('statProveedores');
+        const statProductos = document.getElementById('statProductos');
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str ?? '';
+            return div.innerHTML;
+        }
+
+        function formatearFecha(fechaISO) {
+            if (!fechaISO) return 'Sin fecha';
+            const [y, m, d] = fechaISO.split('-');
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            return `${d} ${meses[parseInt(m, 10) - 1]} ${y}`;
+        }
+
+        function actualizarOverlay() {
+            const hayMenuAbierto = document.querySelector('.edit-menu.open') !== null;
+            menuOverlay.classList.toggle('show', hayMenuAbierto);
+        }
+
+        function cerrarTodosLosMenus(exceptoMenu) {
+            document.querySelectorAll('.edit-menu.open').forEach((menu) => {
+                if (menu !== exceptoMenu) {
+                    menu.classList.remove('open');
+                    const boton = menu.previousElementSibling;
+                    if (boton) boton.setAttribute('aria-expanded', 'false');
+                }
+            });
+            actualizarOverlay();
+        }
+
+        function renderTareas(tareas) {
+            if (!tareas.length) {
+                tasksListBody.innerHTML = '<p class="placeholder">No hay tareas registradas.</p>';
+                return;
             }
 
+            tasksListBody.innerHTML = tareas.map((t, i) => `
+                <div class="task" data-id="${t.id_tarea}">
+                    <div class="task-number">${String(i + 1).padStart(2, '0')}</div>
+                    <div class="task-main">
+                        <strong>${escapeHtml(t.titulo)}</strong>
+                        <span>Vence: ${formatearFecha(t.fecha_vencimiento)}</span>
+                    </div>
+                    <span class="priority ${t.prioridad}">${priorityLabels[t.prioridad]}</span>
+                    <span class="status ${t.estado}">${statusLabels[t.estado]}</span>
+                    <div class="task-actions">
+                        <button class="task-dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
+                        <div class="edit-menu">
+                            <div class="edit-menu-group">
+                                <label>Estado</label>
+                                <select class="edit-status">
+                                    <option value="pendiente" ${t.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                                    <option value="por-hacer" ${t.estado === 'por-hacer' ? 'selected' : ''}>Por hacer</option>
+                                    <option value="terminado" ${t.estado === 'terminado' ? 'selected' : ''}>Terminado</option>
+                                </select>
+                            </div>
+                            <div class="edit-menu-group">
+                                <label>Prioridad</label>
+                                <select class="edit-priority">
+                                    <option value="low" ${t.prioridad === 'low' ? 'selected' : ''}>Baja</option>
+                                    <option value="medium" ${t.prioridad === 'medium' ? 'selected' : ''}>Media</option>
+                                    <option value="high" ${t.prioridad === 'high' ? 'selected' : ''}>Alta</option>
+                                </select>
+                            </div>
+                            <button type="button" class="edit-apply">Guardar</button>
+                            <button type="button" class="edit-delete">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function cargarTareas() {
+            try {
+                const resp = await fetch('../../app/logica_tareas.php?accion=listar');
+                const data = await resp.json();
+                if (!data.ok) {
+                    tasksListBody.innerHTML = '<p class="placeholder">No se pudieron cargar las tareas.</p>';
+                    return;
+                }
+                renderTareas(data.tareas);
+            } catch (e) {
+                tasksListBody.innerHTML = '<p class="placeholder">Error de conexión al cargar tareas.</p>';
+                console.error(e);
+            }
+        }
+
+        async function actualizarStats() {
+            try {
+                const resp = await fetch('../../app/dashboard_stats.php');
+                const data = await resp.json();
+                if (!data.ok) return;
+
+                statTareas.textContent = Number(data.tareas_pendientes).toLocaleString('es-CO');
+                statInventario.textContent = Number(data.inventario_total).toLocaleString('es-CO');
+                statProveedores.textContent = Number(data.proveedores).toLocaleString('es-CO');
+                statProductos.textContent = Number(data.productos).toLocaleString('es-CO');
+            } catch (e) {
+                console.error('Error al actualizar estadísticas', e);
+            }
+        }
+
+        async function guardarCambiosTarea(boton) {
+            const fila = boton.closest('.task');
+            const id = fila.dataset.id;
+            const estado = fila.querySelector('.edit-status').value;
+            const prioridad = fila.querySelector('.edit-priority').value;
+
+            try {
+                const resp = await fetch('../../app/logica_tareas.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `accion=actualizar&id_tarea=${encodeURIComponent(id)}&estado=${encodeURIComponent(estado)}&prioridad=${encodeURIComponent(prioridad)}`
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    await cargarTareas();
+                    actualizarStats();
+                } else {
+                    alert(data.error || 'No se pudo actualizar la tarea.');
+                }
+            } catch (e) {
+                alert('Error de conexión al actualizar la tarea.');
+                console.error(e);
+            }
+        }
+
+        async function eliminarTarea(boton) {
+            const fila = boton.closest('.task');
+            const id = fila.dataset.id;
+            if (!confirm('¿Eliminar esta tarea?')) return;
+
+            try {
+                const resp = await fetch('../../app/logica_tareas.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `accion=eliminar&id_tarea=${encodeURIComponent(id)}`
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    await cargarTareas();
+                    actualizarStats();
+                } else {
+                    alert(data.error || 'No se pudo eliminar la tarea.');
+                }
+            } catch (e) {
+                alert('Error de conexión al eliminar la tarea.');
+                console.error(e);
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            const boton = e.target.closest('.task-dots');
+            if (boton && tasksListBody.contains(boton)) {
+                e.stopPropagation();
+                const menu = boton.nextElementSibling;
+                const abierto = menu.classList.contains('open');
+                cerrarTodosLosMenus(menu);
+                menu.classList.toggle('open', !abierto);
+                boton.setAttribute('aria-expanded', String(!abierto));
+                actualizarOverlay();
+                return;
+            }
+
+            const guardar = e.target.closest('.edit-apply');
+            if (guardar) { e.stopPropagation(); guardarCambiosTarea(guardar); return; }
+
+            const eliminar = e.target.closest('.edit-delete');
+            if (eliminar) { e.stopPropagation(); eliminarTarea(eliminar); return; }
+
+            if (e.target.closest('.edit-menu')) { e.stopPropagation(); return; }
+
+            cerrarTodosLosMenus(null);
+            cerrarPerfilDropdown();
         });
 
+        menuOverlay.addEventListener('click', () => cerrarTodosLosMenus(null));
+
+        // ================= MODAL: NUEVA TAREA =================
+
+        const btnNuevaTarea = document.getElementById('btnNuevaTarea');
+        const modalTareaOverlay = document.getElementById('modalTareaOverlay');
+        const formNuevaTarea = document.getElementById('formNuevaTarea');
+        const btnCancelarTarea = document.getElementById('btnCancelarTarea');
+        const sugerenciasTareas = document.getElementById('sugerenciasTareas');
+        const inputTareaTitulo = document.getElementById('tareaTitulo');
+        const selectTareaPrioridad = document.getElementById('tareaPrioridad');
+        const inputTareaVencimiento = document.getElementById('tareaVencimiento');
+
+        const sugerenciasFijas = [
+            'Controlar inventario', 'Empacar productos', 'Etiquetar productos',
+            'Apoyar producción', 'Organizar materia prima', 'Reportar novedades'
+        ];
+
+        async function cargarSugerencias() {
+            let sugerencias = [...sugerenciasFijas];
+            try {
+                const resp = await fetch('../../app/logica_tareas.php?accion=sugerencias');
+                const data = await resp.json();
+                if (data.ok && Array.isArray(data.sugerencias)) {
+                    sugerencias = [...new Set([...sugerencias, ...data.sugerencias])];
+                }
+            } catch (e) { /* solo se usan las sugerencias fijas */ }
+            sugerenciasTareas.innerHTML = sugerencias.map(s => `<option value="${escapeHtml(s)}"></option>`).join('');
+        }
+
+        btnNuevaTarea.addEventListener('click', () => {
+            modalTareaOverlay.classList.add('show');
+            cargarSugerencias();
+            inputTareaTitulo.focus();
+        });
+
+        btnCancelarTarea.addEventListener('click', () => {
+            modalTareaOverlay.classList.remove('show');
+            formNuevaTarea.reset();
+        });
+
+        modalTareaOverlay.addEventListener('click', (e) => {
+            if (e.target === modalTareaOverlay) modalTareaOverlay.classList.remove('show');
+        });
+
+        formNuevaTarea.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const titulo = inputTareaTitulo.value.trim();
+            const prioridad = selectTareaPrioridad.value;
+            const vencimiento = inputTareaVencimiento.value;
+            if (!titulo) return;
+
+            try {
+                const resp = await fetch('../../app/logica_tareas.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `accion=crear&titulo=${encodeURIComponent(titulo)}&prioridad=${encodeURIComponent(prioridad)}&fecha_vencimiento=${encodeURIComponent(vencimiento)}`
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    modalTareaOverlay.classList.remove('show');
+                    formNuevaTarea.reset();
+                    await cargarTareas();
+                    actualizarStats();
+                } else {
+                    alert(data.error || 'No se pudo registrar la tarea.');
+                }
+            } catch (e) {
+                alert('Error de conexión al registrar la tarea.');
+                console.error(e);
+            }
+        });
+
+        // ================= CARGA INICIAL Y AUTO-ACTUALIZACIÓN =================
+
+        cargarTareas();
+        actualizarStats();
+
+        setInterval(() => { actualizarStats(); cargarTareas(); }, 20000);
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) { actualizarStats(); cargarTareas(); }
+        });
     </script>
-<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+
+    <script>
+        // ================= MENÚ DE PERFIL: DATOS, FOTO Y TEMA =================
+
+        const btnPerfilMenu = document.getElementById('btnPerfilMenu');
+        const perfilDropdown = document.getElementById('perfilDropdown');
+        const btnCambiarFoto = document.getElementById('btnCambiarFoto');
+        const btnCambiarFotoModal = document.getElementById('btnCambiarFotoModal');
+        const inputFotoPerfil = document.getElementById('inputFotoPerfil');
+        const btnEditarDatos = document.getElementById('btnEditarDatos');
+        const btnTemaOscuro = document.getElementById('btnTemaOscuro');
+        const temaIconoTexto = document.getElementById('temaIconoTexto');
+
+        const modalPerfilOverlay = document.getElementById('modalPerfilOverlay');
+        const formEditarPerfil = document.getElementById('formEditarPerfil');
+        const btnCancelarPerfil = document.getElementById('btnCancelarPerfil');
+        const perfilNombre = document.getElementById('perfilNombre');
+        const perfilApellido = document.getElementById('perfilApellido');
+        const perfilEmail = document.getElementById('perfilEmail');
+        const perfilTelefono = document.getElementById('perfilTelefono');
+
+        const avatarHeader = document.getElementById('avatarHeader');
+        const fotoPerfilGrande = document.getElementById('fotoPerfilGrande');
+        const fotoPerfilModal = document.getElementById('fotoPerfilModal');
+        const nombreHeaderCorto = document.getElementById('nombreHeaderCorto');
+        const nombreCompletoPerfil = document.getElementById('nombreCompletoPerfil');
+        const saludoHeader = document.getElementById('saludoHeader');
+
+        function togglePerfilDropdown() {
+            const abierto = perfilDropdown.classList.contains('open');
+            perfilDropdown.classList.toggle('open', !abierto);
+            btnPerfilMenu.setAttribute('aria-expanded', String(!abierto));
+        }
+        function cerrarPerfilDropdown() {
+            perfilDropdown.classList.remove('open');
+            btnPerfilMenu.setAttribute('aria-expanded', 'false');
+        }
+
+        btnPerfilMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            togglePerfilDropdown();
+        });
+        perfilDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+        async function cargarPerfil() {
+            try {
+                const resp = await fetch('../../app/perfil_usuario.php?accion=obtener');
+                const data = await resp.json();
+                if (!data.ok) return;
+
+                const u = data.usuario;
+                const nombreCorto = u.nombre;
+                const nombreCompleto = `${u.nombre} ${u.apellido}`;
+
+                nombreHeaderCorto.textContent = nombreCorto;
+                nombreCompletoPerfil.textContent = nombreCompleto;
+                saludoHeader.textContent = `BIENVENIDO, ${nombreCorto.toUpperCase()}`;
+
+                if (u.foto) {
+                    const url = `../../public/imagenes/perfiles/${u.foto}`;
+                    avatarHeader.src = url;
+                    fotoPerfilGrande.src = url;
+                    fotoPerfilModal.src = url;
+                }
+
+                perfilNombre.value = u.nombre || '';
+                perfilApellido.value = u.apellido || '';
+                perfilEmail.value = u.email || '';
+                perfilTelefono.value = u.telefono || '';
+            } catch (e) {
+                console.error('No se pudo cargar el perfil', e);
+            }
+        }
+
+        function abrirSelectorFoto() {
+            cerrarPerfilDropdown();
+            inputFotoPerfil.click();
+        }
+        btnCambiarFoto.addEventListener('click', abrirSelectorFoto);
+        btnCambiarFotoModal.addEventListener('click', abrirSelectorFoto);
+
+        inputFotoPerfil.addEventListener('change', async () => {
+            const archivo = inputFotoPerfil.files[0];
+            if (!archivo) return;
+
+            const formData = new FormData();
+            formData.append('accion', 'foto');
+            formData.append('foto', archivo);
+
+            try {
+                const resp = await fetch('../../app/perfil_usuario.php', { method: 'POST', body: formData });
+                const data = await resp.json();
+                if (data.ok) {
+                    avatarHeader.src = data.url;
+                    fotoPerfilGrande.src = data.url;
+                    fotoPerfilModal.src = data.url;
+                } else {
+                    alert(data.error || 'No se pudo actualizar la foto.');
+                }
+            } catch (e) {
+                alert('Error de conexión al subir la foto.');
+                console.error(e);
+            } finally {
+                inputFotoPerfil.value = '';
+            }
+        });
+
+        btnEditarDatos.addEventListener('click', () => {
+            cerrarPerfilDropdown();
+            modalPerfilOverlay.classList.add('show');
+        });
+        btnCancelarPerfil.addEventListener('click', () => modalPerfilOverlay.classList.remove('show'));
+        modalPerfilOverlay.addEventListener('click', (e) => {
+            if (e.target === modalPerfilOverlay) modalPerfilOverlay.classList.remove('show');
+        });
+
+        formEditarPerfil.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const resp = await fetch('../../app/perfil_usuario.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `accion=actualizar&nombre=${encodeURIComponent(perfilNombre.value.trim())}` +
+                          `&apellido=${encodeURIComponent(perfilApellido.value.trim())}` +
+                          `&email=${encodeURIComponent(perfilEmail.value.trim())}` +
+                          `&telefono=${encodeURIComponent(perfilTelefono.value.trim())}`
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    modalPerfilOverlay.classList.remove('show');
+                    cargarPerfil();
+                } else {
+                    alert(data.error || 'No se pudieron guardar los cambios.');
+                }
+            } catch (e) {
+                alert('Error de conexión al guardar los cambios.');
+                console.error(e);
+            }
+        });
+
+        function aplicarTextoTema() {
+            const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
+            temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : '🌙 Activar tema oscuro';
+        }
+
+        btnTemaOscuro.addEventListener('click', () => {
+            const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
+            if (esOscuro) {
+                document.documentElement.removeAttribute('data-tema');
+                localStorage.setItem('colsoftco_tema', 'claro');
+            } else {
+                document.documentElement.setAttribute('data-tema', 'oscuro');
+                localStorage.setItem('colsoftco_tema', 'oscuro');
+            }
+            aplicarTextoTema();
+        });
+
+        aplicarTextoTema();
+        cargarPerfil();
+
+        document.addEventListener('click', () => cerrarPerfilDropdown());
+    </script>
 
 </body>
 
