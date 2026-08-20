@@ -205,8 +205,7 @@ try {
                                 type="file"
                                 id="imagen"
                                 name="imagen"
-                                accept="image/jpeg,image/png,image/webp"
-                                required>
+                                accept="image/jpeg,image/png,image/webp">
                             <span id="imagenFileName" class="imagen-file-name">Ningún archivo seleccionado</span>
 
                             <small>
@@ -352,6 +351,27 @@ try {
             input.parentNode.appendChild(error);
         }
 
+        
+        function mostrarErrorImagen(mensaje) {
+            const contenedor = document.querySelector(".imagen-input-wrapper");
+
+            const errorExistente = contenedor.querySelector(".mensaje-error");
+
+            if (errorExistente) {
+                errorExistente.remove();
+            }
+
+            const error = document.createElement("small");
+            error.className = "mensaje-error";
+            error.textContent = mensaje;
+            error.style.color = "#dc3545";
+            error.style.display = "block";
+            error.style.marginTop = "5px";
+            error.style.fontSize = "13px";
+
+            contenedor.appendChild(error);
+        }
+
         function limpiarErrores() {
             document.querySelectorAll(".mensaje-error").forEach(e => e.remove());
             document.querySelectorAll("#formProveedor input, #formProveedor textarea")
@@ -373,6 +393,12 @@ try {
             const descripcion = document.getElementById("descripcion_empresa").value;
 
             limpiarErrores();
+            
+            if (imagenInput.files.length === 0) {
+                mostrarErrorImagen("Debe seleccionar una imagen para el proveedor.");
+                e.preventDefault();
+                return;
+            }
 
             if (!expresiones.empresa.test(nombreEmpresa)) {
                 mostrarError("nombre_empresa", "Ingrese un nombre de empresa válido.");
