@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-08-2026 a las 07:50:41
+-- Tiempo de generación: 21-08-2026 a las 06:24:28
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -103,7 +103,52 @@ INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `d
 (44, 'proveedores', 'eliminar', 10, 'Se eliminó el proveedor \'Textiles andino\'', '{\"id_proveedor\":10,\"nombre_empresa\":\"Textiles andino\",\"nit\":\"123456789123\",\"direccion\":\"Cra 43 No 12-23\",\"descripcion_empresa\":\"Empresa de textiles\",\"contacto_nombre\":\"Nicolay\",\"contacto_apellido\":\"Polas\",\"telefono\":\"3124567898\",\"email\":\"nicorr@gmail.com\",\"imagen\":\"proveedor_6a7cb248cbea8.jpg\"}', NULL, NULL, 'Santiago Avellaneda', '::1', '2026-08-12 14:43:52'),
 (45, 'materia_prima', 'editar', 4, 'Se actualizó la materia prima \'Fieltro aislante\'', NULL, '{\"nombre_material\":\"Fieltro aislante\",\"stock_actual\":\"1\",\"stock_minimo\":\"15.00\",\"id_unidad\":\"2\",\"id_proveedor\":\"1\"}', NULL, 'Santiago Avellaneda', '::1', '2026-08-12 16:15:54'),
 (46, 'materia_prima', 'editar', 1, 'Se actualizó la materia prima \'Espuma de poliuretano\'', '{\"id_material\":1,\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"0.00\",\"id_unidad\":1,\"id_proveedor\":1,\"notificar_email\":0,\"correo_notificacion\":null,\"alerta_enviada\":0}', '{\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"110.00\",\"id_unidad\":\"1\",\"id_proveedor\":\"1\"}', NULL, 'Juan Montaño', '::1', '2026-08-19 23:06:44'),
-(47, 'materia_prima', 'editar', 1, 'Se actualizó la materia prima \'Espuma de poliuretano\'', '{\"id_material\":1,\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"110.00\",\"id_unidad\":1,\"id_proveedor\":1,\"notificar_email\":0,\"correo_notificacion\":null,\"alerta_enviada\":1}', '{\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"110.00\",\"id_unidad\":\"1\",\"id_proveedor\":\"1\"}', NULL, 'Juan Montaño', '::1', '2026-08-19 23:07:08');
+(47, 'materia_prima', 'editar', 1, 'Se actualizó la materia prima \'Espuma de poliuretano\'', '{\"id_material\":1,\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"110.00\",\"id_unidad\":1,\"id_proveedor\":1,\"notificar_email\":0,\"correo_notificacion\":null,\"alerta_enviada\":1}', '{\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"110.00\",\"id_unidad\":\"1\",\"id_proveedor\":\"1\"}', NULL, 'Juan Montaño', '::1', '2026-08-19 23:07:08'),
+(48, 'proveedores', 'editar', 1, 'Se actualizó el proveedor \'Espumas Colombia SAS\'', '{\"id_proveedor\":1,\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"ventas@espumascolombia.com\",\"imagen\":null}', '{\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"ventas@espumascolombia.com\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\"}', NULL, 'Juan Montaño', '::1', '2026-08-20 10:24:22'),
+(49, 'proveedores', 'editar', 1, 'Se actualizó el proveedor \'Espumas Colombia SAS\'', '{\"id_proveedor\":1,\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"ventas@espumascolombia.com\",\"imagen\":\"proveedor_1_1787239462.jpeg\"}', '{\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"ventas@espumascolombia.com\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\"}', NULL, 'Juan Montaño', '::1', '2026-08-20 10:55:31'),
+(50, 'proveedores', 'editar', 1, 'Se actualizó el proveedor \'Espumas Colombia SAS\'', '{\"id_proveedor\":1,\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"ventas@espumascolombia.com\",\"imagen\":\"proveedor_1_1787241331.jpg\"}', '{\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"ventas@espumascolombia.com\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 13:20:11'),
+(51, 'proveedores', 'eliminar', 5, 'Se eliminó el proveedor \'Espumas y Colchones del Norte S.A.S.\'', '{\"id_proveedor\":5,\"nombre_empresa\":\"Espumas y Colchones del Norte S.A.S.\",\"nit\":\"901456789-3\",\"direccion\":\"Carrera 15 # 45-20, Bogotá, Colombia\",\"descripcion_empresa\":\"Proveedor especializado en espuma de poliuretano, telas para colchonería, resortes y materias primas para la fabricación de colchones y muebles.\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramírez\",\"telefono\":\"3204567890\",\"email\":\"compras@espumasnorte.com\",\"imagen\":null}', NULL, NULL, 'Jose Montaño', '::1', '2026-08-20 13:20:31'),
+(52, 'proveedores', 'eliminar', 7, 'Se eliminó el proveedor \'Res\'', '{\"id_proveedor\":7,\"nombre_empresa\":\"Res\",\"nit\":\"455492131245\",\"direccion\":\"Cl. 14 #107-54\",\"descripcion_empresa\":\"Resortes Especializados\",\"contacto_nombre\":\"David\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3116364875\",\"email\":\"jafetgatitos06@gmail.com\",\"imagen\":null}', NULL, NULL, 'Jose Montaño', '::1', '2026-08-20 13:20:38'),
+(53, 'proveedores', 'editar', 4, 'Se actualizó el proveedor \'Insumos beatex SAS\'', '{\"id_proveedor\":4,\"nombre_empresa\":\"Insumos Industriales SAS\",\"nit\":\"900456789-4\",\"direccion\":\"Barranquilla, Atlántico\",\"descripcion_empresa\":\"Distribución de insumos industriales\",\"contacto_nombre\":\"Paula\",\"contacto_apellido\":\"Torres\",\"telefono\":\"3104444444\",\"email\":\"compras@insumosindustriales.com\",\"imagen\":null}', '{\"nombre_empresa\":\"Insumos beatex SAS\",\"nit\":\"900456789-4\",\"contacto_nombre\":\"Paula\",\"contacto_apellido\":\"Torres\",\"telefono\":\"3104444444\",\"email\":\"compras@insumosindustriales.com\",\"direccion\":\"Barranquilla, Atlántico\",\"descripcion_empresa\":\"Distribución de insumos industriales\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 13:21:52'),
+(54, 'proveedores', 'editar', 8, 'Se actualizó el proveedor \'Resortes Inalres S.A.S\'', '{\"id_proveedor\":8,\"nombre_empresa\":\"Resortes Especiales S.A.S\",\"nit\":\"83947593487\",\"direccion\":\"Cl 14 107-54\",\"descripcion_empresa\":\"Empresa de resortes reforzados\",\"contacto_nombre\":\"Jafet\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3116364875\",\"email\":\"jafetdavidpi@gmail.com\",\"imagen\":null}', '{\"nombre_empresa\":\"Resortes Inalres S.A.S\",\"nit\":\"83947593487\",\"contacto_nombre\":\"Jafet\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3116364875\",\"email\":\"jafetdavidpi@gmail.com\",\"direccion\":\"Cl 14 107-54\",\"descripcion_empresa\":\"Empresa de resortes reforzados\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 13:23:38'),
+(55, 'proveedores', 'editar', 3, 'Se actualizó el proveedor \'Grupo Espumados S.A.S\'', '{\"id_proveedor\":3,\"nombre_empresa\":\"Resortes Nacionales SAS\",\"nit\":\"900345678-3\",\"direccion\":\"Cali, Valle del Cauca\",\"descripcion_empresa\":\"Fabricación de resortes para colchones\",\"contacto_nombre\":\"Andres\",\"contacto_apellido\":\"Martinez\",\"telefono\":\"3103333333\",\"email\":\"ventas@resortesnacionales.com\",\"imagen\":null}', '{\"nombre_empresa\":\"Grupo Espumados S.A.S\",\"nit\":\"900345678-3\",\"contacto_nombre\":\"Andres\",\"contacto_apellido\":\"Martinez\",\"telefono\":\"3103333333\",\"email\":\"ventas@resortesnacionales.com\",\"direccion\":\"Cali, Valle del Cauca\",\"descripcion_empresa\":\"Fabricación de resortes para colchones\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 13:24:16'),
+(56, 'proveedores', 'crear', NULL, 'Se registró el proveedor \'Espumlandia S.A.S\'', NULL, '{\"nombre_empresa\":\"Espumlandia S.A.S\",\"contacto_nombre\":\"David\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3154709434\",\"email\":\"juanjosemon19@gmail.com\",\"nit\":\"901078545-6\",\"direccion\":\"CRA 113a #78-43 Bogot\",\"imagen\":\"proveedor_6a87469b1a176.png\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 13:25:31'),
+(57, 'materia_prima', 'editar', 1, 'Se actualizó la materia prima \'Espuma de poliuretano\'', '{\"id_material\":1,\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"50.00\",\"stock_minimo\":\"5000.00\",\"id_unidad\":1,\"id_proveedor\":1,\"notificar_email\":1,\"correo_notificacion\":\"juanjosemon19@gmail.com\",\"alerta_enviada\":1}', '{\"nombre_material\":\"Espuma de poliuretano\",\"stock_actual\":\"500\",\"stock_minimo\":\"200\",\"id_unidad\":\"1\",\"id_proveedor\":\"1\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 13:32:40'),
+(58, 'materia_prima', 'editar', 4, 'Se actualizó la materia prima \'Fieltro aislante\'', '{\"id_material\":4,\"nombre_material\":\"Fieltro aislante\",\"stock_actual\":\"1.00\",\"stock_minimo\":\"15.00\",\"id_unidad\":2,\"id_proveedor\":1,\"notificar_email\":1,\"correo_notificacion\":\"nicolaspolo096@gmail.com\",\"alerta_enviada\":0}', '{\"nombre_material\":\"Fieltro aislante\",\"stock_actual\":\"25\",\"stock_minimo\":\"15.00\",\"id_unidad\":\"2\",\"id_proveedor\":\"1\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 13:32:49'),
+(59, 'proveedores', 'editar', 11, 'Se actualizó el proveedor \'Espumlandia S.A.S\'', '{\"id_proveedor\":11,\"nombre_empresa\":\"Espumlandia S.A.S\",\"nit\":\"901078545-6\",\"direccion\":\"CRA 113a #78-43 Bogot\",\"descripcion_empresa\":\"Espumas Especiales Tamaño King\",\"contacto_nombre\":\"David\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3154709434\",\"email\":\"juanjosemon19@gmail.com\",\"imagen\":\"proveedor_6a87469b1a176.png\"}', '{\"nombre_empresa\":\"Espumlandia S.A.S\",\"nit\":\"901078545-6\",\"contacto_nombre\":\"David\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3154709434\",\"email\":\"juanjosemon19@gmail.com\",\"direccion\":\"CRA 113a #78-43 Bogot\",\"descripcion_empresa\":\"Espumas Especiales Tamaño King\"}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:01:43'),
+(60, 'proveedores', 'eliminar', 11, 'Se eliminó el proveedor \'Espumlandia S.A.S\'', '{\"id_proveedor\":11,\"nombre_empresa\":\"Espumlandia S.A.S\",\"nit\":\"901078545-6\",\"direccion\":\"CRA 113a #78-43 Bogot\",\"descripcion_empresa\":\"Espumas Especiales Tamaño King\",\"contacto_nombre\":\"David\",\"contacto_apellido\":\"Pineda\",\"telefono\":\"3154709434\",\"email\":\"juanjosemon19@gmail.com\",\"imagen\":\"proveedor_6a87469b1a176.png\"}', NULL, NULL, 'Juan Montaño', '::1', '2026-08-20 14:01:46'),
+(61, 'materia_prima', 'crear', 14, 'Se registró la materia prima \'Resortes Bonnell\' con stock inicial de 23', NULL, '{\"nombre_material\":\"Resortes Bonnell\",\"stock_actual\":\"23\",\"stock_minimo\":0,\"id_unidad\":\"3\",\"id_proveedor\":\"8\"}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:03:32'),
+(62, 'producto_terminado', 'crear', 4, 'Se agregó el producto terminado \'Colchon doble\' con stock 23', NULL, '{\"nombre_producto\":\"Colchon doble\",\"stock_actual\":\"23\"}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:04:39'),
+(63, 'producto_terminado', 'eliminar', 4, 'Se eliminó el producto terminado \'Colchon doble\'', NULL, NULL, NULL, 'Juan Montaño', '::1', '2026-08-20 14:04:48'),
+(64, 'produccion', 'salida', 1, 'Salida de 54 Kilogramos de \'Espuma de poliuretano\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":500}', '{\"stock_actual\":446}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(65, 'produccion', 'salida', 2, 'Salida de 18 Metros de \'Tela Jacquard\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":300}', '{\"stock_actual\":282}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(66, 'produccion', 'salida', 5, 'Salida de 3.3 Litros de \'Pegante industrial\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":100}', '{\"stock_actual\":96.7}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(67, 'produccion', 'salida', 1, 'Salida de 54 Kilogramos de \'Espuma de poliuretano\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":500}', '{\"stock_actual\":446}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(68, 'produccion', 'salida', 2, 'Salida de 18 Metros de \'Tela Jacquard\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":300}', '{\"stock_actual\":282}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(69, 'produccion', 'salida', 3, 'Salida de 420 Unidades de \'Resortes Bonnell\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":1200}', '{\"stock_actual\":780}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(70, 'produccion', 'salida', 4, 'Salida de 10.5 Metros de \'Fieltro aislante\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":25}', '{\"stock_actual\":14.5}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(71, 'produccion', 'salida', 5, 'Salida de 3.6 Litros de \'Pegante industrial\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":100}', '{\"stock_actual\":96.4}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(72, 'produccion', 'salida', 6, 'Salida de 1.2 Unidades de \'Hilo de costura\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":80}', '{\"stock_actual\":78.8}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(73, 'produccion', 'salida', 8, 'Salida de 9 Metros de \'Tela antideslizante\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":200}', '{\"stock_actual\":191}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(74, 'produccion', 'salida', 9, 'Salida de 27 Metros de \'Borde perimetral\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":180}', '{\"stock_actual\":153}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(75, 'produccion', 'salida', 10, 'Salida de 3 Metros de \'Empaque plastico\' para fabricar 3 unidades de \'Semidoble\'', '{\"stock_actual\":400}', '{\"stock_actual\":397}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(76, 'produccion', 'entrada', 8, 'Se fabricaron 3 unidades de \'Semidoble\'', NULL, '{\"unidades_fabricadas\":3}', NULL, 'Juan Montaño', '::1', '2026-08-20 14:05:36'),
+(77, 'pedidos_proveedor', 'crear', 1, 'Se solicitó un pedido de \'Espuma de poliuretano\' (cantidad: 100) al proveedor \'Espumas Colombia SAS\'', NULL, '{\"id_proveedor\":\"1\",\"id_material\":\"1\",\"cantidad_pedida\":\"100\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:21:49'),
+(78, 'proveedores', 'editar', 1, 'Se actualizó el proveedor \'Espumas Colombia SAS\'', '{\"id_proveedor\":1,\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"ventas@espumascolombia.com\",\"imagen\":\"proveedor_1_1787250011.jpeg\"}', '{\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"juanjosemon19@gmail.com\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:22:21'),
+(79, 'pedidos_proveedor', 'crear', 2, 'Se solicitó un pedido de \'Espuma de poliuretano\' (cantidad: 1000) al proveedor \'Espumas Colombia SAS\'', NULL, '{\"id_proveedor\":\"1\",\"id_material\":\"1\",\"cantidad_pedida\":\"1000\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:22:36'),
+(80, 'proveedores', 'editar', 1, 'Se actualizó el proveedor \'Espumas Colombia SAS\'', '{\"id_proveedor\":1,\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"juanjosemon19@gmail.com\",\"imagen\":\"proveedor_1_1787250011.jpeg\"}', '{\"nombre_empresa\":\"Espumas Colombia SAS\",\"nit\":\"900123456-1\",\"contacto_nombre\":\"Carlos\",\"contacto_apellido\":\"Ramirez\",\"telefono\":\"3101111111\",\"email\":\"majog4892@gmail.com\",\"direccion\":\"Bogotá D.C.\",\"descripcion_empresa\":\"Fabricación y comercialización de espumas para colchones\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:27:44'),
+(81, 'pedidos_proveedor', 'crear', 3, 'Se solicitó un pedido de \'Fieltro aislante\' (cantidad: 12) al proveedor \'Espumas Colombia SAS\'', NULL, '{\"id_proveedor\":\"1\",\"id_material\":\"4\",\"cantidad_pedida\":\"12\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:27:57'),
+(82, 'proveedores', 'deshabilitar', 1, 'Se deshabilitó el proveedor \'Espumas Colombia SAS\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:41:37'),
+(83, 'proveedores', 'habilitar', 1, 'Se habilitó el proveedor \'Espumas Colombia SAS\'', '{\"estado\":\"inactivo\"}', '{\"estado\":\"activo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:41:51'),
+(84, 'proveedores', 'deshabilitar', 1, 'Se deshabilitó el proveedor \'Espumas Colombia SAS\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:43:18'),
+(85, 'proveedores', 'deshabilitar', 3, 'Se deshabilitó el proveedor \'Grupo Espumados S.A.S\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:49:29'),
+(86, 'proveedores', 'habilitar', 1, 'Se habilitó el proveedor \'Espumas Colombia SAS\'', '{\"estado\":\"inactivo\"}', '{\"estado\":\"activo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:49:35'),
+(87, 'proveedores', 'habilitar', 3, 'Se habilitó el proveedor \'Grupo Espumados S.A.S\'', '{\"estado\":\"inactivo\"}', '{\"estado\":\"activo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:49:37'),
+(88, 'proveedores', 'deshabilitar', 1, 'Se deshabilitó el proveedor \'Espumas Colombia SAS\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:57:24'),
+(89, 'proveedores', 'deshabilitar', 3, 'Se deshabilitó el proveedor \'Grupo Espumados S.A.S\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:57:35'),
+(90, 'proveedores', 'deshabilitar', 4, 'Se deshabilitó el proveedor \'Insumos beatex SAS\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:59:18'),
+(91, 'proveedores', 'habilitar', 4, 'Se habilitó el proveedor \'Insumos beatex SAS\'', '{\"estado\":\"inactivo\"}', '{\"estado\":\"activo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:59:44'),
+(92, 'proveedores', 'deshabilitar', 4, 'Se deshabilitó el proveedor \'Insumos beatex SAS\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:59:48');
 
 -- --------------------------------------------------------
 
@@ -128,18 +173,19 @@ CREATE TABLE `materias_primas` (
 --
 
 INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`, `stock_minimo`, `id_unidad`, `id_proveedor`, `notificar_email`, `correo_notificacion`, `alerta_enviada`) VALUES
-(1, 'Espuma de poliuretano', 50.00, 110.00, 1, 1, 0, NULL, 1),
-(2, 'Tela Jacquard', 300.00, 50.00, 2, 2, 0, NULL, 0),
-(3, 'Resortes Bonnell', 1200.00, 300.00, 3, 3, 0, NULL, 0),
-(4, 'Fieltro aislante', 1.00, 15.00, 2, 1, 1, 'nicolaspolo096@gmail.com', 0),
-(5, 'Pegante industrial', 100.00, 20.00, 4, 4, 0, NULL, 0),
-(6, 'Hilo de costura', 80.00, 15.00, 3, 2, 0, NULL, 0),
+(1, 'Espuma de poliuretano', 392.00, 200.00, 1, 1, 1, 'juanjosemon19@gmail.com', 0),
+(2, 'Tela Jacquard', 264.00, 50.00, 2, 2, 0, NULL, 0),
+(3, 'Resortes Bonnell', 780.00, 300.00, 3, 3, 0, NULL, 0),
+(4, 'Fieltro aislante', 14.50, 15.00, 2, 1, 1, 'nicolaspolo096@gmail.com', 0),
+(5, 'Pegante industrial', 93.10, 20.00, 4, 4, 0, NULL, 0),
+(6, 'Hilo de costura', 78.80, 15.00, 3, 2, 0, NULL, 0),
 (7, 'Espuma viscoelastica', 60.00, 30.00, 1, 1, 0, NULL, 0),
-(8, 'Tela antideslizante', 200.00, 40.00, 2, 2, 0, NULL, 0),
-(9, 'Borde perimetral', 180.00, 40.00, 2, 3, 0, NULL, 0),
-(10, 'Empaque plastico', 400.00, 80.00, 2, 4, 0, NULL, 0),
+(8, 'Tela antideslizante', 191.00, 40.00, 2, 2, 0, NULL, 0),
+(9, 'Borde perimetral', 153.00, 40.00, 2, 3, 0, NULL, 0),
+(10, 'Empaque plastico', 397.00, 80.00, 2, 4, 0, NULL, 0),
 (11, 'Tela ', 100.00, 30.00, 2, 2, 0, NULL, 0),
-(13, 'Fieltro aislante', 20.00, 0.00, 3, 4, 0, NULL, 0);
+(13, 'Fieltro aislante', 20.00, 0.00, 3, 4, 0, NULL, 0),
+(14, 'Resortes Bonnell', 23.00, 0.00, 3, 8, 0, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -204,6 +250,15 @@ CREATE TABLE `pedidos_proveedor` (
   `fecha_pedido` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `pedidos_proveedor`
+--
+
+INSERT INTO `pedidos_proveedor` (`id_pedido`, `id_proveedor`, `id_material`, `cantidad_pedida`, `estado`, `fecha_pedido`) VALUES
+(1, 1, 1, 100.00, 'PENDIENTE', '2026-08-21 03:21:45'),
+(2, 1, 1, 1000.00, 'PENDIENTE', '2026-08-21 03:22:32'),
+(3, 1, 4, 12.00, 'PENDIENTE', '2026-08-21 03:27:52');
+
 -- --------------------------------------------------------
 
 --
@@ -225,7 +280,8 @@ CREATE TABLE `productos_terminados` (
 INSERT INTO `productos_terminados` (`id_producto`, `nombre_producto`, `stock_actual`, `stock_minimo`, `fecha_creacion`) VALUES
 (1, 'Colchon Queen', 20.00, 0.00, '2026-08-11 19:52:11'),
 (2, 'Colchon King', 12.00, 0.00, '2026-08-11 19:56:06'),
-(3, 'Colchon Normal', 15.00, 0.00, '2026-08-11 19:56:39');
+(3, 'Colchon Normal', 15.00, 0.00, '2026-08-11 19:56:39'),
+(5, 'Semidoble', 3.00, 0.00, '2026-08-20 14:05:36');
 
 -- --------------------------------------------------------
 
@@ -243,21 +299,21 @@ CREATE TABLE `proveedores` (
   `contacto_apellido` varchar(80) NOT NULL,
   `telefono` varchar(10) DEFAULT NULL,
   `email` varchar(70) DEFAULT NULL,
-  `imagen` varchar(255) DEFAULT NULL
+  `imagen` varchar(255) DEFAULT NULL,
+  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo',
+  `activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `proveedores`
 --
 
-INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit`, `direccion`, `descripcion_empresa`, `contacto_nombre`, `contacto_apellido`, `telefono`, `email`, `imagen`) VALUES
-(1, 'Espumas Colombia SAS', '900123456-1', 'Bogotá D.C.', 'Fabricación y comercialización de espumas para colchones', 'Carlos', 'Ramirez', '3101111111', 'ventas@espumascolombia.com', NULL),
-(2, 'Textiles Andinos SAS', '800234567-2', 'Medellín, Antioquia', 'Producción de textiles para la industria colchonera', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com', 'proveedor_2_1786563827.jpg'),
-(3, 'Resortes Nacionales SAS', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com', NULL),
-(4, 'Insumos Industriales SAS', '900456789-4', 'Barranquilla, Atlántico', 'Distribución de insumos industriales', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com', NULL),
-(5, 'Espumas y Colchones del Norte S.A.S.', '901456789-3', 'Carrera 15 # 45-20, Bogotá, Colombia', 'Proveedor especializado en espuma de poliuretano, telas para colchonería, resortes y materias primas para la fabricación de colchones y muebles.', 'Carlos', 'Ramírez', '3204567890', 'compras@espumasnorte.com', NULL),
-(7, 'Res', '455492131245', 'Cl. 14 #107-54', 'Resortes Especializados', 'David', 'Pineda', '3116364875', 'jafetgatitos06@gmail.com', NULL),
-(8, 'Resortes Especiales S.A.S', '83947593487', 'Cl 14 107-54', 'Empresa de resortes reforzados', 'Jafet', 'Pineda', '3116364875', 'jafetdavidpi@gmail.com', NULL);
+INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit`, `direccion`, `descripcion_empresa`, `contacto_nombre`, `contacto_apellido`, `telefono`, `email`, `imagen`, `estado`, `activo`) VALUES
+(1, 'Espumas Colombia SAS', '900123456-1', 'Bogotá D.C.', 'Fabricación y comercialización de espumas para colchones', 'Carlos', 'Ramirez', '3101111111', 'majog4892@gmail.com', 'proveedor_1_1787250011.jpeg', 'inactivo', 1),
+(2, 'Textiles Andinos SAS', '800234567-2', 'Medellín, Antioquia', 'Producción de textiles para la industria colchonera', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com', 'proveedor_2_1786563827.jpg', 'activo', 1),
+(3, 'Grupo Espumados S.A.S', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com', 'proveedor_3_1787250256.jpeg', 'inactivo', 1),
+(4, 'Insumos beatex SAS', '900456789-4', 'Barranquilla, Atlántico', 'Distribución de insumos industriales', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com', 'proveedor_4_1787250112.jpg', 'inactivo', 1),
+(8, 'Resortes Inalres S.A.S', '83947593487', 'Cl 14 107-54', 'Empresa de resortes reforzados', 'Jafet', 'Pineda', '3116364875', 'jafetdavidpi@gmail.com', 'proveedor_8_1787250218.png', 'activo', 1);
 
 -- --------------------------------------------------------
 
@@ -453,9 +509,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `foto`, `telefono`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
-(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', NULL, NULL, 'administrador', '$2y$10$WIOrMUGxtSwEkYs4M0GgOuVfDrb9x6e4P7uVC6hvp8GxRE3oHV2ue', '1', '189510a696b40e8fe8fad52f932f321cb629de31456b124461fc2fc44fa6f3f1', '1785468187'),
-(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', NULL, NULL, 'administrador', '$2y$10$wlEKTrfvZKCGOKGzWbMhUuoj0n4sPO9bxLpBP7Ujaz27leCx6T4n6', '0', NULL, NULL),
-(10, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', NULL, NULL, 'administrador', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
+(7, 'juanjosemon19@gmail.com', '1068952619', 'Jose', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '', NULL, '0'),
+(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', NULL, NULL, 'administrador', '$2y$10$pGRHa/Lsekzlel4Us/2dz.VyO7sjNgE8tXH2P3wC..Mp1EoArax9u', '', NULL, '0'),
+(10, 'jafetdavidpi@gmail.com', '1072746605', 'David', 'Pineda', NULL, NULL, 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
 (14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
 
 --
@@ -563,13 +619,13 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `historial_movimientos`
 --
 ALTER TABLE `historial_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT de la tabla `materias_primas`
 --
 ALTER TABLE `materias_primas`
-  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `modelos_colchon`
@@ -587,19 +643,19 @@ ALTER TABLE `notificaciones`
 -- AUTO_INCREMENT de la tabla `pedidos_proveedor`
 --
 ALTER TABLE `pedidos_proveedor`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `productos_terminados`
 --
 ALTER TABLE `productos_terminados`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_proveedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `receta_colchon`
@@ -623,7 +679,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Restricciones para tablas volcadas
