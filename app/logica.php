@@ -164,7 +164,7 @@ function login(array $credenciales)
                 exit();
         
             } else {
-                $_SESSION['error'] = 'Error en el password';
+                $_SESSION['error'] = 'Contraseña Incorrecta';
                 header("location:../view/login/login.php");
             }
         } else {
