@@ -4,6 +4,15 @@ require_once "../../app/verificar_sesion.php";
 require_once '../../config/conexion.php';
 require_once __DIR__ . '/../../app/HistorialMovimientos.php';
 
+/* Evita que el navegador restaure esta página desde su caché al
+   presionar "atrás", lo que mostraría el formulario o el listado de
+   materias primas desactualizado (por ejemplo, una recién registrada
+   o eliminada que no se refleje). */
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
 $db = new Conexion();
 $conn = $db->getConnection();
 
@@ -23,6 +32,12 @@ $materias_primas = $conn->query("
 $mensaje = '';
 $mensajeTipo = '';
 
+/* Mensaje que llega tras el redirect (ver más abajo) */
+if (isset($_GET['msg'], $_GET['tipo'])) {
+    $mensaje = $_GET['msg'];
+    $mensajeTipo = $_GET['tipo'] === 'ok' ? 'ok' : 'error';
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $nombre_material = trim($_POST['nombre_material'] ?? '');
@@ -35,8 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stock_minimo = 0;
 
     if ($nombre_material === '' || $stock_actual === '' || $id_unidad === '' || $id_proveedor === '') {
-        $mensaje = 'Por favor complete todos los campos obligatorios.';
-        $mensajeTipo = 'error';
+        $mensajeRedirect = 'Por favor complete todos los campos obligatorios.';
+        $tipoRedirect = 'error';
     } else {
         try {
             $sql = "INSERT INTO materias_primas
@@ -81,13 +96,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
             ]);
 
-            $mensaje = "Materia prima '{$nombre_material}' registrada correctamente.";
-            $mensajeTipo = 'ok';
+            $mensajeRedirect = "Materia prima '{$nombre_material}' registrada correctamente.";
+            $tipoRedirect = 'ok';
         } catch (Exception $e) {
-            $mensaje = 'Error al registrar la materia prima: ' . $e->getMessage();
-            $mensajeTipo = 'error';
+            $mensajeRedirect = 'Error al registrar la materia prima: ' . $e->getMessage();
+            $tipoRedirect = 'error';
         }
     }
+
+    /* Redirigimos siempre (patrón POST-Redirect-GET), llevando el
+       mensaje por la URL. Así el POST nunca queda como una entrada
+       "viva" del historial: al recargar o volver con "atrás", el
+       navegador siempre hace un GET nuevo, sin reenviar el formulario
+       ni mostrar datos desactualizados. */
+    header("Location: registromp.php?msg=" . urlencode($mensajeRedirect) . "&tipo=" . urlencode($tipoRedirect));
+    exit;
 }
 ?>
 
@@ -128,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="form-body">
                     <?php if ($mensaje): ?>
-                        <div class="mensaje mensaje-<?= $mensajeTipo ?>" style="margin-bottom:16px;padding:10px 14px;border-radius:6px;font-weight:600;
+                        <div class="mensaje mensaje-<?= htmlspecialchars($mensajeTipo) ?>" style="margin-bottom:16px;padding:10px 14px;border-radius:6px;font-weight:600;
                             <?= $mensajeTipo === 'ok' ? 'background:#e5f7ec;color:#1e7e42;' : 'background:#fdecea;color:#c0392b;' ?>">
                             <?= htmlspecialchars($mensaje) ?>
                         </div>
@@ -269,6 +292,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </script>
 
     <script src="../../public/js/app.js"></script>
+
+    <script>
+    /* Interceptamos el envío del formulario para que el POST nunca
+       quede como una entrada propia en el historial del navegador.
+       Enviamos por fetch y usamos location.replace() hacia la URL
+       final (registromp.php con el mensaje), reemplazando la entrada
+       actual en vez de crear una nueva. Así, al presionar "atrás", el
+       navegador siempre pide una página nueva al servidor en vez de
+       reenviar el formulario o mostrar un estado desactualizado. */
+    const regForm = document.getElementById('regForm');
+    const btnRegistrar = regForm ? regForm.querySelector('button[type="submit"]') : null;
+
+    if (regForm) {
+        regForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (btnRegistrar) btnRegistrar.disabled = true;
+
+            const datos = new FormData(regForm);
+
+            fetch(window.location.pathname, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: datos
+            })
+            .then(function (respuesta) {
+                if (!respuesta.ok) {
+                    throw new Error('Respuesta no válida del servidor');
+                }
+                window.location.replace(respuesta.url || 'registromp.php');
+            })
+            .catch(function () {
+                alert('Ocurrió un error al registrar la materia prima. Intenta de nuevo.');
+                if (btnRegistrar) btnRegistrar.disabled = false;
+            });
+        });
+    }
+
+    /* Refuerzo: si el navegador restaura esta página desde su bfcache
+       (por ejemplo al volver con "atrás"), forzamos una recarga real
+       para que PHP vuelva a consultar el estado actual de la base de
+       datos en vez de mostrar una copia desactualizada. */
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+    </script>
 
 </body>
 

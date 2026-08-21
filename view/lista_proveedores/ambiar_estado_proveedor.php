@@ -5,6 +5,14 @@ require_once __DIR__ . '/../../app/HistorialMovimientos.php';
 
 session_start();
 
+/* Evita que el navegador muestre esta página desde su caché (bfcache)
+   al presionar "atrás", lo que haría reaparecer la confirmación con
+   datos desactualizados aunque el estado ya haya cambiado en la BD. */
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
 $logica = new ProveedorLogica();
 
 $id = $_GET['id'] ?? 0;
@@ -129,8 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="botones">
 
-                    <form method="POST">
-                        <button type="submit" class="btn btn-guardar">
+                    <form method="POST" id="formEstado">
+                        <button type="submit" class="btn btn-guardar" id="btnConfirmar">
                             <?= $esDeshabilitar ? 'Sí, deshabilitar' : 'Sí, habilitar' ?>
                         </button>
                     </form>
@@ -177,5 +185,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+
+    <script>
+    /* Interceptamos el envío del formulario para que la confirmación
+       NUNCA quede como una entrada propia en el historial del navegador.
+       En vez de una navegación normal (que crea una entrada nueva a la
+       que "atrás" podría volver), enviamos el POST por fetch y luego
+       usamos location.replace(): esto sustituye la entrada actual
+       (la pregunta) por la lista de proveedores. Resultado: al presionar
+       "atrás" desde la lista, se salta directo a la página anterior a
+       la pregunta, sin volver a mostrarla jamás. */
+    const destino = "../lista_proveedores/lista_proveedores.php?estado=<?= urlencode($volverA) ?>";
+    const formEstado = document.getElementById('formEstado');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+
+    formEstado.addEventListener('submit', function (e) {
+        e.preventDefault();
+        btnConfirmar.disabled = true;
+
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function (respuesta) {
+            if (!respuesta.ok) {
+                throw new Error('Respuesta no válida del servidor');
+            }
+            window.location.replace(destino);
+        })
+        .catch(function () {
+            alert('Ocurrió un error al guardar los cambios. Intenta de nuevo.');
+            btnConfirmar.disabled = false;
+        });
+    });
+
+    /* Refuerzo adicional: si de todos modos el navegador restaura esta
+       página desde su bfcache, forzamos una recarga real. */
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+    </script>
 </body>
 </html>

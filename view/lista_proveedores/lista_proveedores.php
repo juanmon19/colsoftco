@@ -3,6 +3,15 @@
 require_once "../../app/verificar_sesion.php";
 require_once '../../app/logica_proveedores.php';
 
+/* Evita que el navegador restaure esta página desde su caché al
+   presionar "atrás", lo que mostraría el estado de los proveedores
+   desactualizado (por ejemplo, uno recién deshabilitado apareciendo
+   todavía como activo). */
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
 $logica = new ProveedorLogica();
 
 /* Pestaña activa: activo (por defecto) o inactivo */
@@ -392,6 +401,18 @@ $conteos = $logica->contarProveedoresPorEstado();
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+
+    <script>
+    /* Refuerzo: si el navegador restaura esta página desde su bfcache
+       (por ejemplo al volver con "atrás" justo después de deshabilitar
+       o habilitar un proveedor), forzamos una recarga real para que
+       PHP vuelva a consultar el estado actual de la base de datos. */
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+    </script>
 
 </body>
 

@@ -150,7 +150,7 @@ try {
                 <button class="mobile-open" id="mobileOpen" type="button" aria-label="Abrir menú">☰</button>
 
                 <div class="welcome">
-                    <h1>BIENVENIDO, JUAN JOSE</h1>
+                    <h1>BIENVENIDO</h1>
                     <p>Administrador</p>
                 </div>
 

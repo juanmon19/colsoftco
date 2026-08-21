@@ -2,6 +2,14 @@
 
 require_once('../../../config/conexion.php');
 
+/* Evita que el navegador restaure esta página desde su caché al
+   presionar "atrás", lo que mostraría materiales ya eliminados o
+   datos desactualizados. */
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
 $db = new Conexion();
 $conn = $db->getConnection();
 
@@ -301,6 +309,29 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
             aplicarOrden();
 
         })();
+    </script>
+
+    <script>
+    /* Detectamos si esta carga de la página viene de la bfcache
+       (botón "atrás/adelante"), combinando dos señales para mayor
+       confiabilidad entre navegadores:
+       1) event.persisted en el evento pageshow
+       2) el "type" reportado por la Navigation Timing API
+       Si cualquiera de las dos indica que venimos de bfcache, forzamos
+       una recarga real para que PHP vuelva a consultar el estado
+       actual de la base de datos en vez de mostrar una copia vieja. */
+    window.addEventListener('pageshow', function (event) {
+        const entradasNav = performance.getEntriesByType('navigation');
+        const tipoNav = entradasNav.length ? entradasNav[0].type : null;
+
+        // TEMPORAL: para diagnosticar, borrar esta línea después de probar
+        console.log('[diagnóstico bfcache] persisted:', event.persisted, '| tipo navegación:', tipoNav);
+
+        if (event.persisted || tipoNav === 'back_forward') {
+            console.log('[diagnóstico bfcache] Recargando por venir de bfcache...');
+            window.location.reload();
+        }
+    });
     </script>
 
 </body>

@@ -5,6 +5,14 @@ require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
 
 session_start();
 
+/* Evita que el navegador muestre esta página desde su caché (bfcache)
+   al presionar "atrás", lo que haría reaparecer la confirmación aunque
+   la materia prima ya haya sido eliminada. */
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
 $logica = new InventarioLogica();
 
 if (!isset($_GET['id'])) {
@@ -353,8 +361,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="acciones">
-                    <form method="POST" style="display:inline;">
-                        <button type="submit" class="btn-eliminar">Eliminar definitivamente</button>
+                    <form method="POST" style="display:inline;" id="formEliminar">
+                        <button type="submit" class="btn-eliminar" id="btnEliminar">Eliminar definitivamente</button>
                     </form>
                     <a href="lista_inventario.php" class="btn-cancelar">Cancelar</a>
                 </div>
@@ -383,6 +391,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span>Desarrollado por <strong>Equipo SENA</strong></span>
         </div>
     </footer>
+
+    <script>
+    /* Interceptamos el envío del formulario para que la confirmación
+       NUNCA quede como una entrada propia en el historial del navegador.
+       En vez de una navegación normal (que crea una entrada nueva a la
+       que "atrás" podría volver), enviamos el POST por fetch y luego
+       usamos location.replace(): esto sustituye la entrada actual
+       (la pregunta) por la página a la que el servidor redirigió
+       (lista_inventario.php, o con ?error=... si no se pudo eliminar).
+       Resultado: al presionar "atrás" desde ahí, se salta directo a la
+       página anterior a la pregunta, sin volver a mostrarla jamás. */
+    const formEliminar = document.getElementById('formEliminar');
+    const btnEliminar = document.getElementById('btnEliminar');
+
+    formEliminar.addEventListener('submit', function (e) {
+        e.preventDefault();
+        btnEliminar.disabled = true;
+
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function (respuesta) {
+            if (!respuesta.ok) {
+                throw new Error('Respuesta no válida del servidor');
+            }
+            // fetch sigue los redirects automáticamente; respuesta.url
+            // ya apunta a la URL final (lista_inventario.php, con o sin ?error=...)
+            window.location.replace(respuesta.url || 'lista_inventario.php');
+        })
+        .catch(function () {
+            alert('Ocurrió un error al eliminar la materia prima. Intenta de nuevo.');
+            btnEliminar.disabled = false;
+        });
+    });
+
+    /* Refuerzo adicional: si de todos modos el navegador restaura esta
+       página desde su bfcache, forzamos una recarga real. */
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+    </script>
 
 </body>
 
