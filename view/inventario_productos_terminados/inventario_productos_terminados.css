@@ -1,0 +1,567 @@
+/* =========================================================
+   INVENTARIO DE PRODUCTOS TERMINADOS
+   Mismo diseño visual que inventario de materia prima
+   (lista_inventario.css) + estilos propios de esta vista
+   (filtros, modal, toast, botones actualizar/eliminar).
+   Este archivo es autónomo: no depende de ningún otro CSS.
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+/* =========================
+   ESTILOS GENERALES
+========================= */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef2ff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+/* =========================
+   HEADER ESTANDARIZADO
+========================= */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0A1F44;
+    padding: 10px 15px;
+    min-height: 70px;
+    position: relative;
+    z-index: 100;
+    border-bottom: 4px solid #D4AF37;
+    gap: 10px;
+}
+
+.header .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.header .logo img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 2px solid #d4af37;
+    background: white;
+    object-fit: cover;
+}
+
+.header-title {
+    flex: 1;
+    text-align: center;
+    overflow: hidden;
+}
+
+.header-title h1 {
+    margin: 0;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.btn-logout {
+    background-color: #D4AF37;
+    color: #0A1F44;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.3s;
+    flex-shrink: 0;
+}
+
+.btn-logout:hover {
+    background-color: #fff;
+}
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 30px auto;
+    flex: 1;
+}
+
+/* =========================
+   BOTON VOLVER
+========================= */
+.btn-volver,
+.volver {
+    display: inline-block;
+    background: #0A1F44;
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: .3s;
+}
+
+.btn-volver:hover,
+.volver:hover {
+    background: #081732;
+}
+
+/* =========================
+   CONTENEDOR RESPONSIVE DE TABLA
+========================= */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+}
+
+/* =========================
+   TABLA INVENTARIO
+========================= */
+.table-responsive table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: none;
+    border-radius: 0;
+    min-width: 700px;
+}
+
+th {
+    background: #0A1F44;
+    color: white;
+    padding: 14px;
+    text-align: center;
+    font-size: 15px;
+}
+
+td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+tr:hover {
+    background: #f8faff;
+}
+
+/* =========================
+   ESTADOS
+========================= */
+.normal {
+    color: green;
+    font-weight: bold;
+}
+
+.alerta {
+    color: red;
+    font-weight: bold;
+}
+
+/* =========================
+   RESPONSIVE (MEDIA QUERIES)
+========================= */
+@media(max-width:768px) {
+    .container {
+        width: 95%;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-cell {
+        flex-direction: column;
+    }
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer {
+    background: #0D1B3E;
+    color: #ffffff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+.footer-divider {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #C9A227, #E8C84A, #C9A227);
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 1.5rem 3rem 1.2rem;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+}
+
+.footer-brand-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #C9A227;
+    letter-spacing: 2px;
+    margin: 0 0 4px;
+}
+
+.footer-brand-sub {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+}
+
+.footer-brand-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.6;
+    max-width: 280px;
+    margin: 0;
+}
+
+.footer-col-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #C9A227;
+    border-bottom: 2px solid #C9A227;
+    display: inline-block;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 3rem;
+    background: rgba(0, 0, 0, 0.25);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.footer-bottom span {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.footer-bottom strong {
+    color: #C9A227;
+}
+
+@media (max-width: 768px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .footer-bottom {
+        justify-content: center;
+        text-align: center;
+        padding: 0.8rem 1.5rem;
+    }
+}
+
+/* =========================================================
+   PROPIO DE PRODUCTOS TERMINADOS
+   (filtros, barra de agregar, modal, toast, acciones)
+========================================================= */
+
+/* ===== Filtros (búsqueda + orden) ===== */
+.filtros-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filtro-busqueda {
+    flex: 1;
+    min-width: 220px;
+}
+
+.filtro-busqueda input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d7dee7;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #f8fafc;
+}
+
+.filtro-busqueda input:focus {
+    outline: none;
+    border-color: #1e3a8a;
+}
+
+.filtro-orden {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.filtro-orden label {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.filtro-orden select {
+    padding: 9px 12px;
+    border: 1px solid #d7dee7;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #f8fafc;
+}
+
+.btn-limpiar-filtros {
+    padding: 10px 16px;
+    border: 1px solid #1e293b;
+    border-radius: 6px;
+    background: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-limpiar-filtros:hover {
+    background: #f1f5f9;
+}
+
+.mensaje-sin-resultados {
+    text-align: center;
+    padding: 16px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* ===== Barra de acciones (agregar producto) ===== */
+
+
+.btn-add {
+    background-color: #0A1F44;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+}
+
+.btn-add:hover {
+    background-color: #D4AF37;
+    color: #0A1F44;
+}
+
+/* ===== Botones de acción (actualizar / eliminar) =====
+   Se mantienen como <button> con AJAX (no como enlaces),
+   con los mismos colores que btn-editar / btn-eliminar
+   de materia prima para que el diseño se vea idéntico. */
+.action-cell {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn-actualizar,
+.btn-eliminar {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    color: #fff;
+    transition: .3s;
+}
+
+.btn-actualizar {
+    background: #2563eb;
+}
+
+.btn-actualizar:hover {
+    background: #1d4ed8;
+}
+
+.btn-eliminar {
+    background: #dc2626;
+}
+
+.btn-eliminar:hover {
+    background: #b91c1c;
+}
+
+/* ===== Modal (agregar / editar) ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px 30px 24px;
+    width: 360px;
+    max-width: 90vw;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+    margin: 0 0 20px 0;
+    color: #0A1F44;
+    font-size: 16px;
+}
+
+.modal label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: #555;
+}
+
+.modal input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 14px;
+    box-sizing: border-box;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.btn-save {
+    flex: 1;
+    padding: 9px;
+    background: #0A1F44;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-save:hover {
+    background: #D4AF37;
+    color: #0A1F44;
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 9px;
+    background: #eee;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-cancel:hover {
+    background: #ddd;
+}
+
+.confirm-msg {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.btn-delete-confirm {
+    flex: 1;
+    padding: 9px;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-delete-confirm:hover {
+    background: #922b21;
+}
+
+/* ===== Toast ===== */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #0A1F44;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 200;
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}

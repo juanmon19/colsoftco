@@ -8,27 +8,36 @@ session_start();
 $logica = new ProveedorLogica();
 
 $id = $_GET['id'] ?? 0;
-
 $proveedor = $logica->getProveedorById($id);
 
 if (!$proveedor) {
     die("Proveedor no encontrado");
 }
 
+/* El estado hacia el que va a cambiar (lo contrario del actual) */
+$nuevoEstado = $proveedor['estado'] === 'activo' ? 'inactivo' : 'activo';
+$esDeshabilitar = $nuevoEstado === 'inactivo';
+
+/* A qué pestaña de la lista regresar después de guardar */
+$volverA = $_GET['volver'] ?? ($proveedor['estado'] ?? 'activo');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $logica->eliminarProveedor($id);
+    $logica->cambiarEstadoProveedor($id, $nuevoEstado);
 
     (new HistorialMovimientos())->registrar([
         'modulo'           => 'proveedores',
-        'accion'           => 'eliminar',
+        'accion'           => $esDeshabilitar ? 'deshabilitar' : 'habilitar',
         'id_registro'      => $id,
-        'descripcion'      => "Se eliminó el proveedor '{$proveedor['nombre_empresa']}'",
-        'datos_anteriores' => $proveedor,
+        'descripcion'      => $esDeshabilitar
+            ? "Se deshabilitó el proveedor '{$proveedor['nombre_empresa']}'"
+            : "Se habilitó el proveedor '{$proveedor['nombre_empresa']}'",
+        'datos_anteriores' => ['estado' => $proveedor['estado']],
+        'datos_nuevos'     => ['estado' => $nuevoEstado],
         'usuario_nombre'   => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
     ]);
 
-    header("Location: ../lista_proveedores/lista_proveedores.php");
+    header("Location: ../lista_proveedores/lista_proveedores.php?estado=" . urlencode($volverA));
     exit;
 }
 ?>
@@ -38,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eliminar Proveedor</title>
+<title><?= $esDeshabilitar ? 'Deshabilitar' : 'Habilitar' ?> Proveedor</title>
 
 <link rel="stylesheet" href="crud_proveedor.css">
 
@@ -53,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="header-title">
-            <h1>Eliminar Proveedor</h1>
+            <h1><?= $esDeshabilitar ? 'Deshabilitar' : 'Habilitar' ?> Proveedor</h1>
         </div>
 
         <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
@@ -64,20 +73,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="contenedor">
 
         <div class="acciones-superior">
-            <a href="../lista_proveedores/lista_proveedores.php" class="btn-volver">
+            <a href="../lista_proveedores/lista_proveedores.php?estado=<?= urlencode($volverA) ?>" class="btn-volver">
                 ← Volver a Proveedores
             </a>
         </div>
 
         <div class="card">
 
-            <div class="card-header bg-danger">
-                Eliminar Proveedor
+            <div class="card-header">
+                <?= $esDeshabilitar ? 'Deshabilitar Proveedor' : 'Habilitar Proveedor' ?>
             </div>
 
             <div class="card-body">
 
-                <h2>¿Desea eliminar este proveedor?</h2>
+                <h2>
+                    <?= $esDeshabilitar
+                        ? '¿Deseas deshabilitar este proveedor?'
+                        : '¿Deseas habilitar nuevamente este proveedor?' ?>
+                </h2>
+
+                <?php if ($esDeshabilitar): ?>
+                    <p style="color:#64748b; margin-top:8px;">
+                        No se eliminará ningún dato. El proveedor pasará a la pestaña de
+                        "Deshabilitados" y podrás habilitarlo de nuevo cuando quieras.
+                    </p>
+                <?php endif; ?>
 
                 <br>
 
@@ -110,14 +130,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="botones">
 
                     <form method="POST">
-
-                        <button type="submit" class="btn btn-eliminar">
-                            Eliminar definitivamente
+                        <button type="submit" class="btn btn-guardar">
+                            <?= $esDeshabilitar ? 'Sí, deshabilitar' : 'Sí, habilitar' ?>
                         </button>
-
                     </form>
 
-                    <a href="../lista_proveedores/lista_proveedores.php"
+                    <a href="../lista_proveedores/lista_proveedores.php?estado=<?= urlencode($volverA) ?>"
                        class="btn btn-volver-secundario">
                         Cancelar
                     </a>

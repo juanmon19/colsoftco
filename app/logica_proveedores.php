@@ -13,10 +13,10 @@ class ProveedorLogica
     }
 
     // =====================================
-    // LISTAR TODOS LOS PROVEEDORES
+    // LISTAR PROVEEDORES (por estado: activo / inactivo / todos)
     // =====================================
 
-    public function getProveedores(): array
+    public function getProveedores(string $estado = 'activo'): array
     {
         $sql = "
             SELECT
@@ -29,15 +29,48 @@ class ProveedorLogica
                 nit,
                 direccion,
                 descripcion_empresa,
-                imagen
+                imagen,
+                estado
             FROM proveedores
-            ORDER BY nombre_empresa ASC
+        ";
+
+        $params = [];
+
+        if ($estado !== 'todos') {
+            $sql .= " WHERE estado = :estado ";
+            $params[':estado'] = $estado;
+        }
+
+        $sql .= " ORDER BY nombre_empresa ASC ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // =====================================
+    // CONTAR PROVEEDORES POR ESTADO (para los contadores de las pestañas)
+    // =====================================
+
+    public function contarProveedoresPorEstado(): array
+    {
+        $sql = "
+            SELECT estado, COUNT(*) AS total
+            FROM proveedores
+            GROUP BY estado
         ";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $conteos = ['activo' => 0, 'inactivo' => 0];
+
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $fila) {
+            $conteos[$fila['estado']] = (int) $fila['total'];
+        }
+
+        return $conteos;
     }
 
     // =====================================
@@ -168,7 +201,8 @@ class ProveedorLogica
     }
 
     // =====================================
-    // ELIMINAR PROVEEDOR
+    // ELIMINAR PROVEEDOR (borrado permanente — ya no se usa desde la lista,
+    // se deja disponible por si se necesita en otro flujo)
     // =====================================
 
     public function eliminarProveedor(int $id): bool
@@ -182,6 +216,30 @@ class ProveedorLogica
 
         return $stmt->execute([
             ':id' => $id
+        ]);
+    }
+
+    // =====================================
+    // CAMBIAR ESTADO (HABILITAR / DESHABILITAR)
+    // =====================================
+
+    public function cambiarEstadoProveedor(int $id, string $estado): bool
+    {
+        if (!in_array($estado, ['activo', 'inactivo'], true)) {
+            return false;
+        }
+
+        $sql = "
+            UPDATE proveedores
+            SET estado = :estado
+            WHERE id_proveedor = :id
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            ':id' => $id,
+            ':estado' => $estado,
         ]);
     }
 

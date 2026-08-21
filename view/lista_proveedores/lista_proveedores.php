@@ -4,7 +4,15 @@ require_once "../../app/verificar_sesion.php";
 require_once '../../app/logica_proveedores.php';
 
 $logica = new ProveedorLogica();
-$proveedores = $logica->getProveedores();
+
+/* Pestaña activa: activo (por defecto) o inactivo */
+$estadoFiltro = $_GET['estado'] ?? 'activo';
+if (!in_array($estadoFiltro, ['activo', 'inactivo'], true)) {
+    $estadoFiltro = 'activo';
+}
+
+$proveedores = $logica->getProveedores($estadoFiltro);
+$conteos = $logica->contarProveedoresPorEstado();
 
 ?>
 
@@ -42,7 +50,14 @@ $proveedores = $logica->getProveedores();
         <div class="controls-container">
 
             <div class="tabs">
-                <button class="tab active">Todos</button>
+                <a href="lista_proveedores.php?estado=activo"
+                   class="tab <?= $estadoFiltro === 'activo' ? 'active' : '' ?>">
+                    Activos (<?= $conteos['activo'] ?>)
+                </a>
+                <a href="lista_proveedores.php?estado=inactivo"
+                   class="tab <?= $estadoFiltro === 'inactivo' ? 'active' : '' ?>">
+                    Deshabilitados (<?= $conteos['inactivo'] ?>)
+                </a>
             </div>
 
             <div class="actions">
@@ -94,7 +109,7 @@ $proveedores = $logica->getProveedores();
 
                 <?php foreach ($proveedores as $proveedor): ?>
 
-                    <div class="provider-card"
+                    <div class="provider-card <?php echo $proveedor['estado'] === 'inactivo' ? 'inactivo' : ''; ?>"
                         data-nombre="<?php echo htmlspecialchars(strtolower($proveedor['nombre_empresa'])); ?>"
                         data-nit="<?php echo htmlspecialchars(strtolower($proveedor['nit'] ?? '')); ?>"
                         data-contacto="<?php echo htmlspecialchars(strtolower($proveedor['contacto_nombre'] . ' ' . $proveedor['contacto_apellido'])); ?>">
@@ -134,13 +149,16 @@ $proveedores = $logica->getProveedores();
 
 
                         <!-- =========================
-            INFORMACIÓN DEL PROVEEDOR
+             INFORMACIÓN DEL PROVEEDOR
         ========================== -->
                         <div class="provider-info">
 
                             <p>
                                 <strong>Proveedor:</strong>
                                 <?php echo htmlspecialchars($proveedor['nombre_empresa']); ?>
+                                <?php if ($proveedor['estado'] === 'inactivo'): ?>
+                                    <span class="badge-inactivo">Deshabilitado</span>
+                                <?php endif; ?>
                             </p>
 
                             <?php if (isset($proveedor['nit'])): ?>
@@ -198,20 +216,21 @@ $proveedores = $logica->getProveedores();
                                     Editar
                                 </a>
 
-                                <a
-                                    href="eliminar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
-                                    class="btn-card">
-                                    Eliminar
-                                </a>
+                                <?php if ($proveedor['estado'] === 'activo'): ?>
+                                    <a
+                                        href="ambiar_estado_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>&volver=<?php echo urlencode($estadoFiltro); ?>"
+                                        class="btn-card btn-card-deshabilitar">
+                                        Deshabilitar
+                                    </a>
+                                <?php else: ?>
+                                    <a
+                                        href="ambiar_estado_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>&volver=<?php echo urlencode($estadoFiltro); ?>"
+                                        class="btn-card btn-card-habilitar">
+                                        Habilitar
+                                    </a>
+                                <?php endif; ?>
 
                             </div>
-
-                            <!-- HACER PEDIDO -->
-                            <a
-                                href="../registro_proveedores/hacer_pedido.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
-                                class="btn-card btn-card-large">
-                                Hacer Pedido
-                            </a>
 
                             <!-- CONTACTAR -->
                             <a
@@ -233,7 +252,9 @@ $proveedores = $logica->getProveedores();
                     <div class="provider-info">
 
                         <p>
-                            No existen proveedores registrados.
+                            <?= $estadoFiltro === 'inactivo'
+                                ? 'No hay proveedores deshabilitados por el momento.'
+                                : 'No existen proveedores activos registrados.' ?>
                         </p>
 
                     </div>
@@ -277,12 +298,6 @@ $proveedores = $logica->getProveedores();
     </footer>
 
     <script>
-        function eliminarProveedor(id) {
-
-            window.location.href =
-                "../registro_proveedores/eliminar_proveedor.php?id=" + id;
-        }
-
         document.querySelectorAll('.tab').forEach(tab => {
 
             tab.addEventListener('click', function() {

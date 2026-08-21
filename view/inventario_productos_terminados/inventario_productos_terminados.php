@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
                         'usuario_nombre' => $usuarioNombre,
                     ]);
 
-                    echo json_encode(['ok' => true]);
+                    echo json_encode(['ok' => true, 'id' => (int) $idProducto]);
                     exit();
                 }
 
@@ -128,47 +128,83 @@ $productosDb = $conn->query(
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Max & Flex - Inventario Productos Terminados</title>
-    <link href="inventariopt.css" rel="stylesheet" />
+    <link rel="stylesheet" href="inventario_productos_terminados.css">
 </head>
 
 <body>
-    <div class="header">
-        <a class="logo" href="../../app/ir_panel.php">
-            <img src="../../public/imagenes/logo.png" alt="logo" />
-        </a>
-        <div class="header-title"> PRODUCTOS TERMINADOS </div>
+
+    <header class="header">
+        <div class="logo">
+            <a href="../../app/ir_panel.php">
+                <img src="../../public/imagenes/logo.png" alt="logo">
+            </a>
+        </div>
+
+        <div class="header-title">
+            <h1>Inventario de Productos Terminados</h1>
+        </div>
 
         <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
             Cerrar sesión
         </button>
+    </header>
 
-    </div>
 
-    <div class="page-title-bar">
-        <span class="page-title">PRODUCTOS TERMINADOS</span>
-    </div>
+    <div class="container">
 
-    <div class="main-content">
-        <div class="table-wrapper">
-            <div class="toolbar">
-                <button class="btn-add" onclick="openAddModal()">
-                    + Agregar Producto
-                </button>
+        <a class="btn-volver" href="../panel_admin/panel_admin.php">
+            ← Volver
+        </a>
+
+        <!-- =========================
+             BARRA DE FILTROS
+        ========================== -->
+        <div class="filtros-container">
+
+            <div class="filtro-busqueda">
+                <input
+                    type="text"
+                    id="inputBusquedaProducto"
+                    placeholder="Buscar por nombre del producto...">
             </div>
 
+            <div class="filtro-orden">
+                <label for="selectOrden">Ordenar:</label>
+                <select id="selectOrden">
+                    <option value="az">Nombre (A-Z)</option>
+                    <option value="za">Nombre (Z-A)</option>
+                </select>
+            </div>
+
+            <button type="button" id="btnLimpiarFiltros" class="btn-limpiar-filtros">
+                Limpiar filtros
+            </button>
+
+        </div>
+
+        <p id="mensajeSinResultados" class="mensaje-sin-resultados" style="display:none;">
+            No se encontraron productos que coincidan con la búsqueda.
+        </p>
+
+        <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Producto</th>
                         <th>Cantidad</th>
-                        <th>Acción</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
+
                 <tbody id="tabla-body"></tbody>
+
             </table>
         </div>
+
     </div>
 
+    <!-- ══ MODAL AGREGAR / EDITAR ══ -->
     <div class="modal-overlay" id="modal-form">
         <div class="modal">
             <h3 id="modal-title">Agregar Producto</h3>
@@ -195,6 +231,7 @@ $productosDb = $conn->query(
         </div>
     </div>
 
+    <!-- ══ MODAL CONFIRMAR ELIMINACIÓN ══ -->
     <div class="modal-overlay" id="modal-confirm">
         <div class="modal">
             <h3>Confirmar eliminación</h3>
@@ -216,6 +253,28 @@ $productosDb = $conn->query(
 
     <div class="toast" id="toast"></div>
 
+    <footer>
+        <div class="footer-divider"></div>
+        <div class="footer-top">
+            <div>
+                <p class="footer-brand-name">COLSOFTCO</p>
+                <p class="footer-brand-sub">Sistema de Gestión</p>
+                <p class="footer-brand-desc">Sistema de gestión y administración de materias primas para Max&Flex. Eficiencia en inventarios y movimientos empresariales.</p>
+            </div>
+            <div>
+                <p class="footer-col-title">Contacto</p>
+                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
+                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
+                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
+                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>Desarrollado por <strong>Equipo SENA</strong></span>
+        </div>
+    </footer>
+
     <script>
         // ===== DATA =====
         // Los productos ya no viven solo en memoria: se cargan desde la
@@ -231,23 +290,42 @@ $productosDb = $conn->query(
         let editingId = null; // Identificador numérico del objeto en edición (Permanece en null en inserciones)
         let deletingId = null; // Almacenador temporal del ID agendado para descarte definitivo
 
+        const inputBusqueda = document.getElementById('inputBusquedaProducto');
+        const selectOrden = document.getElementById('selectOrden');
+        const btnLimpiarFiltros = document.getElementById('btnLimpiarFiltros');
+        const mensajeSinResultados = document.getElementById('mensajeSinResultados');
+
         function formatCantidad(n) {
             const num = Number(n);
             const texto = Number.isInteger(num) ? num : num.toFixed(2);
-            return `x${texto} Unidades`;
+            return `${texto} Unidades`;
         }
 
-        // ===== RENDER =====
+        // ===== RENDER (aplica búsqueda + orden sobre la lista en memoria) =====
         function renderTabla() {
             const tbody = document.getElementById("tabla-body");
             tbody.innerHTML = "";
 
-            productos.forEach((p, i) => {
+            const texto = inputBusqueda.value.trim().toLowerCase();
+            const orden = selectOrden.value;
+
+            let visibles = productos.filter(p =>
+                texto === '' || p.nombre.toLowerCase().includes(texto)
+            );
+
+            visibles = visibles.sort((a, b) =>
+                orden === 'az'
+                    ? a.nombre.localeCompare(b.nombre)
+                    : b.nombre.localeCompare(a.nombre)
+            );
+
+            visibles.forEach((p) => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td>${i + 1}. ${p.nombre}</td>
+                    <td>${p.id}</td>
+                    <td>${p.nombre}</td>
                     <td>${formatCantidad(p.cantidad)}</td>
-                    <td>
+                    <td class="acciones">
                         <div class="action-cell">
                             <button class="btn-actualizar" onclick="openEditModal(${p.id})">Actualizar</button>
                             <button class="btn-eliminar"   onclick="openDeleteModal(${p.id})">Eliminar</button>
@@ -257,14 +335,17 @@ $productosDb = $conn->query(
                 tbody.appendChild(tr);
             });
 
-            const emptyRows = Math.max(0, 10 - productos.length);
-            for (let i = 0; i < emptyRows; i++) {
-                const tr = document.createElement("tr");
-                tr.className = "empty-row";
-                tr.innerHTML = `<td>&nbsp;</td><td></td><td></td>`;
-                tbody.appendChild(tr);
-            }
+            mensajeSinResultados.style.display = visibles.length === 0 ? 'block' : 'none';
         }
+
+        inputBusqueda.addEventListener('input', renderTabla);
+        selectOrden.addEventListener('change', renderTabla);
+
+        btnLimpiarFiltros.addEventListener('click', () => {
+            inputBusqueda.value = '';
+            selectOrden.value = 'az';
+            renderTabla();
+        });
 
         // ===== MODALS =====
         function openAddModal() {
@@ -353,6 +434,7 @@ $productosDb = $conn->query(
             }
 
             if (editingId === null) {
+                productos.push({ id: resultado.id, nombre, cantidad: Number(cantidad) });
                 showToast("Producto agregado.");
             } else {
                 const p = productos.find((x) => x.id === editingId);
@@ -361,13 +443,10 @@ $productosDb = $conn->query(
                     p.cantidad = Number(cantidad);
                 }
                 showToast("Producto actualizado.");
-                closeModal();
-                renderTabla();
-                return;
             }
 
             closeModal();
-            await recargarProductos();
+            renderTabla();
         }
 
         async function confirmarEliminacion() {
@@ -386,12 +465,6 @@ $productosDb = $conn->query(
             closeModal();
             renderTabla();
             showToast("Producto eliminado.");
-        }
-
-        // Vuelve a pedir la lista completa al servidor (usado tras agregar,
-        // para obtener el id_producto real que asignó la base de datos).
-        async function recargarProductos() {
-            window.location.reload();
         }
 
         // ===== TOAST =====
