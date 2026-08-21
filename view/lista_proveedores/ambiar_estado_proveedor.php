@@ -2,8 +2,7 @@
 
 require_once __DIR__ . '/../../app/logica_proveedores.php';
 require_once __DIR__ . '/../../app/HistorialMovimientos.php';
-
-session_start();
+require_once "../../app/verificar_sesion.php";
 
 /* Evita que el navegador muestre esta página desde su caché (bfcache)
    al presionar "atrás", lo que haría reaparecer la confirmación con
@@ -227,5 +226,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     });
     </script>
+
+    <script src="../../public/js/app.js"></script>
+    
 </body>
 </html>

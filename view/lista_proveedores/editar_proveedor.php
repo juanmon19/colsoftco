@@ -2,8 +2,7 @@
 
 require_once __DIR__ . '/../../app/logica_proveedores.php';
 require_once __DIR__ . '/../../app/HistorialMovimientos.php';
-
-session_start();
+require_once "../../app/verificar_sesion.php";
 
 $logica = new ProveedorLogica();
 
@@ -330,6 +329,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
         }
     </script>
+
+    <script src="../../public/js/app.js"></script>
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>

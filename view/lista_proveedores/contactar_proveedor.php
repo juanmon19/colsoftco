@@ -302,6 +302,7 @@ function enviarCorreoPedido($correoDestino, $nombreEmpresaProveedor, $nombreMate
         </div>
     </footer>
 
+    <script src="../../public/js/app.js"></script>
     <script src="../../public/js/contactar_proveedor.js"></script>
 </body>
 </html>
