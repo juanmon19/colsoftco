@@ -207,15 +207,15 @@ $proveedores = $logica->getProveedores();
                             </div>
 
                             <!-- HACER PEDIDO -->
-                            <a
+                            <!-- <a
                                 href="../registro_proveedores/hacer_pedido.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
                                 class="btn-card btn-card-large">
                                 Hacer Pedido
-                            </a>
+                            </a> -->
 
                             <!-- CONTACTAR -->
                             <a
-                                href="../registro_proveedores/contactar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                href="../lista_proveedores/contactar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
                                 class="btn-card btn-card-large">
                                 Contactar
                             </a>

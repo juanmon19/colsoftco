@@ -355,8 +355,8 @@ require_once "../../app/verificar_sesion.php";
             return;
         }
 
-        if (archivo.size > 2 * 1024 * 1024) {
-            mostrarError("foto", "La imagen no debe superar los 2 MB.");
+        if (archivo.size > 7 * 1024 * 1024) {
+            mostrarError("foto", "La imagen no debe superar los 7 MB.");
             this.value = "";
             return;
         }
