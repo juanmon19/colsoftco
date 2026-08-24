@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-08-2026 a las 06:24:28
+-- Tiempo de generación: 24-08-2026 a las 21:51:57
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -148,7 +148,8 @@ INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `d
 (89, 'proveedores', 'deshabilitar', 3, 'Se deshabilitó el proveedor \'Grupo Espumados S.A.S\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:57:35'),
 (90, 'proveedores', 'deshabilitar', 4, 'Se deshabilitó el proveedor \'Insumos beatex SAS\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:59:18'),
 (91, 'proveedores', 'habilitar', 4, 'Se habilitó el proveedor \'Insumos beatex SAS\'', '{\"estado\":\"inactivo\"}', '{\"estado\":\"activo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:59:44'),
-(92, 'proveedores', 'deshabilitar', 4, 'Se deshabilitó el proveedor \'Insumos beatex SAS\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:59:48');
+(92, 'proveedores', 'deshabilitar', 4, 'Se deshabilitó el proveedor \'Insumos beatex SAS\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Jose Montaño', '::1', '2026-08-20 22:59:48'),
+(93, 'proveedores', 'habilitar', 1, 'Se habilitó el proveedor \'Espumas Colombia SAS\'', '{\"estado\":\"inactivo\"}', '{\"estado\":\"activo\"}', NULL, 'Jafet Pineda', '::1', '2026-08-24 14:51:22');
 
 -- --------------------------------------------------------
 
@@ -309,7 +310,7 @@ CREATE TABLE `proveedores` (
 --
 
 INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit`, `direccion`, `descripcion_empresa`, `contacto_nombre`, `contacto_apellido`, `telefono`, `email`, `imagen`, `estado`, `activo`) VALUES
-(1, 'Espumas Colombia SAS', '900123456-1', 'Bogotá D.C.', 'Fabricación y comercialización de espumas para colchones', 'Carlos', 'Ramirez', '3101111111', 'majog4892@gmail.com', 'proveedor_1_1787250011.jpeg', 'inactivo', 1),
+(1, 'Espumas Colombia SAS', '900123456-1', 'Bogotá D.C.', 'Fabricación y comercialización de espumas para colchones', 'Carlos', 'Ramirez', '3101111111', 'majog4892@gmail.com', 'proveedor_1_1787250011.jpeg', 'activo', 1),
 (2, 'Textiles Andinos SAS', '800234567-2', 'Medellín, Antioquia', 'Producción de textiles para la industria colchonera', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com', 'proveedor_2_1786563827.jpg', 'activo', 1),
 (3, 'Grupo Espumados S.A.S', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'ventas@resortesnacionales.com', 'proveedor_3_1787250256.jpeg', 'inactivo', 1),
 (4, 'Insumos beatex SAS', '900456789-4', 'Barranquilla, Atlántico', 'Distribución de insumos industriales', 'Paula', 'Torres', '3104444444', 'compras@insumosindustriales.com', 'proveedor_4_1787250112.jpg', 'inactivo', 1),
@@ -511,8 +512,8 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `foto`, `telefono`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
 (7, 'juanjosemon19@gmail.com', '1068952619', 'Jose', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '', NULL, '0'),
 (8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', NULL, NULL, 'administrador', '$2y$10$pGRHa/Lsekzlel4Us/2dz.VyO7sjNgE8tXH2P3wC..Mp1EoArax9u', '', NULL, '0'),
-(10, 'jafetdavidpi@gmail.com', '1072746605', 'David', 'Pineda', NULL, NULL, 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
-(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
+(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857'),
+(18, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', NULL, NULL, 'bodeguero', '$2y$10$/8MNeMi/B0QNJkNsPkgm0OjcR/ruJLwpsRdlwVZdjtjOPszCb9EVK', '0', NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -619,7 +620,7 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `historial_movimientos`
 --
 ALTER TABLE `historial_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
 
 --
 -- AUTO_INCREMENT de la tabla `materias_primas`
@@ -679,7 +680,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Restricciones para tablas volcadas
