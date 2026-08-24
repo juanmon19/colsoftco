@@ -18,9 +18,7 @@ session_start();
 
   <header class="header">
     <div class="logo">
-      <a href="../login/login.html">
         <img src="../../public/imagenes/logo.png" alt="logo">
-      </a>
     </div>
     
     <div class="header-title">

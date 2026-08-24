@@ -1,0 +1,28 @@
+#1. Ocultar el listado de archivos en directorios
+
+Options -Indexes
+
+#2. Definir codificación de caracteres por defecto
+AddDefaultCharset UTF-8
+
+#3. Configuración de URLs Amigables
+<IfModule mod_rewrite.c>
+    #Activar el motor de reescritura de URLS
+    RewriteEngine On
+
+    #Establecer la ruta base (modifica si tu proyecto está en una subcarpeta)
+    RewriteBase /colsoftco/
+
+    # Regla de excepción 1: No redirigir si le petición corresponde a un archivo real
+    #(e): assets/css/style.css)
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    #Regla de excepción 2: No redirigir si la petición corresponde a una carpeta real
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    #Reescribir cualquier ruta al archivo index.php pasando la dirección como parámetro "url"
+    #[QSA] Mantiene parámetros GET adicionales (ej: Porden-asc)
+    #[L] = Última regla a procesar si esta condición se cumple
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+</IfModule>
