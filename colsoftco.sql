@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-08-2026 a las 21:51:57
+-- Tiempo de generación: 25-08-2026 a las 06:08:18
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -512,7 +512,7 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `foto`, `telefono`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
 (7, 'juanjosemon19@gmail.com', '1068952619', 'Jose', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '', NULL, '0'),
 (8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', NULL, NULL, 'administrador', '$2y$10$pGRHa/Lsekzlel4Us/2dz.VyO7sjNgE8tXH2P3wC..Mp1EoArax9u', '', NULL, '0'),
-(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857'),
+(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'usuario_14_1787630405.jpg', NULL, 'administrador', '$2y$10$kyuxIJz09EWT/TljuEKqWuYy1BRdYIsbsAPlXTUR6QVb7gEdrAa3y', '1', 'f04b6e19e87762752e5622c8b8082df7090863daded09d7cbe0cf93c1bccd704', '1787630269'),
 (18, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', NULL, NULL, 'bodeguero', '$2y$10$/8MNeMi/B0QNJkNsPkgm0OjcR/ruJLwpsRdlwVZdjtjOPszCb9EVK', '0', NULL, NULL);
 
 --
