@@ -44,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ) {
         $mensaje = 'Por favor seleccione un producto y una cantidad válida.';
         $mensajeTipo = 'error';
-
     } else {
 
         try {
@@ -121,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $idProducto = $existente['id_producto'];
 
 
-            /*
+                /*
              * SI EL PRODUCTO NO EXISTE
              */
             } else {
@@ -156,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'id_registro'  => $idProducto,
 
                 'descripcion'  =>
-                    "Se registró producción de {$cantidad} unidades de '{$nombre_producto}'",
+                "Se registró producción de {$cantidad} unidades de '{$nombre_producto}'",
 
                 'datos_nuevos' => [
                     'nombre_producto' => $nombre_producto,
@@ -164,11 +163,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ],
 
                 'usuario_nombre' =>
-                    trim(
-                        ($_SESSION['nombre'] ?? '') .
+                trim(
+                    ($_SESSION['nombre'] ?? '') .
                         ' ' .
                         ($_SESSION['apellido'] ?? '')
-                    ) ?: 'Sistema',
+                ) ?: 'Sistema',
             ]);
 
 
@@ -179,8 +178,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 "Producto '{$nombre_producto}' registrado correctamente.";
 
             $mensajeTipo = 'ok';
-
-
         } catch (Exception $e) {
 
             /*
@@ -225,8 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <img
                     src="../../public/imagenes/logo.png"
-                    alt="logo"
-                >
+                    alt="logo">
 
             </a>
 
@@ -245,8 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button
             id="btnLogout"
             class="btn-logout"
-            onclick="cerrarSesion()"
-        >
+            onclick="cerrarSesion()">
             Cerrar sesión
         </button>
 
@@ -262,8 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <main
             class="content"
-            style="margin: 0 auto; max-width: 1000px; width: 100%;"
-        >
+            style="margin: 0 auto; max-width: 1000px; width: 100%;">
 
 
             <!-- FORMULARIO REGISTRAR PRODUCTO -->
@@ -297,8 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     ? 'background:#e5f7ec;color:#1e7e42;'
                                     : 'background:#fdecea;color:#c0392b;'
                                 ?>
-                            "
-                        >
+                            ">
 
                             <?= htmlspecialchars($mensaje) ?>
 
@@ -309,8 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     <form
                         id="regForm"
-                        method="POST"
-                    >
+                        method="POST">
 
                         <div class="form-grid">
 
@@ -327,8 +319,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <select
                                     id="input-producto"
                                     name="id_modelo"
-                                    required
-                                >
+                                    required>
 
                                     <option value="">
                                         Seleccione un producto
@@ -338,8 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <?php foreach ($modelos as $modelo): ?>
 
                                         <option
-                                            value="<?= htmlspecialchars($modelo['id_modelo']) ?>"
-                                        >
+                                            value="<?= htmlspecialchars($modelo['id_modelo']) ?>">
 
                                             <?= htmlspecialchars($modelo['nombre_modelo']) ?>
 
@@ -367,8 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     placeholder="Ingrese la cantidad"
                                     min="0"
                                     step="0.01"
-                                    required
-                                />
+                                    required />
 
                             </div>
 
@@ -382,16 +371,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                 <button
                                     type="reset"
-                                    class="btn btn-outline"
-                                >
+                                    class="btn btn-outline">
                                     Limpiar
                                 </button>
 
 
                                 <button
                                     type="submit"
-                                    class="btn btn-primary"
-                                >
+                                    class="btn btn-primary">
                                     Registrar
                                 </button>
 
@@ -409,14 +396,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </main>
 
     </div>
-
+    <footer>
+        <div class="footer-divider"></div>
+        <div class="footer-top">
+            <div>
+                <p class="footer-brand-name">COLSOFTCO</p>
+                <p class="footer-brand-sub">Sistema de Gestión</p>
+                <p class="footer-brand-desc">Sistema de gestión y administración de materias primas para Max&Flex. Eficiencia en inventarios y movimientos empresariales.</p>
+            </div>
+            <div>
+                <p class="footer-col-title">Contacto</p>
+                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
+                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
+                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
+                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
+            <span>Desarrollado por <strong>Equipo SENA</strong></span>
+        </div>
+    </footer>
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
 
     <script
         src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js"
-        defer
-    ></script>
+        defer></script>
 
     <script src="../../public/js/app.js"></script>
 
