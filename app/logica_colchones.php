@@ -3,6 +3,7 @@
 header('Content-Type: application/json');
 require_once '../config/conexion.php';
 require_once __DIR__ . '/HistorialMovimientos.php';
+require_once __DIR__ . '/ReciboPDF.php';
 
 session_start();
 
@@ -171,11 +172,24 @@ if ($accion === 'fabricar') {
             ]);
         }
 
+        // Registrar la fabricación en historial_produccion (para el módulo de historial y el número de recibo)
+        $usuarioNombre = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema';
+
+        $stmtHistorialProd = $db->prepare(
+            "INSERT INTO historial_produccion (id_modelo, cantidad, fecha_fabricacion, usuario)
+             VALUES (:id_modelo, :cantidad, NOW(), :usuario)"
+        );
+        $stmtHistorialProd->execute([
+            ':id_modelo' => $resultado['id_modelo'],
+            ':cantidad'  => $resultado['cantidad'],
+            ':usuario'   => $usuarioNombre,
+        ]);
+        $numeroRecibo = (int) $db->lastInsertId();
+
         $db->commit();
 
         // Registrar en el historial: salida de cada materia prima consumida
         $historial = new HistorialMovimientos();
-        $usuarioNombre = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema';
 
         foreach ($resultado['materiales'] as $mat) {
             $historial->registrar([
@@ -200,9 +214,26 @@ if ($accion === 'fabricar') {
             'usuario_nombre' => $usuarioNombre,
         ]);
 
+        // Generar el recibo en PDF con la identidad visual de COLSOFTCO
+        $carpetaRecibos = __DIR__ . '/../public/recibos/';
+        if (!is_dir($carpetaRecibos)) {
+            mkdir($carpetaRecibos, 0755, true);
+        }
+
+        $nombreArchivo = 'recibo_' . str_pad($numeroRecibo, 6, '0', STR_PAD_LEFT) . '.pdf';
+        $rutaCompleta  = $carpetaRecibos . $nombreArchivo;
+
+        $pdf = new ReciboPDF($numeroRecibo);
+        $pdf->AddPage();
+        $pdf->agregarDetalle($resultado['nombre_producto'], $resultado['cantidad']);
+        $pdf->agregarMensajeExito();
+        $pdf->Output('F', $rutaCompleta);
+
         echo json_encode([
-            'ok'      => true,
-            'mensaje' => "Se fabricaron {$resultado['cantidad']} unidades de {$resultado['nombre_producto']} correctamente.",
+            'ok'            => true,
+            'mensaje'       => "Se fabricaron {$resultado['cantidad']} unidades de {$resultado['nombre_producto']} correctamente.",
+            'recibo_pdf'    => '../../public/recibos/' . $nombreArchivo,
+            'numero_recibo' => $numeroRecibo,
         ]);
     } catch (Exception $e) {
         $db->rollBack();

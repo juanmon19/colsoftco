@@ -224,6 +224,12 @@ $modelos = $dbConn->query(
 
                 if (data.ok) {
                     alert(data.mensaje);
+
+                    // Descarga automática del recibo en PDF
+                    if (data.recibo_pdf) {
+                        descargarRecibo(data.recibo_pdf, data.numero_recibo);
+                    }
+
                     generar(); // refresca el stock disponible
                 } else {
                     alert(data.error || 'No se pudo fabricar.');
@@ -233,6 +239,19 @@ $modelos = $dbConn->query(
                 alert('Error de conexión al fabricar.');
                 console.error(e);
             }
+        }
+
+        /**
+         * Fuerza la descarga del PDF generado por el backend,
+         * sin necesidad de abrir una pestaña nueva.
+         */
+        function descargarRecibo(rutaPdf, numeroRecibo) {
+            const enlace = document.createElement('a');
+            enlace.href = rutaPdf;
+            enlace.download = `recibo_${String(numeroRecibo).padStart(6, '0')}.pdf`;
+            document.body.appendChild(enlace);
+            enlace.click();
+            enlace.remove();
         }
 
         function formatear(n) {
