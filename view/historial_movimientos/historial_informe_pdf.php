@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('America/Bogota'); 
 require_once __DIR__ . '/../../app/verificar_sesion.php';
 require_once __DIR__ . '/../../app/HistorialMovimientos.php';
 require_once __DIR__ . '/../../config/conexion.php';
