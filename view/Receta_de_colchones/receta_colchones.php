@@ -57,8 +57,9 @@ $modelos = $dbConn->query(
                 <button id="btnGenerar" class="btn btn-generar">
                     ⚙ Generar
                 </button>
-
+                
             </div>
+            
         </div>
 
         <!-- ══ PANEL RESULTADO ══ -->
@@ -72,7 +73,7 @@ $modelos = $dbConn->query(
                 </p>
             </div>
         </div>
-
+<button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
     </div>
 
     <footer>

@@ -74,6 +74,28 @@ class HistorialMovimientos
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Igual que obtener(), pero SIN límite de página — trae todos los
+     * registros que cumplan el filtro. La usa el generador de informes
+     * en PDF para no perder movimientos al armar el reporte.
+     */
+    public function obtenerTodos(array $filtros = []): array
+    {
+        [$where, $params] = $this->construirFiltros($filtros);
+
+        $sql = "SELECT * FROM historial_movimientos
+                {$where}
+                ORDER BY fecha_hora ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        foreach ($params as $clave => $valor) {
+            $stmt->bindValue($clave, $valor);
+        }
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function contarRegistros(array $filtros = []): int
     {
         [$where, $params] = $this->construirFiltros($filtros);
@@ -98,6 +120,21 @@ class HistorialMovimientos
     {
         $stmt = $this->conn->query("SELECT DISTINCT accion FROM historial_movimientos ORDER BY accion ASC");
         return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'accion');
+    }
+
+    /**
+     * Trae las fechas (solo el día, sin hora) en las que sí hubo al menos
+     * un movimiento registrado. Sirve para poblar un selector de "Día"
+     * con datos reales en vez de un calendario en blanco.
+     */
+    public function obtenerFechasDisponibles(): array
+    {
+        $stmt = $this->conn->query(
+            "SELECT DISTINCT DATE(fecha_hora) AS fecha
+             FROM historial_movimientos
+             ORDER BY fecha DESC"
+        );
+        return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'fecha');
     }
 
     private function construirFiltros(array $filtros): array

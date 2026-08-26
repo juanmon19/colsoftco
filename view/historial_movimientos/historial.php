@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../app/verificar_sesion.php';
 require_once __DIR__ . '/../../app/HistorialMovimientos.php';
+require_once __DIR__ . '/../../config/conexion.php';
 
 $historial = new HistorialMovimientos();
 
@@ -24,6 +25,50 @@ $movimientos    = $historial->obtener($filtros, $pagina, $porPagina);
 
 $modulosDisponibles  = $historial->obtenerModulos();
 $accionesDisponibles = $historial->obtenerAcciones();
+
+// =========================================================================
+// DÍAS / SEMANAS / MESES CON MOVIMIENTOS REALES (para bloquear en el
+// selector de "Generar informe PDF" cualquier período sin actividad).
+// Se combinan historial_movimientos + historial_produccion (colchones),
+// porque un mes puede tener solo fabricación y cero entradas/salidas.
+// =========================================================================
+$fechasHistorial = $historial->obtenerFechasDisponibles();
+
+$conexionFechas = new Conexion();
+$dbFechas = $conexionFechas->getConnection();
+$fechasProduccion = $dbFechas->query(
+    "SELECT DISTINCT DATE(fecha_fabricacion) AS fecha FROM historial_produccion"
+)->fetchAll(PDO::FETCH_COLUMN);
+
+$fechasDisponibles = array_unique(array_merge($fechasHistorial, $fechasProduccion));
+rsort($fechasDisponibles);
+
+$MESES_NOMBRE = [1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril', 5 => 'Mayo', 6 => 'Junio',
+                 7 => 'Julio', 8 => 'Agosto', 9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'];
+
+$semanasDisponibles = []; // valor "YYYY-Www" => etiqueta
+$mesesDisponibles = [];   // valor "YYYY-MM" => etiqueta
+
+foreach ($fechasDisponibles as $fechaTexto) {
+    if (!$fechaTexto) {
+        continue;
+    }
+    $dt = new DateTime($fechaTexto);
+
+    $valorSemana = $dt->format('o') . '-W' . $dt->format('W');
+    if (!isset($semanasDisponibles[$valorSemana])) {
+        $semanasDisponibles[$valorSemana] = 'Semana ' . $dt->format('W') . ' de ' . $dt->format('o');
+    }
+
+    $valorMes = $dt->format('Y-m');
+    if (!isset($mesesDisponibles[$valorMes])) {
+        $mesesDisponibles[$valorMes] = $MESES_NOMBRE[(int) $dt->format('n')] . ' de ' . $dt->format('Y');
+    }
+}
+
+// Semanas y meses más recientes primero
+krsort($semanasDisponibles);
+krsort($mesesDisponibles);
 
 function claseAccion(string $accion): string
 {
@@ -83,7 +128,88 @@ function construirQuery(array $filtros, int $pagina): string
                 </p>
             </div>
 
-            <!-- FILTROS -->
+            <!-- GENERAR INFORME PDF -->
+            <div class="tarjeta">
+                <h2>Generar informe en PDF</h2>
+                <p class="subtitulo">
+                    Agrupa <strong>entradas y salidas de materia prima</strong>,
+                    <strong>proveedores registrados</strong>, <strong>colchones fabricados</strong>
+                    y <strong>usuarios registrados</strong> en el rango que elijas.
+                    Solo se muestran los días, semanas y meses en los que sí hubo actividad registrada.
+                </p>
+
+                <?php if (empty($fechasDisponibles)): ?>
+
+                    <p class="subtitulo" style="color:#b91c1c; font-weight:700;">
+                        Todavía no hay ningún movimiento registrado en el sistema, así que no
+                        se puede generar un informe por ahora.
+                    </p>
+
+                <?php else: ?>
+
+                <form id="formInforme" class="filtros" action="historial_informe_pdf.php" method="GET">
+
+                    <div class="campo-filtro">
+                        <label for="tipoDia">Rango</label>
+                        <div class="grupo-rango">
+                            <label class="opcion-rango">
+                                <input type="radio" name="tipo" value="dia" id="tipoDia" checked>
+                                Día
+                            </label>
+                            <label class="opcion-rango">
+                                <input type="radio" name="tipo" value="semana">
+                                Semana
+                            </label>
+                            <label class="opcion-rango">
+                                <input type="radio" name="tipo" value="mes">
+                                Mes
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="campo-filtro" data-para="dia">
+                        <label for="fechaDia">Selecciona el día</label>
+                        <select id="fechaDia" name="fecha_dia">
+                            <?php foreach ($fechasDisponibles as $fecha): ?>
+                                <option value="<?= htmlspecialchars($fecha) ?>">
+                                    <?= date('d/m/Y', strtotime($fecha)) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="campo-filtro oculto" data-para="semana">
+                        <label for="fechaSemana">Selecciona la semana</label>
+                        <select id="fechaSemana" name="fecha_semana">
+                            <?php foreach ($semanasDisponibles as $valor => $etiqueta): ?>
+                                <option value="<?= htmlspecialchars($valor) ?>">
+                                    <?= htmlspecialchars($etiqueta) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="campo-filtro oculto" data-para="mes">
+                        <label for="fechaMes">Selecciona el mes</label>
+                        <select id="fechaMes" name="fecha_mes">
+                            <?php foreach ($mesesDisponibles as $valor => $etiqueta): ?>
+                                <option value="<?= htmlspecialchars($valor) ?>">
+                                    <?= htmlspecialchars($etiqueta) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="campo-filtro acciones-filtro">
+                        <button type="submit" class="btn btn-informe" id="btnGenerarInforme">Generar informe PDF</button>
+                    </div>
+
+                </form>
+
+                <?php endif; ?>
+            </div>
+
+            <!-- FILTROS DE LA TABLA -->
             <div class="tarjeta">
                 <form class="filtros" method="GET" action="historial.php">
 
@@ -227,6 +353,31 @@ function construirQuery(array $filtros, int $pagina): string
     <script src="../../public/js/app.js"></script>
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+
+    <script>
+        const radios = document.querySelectorAll('input[name="tipo"]');
+        const campos = document.querySelectorAll('.campo-filtro[data-para]');
+
+        function actualizarCampoFecha() {
+            const tipoSeleccionadoEl = document.querySelector('input[name="tipo"]:checked');
+            if (!tipoSeleccionadoEl) return;
+            const tipoSeleccionado = tipoSeleccionadoEl.value;
+
+            campos.forEach(campo => {
+                const input = campo.querySelector('input, select');
+                if (campo.dataset.para === tipoSeleccionado) {
+                    campo.classList.remove('oculto');
+                    if (input) input.required = true;
+                } else {
+                    campo.classList.add('oculto');
+                    if (input) input.required = false;
+                }
+            });
+        }
+
+        radios.forEach(radio => radio.addEventListener('change', actualizarCampoFecha));
+        actualizarCampoFecha();
+    </script>
 </body>
 
 </html>

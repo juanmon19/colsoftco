@@ -26,39 +26,46 @@ body {
     font-weight: bold;
     transition: 0.3s;
     margin-left: auto;
-    
+
 }
 
 /* ══ HEADER ══ */
 header {
     background: #0A1F44;
     min-height: 70px;
-    position: relative; /* Evita que baje con el scroll */
+    position: relative;
+    /* Evita que baje con el scroll */
     z-index: 100;
     color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 15px;
-    gap: 10px; /* Mantiene una separación segura entre los tres elementos */
-    border-bottom: 3px solid #d4af37; /* Agregado para igualarlo a los otros módulos */
+    gap: 10px;
+    /* Mantiene una separación segura entre los tres elementos */
+    border-bottom: 3px solid #d4af37;
+    /* Agregado para igualarlo a los otros módulos */
 }
 
 header .logo {
-    flex-shrink: 0; /* Evita que el logo se aplaste */
+    flex-shrink: 0;
+    /* Evita que el logo se aplaste */
 }
 
 header .logo img {
-    width: 55px; /* Un poco más pequeño para dar espacio al centro */
+    width: 55px;
+    /* Un poco más pequeño para dar espacio al centro */
     cursor: pointer;
     display: block;
 }
 
 .header-title {
-    flex: 1; /* Toma todo el espacio disponible en el medio */
+    flex: 1;
+    /* Toma todo el espacio disponible en el medio */
     text-align: center;
     margin: 0;
-    font-size: 15px; /* Tamaño optimizado para que no estorbe al botón */
+    font-size: 15px;
+    /* Tamaño optimizado para que no estorbe al botón */
     font-weight: 700;
     text-transform: uppercase;
 }
@@ -70,10 +77,12 @@ header .logo img {
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 13px; /* Botón ligeramente más compacto */
+    font-size: 13px;
+    /* Botón ligeramente más compacto */
     font-weight: bold;
     transition: 0.3s;
-    flex-shrink: 0; /* Evita que el botón se aplaste */
+    flex-shrink: 0;
+    /* Evita que el botón se aplaste */
 }
 
 .btn-logout:hover {
@@ -368,22 +377,49 @@ footer {
 .table-container {
     width: 100%;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* Suaviza el scroll en iOS */
+    -webkit-overflow-scrolling: touch;
+    /* Suaviza el scroll en iOS */
     margin-bottom: 20px;
+}
+
+.nav-item {
+    width: 100%;
+    height: 48px;
+    border: 0;
+    border-radius: 8px;
+    background-color: #0A1F44; 
+    color: #ffffff; 
+    padding: 0 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    gap: 16px;
+    font-size: 15px;
+    font-weight: bold; 
+    cursor: pointer; 
+    transition: 0.3s;
+    margin-top: 15px; 
+}
+
+
+.nav-item:hover {
+    background-color: #081732;
 }
 
 /* ══ MEDIA QUERIES PARA CELULARES Y TABLETS ══ */
 @media (max-width: 768px) {
+
     /* Reduce los márgenes para aprovechar el espacio en pantallas pequeñas */
     .paneles {
         padding: 16px;
         gap: 16px;
     }
-    
+
     /* Achica un poco el texto del header para que el botón no se apriete */
     .header-title {
-        font-size: 12px; 
+        font-size: 12px;
     }
+
     .btn-logout {
         font-size: 12px;
         padding: 6px 10px;
@@ -391,11 +427,11 @@ footer {
 
     /* Pasa el footer a una sola columna */
     .footer-top {
-        grid-template-columns: 1fr; 
+        grid-template-columns: 1fr;
         padding: 1.5rem;
         gap: 1.5rem;
     }
-    
+
     /* Centra los textos del fondo del footer */
     .footer-bottom {
         flex-direction: column;

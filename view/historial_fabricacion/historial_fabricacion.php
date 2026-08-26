@@ -26,7 +26,7 @@ $historial = $dbConn->query(
 <body>
 
     <header>
-        <a class="logo" href="../../app/ir_panel.php">
+        <a class="logo" href="../receta_de_colchones/receta_colchones.php">
             <img src="../../public/imagenes/logo.png" alt="logo">
         </a>
         <span class="header-title">Historial de Fabricación</span>

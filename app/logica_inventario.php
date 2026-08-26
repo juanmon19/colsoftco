@@ -88,14 +88,16 @@ class InventarioLogica
             $idNuevo = $this->conn->lastInsertId();
 
             /* El stock inicial también cuenta como movimiento (entrada desde 0) */
-            $this->registrarMovimientoHistorial(
-                $idNuevo,
-                $nombre,
-                0,
-                $stockActual,
-                'crear',
-                "Se registró la materia prima '{$nombre}' con stock inicial {$stockActual}"
-            );
+            if ((float) $stockActual > 0) {
+                $this->registrarMovimientoHistorial(
+                    $idNuevo,
+                    $nombre,
+                    0,
+                    $stockActual,
+                    'entrada',
+                    "Se registró la materia prima '{$nombre}' con stock inicial {$stockActual}"
+                );
+            }
         }
 
         return $ok;
@@ -137,13 +139,18 @@ class InventarioLogica
         ]);
 
         if ($ok && $stockAnterior !== null && (float) $stockAnterior !== (float) $stockActual) {
+            $subio = (float) $stockActual > (float) $stockAnterior;
+            $cantidad = abs((float) $stockActual - (float) $stockAnterior);
+
             $this->registrarMovimientoHistorial(
                 $id,
                 $nombre,
                 $stockAnterior,
                 $stockActual,
-                'actualizar',
-                "Se actualizó el stock de '{$nombre}' de {$stockAnterior} a {$stockActual}"
+                $subio ? 'entrada' : 'salida',
+                $subio
+                    ? "Entró materia prima: '{$nombre}' +{$cantidad} (de {$stockAnterior} a {$stockActual})"
+                    : "Salió materia prima: '{$nombre}' -{$cantidad} (de {$stockAnterior} a {$stockActual})"
             );
         }
 
