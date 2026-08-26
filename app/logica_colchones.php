@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('America/Bogota');
 header('Content-Type: application/json');
 require_once '../config/conexion.php';
 require_once __DIR__ . '/HistorialMovimientos.php';
