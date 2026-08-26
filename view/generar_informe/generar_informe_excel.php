@@ -1,10 +1,13 @@
 <?php
 
-date_default_timezone_set('America/Bogota'); 
 
-header('Content-Type: application/json');
-require_once '../config/conexion.php';
-require_once __DIR__ . '/HistorialMovimientos.php';
+date_default_timezone_set('America/Bogota');
+
+require_once "../../app/verificar_sesion.php";
+require_once __DIR__ . '/../../app/logica_informes.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
