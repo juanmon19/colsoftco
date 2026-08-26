@@ -59,6 +59,7 @@ $historial = $dbConn->query(
                                 <th>Producto</th>
                                 <th>Cantidad</th>
                                 <th>Usuario</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,6 +79,15 @@ $historial = $dbConn->query(
                                     </td>
                                     <td>
                                         <?= htmlspecialchars($registro['usuario']) ?>
+                                    </td>
+                                    <td>
+                                        <a
+                                            href="ver_recibo.php?id=<?= (int) $registro['id'] ?>"
+                                            target="_blank"
+                                            rel="noopener"
+                                            class="btn-ver-pdf">
+                                            Ver / Descargar PDF
+                                        </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

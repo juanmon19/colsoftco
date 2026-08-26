@@ -22,6 +22,7 @@ if (class_exists('Fpdf\Fpdf')) {
 class ReciboPDF extends FpdfBase
 {
     private $numeroRecibo;
+    private $fechaHora;
 
     // Paleta de marca
     private $azulMarino = [10, 31, 68];    // #0A1F44
@@ -32,10 +33,13 @@ class ReciboPDF extends FpdfBase
     private $verdeBorde  = [182, 230, 198];
     private $verdeTexto  = [22, 101, 52];
 
-    public function __construct($numeroRecibo)
+    public function __construct($numeroRecibo, $fechaHora = null)
     {
         parent::__construct('P', 'mm', 'A4');
         $this->numeroRecibo = $numeroRecibo;
+        /* Si no se pasa una fecha (recibo nuevo), se usa el momento actual.
+           Si se pasa (recibo regenerado desde el historial), se respeta la fecha real. */
+        $this->fechaHora = $fechaHora ?? date('d/m/Y H:i');
         $this->SetAutoPageBreak(true, 25);
         $this->SetMargins(15, 15, 15);
     }
@@ -74,7 +78,7 @@ class ReciboPDF extends FpdfBase
         $this->SetFont('Arial', 'B', 11);
         $this->SetTextColor(...$this->azulMarino);
         $this->Cell(95, 8, utf8_decode('Recibo No.: ') . str_pad($this->numeroRecibo, 6, '0', STR_PAD_LEFT), 0, 0, 'L');
-        $this->Cell(95, 8, utf8_decode('Fecha: ') . date('d/m/Y H:i'), 0, 1, 'R');
+        $this->Cell(95, 8, utf8_decode('Fecha: ') . $this->fechaHora, 0, 1, 'R');
 
         $this->SetDrawColor(...$this->dorado);
         $this->SetLineWidth(0.4);
