@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-08-2026 a las 05:30:35
+-- Tiempo de generación: 27-08-2026 a las 00:42:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -257,7 +257,85 @@ INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `d
 (197, 'materia_prima', 'salida', 8, 'Salida de 7.6 Metros de \'Tela antideslizante\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4963.4}', '{\"stock_actual\":4955.799999999999}', NULL, 'Jose Montaño', '::1', '2026-08-25 22:06:03'),
 (198, 'materia_prima', 'salida', 9, 'Salida de 21 Metros de \'Borde perimetral\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4902.5}', '{\"stock_actual\":4881.5}', NULL, 'Jose Montaño', '::1', '2026-08-25 22:06:03'),
 (199, 'materia_prima', 'salida', 10, 'Salida de 2 Metros de \'Empaque plastico\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4991}', '{\"stock_actual\":4989}', NULL, 'Jose Montaño', '::1', '2026-08-25 22:06:03'),
-(200, 'producto_terminado', 'crear', 3, 'Se fabricaron 2 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":2,\"nombre_producto\":\"Confort Total\"}', NULL, 'Jose Montaño', '::1', '2026-08-25 22:06:03');
+(200, 'producto_terminado', 'crear', 3, 'Se fabricaron 2 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":2,\"nombre_producto\":\"Confort Total\"}', NULL, 'Jose Montaño', '::1', '2026-08-25 22:06:03'),
+(201, 'materia_prima', 'eliminar', 14, 'Se eliminó la materia prima \'Resortes Bonnell\'', '{\"id_material\":14,\"nombre_material\":\"Resortes Bonnell\",\"stock_actual\":\"5000.00\",\"stock_minimo\":\"0.00\",\"id_unidad\":3,\"id_proveedor\":8,\"notificar_email\":0,\"correo_notificacion\":null,\"alerta_enviada\":0}', NULL, NULL, 'Jose Montaño', '::1', '2026-08-25 22:39:08'),
+(202, 'materia_prima', 'salida', 1, 'Salida de 160 Kilogramos de \'Espuma de poliuretano\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":4673}', '{\"stock_actual\":4513}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(203, 'materia_prima', 'salida', 2, 'Salida de 50 Metros de \'Tela Jacquard\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":4895.5}', '{\"stock_actual\":4845.5}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(204, 'materia_prima', 'salida', 3, 'Salida de 1150 Unidades de \'Resortes Bonnell\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":3050}', '{\"stock_actual\":1900}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(205, 'materia_prima', 'salida', 4, 'Salida de 32.5 Metros de \'Fieltro aislante\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":4947.5}', '{\"stock_actual\":4915}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(206, 'materia_prima', 'salida', 5, 'Salida de 11 Litros de \'Pegante industrial\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":4978}', '{\"stock_actual\":4967}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(207, 'materia_prima', 'salida', 6, 'Salida de 4 Unidades de \'Hilo de costura\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":4993.65}', '{\"stock_actual\":4989.65}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(208, 'materia_prima', 'salida', 7, 'Salida de 40 Kilogramos de \'Espuma viscoelastica\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":4972}', '{\"stock_actual\":4932}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(209, 'materia_prima', 'salida', 8, 'Salida de 27.5 Metros de \'Tela antideslizante\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":4955.8}', '{\"stock_actual\":4928.3}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(210, 'materia_prima', 'salida', 9, 'Salida de 62.5 Metros de \'Borde perimetral\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":4881.5}', '{\"stock_actual\":4819}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(211, 'materia_prima', 'salida', 10, 'Salida de 5 Metros de \'Empaque plastico\' para fabricar 5 unidades de \'Premium Gold\'', '{\"stock_actual\":4989}', '{\"stock_actual\":4984}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(212, 'producto_terminado', 'crear', 4, 'Se fabricaron 5 unidades de \'Premium Gold\'', NULL, '{\"unidades_fabricadas\":5,\"nombre_producto\":\"Premium Gold\"}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:45:43'),
+(213, 'materia_prima', 'salida', 1, 'Salida de 23 Kilogramos de \'Espuma de poliuretano\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4513}', '{\"stock_actual\":4490}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(214, 'materia_prima', 'salida', 2, 'Salida de 7.5 Metros de \'Tela Jacquard\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4845.5}', '{\"stock_actual\":4838}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(215, 'materia_prima', 'salida', 3, 'Salida de 170 Unidades de \'Resortes Bonnell\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":1900}', '{\"stock_actual\":1730}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(216, 'materia_prima', 'salida', 4, 'Salida de 4.5 Metros de \'Fieltro aislante\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4915}', '{\"stock_actual\":4910.5}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(217, 'materia_prima', 'salida', 5, 'Salida de 1.6 Litros de \'Pegante industrial\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4967}', '{\"stock_actual\":4965.4}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(218, 'materia_prima', 'salida', 6, 'Salida de 0.55 Unidades de \'Hilo de costura\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4989.65}', '{\"stock_actual\":4989.099999999999}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(219, 'materia_prima', 'salida', 7, 'Salida de 2 Kilogramos de \'Espuma viscoelastica\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4932}', '{\"stock_actual\":4930}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(220, 'materia_prima', 'salida', 8, 'Salida de 3.8 Metros de \'Tela antideslizante\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4928.3}', '{\"stock_actual\":4924.5}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(221, 'materia_prima', 'salida', 9, 'Salida de 10.5 Metros de \'Borde perimetral\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4819}', '{\"stock_actual\":4808.5}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(222, 'materia_prima', 'salida', 10, 'Salida de 1 Metros de \'Empaque plastico\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4984}', '{\"stock_actual\":4983}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(223, 'producto_terminado', 'crear', 3, 'Se fabricaron 1 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":1,\"nombre_producto\":\"Confort Total\"}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:47:45'),
+(224, 'materia_prima', 'salida', 1, 'Salida de 23 Kilogramos de \'Espuma de poliuretano\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4490}', '{\"stock_actual\":4467}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(225, 'materia_prima', 'salida', 2, 'Salida de 7.5 Metros de \'Tela Jacquard\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4838}', '{\"stock_actual\":4830.5}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(226, 'materia_prima', 'salida', 3, 'Salida de 170 Unidades de \'Resortes Bonnell\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":1730}', '{\"stock_actual\":1560}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(227, 'materia_prima', 'salida', 4, 'Salida de 4.5 Metros de \'Fieltro aislante\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4910.5}', '{\"stock_actual\":4906}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(228, 'materia_prima', 'salida', 5, 'Salida de 1.6 Litros de \'Pegante industrial\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4965.4}', '{\"stock_actual\":4963.799999999999}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(229, 'materia_prima', 'salida', 6, 'Salida de 0.55 Unidades de \'Hilo de costura\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4989.1}', '{\"stock_actual\":4988.55}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(230, 'materia_prima', 'salida', 7, 'Salida de 2 Kilogramos de \'Espuma viscoelastica\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4930}', '{\"stock_actual\":4928}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(231, 'materia_prima', 'salida', 8, 'Salida de 3.8 Metros de \'Tela antideslizante\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4924.5}', '{\"stock_actual\":4920.7}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(232, 'materia_prima', 'salida', 9, 'Salida de 10.5 Metros de \'Borde perimetral\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4808.5}', '{\"stock_actual\":4798}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(233, 'materia_prima', 'salida', 10, 'Salida de 1 Metros de \'Empaque plastico\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4983}', '{\"stock_actual\":4982}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(234, 'producto_terminado', 'crear', 3, 'Se fabricaron 1 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":1,\"nombre_producto\":\"Confort Total\"}', NULL, 'Juan Montaño', '::1', '2026-08-25 22:49:52'),
+(235, 'materia_prima', 'salida', 1, 'Salida de 46 Kilogramos de \'Espuma de poliuretano\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4467}', '{\"stock_actual\":4421}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(236, 'materia_prima', 'salida', 2, 'Salida de 15 Metros de \'Tela Jacquard\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4830.5}', '{\"stock_actual\":4815.5}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(237, 'materia_prima', 'salida', 3, 'Salida de 340 Unidades de \'Resortes Bonnell\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":1560}', '{\"stock_actual\":1220}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(238, 'materia_prima', 'salida', 4, 'Salida de 9 Metros de \'Fieltro aislante\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4906}', '{\"stock_actual\":4897}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(239, 'materia_prima', 'salida', 5, 'Salida de 3.2 Litros de \'Pegante industrial\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4963.8}', '{\"stock_actual\":4960.6}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(240, 'materia_prima', 'salida', 6, 'Salida de 1.1 Unidades de \'Hilo de costura\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4988.55}', '{\"stock_actual\":4987.45}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(241, 'materia_prima', 'salida', 7, 'Salida de 4 Kilogramos de \'Espuma viscoelastica\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4928}', '{\"stock_actual\":4924}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(242, 'materia_prima', 'salida', 8, 'Salida de 7.6 Metros de \'Tela antideslizante\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4920.7}', '{\"stock_actual\":4913.099999999999}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(243, 'materia_prima', 'salida', 9, 'Salida de 21 Metros de \'Borde perimetral\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4798}', '{\"stock_actual\":4777}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(244, 'materia_prima', 'salida', 10, 'Salida de 2 Metros de \'Empaque plastico\' para fabricar 2 unidades de \'Confort Total\'', '{\"stock_actual\":4982}', '{\"stock_actual\":4980}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(245, 'producto_terminado', 'crear', 3, 'Se fabricaron 2 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":2,\"nombre_producto\":\"Confort Total\"}', NULL, 'Jose Montaño', '::1', '2026-08-25 23:02:10'),
+(246, 'materia_prima', 'salida', 1, 'Salida de 69 Kilogramos de \'Espuma de poliuretano\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4421}', '{\"stock_actual\":4352}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(247, 'materia_prima', 'salida', 2, 'Salida de 22.5 Metros de \'Tela Jacquard\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4815.5}', '{\"stock_actual\":4793}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(248, 'materia_prima', 'salida', 3, 'Salida de 510 Unidades de \'Resortes Bonnell\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":1220}', '{\"stock_actual\":710}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(249, 'materia_prima', 'salida', 4, 'Salida de 13.5 Metros de \'Fieltro aislante\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4897}', '{\"stock_actual\":4883.5}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(250, 'materia_prima', 'salida', 5, 'Salida de 4.8 Litros de \'Pegante industrial\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4960.6}', '{\"stock_actual\":4955.8}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(251, 'materia_prima', 'salida', 6, 'Salida de 1.65 Unidades de \'Hilo de costura\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4987.45}', '{\"stock_actual\":4985.8}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(252, 'materia_prima', 'salida', 7, 'Salida de 6 Kilogramos de \'Espuma viscoelastica\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4924}', '{\"stock_actual\":4918}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(253, 'materia_prima', 'salida', 8, 'Salida de 11.4 Metros de \'Tela antideslizante\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4913.1}', '{\"stock_actual\":4901.700000000001}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(254, 'materia_prima', 'salida', 9, 'Salida de 31.5 Metros de \'Borde perimetral\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4777}', '{\"stock_actual\":4745.5}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(255, 'materia_prima', 'salida', 10, 'Salida de 3 Metros de \'Empaque plastico\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4980}', '{\"stock_actual\":4977}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(256, 'producto_terminado', 'crear', 3, 'Se fabricaron 3 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":3,\"nombre_producto\":\"Confort Total\"}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:53'),
+(257, 'materia_prima', 'salida', 1, 'Salida de 69 Kilogramos de \'Espuma de poliuretano\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4352}', '{\"stock_actual\":4283}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(258, 'materia_prima', 'salida', 2, 'Salida de 22.5 Metros de \'Tela Jacquard\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4793}', '{\"stock_actual\":4770.5}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(259, 'materia_prima', 'salida', 3, 'Salida de 510 Unidades de \'Resortes Bonnell\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":710}', '{\"stock_actual\":200}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(260, 'materia_prima', 'salida', 4, 'Salida de 13.5 Metros de \'Fieltro aislante\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4883.5}', '{\"stock_actual\":4870}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(261, 'materia_prima', 'salida', 5, 'Salida de 4.8 Litros de \'Pegante industrial\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4955.8}', '{\"stock_actual\":4951}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(262, 'materia_prima', 'salida', 6, 'Salida de 1.65 Unidades de \'Hilo de costura\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4985.8}', '{\"stock_actual\":4984.150000000001}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(263, 'materia_prima', 'salida', 7, 'Salida de 6 Kilogramos de \'Espuma viscoelastica\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4918}', '{\"stock_actual\":4912}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(264, 'materia_prima', 'salida', 8, 'Salida de 11.4 Metros de \'Tela antideslizante\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4901.7}', '{\"stock_actual\":4890.3}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(265, 'materia_prima', 'salida', 9, 'Salida de 31.5 Metros de \'Borde perimetral\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4745.5}', '{\"stock_actual\":4714}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(266, 'materia_prima', 'salida', 10, 'Salida de 3 Metros de \'Empaque plastico\' para fabricar 3 unidades de \'Confort Total\'', '{\"stock_actual\":4977}', '{\"stock_actual\":4974}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(267, 'producto_terminado', 'crear', 3, 'Se fabricaron 3 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":3,\"nombre_producto\":\"Confort Total\"}', NULL, 'Juan Montaño', '::1', '2026-08-25 23:03:54'),
+(268, 'materia_prima', 'salida', 1, 'Salida de 23 Kilogramos de \'Espuma de poliuretano\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4283}', '{\"stock_actual\":4260}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:16'),
+(269, 'materia_prima', 'salida', 2, 'Salida de 7.5 Metros de \'Tela Jacquard\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4770.5}', '{\"stock_actual\":4763}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:16'),
+(270, 'materia_prima', 'salida', 3, 'Salida de 170 Unidades de \'Resortes Bonnell\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":200}', '{\"stock_actual\":30}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:16'),
+(271, 'materia_prima', 'salida', 4, 'Salida de 4.5 Metros de \'Fieltro aislante\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4870}', '{\"stock_actual\":4865.5}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
+(272, 'materia_prima', 'salida', 5, 'Salida de 1.6 Litros de \'Pegante industrial\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4951}', '{\"stock_actual\":4949.4}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
+(273, 'materia_prima', 'salida', 6, 'Salida de 0.55 Unidades de \'Hilo de costura\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4984.15}', '{\"stock_actual\":4983.599999999999}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
+(274, 'materia_prima', 'salida', 7, 'Salida de 2 Kilogramos de \'Espuma viscoelastica\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4912}', '{\"stock_actual\":4910}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
+(275, 'materia_prima', 'salida', 8, 'Salida de 3.8 Metros de \'Tela antideslizante\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4890.3}', '{\"stock_actual\":4886.5}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
+(276, 'materia_prima', 'salida', 9, 'Salida de 10.5 Metros de \'Borde perimetral\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4714}', '{\"stock_actual\":4703.5}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
+(277, 'materia_prima', 'salida', 10, 'Salida de 1 Metros de \'Empaque plastico\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4974}', '{\"stock_actual\":4973}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
+(278, 'producto_terminado', 'crear', 3, 'Se fabricaron 1 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":1,\"nombre_producto\":\"Confort Total\"}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17');
 
 -- --------------------------------------------------------
 
@@ -285,7 +363,14 @@ INSERT INTO `historial_produccion` (`id`, `id_modelo`, `cantidad`, `fecha_fabric
 (5, 3, 2, '2026-08-25 21:55:13', 'Jose Montaño'),
 (6, 3, 2, '2026-08-25 22:00:03', 'Jose Montaño'),
 (7, 3, 2, '2026-08-25 22:06:02', 'Jose Montaño'),
-(8, 3, 2, '2026-08-25 22:06:03', 'Jose Montaño');
+(8, 3, 2, '2026-08-25 22:06:03', 'Jose Montaño'),
+(9, 4, 5, '2026-08-25 22:45:43', 'Juan Montaño'),
+(10, 3, 1, '2026-08-25 22:47:45', 'Juan Montaño'),
+(11, 3, 1, '2026-08-25 22:49:52', 'Juan Montaño'),
+(12, 3, 2, '2026-08-25 23:02:10', 'Jose Montaño'),
+(13, 3, 3, '2026-08-25 23:03:53', 'Juan Montaño'),
+(14, 3, 3, '2026-08-25 23:03:54', 'Juan Montaño'),
+(15, 3, 1, '2026-08-26 16:51:16', 'Juan Montaño');
 
 -- --------------------------------------------------------
 
@@ -310,19 +395,18 @@ CREATE TABLE `materias_primas` (
 --
 
 INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`, `stock_minimo`, `id_unidad`, `id_proveedor`, `notificar_email`, `correo_notificacion`, `alerta_enviada`) VALUES
-(1, 'Espuma de poliuretano', 4673.00, 200.00, 1, 1, 1, 'juanjosemon19@gmail.com', 0),
-(2, 'Tela Jacquard', 4895.50, 50.00, 2, 2, 0, NULL, 0),
-(3, 'Resortes Bonnell', 3050.00, 300.00, 3, 3, 0, NULL, 0),
-(4, 'Fieltro aislante', 4947.50, 15.00, 2, 1, 1, 'nicolaspolo096@gmail.com', 0),
-(5, 'Pegante industrial', 4978.00, 20.00, 4, 4, 0, NULL, 0),
-(6, 'Hilo de costura', 4993.65, 50.00, 3, 2, 0, NULL, 0),
-(7, 'Espuma viscoelastica', 4972.00, 70.00, 1, 1, 1, 'juanjosemon19@gmail.com', 0),
-(8, 'Tela antideslizante', 4955.80, 40.00, 2, 2, 0, NULL, 0),
-(9, 'Borde perimetral', 4881.50, 40.00, 2, 3, 0, NULL, 0),
-(10, 'Empaque plastico', 4989.00, 80.00, 2, 4, 0, NULL, 0),
+(1, 'Espuma de poliuretano', 4260.00, 200.00, 1, 1, 1, 'juanjosemon19@gmail.com', 0),
+(2, 'Tela Jacquard', 4763.00, 50.00, 2, 2, 0, NULL, 0),
+(3, 'Resortes Bonnell', 30.00, 300.00, 3, 3, 0, NULL, 0),
+(4, 'Fieltro aislante', 4865.50, 15.00, 2, 1, 1, 'nicolaspolo096@gmail.com', 0),
+(5, 'Pegante industrial', 4949.40, 20.00, 4, 4, 0, NULL, 0),
+(6, 'Hilo de costura', 4983.60, 50.00, 3, 2, 0, NULL, 0),
+(7, 'Espuma viscoelastica', 4910.00, 70.00, 1, 1, 1, 'juanjosemon19@gmail.com', 0),
+(8, 'Tela antideslizante', 4886.50, 40.00, 2, 2, 0, NULL, 0),
+(9, 'Borde perimetral', 4703.50, 40.00, 2, 3, 0, NULL, 0),
+(10, 'Empaque plastico', 4973.00, 80.00, 2, 4, 0, NULL, 0),
 (11, 'Tela ', 5000.00, 30.00, 2, 2, 0, NULL, 0),
-(13, 'Fieltro aislante', 5000.00, 0.00, 3, 4, 0, NULL, 0),
-(14, 'Resortes Bonnell', 5000.00, 0.00, 3, 8, 0, NULL, 0);
+(13, 'Fieltro aislante', 5000.00, 0.00, 3, 4, 0, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -422,9 +506,10 @@ INSERT INTO `productos_terminados` (`id_producto`, `nombre_producto`, `stock_act
 (2, 'Colchon King', 12.00, 0.00, '2026-08-11 19:56:06'),
 (3, 'Colchon Normal', 15.00, 0.00, '2026-08-11 19:56:39'),
 (5, 'Semidoble', 3.00, 0.00, '2026-08-20 14:05:36'),
-(6, 'Confort Total', 11.00, 0.00, '2026-08-25 20:06:35'),
+(6, 'Confort Total', 22.00, 0.00, '2026-08-25 20:06:35'),
 (7, 'Descanso Real', 1.00, 0.00, '2026-08-25 20:10:20'),
-(8, 'King', 2.00, 0.00, '2026-08-25 20:13:12');
+(8, 'King', 2.00, 0.00, '2026-08-25 20:13:12'),
+(9, 'Premium Gold', 5.00, 0.00, '2026-08-25 22:45:43');
 
 -- --------------------------------------------------------
 
@@ -652,7 +737,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `foto`, `telefono`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
-(7, 'juanjosemon19@gmail.com', '1068952619', 'Jose', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '', NULL, '0'),
+(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '', NULL, '0'),
 (8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', NULL, NULL, 'administrador', '$2y$10$pGRHa/Lsekzlel4Us/2dz.VyO7sjNgE8tXH2P3wC..Mp1EoArax9u', '1', '1c22a7c418cf90580dd5aead4875e31b3afb56726a242a0f4a3f72a4050f0d14', '1787715197'),
 (10, 'jafetdavidpi@gmail.com', '1072746605', 'David', 'Pineda', NULL, NULL, 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
 (14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
@@ -770,13 +855,13 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `historial_movimientos`
 --
 ALTER TABLE `historial_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=201;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=279;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_produccion`
 --
 ALTER TABLE `historial_produccion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `materias_primas`
@@ -806,7 +891,7 @@ ALTER TABLE `pedidos_proveedor`
 -- AUTO_INCREMENT de la tabla `productos_terminados`
 --
 ALTER TABLE `productos_terminados`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
