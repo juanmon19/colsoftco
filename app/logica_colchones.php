@@ -3,7 +3,10 @@
 header('Content-Type: application/json');
 require_once '../config/conexion.php';
 require_once __DIR__ . '/HistorialMovimientos.php';
-require_once __DIR__ . '/ReciboPDF.php';
+require_once __DIR__ . '/../vendor/autoload.php'; // Requerido para usar Dompdf
+
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 session_start();
 
@@ -32,7 +35,6 @@ function iconoMaterial(string $nombre): string
 
 /**
  * Trae la receta REAL de un modelo desde la base de datos
- * (tabla receta_colchon, unida a materias_primas y unidades_medida)
  * y la compara contra el stock actual disponible.
  */
 function evaluarProduccion(PDO $db, int $idModelo, float $cantidad): array
@@ -142,9 +144,6 @@ if ($accion === 'fabricar') {
             ]);
         }
 
-        /* La tabla productos_terminados no tiene columna id_modelo,
-           el producto existente se identifica por nombre_producto
-           (mismo patrón que usa registro_producto_terminado.php). */
         $stmt = $db->prepare(
             "SELECT id_producto FROM productos_terminados WHERE nombre_producto = :nombre LIMIT 1"
         );
@@ -154,8 +153,8 @@ if ($accion === 'fabricar') {
         if ($existente) {
             $stmt = $db->prepare(
                 "UPDATE productos_terminados
-         SET stock_actual = stock_actual + :cantidad
-         WHERE id_producto = :id"
+                 SET stock_actual = stock_actual + :cantidad
+                 WHERE id_producto = :id"
             );
             $stmt->execute([
                 ':cantidad' => $resultado['cantidad'],
@@ -164,7 +163,7 @@ if ($accion === 'fabricar') {
         } else {
             $stmt = $db->prepare(
                 "INSERT INTO productos_terminados (nombre_producto, stock_actual)
-         VALUES (:nombre, :cantidad)"
+                 VALUES (:nombre, :cantidad)"
             );
             $stmt->execute([
                 ':nombre'    => $resultado['nombre_producto'],
@@ -172,7 +171,7 @@ if ($accion === 'fabricar') {
             ]);
         }
 
-        // Registrar la fabricación en historial_produccion (para el módulo de historial y el número de recibo)
+        // Registrar la fabricación en historial_produccion
         $usuarioNombre = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema';
 
         $stmtHistorialProd = $db->prepare(
@@ -188,12 +187,15 @@ if ($accion === 'fabricar') {
 
         $db->commit();
 
-        // Registrar en el historial: salida de cada materia prima consumida
+        /* =======================================================
+           REGISTROS EN EL HISTORIAL DE MOVIMIENTOS
+           ======================================================= */
         $historial = new HistorialMovimientos();
 
+        // 1. Salidas de Materia Prima (¡CORREGIDO AQUÍ PARA LOS REPORTES!)
         foreach ($resultado['materiales'] as $mat) {
             $historial->registrar([
-                'modulo'      => 'produccion',
+                'modulo'      => 'materia_prima', // <- Antes decía 'produccion'. Ahora el reporte lo detectará.
                 'accion'      => 'salida',
                 'id_registro' => $mat['id_material'],
                 'descripcion' => "Salida de {$mat['cantidad_requerida']} {$mat['unidad']} de '{$mat['nombre_material']}' "
@@ -204,17 +206,19 @@ if ($accion === 'fabricar') {
             ]);
         }
 
-        // Registrar en el historial: entrada del producto terminado
+        // 2. Entrada de Producto Terminado
         $historial->registrar([
-            'modulo'         => 'produccion',
-            'accion'         => 'entrada',
+            'modulo'         => 'producto_terminado',
+            'accion'         => 'crear',
             'id_registro'    => $resultado['id_modelo'],
             'descripcion'    => "Se fabricaron {$resultado['cantidad']} unidades de '{$resultado['nombre_producto']}'",
-            'datos_nuevos'   => ['unidades_fabricadas' => $resultado['cantidad']],
+            'datos_nuevos'   => ['unidades_fabricadas' => $resultado['cantidad'], 'nombre_producto' => $resultado['nombre_producto']],
             'usuario_nombre' => $usuarioNombre,
         ]);
 
-        // Generar el recibo en PDF con la identidad visual de COLSOFTCO
+        /* =======================================================
+           GENERACIÓN DEL NUEVO RECIBO PDF CORPORATIVO
+           ======================================================= */
         $carpetaRecibos = __DIR__ . '/../public/recibos/';
         if (!is_dir($carpetaRecibos)) {
             mkdir($carpetaRecibos, 0755, true);
@@ -223,20 +227,105 @@ if ($accion === 'fabricar') {
         $nombreArchivo = 'recibo_' . str_pad($numeroRecibo, 6, '0', STR_PAD_LEFT) . '.pdf';
         $rutaCompleta  = $carpetaRecibos . $nombreArchivo;
 
-        $pdf = new ReciboPDF($numeroRecibo);
-        $pdf->AddPage();
-        $pdf->agregarDetalle($resultado['nombre_producto'], $resultado['cantidad']);
-        $pdf->agregarMensajeExito();
-        $pdf->Output('F', $rutaCompleta);
+        // Convertir Logo a Base64
+        $rutaLogo = __DIR__ . '/../public/imagenes/logo.png';
+        $base64Logo = '';
+        if (file_exists($rutaLogo)) {
+            $tipoContenido = pathinfo($rutaLogo, PATHINFO_EXTENSION);
+            $datosImagen = file_get_contents($rutaLogo);
+            $base64Logo = 'data:image/' . $tipoContenido . ';base64,' . base64_encode($datosImagen);
+        }
 
+        $fechaActual = date('d/m/Y H:i');
+        
+        ob_start();
+        ?>
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body { font-family: Helvetica, Arial, sans-serif; color: #333; margin: 15px; }
+                .recibo-num { text-align: right; font-size: 11px; color: #666; margin-bottom: -15px; font-weight: bold; }
+                .header { text-align: center; margin-bottom: 20px; }
+                .header img { width: 75px; margin-bottom: 8px; }
+                .header h1 { color: #0A1F44; font-size: 18px; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+                .header h3 { color: #D4AF37; font-size: 11px; margin: 5px 0 0 0; font-weight: normal; }
+                .divider { border: none; border-top: 2px solid #D4AF37; margin: 15px 0; }
+                table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                td { padding: 10px 8px; border-bottom: 1px solid #e2e6f0; font-size: 13px; }
+                td.label { font-weight: bold; color: #0A1F44; width: 45%; }
+                td.value { text-align: right; color: #333; }
+                .mensaje-exito { background: #f4f6fb; border-left: 4px solid #0A1F44; padding: 12px; margin-top: 25px; border-radius: 4px; }
+                .mensaje-exito strong { color: #0A1F44; display: block; margin-bottom: 5px; font-size: 13px; }
+                .mensaje-exito p { margin: 0; font-size: 11px; color: #555; line-height: 1.4; }
+                .footer { position: fixed; bottom: -15px; left: 0; right: 0; text-align: center; font-size: 9px; color: #999; border-top: 1px solid #eee; padding-top: 8px; }
+            </style>
+        </head>
+        <body>
+            <div class="recibo-num">Recibo No.: <?= str_pad($numeroRecibo, 6, '0', STR_PAD_LEFT) ?></div>
+            
+            <div class="header">
+                <?php if($base64Logo): ?>
+                    <img src="<?= $base64Logo ?>" alt="Logo ColSoft">
+                <?php endif; ?>
+                <h1>Comprobante de Producción</h1>
+                <h3>COLSOFTCO - Sistema de Gestión Max&Flex</h3>
+            </div>
+
+            <hr class="divider">
+
+            <table>
+                <tr>
+                    <td class="label">Producto fabricado:</td>
+                    <td class="value"><?= htmlspecialchars($resultado['nombre_producto']) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">Cantidad producida:</td>
+                    <td class="value"><?= htmlspecialchars($resultado['cantidad']) ?> unidades</td>
+                </tr>
+                <tr>
+                    <td class="label">Fecha:</td>
+                    <td class="value"><?= $fechaActual ?></td>
+                </tr>
+            </table>
+
+            <div class="mensaje-exito">
+                <strong>Producción registrada exitosamente</strong>
+                <p>El inventario de materia prima fue descontado y el stock de producto terminado fue actualizado correctamente en el sistema.</p>
+            </div>
+
+            <div class="footer">
+                Generado automáticamente por el sistema COLSOFTCO • Página 1
+            </div>
+        </body>
+        </html>
+        <?php
+        $html = ob_get_clean();
+
+        $options = new Options();
+        $options->set('isRemoteEnabled', true);
+        $options->set('defaultFont', 'Helvetica');
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A5', 'portrait'); 
+        $dompdf->render();
+
+        // Guardar el archivo PDF generado en la carpeta del servidor
+        file_put_contents($rutaCompleta, $dompdf->output());
+
+        // Devolver la respuesta JSON exitosa con la ruta al archivo
         echo json_encode([
             'ok'            => true,
             'mensaje'       => "Se fabricaron {$resultado['cantidad']} unidades de {$resultado['nombre_producto']} correctamente.",
             'recibo_pdf'    => '../../public/recibos/' . $nombreArchivo,
             'numero_recibo' => $numeroRecibo,
         ]);
+
     } catch (Exception $e) {
-        $db->rollBack();
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
         echo json_encode(['ok' => false, 'error' => 'Error al fabricar: ' . $e->getMessage()]);
     }
 

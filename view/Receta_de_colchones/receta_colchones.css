@@ -363,3 +363,44 @@ footer {
 .footer-bottom strong {
     color: #C9A227;
 }
+
+/* ══ CLASE NUEVA PARA LA TABLA ══ */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Suaviza el scroll en iOS */
+    margin-bottom: 20px;
+}
+
+/* ══ MEDIA QUERIES PARA CELULARES Y TABLETS ══ */
+@media (max-width: 768px) {
+    /* Reduce los márgenes para aprovechar el espacio en pantallas pequeñas */
+    .paneles {
+        padding: 16px;
+        gap: 16px;
+    }
+    
+    /* Achica un poco el texto del header para que el botón no se apriete */
+    .header-title {
+        font-size: 12px; 
+    }
+    .btn-logout {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    /* Pasa el footer a una sola columna */
+    .footer-top {
+        grid-template-columns: 1fr; 
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+    
+    /* Centra los textos del fondo del footer */
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+        gap: 12px;
+    }
+}

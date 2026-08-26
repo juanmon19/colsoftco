@@ -1,10 +1,14 @@
 <?php
 
 require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/../app/HistorialMovimientos.php';
 
 class InventarioLogica
 {
     private $conn;
+
+    /* Debe coincidir con lo que lee app/logica_informes.php */
+    private const MODULO_HISTORIAL = 'materia_prima';
 
     public function __construct()
     {
@@ -72,13 +76,29 @@ class InventarioLogica
 
         $stmt = $this->conn->prepare($sql);
 
-        return $stmt->execute([
+        $ok = $stmt->execute([
             $nombre,
             $stockActual,
             $stockMinimo,
             $unidad,
             $proveedor
         ]);
+
+        if ($ok) {
+            $idNuevo = $this->conn->lastInsertId();
+
+            /* El stock inicial también cuenta como movimiento (entrada desde 0) */
+            $this->registrarMovimientoHistorial(
+                $idNuevo,
+                $nombre,
+                0,
+                $stockActual,
+                'crear',
+                "Se registró la materia prima '{$nombre}' con stock inicial {$stockActual}"
+            );
+        }
+
+        return $ok;
     }
 
     public function actualizarMaterial(
@@ -90,6 +110,10 @@ class InventarioLogica
         $proveedor
     )
     {
+        /* Necesitamos el stock ANTES de actualizar, para poder calcular el movimiento real */
+        $materialAnterior = $this->obtenerMaterial($id);
+        $stockAnterior = $materialAnterior['stock_actual'] ?? null;
+
         $sql = "
         UPDATE materias_primas
         SET
@@ -103,13 +127,53 @@ class InventarioLogica
 
         $stmt = $this->conn->prepare($sql);
 
-        return $stmt->execute([
+        $ok = $stmt->execute([
             $nombre,
             $stockActual,
             $stockMinimo,
             $unidad,
             $proveedor,
             $id
+        ]);
+
+        if ($ok && $stockAnterior !== null && (float) $stockAnterior !== (float) $stockActual) {
+            $this->registrarMovimientoHistorial(
+                $id,
+                $nombre,
+                $stockAnterior,
+                $stockActual,
+                'actualizar',
+                "Se actualizó el stock de '{$nombre}' de {$stockAnterior} a {$stockActual}"
+            );
+        }
+
+        return $ok;
+    }
+
+    /**
+     * Guarda el cambio de stock en historial_movimientos para que
+     * app/logica_informes.php pueda calcular entradas/salidas reales por mes.
+     */
+    private function registrarMovimientoHistorial(
+        $idMaterial,
+        $nombreMaterial,
+        $stockAnterior,
+        $stockNuevo,
+        $accion,
+        $descripcion
+    ) {
+        $usuarioNombre = trim(
+            ($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')
+        ) ?: 'Sistema';
+
+        (new HistorialMovimientos())->registrar([
+            'modulo'           => self::MODULO_HISTORIAL,
+            'accion'           => $accion,
+            'id_registro'      => $idMaterial,
+            'descripcion'      => $descripcion,
+            'datos_anteriores' => ['stock_actual' => (float) $stockAnterior],
+            'datos_nuevos'     => ['stock_actual' => (float) $stockNuevo, 'nombre_material' => $nombreMaterial],
+            'usuario_nombre'   => $usuarioNombre,
         ]);
     }
 

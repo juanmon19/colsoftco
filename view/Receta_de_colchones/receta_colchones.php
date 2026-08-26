@@ -189,17 +189,19 @@ $modelos = $dbConn->query(
             resultadoBody.innerHTML = `
                 ${bannerTop}
 
-                <table class="tabla-materiales">
-                    <thead>
-                        <tr>
-                            <th>Materia prima</th>
-                            <th>Cantidad requerida</th>
-                            <th>Cantidad disponible</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>${filas}</tbody>
-                </table>
+                <div class="table-container">
+                    <table class="tabla-materiales">
+                        <thead>
+                            <tr>
+                                <th>Materia prima</th>
+                                <th>Cantidad requerida</th>
+                                <th>Cantidad disponible</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>${filas}</tbody>
+                    </table>
+                </div>
 
                 ${bannerBottom}
 
