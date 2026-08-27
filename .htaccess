@@ -26,3 +26,10 @@ AddDefaultCharset UTF-8
     RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
 
 </IfModule>
+
+# Páginas de error personalizadas
+ErrorDocument 400 /colsoftco/view/errores/error_400.php
+ErrorDocument 403 /colsoftco/view/errores/error_403.php
+ErrorDocument 404 /colsoftco/view/errores/error_404.php
+ErrorDocument 500 /colsoftco/view/errores/error_500.php
+ErrorDocument 502 /colsoftco/view/errores/error_502.php
