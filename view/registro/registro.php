@@ -159,7 +159,7 @@ require_once "../../app/verificar_sesion.php";
         <?php
             if (isset($_SESSION['mensaje'])): ?>
             <div class="mensaje">
-                <?php echo $_SESSION['mensaje']; ?>
+                <?= htmlspecialchars($_SESSION['mensaje'] ?? '', ENT_QUOTES, 'UTF-8') ?>
             </div>
             <?php unset($_SESSION['mensaje']); ?>
         <?php endif; ?>

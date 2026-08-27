@@ -10,19 +10,23 @@
 
     public $pps = null;
 
+    private static ?PDO $instance = null;
     private $Conector = null;
 
-
-
-    public function getConnection(){
-
-      $this->Conector = new PDO(
-        "mysql:host=".$this->Servidor.";dbname=".$this->BaseDeDatos,
-        $this->Usuario, 
-        $this->Password
-      );
-
-      $this->Conector->exec("set names utf8");
+    public function getConnection(): PDO {
+      if (self::$instance === null) {
+        self::$instance = new PDO(
+          "mysql:host={$this->Servidor};dbname={$this->BaseDeDatos};charset=utf8mb4",
+          $this->Usuario, 
+          $this->Password,
+          [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+          ]
+        );
+      }
+      $this->Conector = self::$instance;
       return $this->Conector;
     }
 
@@ -40,15 +44,3 @@
     }
     
   }
-
-//   $connection = new Conexion;
-
-//   if($connection->getConnection())
-//   {
-//     echo "conectado";
-//   }
-//   else
-// {
-//     echo "Error conectado";
-//   }
-  

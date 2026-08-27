@@ -64,7 +64,16 @@ if (isset($_SESSION['mensaje'])) {
 
                 <div class="input-group">
                     <label for="password">Contraseña</label>
-                    <input type="password" id="password" name="password" required>
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" required>
+                        <button type="button" id="togglePassword" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
+                            <!-- Icono de Ojo Abierto (Por defecto) -->
+                            <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn">
@@ -92,6 +101,36 @@ if (isset($_SESSION['mensaje'])) {
         window.addEventListener('pageshow', function () {
             document.getElementById('loginForm').reset();
         });
+
+        // Funcionalidad para alternar la contraseña y cambiar entre los iconos vectoriales de la imagen
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                if (type === 'password') {
+                    // Muestra el icono de ojo abierto
+                    togglePassword.innerHTML = `
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                            <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                        </svg>
+                    `;
+                } else {
+                    // Muestra el icono de ojo con la barra diagonal cruzada
+                    togglePassword.innerHTML = `
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                            <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                            <line x1="2" y1="2" x2="22" y2="22"></line>
+                        </svg>
+                    `;
+                }
+            });
+        }
     </script>
 
     <footer>

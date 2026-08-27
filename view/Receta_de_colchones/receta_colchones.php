@@ -52,7 +52,7 @@ $modelos = $dbConn->query(
                 </select>
 
                 <label for="cantidad">Cantidad</label>
-                <input type="number" id="cantidad" min="1" value="20">
+                <input type="number" id="cantidad" min="1" step="1" value="20" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 
                 <button id="btnGenerar" class="btn btn-generar">
                     ⚙ Generar

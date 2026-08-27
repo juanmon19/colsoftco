@@ -12,6 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 'registrar':
 
+            $imagen = $_POST['imagen'] ?? '';
+
             $ok = $logica->registrarProveedor(
                 $_POST['nombre_empresa'],
                 $_POST['contacto_nombre'],
@@ -20,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_POST['email'],
                 $_POST['nit'],
                 $_POST['direccion'],
-                $_POST['descripcion_empresa']
+                $_POST['descripcion_empresa'],
+                $imagen
             );
 
             header("Location: ../view/lista_proveedores/lista_proveedores.php");
@@ -28,8 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 'editar':
 
+            $imagen = $_POST['imagen'] ?? null;
+
             $ok = $logica->actualizarProveedor(
-                $_POST['id_proveedor'],
+                (int) $_POST['id_proveedor'],
                 $_POST['nombre_empresa'],
                 $_POST['contacto_nombre'],
                 $_POST['contacto_apellido'],
@@ -37,7 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_POST['email'],
                 $_POST['nit'],
                 $_POST['direccion'],
-                $_POST['descripcion_empresa']
+                $_POST['descripcion_empresa'],
+                $imagen
             );
 
             header("Location: ../view/lista_proveedores/lista_proveedores.php");
@@ -46,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'eliminar':
 
             $logica->eliminarProveedor(
-                (int)$_POST['id_proveedor']
+                (int) $_POST['id_proveedor']
             );
 
             header("Location: ../view/lista_proveedores/lista_proveedores.php");

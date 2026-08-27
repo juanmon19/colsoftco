@@ -14,11 +14,17 @@ header("Expires: 0");
 
 $logica = new ProveedorLogica();
 
-$id = $_GET['id'] ?? 0;
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if (!$id || $id <= 0) {
+    header("Location: lista_proveedores.php");
+    exit();
+}
+
 $proveedor = $logica->getProveedorById($id);
 
 if (!$proveedor) {
-    die("Proveedor no encontrado");
+    header("Location: lista_proveedores.php");
+    exit();
 }
 
 /* El estado hacia el que va a cambiar (lo contrario del actual) */

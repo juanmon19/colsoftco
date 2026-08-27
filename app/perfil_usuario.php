@@ -152,13 +152,15 @@ if ($accion === 'foto') {
     // 3. SI HAY UN ERROR DE SINTAXIS, NOS AVISARÁ
     if (!$exito) {
         $errorDB = $stmt->errorInfo();
-        echo json_encode(['ok' => false, 'error' => 'Error de Base de Datos: ' . $errorDB[2]]);
+        error_log('Error BD perfil_usuario: ' . ($errorDB[2] ?? 'desconocido'));
+        echo json_encode(['ok' => false, 'error' => 'Ocurrió un error al guardar la foto.']);
         exit();
     }
 
     // 4. SI LA BASE DE DATOS IGNORA EL UPDATE, TAMBIÉN NOS AVISARÁ
     if ($stmt->rowCount() === 0) {
-        echo json_encode(['ok' => false, 'error' => 'Fallo al guardar en BD. Verifica el ID: ' . $idUsuarioInt]);
+        error_log('Fallo al guardar foto en BD. ID: ' . $idUsuarioInt);
+        echo json_encode(['ok' => false, 'error' => 'No se pudo guardar la foto de perfil.']);
         exit();
     }
 

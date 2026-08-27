@@ -44,7 +44,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px; /* El padding horizontal evita que se pegue a los bordes en móviles */
+    padding: 40px 20px;
 }
 
 /* ===== CABECERA ===== */
@@ -84,8 +84,8 @@ body {
     padding: 50px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    width: 100%; /* Ajuste responsivo */
-    max-width: 400px; /* Límite para pantallas grandes */
+    width: 100%;
+    max-width: 400px;
 }
 
 /* ===== TÍTULO ===== */
@@ -114,6 +114,36 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 14px;
+}
+
+/* ===== CONTENEDOR INPUT CONTRASEÑA CON ICONO SVG ===== */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+}
+
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
 }
 
 /* ===== BOTÓN ===== */
@@ -250,15 +280,13 @@ footer {
     color: #C9A227;
 }
 
-
 /* =========================================
    MEDIA QUERIES (DISEÑO RESPONSIVO)
    ========================================= */
 
-/* Tablets y pantallas medianas */
 @media (max-width: 768px) {
     .footer-top {
-        grid-template-columns: 1fr; /* El footer pasa a 1 sola columna */
+        grid-template-columns: 1fr;
         gap: 1.5rem;
         padding: 1.5rem 1.5rem 1.2rem;
     }
@@ -270,23 +298,22 @@ footer {
     }
 }
 
-/* Teléfonos móviles */
 @media (max-width: 480px) {
     .header {
         padding: 0 10px;
     }
 
     .header-title {
-        font-size: 18px; /* Título más pequeño para evitar desbordamientos */
-        margin-left: 50px; /* Evita que el texto choque con el logo */
+        font-size: 18px;
+        margin-left: 50px;
     }
 
     .logo img {
-        width: 50px; /* Logo más sutil en móviles */
+        width: 50px;
     }
 
     .login-container {
-        padding: 30px 20px; /* Menos espacio interno en el cuadro azul */
+        padding: 30px 20px;
     }
 
     .login-wrapper {

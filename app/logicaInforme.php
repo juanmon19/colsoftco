@@ -139,13 +139,4 @@ class InformeLogica
         return $comparativo;
     }
 
-    public function getResumen(int $mesInicio, int $mesFin, int $anio): array
-    {
-        return [];
-    }
-
-    public function getComparacionMeses(int $mesA, int $mesB, int $anio): array
-    {
-        return [];
-    }
 }

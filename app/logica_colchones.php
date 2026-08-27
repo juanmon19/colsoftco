@@ -1,15 +1,21 @@
 <?php
+require_once 'verificar_sesion.php';
 date_default_timezone_set('America/Bogota');
 header('Content-Type: application/json');
 require_once '../config/conexion.php';
 require_once __DIR__ . '/HistorialMovimientos.php';
-require_once __DIR__ . '/../vendor/autoload.php'; // Requerido para usar Dompdf
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-session_start();
+// 1. Verificación de Seguridad
+if (!isset($_SESSION['documento'])) {
+    echo json_encode(['ok' => false, 'error' => 'Sesión no válida.']);
+    exit();
+}
 
+// 2. Conexión a la Base de Datos
 $conexion = new Conexion();
 $db = $conexion->getConnection();
 
@@ -37,7 +43,7 @@ function iconoMaterial(string $nombre): string
  * Trae la receta REAL de un modelo desde la base de datos
  * y la compara contra el stock actual disponible.
  */
-function evaluarProduccion(PDO $db, int $idModelo, float $cantidad): array
+function evaluarProduccion(PDO $db, int $idModelo, int $cantidad): array
 {
     if ($cantidad <= 0) {
         return ['ok' => false, 'error' => 'La cantidad debe ser mayor a 0.'];
@@ -79,7 +85,6 @@ function evaluarProduccion(PDO $db, int $idModelo, float $cantidad): array
     $produccionPosible = true;
 
     foreach ($filas as $fila) {
-
         $requerida  = (float) $fila['cantidad_requerida'] * $cantidad;
         $disponible = (float) $fila['stock_actual'];
         $suficiente = $disponible >= $requerida;
@@ -111,7 +116,7 @@ function evaluarProduccion(PDO $db, int $idModelo, float $cantidad): array
 
 $accion   = $_REQUEST['accion']    ?? '';
 $idModelo = isset($_REQUEST['id_modelo']) ? (int) $_REQUEST['id_modelo'] : 0;
-$cantidad = isset($_REQUEST['cantidad']) ? (float) $_REQUEST['cantidad'] : 0;
+$cantidad = isset($_REQUEST['cantidad']) ? (int) $_REQUEST['cantidad'] : 0;
 
 /* ══ Solo calcula y compara, no toca la base de datos ══ */
 if ($accion === 'calcular') {
@@ -122,28 +127,102 @@ if ($accion === 'calcular') {
 /* ══ Descuenta materia prima y aumenta el producto terminado ══ */
 if ($accion === 'fabricar') {
 
-    $resultado = evaluarProduccion($db, $idModelo, $cantidad);
-
-    if (!$resultado['ok'] || !$resultado['produccion_posible']) {
-        echo json_encode(['ok' => false, 'error' => 'No hay suficiente materia prima para fabricar.']);
-        exit();
-    }
-
     try {
         $db->beginTransaction();
 
+        // Evaluar dentro de la transacción para evitar race conditions
+        if ($cantidad <= 0) {
+            $db->rollBack();
+            echo json_encode(['ok' => false, 'error' => 'La cantidad debe ser mayor a 0.']);
+            exit();
+        }
+
+        $stmtModelo = $db->prepare(
+            "SELECT nombre_modelo FROM modelos_colchon WHERE id_modelo = :id_modelo"
+        );
+        $stmtModelo->execute([':id_modelo' => $idModelo]);
+        $modelo = $stmtModelo->fetch(PDO::FETCH_ASSOC);
+
+        if (!$modelo) {
+            $db->rollBack();
+            echo json_encode(['ok' => false, 'error' => 'Modelo de colchón no encontrado.']);
+            exit();
+        }
+
+        // Obtener receta con bloqueo de filas (FOR UPDATE)
+        $sqlReceta = "SELECT
+                rc.id_material,
+                rc.cantidad_requerida,
+                mp.nombre_material,
+                mp.stock_actual,
+                um.nombre_unidad
+            FROM receta_colchon rc
+            INNER JOIN materias_primas mp ON mp.id_material = rc.id_material
+            LEFT JOIN unidades_medida um ON um.id_unidad = mp.id_unidad
+            WHERE rc.id_modelo = :id_modelo
+            FOR UPDATE";
+
+        $stmtReceta = $db->prepare($sqlReceta);
+        $stmtReceta->execute([':id_modelo' => $idModelo]);
+        $filas = $stmtReceta->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$filas) {
+            $db->rollBack();
+            echo json_encode(['ok' => false, 'error' => 'Este modelo no tiene receta registrada.']);
+            exit();
+        }
+
+        // Verificar stock suficiente (ahora con filas bloqueadas)
+        $materiales = [];
+        foreach ($filas as $fila) {
+            $requerida  = (float) $fila['cantidad_requerida'] * $cantidad;
+            $disponible = (float) $fila['stock_actual'];
+
+            if ($disponible < $requerida) {
+                $db->rollBack();
+                echo json_encode(['ok' => false, 'error' => 'No hay suficiente materia prima para fabricar.']);
+                exit();
+            }
+
+            $materiales[] = [
+                'id_material'         => $fila['id_material'],
+                'nombre_material'     => $fila['nombre_material'],
+                'unidad'              => $fila['nombre_unidad'] ?? '',
+                'cantidad_requerida'  => $requerida,
+                'cantidad_disponible' => $disponible,
+            ];
+        }
+
+        $resultado = [
+            'ok'              => true,
+            'id_modelo'       => $idModelo,
+            'nombre_producto' => $modelo['nombre_modelo'],
+            'cantidad'        => $cantidad,
+            'materiales'      => $materiales,
+        ];
+
+        // Descontar materia prima de forma segura con parámetros únicos
         foreach ($resultado['materiales'] as $mat) {
             $stmt = $db->prepare(
                 "UPDATE materias_primas
-                 SET stock_actual = stock_actual - :requerida
-                 WHERE id_material = :id_material"
+                 SET stock_actual = stock_actual - :req_val
+                 WHERE id_material = :id_material AND stock_actual >= :req_check"
             );
             $stmt->execute([
-                ':requerida'   => $mat['cantidad_requerida'],
+                ':req_val'     => $mat['cantidad_requerida'],
                 ':id_material' => $mat['id_material'],
+                ':req_check'   => $mat['cantidad_requerida'],
             ]);
+            
+            // Validar que la base de datos realmente haya descontado el material
+            if ($stmt->rowCount() === 0) {
+                $db->rollBack();
+                echo json_encode(['ok' => false, 'error' => 'Error de concurrencia: Stock insuficiente en el último milisegundo.']);
+                exit();
+            }
         }
 
+        // Aumentar inventario de producto terminado
         $stmt = $db->prepare(
             "SELECT id_producto FROM productos_terminados WHERE nombre_producto = :nombre LIMIT 1"
         );
@@ -185,17 +264,15 @@ if ($accion === 'fabricar') {
         ]);
         $numeroRecibo = (int) $db->lastInsertId();
 
-        $db->commit();
-
         /* =======================================================
            REGISTROS EN EL HISTORIAL DE MOVIMIENTOS
            ======================================================= */
         $historial = new HistorialMovimientos();
 
-        // 1. Salidas de Materia Prima (¡CORREGIDO AQUÍ PARA LOS REPORTES!)
+        // 1. Salidas de Materia Prima
         foreach ($resultado['materiales'] as $mat) {
             $historial->registrar([
-                'modulo'      => 'materia_prima', // <- Antes decía 'produccion'. Ahora el reporte lo detectará.
+                'modulo'      => 'materia_prima',
                 'accion'      => 'salida',
                 'id_registro' => $mat['id_material'],
                 'descripcion' => "Salida de {$mat['cantidad_requerida']} {$mat['unidad']} de '{$mat['nombre_material']}' "
@@ -215,6 +292,9 @@ if ($accion === 'fabricar') {
             'datos_nuevos'   => ['unidades_fabricadas' => $resultado['cantidad'], 'nombre_producto' => $resultado['nombre_producto']],
             'usuario_nombre' => $usuarioNombre,
         ]);
+
+        // 👇 COMMIT FINAL GUARDANDO TODO DE FORMA SEGURA 👇
+        $db->commit();
 
         /* =======================================================
            GENERACIÓN DEL NUEVO RECIBO PDF CORPORATIVO
@@ -304,7 +384,7 @@ if ($accion === 'fabricar') {
         $html = ob_get_clean();
 
         $options = new Options();
-        $options->set('isRemoteEnabled', true);
+        $options->set('isRemoteEnabled', false);
         $options->set('defaultFont', 'Helvetica');
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($html);
@@ -326,7 +406,11 @@ if ($accion === 'fabricar') {
         if ($db->inTransaction()) {
             $db->rollBack();
         }
-        echo json_encode(['ok' => false, 'error' => 'Error al fabricar: ' . $e->getMessage()]);
+        
+        echo json_encode([
+            'ok' => false, 
+            'error' => 'Fallo técnico: ' . $e->getMessage() . ' (Línea ' . $e->getLine() . ')'
+        ]);
     }
 
     exit();

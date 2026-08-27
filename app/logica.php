@@ -1,7 +1,8 @@
 <?php
 
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
 session_start();
 
@@ -70,8 +71,7 @@ if (!preg_match('/[\W_]/', $Password)) {
     exit();
 }
 
-    // var_dump($Rol);
-    // die();
+
 
     $respuesta = saveUser([
         'email' => $Email,
@@ -115,7 +115,8 @@ function saveUser(array $datos)
         return $Conex->pps->execute();
     } catch (\Throwable $th) {
 
-        die($th->getMessage());
+        error_log('Error en saveUser: ' . $th->getMessage());
+        return false;
     } finally {
 
         $Conex->closeDataBase();
@@ -131,18 +132,19 @@ function login(array $credenciales)
     $Usuario = ConsultaUsuario($Conex, ['documento' => $credenciales['documento']]);
 
 
-    // print_r(ConsultaUsuario($Conex,['name'=>$credenciales['name'],
-    // 'email'=>$credenciales['email']]));
+
 
     if ($Usuario) {
-        $UserName = $Usuario[0]['email'];
-        $Email = $Usuario[0]['documento'];
+        $UsuarioEmail = $Usuario[0]['email'];
+        $UsuarioDocumento = $Usuario[0]['documento'];
 
         $HashPassword = $Usuario[0]['password_hash'];
 
-        if ($UserName === $credenciales['documento'] or $Email === $credenciales['documento']) {
+        if ($UsuarioEmail === $credenciales['documento'] or $UsuarioDocumento === $credenciales['documento']) {
             //accesos la verificacion del password
             if (password_verify($credenciales['password'], $HashPassword)) {
+                // Regenerar ID de sesión para evitar fijación de sesión
+                session_regenerate_id(true);
 
                 // Guardar los datos del usuario en la sesión
                 $_SESSION['rol'] = $Usuario[0]['rol'];
@@ -195,7 +197,8 @@ function ConsultaUsuario($conexion, array $dataConsulta)
 
         return $conexion->pps->fetchAll();
     } catch (Exception $e) {
-        echo $e->getMessage();
+        error_log('Error en ConsultaUsuario: ' . $e->getMessage());
+        return [];
     } finally {
         $conexion->closeDataBase();
     }

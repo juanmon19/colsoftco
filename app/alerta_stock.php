@@ -60,7 +60,7 @@ class AlertaStockLogica
 
         $bajoMinimo = $material['stock_actual'] <= $material['stock_minimo'];
 
-        if ($bajoMinimo && $material['alerta_enviada'] == 0) {
+        if ($bajoMinimo && (int) $material['alerta_enviada'] === 0) {
 
             $mensaje = "El material '{$material['nombre_material']}' alcanzó su stock mínimo "
                 . "(actual: {$material['stock_actual']}, mínimo: {$material['stock_minimo']}).";
@@ -69,7 +69,7 @@ class AlertaStockLogica
             $this->registrarNotificacion($idMaterial, $mensaje);
 
             // Envío de correo, solo si el material lo tiene configurado
-            if ($material['notificar_email'] == 1 && !empty($material['correo_notificacion'])) {
+            if ((int) $material['notificar_email'] === 1 && !empty($material['correo_notificacion'])) {
                 $this->enviarCorreoAlerta(
                     $material['correo_notificacion'],
                     $material['nombre_material'],
@@ -83,7 +83,7 @@ class AlertaStockLogica
 
         // Si el stock volvió a subir por encima del mínimo, se habilita
         // para poder enviar una nueva alerta la próxima vez que baje.
-        if (!$bajoMinimo && $material['alerta_enviada'] == 1) {
+        if (!$bajoMinimo && (int) $material['alerta_enviada'] === 1) {
             $this->marcarAlertaEnviada($idMaterial, false);
         }
     }

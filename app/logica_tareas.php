@@ -1,7 +1,14 @@
 <?php
 
 header('Content-Type: application/json');
+session_start();
 require_once '../config/conexion.php';
+
+// Verificar que el usuario esté autenticado
+if (!isset($_SESSION['documento'])) {
+    echo json_encode(['ok' => false, 'error' => 'Sesión no válida.']);
+    exit();
+}
 
 $conexion = new Conexion();
 $db = $conexion->getConnection();

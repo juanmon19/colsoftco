@@ -9,7 +9,11 @@ session_start();
 $db = new Conexion();
 $conn = $db->getConnection();
 
-$id = $_GET['id'];
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if (!$id || $id <= 0) {
+    header("Location: lista_inventario.php");
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 

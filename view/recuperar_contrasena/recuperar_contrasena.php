@@ -44,7 +44,7 @@ session_start();
         <?php
         if (isset($_SESSION['response'])):
         ?>
-          <p class="response"><?php echo $_SESSION['response'] ?></p>
+          <p class="response"><?= htmlspecialchars($_SESSION['response'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
         <?php
           unset($_SESSION['response']);
         endif;

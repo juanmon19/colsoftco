@@ -219,7 +219,8 @@ function EnviarCorreoResetPassword($Correo, $NombreReceptor, $userid, $token_Use
         $mail->Subject = 'Reseteo de password';
         
         // Uso de & en lugar de && para los parámetros URL estándar
-        $mail->Body    = 'Usted ha solicitado un cambio de contraseña. <br><br> <b><a href="http://localhost/colsoftco/view/cambiocontraseña/cambio_contrasena.php?id='.$userid.'&token='.$token_User.'">Cambiar Contraseña</a></b>';
+        $baseUrl = defined('BASE_URL') ? BASE_URL : 'http://localhost/colsoftco';
+        $mail->Body    = 'Usted ha solicitado un cambio de contraseña. <br><br> <b><a href="' . $baseUrl . '/view/cambiocontraseña/cambio_contrasena.php?id=' . urlencode($userid) . '&token=' . urlencode($token_User) . '">Cambiar Contraseña</a></b>';
 
         $mail->send();
     } catch (Exception $e) {
