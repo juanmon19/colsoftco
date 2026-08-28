@@ -9,17 +9,12 @@ $conexionColchones = new Conexion();
 $dbConn = $conexionColchones->getConnection();
 
 // -------------------------------------------------------------------------
-// FPDF: como tu proyecto tiene carpeta vendor/ (Composer), asumo que FPDF
-// se carga por autoload. Si en tu app/ReciboPDF.php lo cargas distinto
-// (por ejemplo con una ruta manual a una carpeta libs/), dime cuál es y
-// cambio esta línea por esa misma ruta.
+// FPDF: Carga mediante Autoload de Composer
 // -------------------------------------------------------------------------
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 // =========================================================================
-// CONFIGURACIÓN — AJUSTA ESTOS VALORES SI TUS "modulo" EN
-// historial_movimientos SE LLAMAN DIFERENTE. Las "accion" ya están
-// confirmadas según tu historial.php: crear / editar / eliminar / entrada / salida
+// CONFIGURACIÓN — CONFIGURADO SEGÚN LOS REGISTROS DE TU APLICACIÓN
 // =========================================================================
 $CONFIG = [
     'materia_prima' => [
@@ -31,12 +26,9 @@ $CONFIG = [
         'modulo' => 'proveedores',
         'accion' => 'crear',
     ],
-    // 'colchones' ya no usa esta configuración: se consulta directo de
-    // historial_produccion (ver más abajo), porque ese módulo no escribe
-    // en historial_movimientos.
     'usuarios' => [
-        'modulo' => 'usuarios',
-        'accion' => 'crear',
+        'modulo' => 'Usuarios',   // Modificado para coincidir con logica.php
+        'accion' => 'Registro',  // Modificado para coincidir con logica.php
     ],
 ];
 
@@ -80,8 +72,7 @@ $fechaInicioStr = $fechaInicio->format('Y-m-d');
 $fechaFinStr = $fechaFin->format('Y-m-d');
 
 // =========================================================================
-// 2. CONSULTAR LOS 4 BLOQUES USANDO TU CLASE HistorialMovimientos
-//    (necesita el método obtenerTodos() — ver PEGAR_EN_app_HistorialMovimientos.php)
+// 2. CONSULTAR LOS BLOQUES USANDO HistorialMovimientos
 // =========================================================================
 $historial = new HistorialMovimientos();
 
@@ -99,8 +90,7 @@ $registrosProveedores = $historial->obtenerTodos(array_merge($filtroFechas, [
     'accion' => $CONFIG['proveedores']['accion'],
 ]));
 
-// Colchones fabricados: viene de historial_produccion (NO de historial_movimientos),
-// igual que hace tu view/historial_fabricacion/historial_fabricacion.php
+// Colchones fabricados desde historial_produccion
 $stmtColchones = $dbConn->prepare(
     "SELECT h.id, m.nombre_modelo, h.cantidad, h.fecha_fabricacion, h.usuario
      FROM historial_produccion h
@@ -119,7 +109,7 @@ $registrosUsuarios = $historial->obtenerTodos(array_merge($filtroFechas, [
     'accion' => $CONFIG['usuarios']['accion'],
 ]));
 
-// Separar materia prima en entradas / salidas según "accion"
+// Separar materia prima en entradas / salidas
 $entradas = [];
 $salidas  = [];
 foreach ($movimientosMateriaPrima as $mov) {
@@ -135,7 +125,6 @@ foreach ($movimientosMateriaPrima as $mov) {
 // 3. HELPERS
 // =========================================================================
 function u($texto) {
-    // FPDF clásico no maneja UTF-8 directamente: se convierte a Latin-1
     return iconv('UTF-8', 'ISO-8859-1//TRANSLIT', (string) $texto);
 }
 
@@ -151,11 +140,6 @@ function extraerCampo(array $fila, array $claves, string $fallback = '—'): str
     return $fila['descripcion'] ?: $fallback;
 }
 
-/**
- * Para un movimiento de materia prima, calcula la cantidad exacta que
- * entró o salió a partir del stock_actual guardado antes/después
- * (logica_inventario.php lo guarda en cada cambio).
- */
 function calcularMovimientoMateriaPrima(array $mov): array {
     $antes = json_decode($mov['datos_anteriores'] ?? '', true);
     $despues = json_decode($mov['datos_nuevos'] ?? '', true);
@@ -300,7 +284,6 @@ if (empty($entradas) && empty($salidas)) {
         $pdf->Ln();
     }
 
-    // ── Resumen: cuánta materia prima entró y salió en total ──
     $pdf->Ln(2);
     $pdf->SetFillColor(240, 253, 244);
     $pdf->SetTextColor(22, 130, 60);
@@ -374,8 +357,16 @@ if (empty($registrosUsuarios)) {
     $pdf->SetFont('Arial', '', 9);
     $pdf->SetTextColor(30, 30, 30);
     foreach ($registrosUsuarios as $usr) {
-        $nombreNuevo = extraerCampo($usr, ['nombre', 'nombre_usuario']);
+        // Extraer y concatenar nombre y apellido guardados en datos_nuevos
+        $datosNuevos = json_decode($usr['datos_nuevos'] ?? '', true);
+        if (is_array($datosNuevos) && !empty($datosNuevos['nombre'])) {
+            $nombreNuevo = trim(($datosNuevos['nombre'] ?? '') . ' ' . ($datosNuevos['apellido'] ?? ''));
+        } else {
+            $nombreNuevo = extraerCampo($usr, ['nombre', 'nombre_usuario']);
+        }
+
         $rol = extraerCampo($usr, ['rol'], '—');
+
         $pdf->Cell($anchosUsr[0], 7, date('d/m/Y H:i', strtotime($usr['fecha_hora'])), 0, 0);
         $pdf->Cell($anchosUsr[1], 7, u(mb_substr($nombreNuevo, 0, 42)), 0, 0);
         $pdf->Cell($anchosUsr[2], 7, u($rol), 0, 0);
@@ -388,4 +379,4 @@ if (empty($registrosUsuarios)) {
 // 5. SALIDA DEL PDF
 // =========================================================================
 $nombreArchivo = 'Informe_General_' . $fechaInicioStr . '_a_' . $fechaFinStr . '.pdf';
-$pdf->Output('D', $nombreArchivo); // 'D' = fuerza la descarga del archivo
+$pdf->Output('D', $nombreArchivo);

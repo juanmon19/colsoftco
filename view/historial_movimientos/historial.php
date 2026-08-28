@@ -308,13 +308,13 @@ function construirQuery(array $filtros, int $pagina): string
                 <?php if ($totalPaginas > 1): ?>
                     <div class="paginacion">
                         <?php if ($pagina > 1): ?>
-                            <a href="?<?= construirQuery($filtros, $pagina - 1) ?>" class="pagina-link">&laquo; Anterior</a>
+                            <a href="?<?= htmlspecialchars(construirQuery($filtros, $pagina - 1)) ?>" class="pagina-link">&laquo; Anterior</a>
                         <?php endif; ?>
 
                         <span class="pagina-actual">Página <?= $pagina ?> de <?= $totalPaginas ?></span>
 
                         <?php if ($pagina < $totalPaginas): ?>
-                            <a href="?<?= construirQuery($filtros, $pagina + 1) ?>" class="pagina-link">Siguiente &raquo;</a>
+                            <a href="?<?= htmlspecialchars(construirQuery($filtros, $pagina + 1)) ?>" class="pagina-link">Siguiente &raquo;</a>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>

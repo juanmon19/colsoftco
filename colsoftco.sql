@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-08-2026 a las 00:42:00
+-- Tiempo de generación: 28-08-2026 a las 22:43:25
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -335,7 +335,8 @@ INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `d
 (275, 'materia_prima', 'salida', 8, 'Salida de 3.8 Metros de \'Tela antideslizante\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4890.3}', '{\"stock_actual\":4886.5}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
 (276, 'materia_prima', 'salida', 9, 'Salida de 10.5 Metros de \'Borde perimetral\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4714}', '{\"stock_actual\":4703.5}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
 (277, 'materia_prima', 'salida', 10, 'Salida de 1 Metros de \'Empaque plastico\' para fabricar 1 unidades de \'Confort Total\'', '{\"stock_actual\":4974}', '{\"stock_actual\":4973}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
-(278, 'producto_terminado', 'crear', 3, 'Se fabricaron 1 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":1,\"nombre_producto\":\"Confort Total\"}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17');
+(278, 'producto_terminado', 'crear', 3, 'Se fabricaron 1 unidades de \'Confort Total\'', NULL, '{\"unidades_fabricadas\":1,\"nombre_producto\":\"Confort Total\"}', NULL, 'Juan Montaño', '::1', '2026-08-26 16:51:17'),
+(279, 'Usuarios', 'Registro', 18, 'Se registró el usuario Prueba Maldonado (Doc: 1021866546) con el rol administrador.', NULL, '{\"email\":\"prueba@gmail.com\",\"documento\":\"1021866546\",\"nombre\":\"Prueba\",\"apellido\":\"Maldonado\",\"rol\":\"administrador\",\"foto\":\"public\\/uploads\\/usuarios\\/usr_1787945490_6a91e21202053.png\"}', NULL, 'Santiago', '::1', '2026-08-28 14:31:30');
 
 -- --------------------------------------------------------
 
@@ -738,9 +739,10 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `foto`, `telefono`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`) VALUES
 (7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '', NULL, '0'),
-(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', NULL, NULL, 'administrador', '$2y$10$pGRHa/Lsekzlel4Us/2dz.VyO7sjNgE8tXH2P3wC..Mp1EoArax9u', '1', '1c22a7c418cf90580dd5aead4875e31b3afb56726a242a0f4a3f72a4050f0d14', '1787715197'),
+(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', NULL, NULL, 'administrador', '$2y$10$tmZZn.2bkHInpNXxh6vVZe1EY26zZ/davMWBmpn7NaoELMIfLeF9u', '', NULL, '0'),
 (10, 'jafetdavidpi@gmail.com', '1072746605', 'David', 'Pineda', NULL, NULL, 'bodeguero', '$2y$10$2kfEdDY7eG6cKtCMvC0/qeX38azsoVKHFXE2AI8R4QCv8pZ7qt2m.', '0', NULL, NULL),
-(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857');
+(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857'),
+(18, 'prueba@gmail.com', '1021866546', 'Prueba', 'Maldonado', 'public/uploads/usuarios/usr_1787945490_6a91e21202053.png', '3204567890', 'administrador', '$2y$10$bRG.x5ElM.BdV0nJQwFjZuJoVN6i/7x2QHe9p.YPQ9mm3y9BdGkvq', '0', NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -855,7 +857,7 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `historial_movimientos`
 --
 ALTER TABLE `historial_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=279;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=280;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_produccion`
@@ -921,7 +923,7 @@ ALTER TABLE `unidades_medida`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Restricciones para tablas volcadas
