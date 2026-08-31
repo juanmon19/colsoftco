@@ -73,7 +73,9 @@ $modelos = $dbConn->query(
                 </p>
             </div>
         </div>
-<button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
+        <button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
+        <button class="nav-item" onclick="window.location.href='registrar_modelo.php'">📋 Registrar Nuevo Modelo de Colchón</button>
+        <button class="nav-item" onclick="window.location.href='editar_receta.php'">✏️ Editar Receta</button>
     </div>
 
     <footer>

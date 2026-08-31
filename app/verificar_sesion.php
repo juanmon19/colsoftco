@@ -14,6 +14,32 @@ if (!isset($_SESSION['documento'])) {
     exit();
 }
 
+// ══ CONTROL DE SESIÓN ÚNICA ══
+// Verifica que el token de sesión coincida con el de la BD.
+// Si alguien más inició sesión con la misma cuenta, el token en BD
+// habrá cambiado y esta sesión será invalidada.
+if (isset($_SESSION['token_sesion'])) {
+    require_once __DIR__ . '/../config/conexion.php';
+
+    $__dbCheck = new Conexion();
+    $__stmtCheck = $__dbCheck->getConnection()->prepare(
+        "SELECT token_sesion FROM usuarios WHERE documento = :doc LIMIT 1"
+    );
+    $__stmtCheck->execute([':doc' => $_SESSION['documento']]);
+    $__rowCheck = $__stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+    if (!$__rowCheck || $__rowCheck['token_sesion'] !== $_SESSION['token_sesion']) {
+        // Alguien más inició sesión con esta cuenta
+        session_unset();
+        session_destroy();
+        echo '<script>
+            alert("Alguien más ingresó a tu cuenta. Por favor, loguéate de nuevo.");
+            window.location.href = "' . (strpos($_SERVER['SCRIPT_NAME'], '/app/') !== false ? '../view/login/login.php' : '../login/login.php') . '";
+        </script>';
+        exit();
+    }
+}
+
 /**
  * Genera un token CSRF y lo almacena en la sesión.
  */

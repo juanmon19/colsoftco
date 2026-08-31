@@ -62,12 +62,13 @@ if ($accion === 'obtener_receta') {
 if ($accion === 'registrar_modelo') {
 
     $nombre = trim($_POST['nombre_modelo'] ?? '');
+    $serial = trim($_POST['serial'] ?? '');
     $recetaJson = $_POST['receta'] ?? '[]';
     $receta = json_decode($recetaJson, true);
 
     // Validaciones backend
-    if ($nombre === '') {
-        echo json_encode(['ok' => false, 'error' => 'El nombre del modelo es obligatorio.']);
+    if ($nombre === '' || $serial === '') {
+        echo json_encode(['ok' => false, 'error' => 'El nombre y serial del modelo son obligatorios.']);
         exit();
     }
 
@@ -89,19 +90,13 @@ if ($accion === 'registrar_modelo') {
     try {
         $db->beginTransaction();
 
-        // 1. Insertar modelo (el serial es NOT NULL/UNIQUE en la BD; se usa un
-        //    valor temporal único y luego se reemplaza por el serial definitivo)
+        // 1. Insertar modelo
         $stmtModelo = $db->prepare("
             INSERT INTO modelos_colchon (nombre_modelo, serial)
-            VALUES (:nombre, UUID())
+            VALUES (:nombre, :serial)
         ");
-        $stmtModelo->execute([':nombre' => $nombre]);
+        $stmtModelo->execute([':nombre' => $nombre, ':serial' => $serial]);
         $nuevoIdModelo = (int) $db->lastInsertId();
-
-        // Generar el serial definitivo de forma automática a partir del ID
-        $serial = 'MOD-' . str_pad($nuevoIdModelo, 4, '0', STR_PAD_LEFT);
-        $stmtSerial = $db->prepare("UPDATE modelos_colchon SET serial = :serial WHERE id_modelo = :id");
-        $stmtSerial->execute([':serial' => $serial, ':id' => $nuevoIdModelo]);
 
         // 2. Insertar cada ingrediente de la receta
         $stmtReceta = $db->prepare("
