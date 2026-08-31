@@ -15,14 +15,9 @@ if (!isset($_SESSION['documento'])) {
     exit();
 }
 
-// 2. Conexión a la Base de Datos
 $conexion = new Conexion();
 $db = $conexion->getConnection();
 
-/**
- * Elige un icono ilustrativo según palabras clave en el nombre
- * del material. Es puramente decorativo, no afecta el cálculo.
- */
 function iconoMaterial(string $nombre): string
 {
     $nombre = mb_strtolower($nombre);
