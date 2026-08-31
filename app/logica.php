@@ -1,245 +1,247 @@
 <?php
-/**
- * API para gestión de modelos de colchón y sus recetas.
- * Todas las respuestas son JSON.
- */
-require_once 'verificar_sesion.php';
-date_default_timezone_set('America/Bogota');
-header('Content-Type: application/json');
-require_once '../config/conexion.php';
-require_once __DIR__ . '/HistorialMovimientos.php';
 
-$conexion = new Conexion();
-$db = $conexion->getConnection();
+// Habilitar errores en pantalla para identificar la falla exacta
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-$accion = $_REQUEST['accion'] ?? '';
+session_start();
 
-/* ══════════════════════════════════════════════
-   LISTAR MATERIALES (para los selects dinámicos)
-   ══════════════════════════════════════════════ */
-if ($accion === 'listar_materiales') {
-    $stmt = $db->prepare("
-        SELECT mp.id_material, mp.nombre_material, um.nombre_unidad
-        FROM materias_primas mp
-        LEFT JOIN unidades_medida um ON um.id_unidad = mp.id_unidad
-        ORDER BY mp.nombre_material ASC
-    ");
-    $stmt->execute();
-    echo json_encode(['ok' => true, 'materiales' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
-    exit();
+require '../config/conexion.php';
+
+// Verificar si existe la clase Historial antes de requerirla
+
+$rutaHistorial = __DIR__ . '/HistorialMovimientos.php';
+
+if (file_exists($rutaHistorial)) {
+    require_once $rutaHistorial;
 }
 
-/* ══════════════════════════════════════════════
-   OBTENER RECETA de un modelo existente
-   ══════════════════════════════════════════════ */
-if ($accion === 'obtener_receta') {
-    $idModelo = (int) ($_REQUEST['id_modelo'] ?? 0);
+// login de acceso
+if (isset($_POST['login'])) {
+    if (isset($_POST['documento']) and isset($_POST['password'])) {
+        $login = $_POST['documento'];
+        $Password = $_POST['password'];
 
-    if ($idModelo <= 0) {
-        echo json_encode(['ok' => false, 'error' => 'ID de modelo inválido.']);
+        login([
+            'documento' => $login,
+            'password' => $Password
+        ]);
+    } else {
+        $_SESSION['error'] = 'Ingrese sus credenciales';
+        header("location:../view/registro/registro.php");
         exit();
     }
-
-    $stmt = $db->prepare("
-        SELECT rc.id_material, rc.cantidad_requerida,
-               mp.nombre_material, um.nombre_unidad
-        FROM receta_colchon rc
-        INNER JOIN materias_primas mp ON mp.id_material = rc.id_material
-        LEFT JOIN unidades_medida um ON um.id_unidad = mp.id_unidad
-        WHERE rc.id_modelo = :id_modelo
-        ORDER BY mp.nombre_material
-    ");
-    $stmt->execute([':id_modelo' => $idModelo]);
-    $receta = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    echo json_encode(['ok' => true, 'receta' => $receta]);
-    exit();
 }
 
-/* ══════════════════════════════════════════════
-   REGISTRAR MODELO + RECETA (transacción)
-   ══════════════════════════════════════════════ */
-if ($accion === 'registrar_modelo') {
+// registro nuevos usuarios
+if (isset($_POST['registro'])) {
 
-    $nombre = trim($_POST['nombre_modelo'] ?? '');
-    $recetaJson = $_POST['receta'] ?? '[]';
-    $receta = json_decode($recetaJson, true);
+    $Email = $_POST['email'] ?? '';
+    $Documento = $_POST['documento'] ?? '';
+    $Nombre = $_POST['nombre'] ?? '';
+    $Apellido = $_POST['apellido'] ?? '';
+    $Rol = $_POST['rol'] ?? '';
+    $Password = $_POST['password'] ?? '';
+    $Telefono = $_POST['telefono'] ?? '';
 
-    // Validaciones backend
-    if ($nombre === '') {
-        echo json_encode(['ok' => false, 'error' => 'El nombre del modelo es obligatorio.']);
+    // Validar requisitos de la contraseña
+    if (strlen($Password) < 8) {
+        $_SESSION['mensaje'] = 'La contraseña debe tener mínimo 8 caracteres.';
+        header("location:../view/registro/registro.php");
         exit();
     }
 
-    if (!is_array($receta) || count($receta) === 0) {
-        echo json_encode(['ok' => false, 'error' => 'La receta es obligatoria. Agrega al menos un material.']);
+    if (!preg_match('/[A-Z]/', $Password)) {
+        $_SESSION['mensaje'] = 'La contraseña debe tener al menos una letra mayúscula.';
+        header("location:../view/registro/registro.php");
         exit();
     }
 
-    // Validar cada ingrediente
-    foreach ($receta as $i => $ingrediente) {
-        $idMat = (int) ($ingrediente['id_material'] ?? 0);
-        $cant  = (float) ($ingrediente['cantidad'] ?? 0);
-        if ($idMat <= 0 || $cant <= 0) {
-            echo json_encode(['ok' => false, 'error' => 'Ingrediente #' . ($i + 1) . ': material y cantidad deben ser válidos.']);
-            exit();
+    if (!preg_match('/[a-z]/', $Password)) {
+        $_SESSION['mensaje'] = 'La contraseña debe tener al menos una letra minúscula.';
+        header("location:../view/registro/registro.php");
+        exit();
+    }
+
+    if (!preg_match('/[0-9]/', $Password)) {
+        $_SESSION['mensaje'] = 'La contraseña debe tener al menos un número.';
+        header("location:../view/registro/registro.php");
+        exit();
+    }
+
+    if (!preg_match('/[\W_]/', $Password)) {
+        $_SESSION['mensaje'] = 'La contraseña debe tener al menos un carácter especial.';
+        header("location:../view/registro/registro.php");
+        exit();
+    }
+
+    // MANEJO Y SUBIDA DE LA FOTO
+    $rutaFotoBD = null;
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $directorioDestino = __DIR__ . '/../public/uploads/usuarios/';
+        
+        if (!is_dir($directorioDestino)) {
+            mkdir($directorioDestino, 0777, true);
+        }
+
+        $extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+        $nombreArchivo = 'usr_' . time() . '_' . uniqid() . '.' . $extension;
+        $rutaCompleta = $directorioDestino . $nombreArchivo;
+
+        if (move_uploaded_file($_FILES['foto']['tmp_name'], $rutaCompleta)) {
+            $rutaFotoBD = 'public/uploads/usuarios/' . $nombreArchivo;
         }
     }
 
+    // REGISTRO EN BASE DE DATOS
+    $nuevoUsuarioId = saveUser([
+        'email' => $Email,
+        'documento' => $Documento,
+        'nombre' => $Nombre,
+        'apellido' => $Apellido,
+        'rol' => $Rol,
+        'telefono' => $Telefono,
+        'foto' => $rutaFotoBD,
+        'password' => password_hash($Password, PASSWORD_BCRYPT),
+    ]);
+
+    if ($nuevoUsuarioId) {
+        // REGISTRO EN HISTORIAL DE MOVIMIENTOS
+        if (class_exists('HistorialMovimientos')) {
+            try {
+                $historial = new HistorialMovimientos();
+                $historial->registrar([
+                    'modulo'         => 'Usuarios',
+                    'accion'         => 'Registro',
+                    'id_registro'    => $nuevoUsuarioId,
+                    'descripcion'    => "Se registró el usuario {$Nombre} {$Apellido} (Doc: {$Documento}) con el rol {$Rol}.",
+                    'datos_nuevos'   => [
+                        'email'     => $Email,
+                        'documento' => $Documento,
+                        'nombre'    => $Nombre,
+                        'apellido'  => $Apellido,
+                        'rol'       => $Rol,
+                        'foto'      => $rutaFotoBD
+                    ],
+                    'usuario_id'     => $_SESSION['user_id'] ?? null,
+                    'usuario_nombre' => $_SESSION['nombre'] ?? 'Sistema'
+                ]);
+            } catch (\Throwable $e) {
+                error_log('Error al registrar historial en registro: ' . $e->getMessage());
+            }
+        }
+
+        $_SESSION['mensaje'] = 'Usuario registrado exitosamente';
+    } else {
+        $_SESSION['mensaje'] = 'Error al registrar usuario';
+    }
+
+    header("location:../view/registro/registro.php");
+    exit();
+}
+
+// Función saveUser con captura de errores
+function saveUser(array $datos)
+{
     try {
-        $db->beginTransaction();
+        $Conex = new Conexion;
+        $MiConexion = $Conex->getConnection();
 
-        // 1. Insertar modelo (el serial es NOT NULL/UNIQUE en la BD; se usa un
-        //    valor temporal único y luego se reemplaza por el serial definitivo)
-        $stmtModelo = $db->prepare("
-            INSERT INTO modelos_colchon (nombre_modelo, serial)
-            VALUES (:nombre, UUID())
-        ");
-        $stmtModelo->execute([':nombre' => $nombre]);
-        $nuevoIdModelo = (int) $db->lastInsertId();
+        $Conex->pps = $MiConexion->prepare(
+            "INSERT INTO usuarios
+            (email, documento, nombre, apellido, rol, telefono, foto, password_hash)
+            VALUES
+            (:email, :documento, :nombre, :apellido, :rol, :telefono, :foto, :password)"
+        );
 
-        // Generar el serial definitivo de forma automática a partir del ID
-        $serial = 'MOD-' . str_pad($nuevoIdModelo, 4, '0', STR_PAD_LEFT);
-        $stmtSerial = $db->prepare("UPDATE modelos_colchon SET serial = :serial WHERE id_modelo = :id");
-        $stmtSerial->execute([':serial' => $serial, ':id' => $nuevoIdModelo]);
+        $Conex->pps->bindParam(":email", $datos['email']);
+        $Conex->pps->bindParam(":documento", $datos['documento']);
+        $Conex->pps->bindParam(":nombre", $datos['nombre']);
+        $Conex->pps->bindParam(":apellido", $datos['apellido']);
+        $Conex->pps->bindParam(":rol", $datos['rol']);
+        $Conex->pps->bindParam(":telefono", $datos['telefono']);
+        $Conex->pps->bindParam(":foto", $datos['foto']);
+        $Conex->pps->bindParam(":password", $datos['password']);
 
-        // 2. Insertar cada ingrediente de la receta
-        $stmtReceta = $db->prepare("
-            INSERT INTO receta_colchon (id_modelo, id_material, cantidad_requerida)
-            VALUES (:id_modelo, :id_material, :cantidad)
-        ");
-
-        foreach ($receta as $ingrediente) {
-            $stmtReceta->execute([
-                ':id_modelo'  => $nuevoIdModelo,
-                ':id_material' => (int) $ingrediente['id_material'],
-                ':cantidad'    => (float) $ingrediente['cantidad'],
-            ]);
+        if ($Conex->pps->execute()) {
+            return $MiConexion->lastInsertId();
         }
+        return false;
+    } catch (\Throwable $th) {
+        // Muestra el mensaje exacto de PDO si falta una columna o hay fallo SQL
+        echo "<h3>Error de Base de Datos / Ejecución:</h3>";
+        echo "<pre>" . $th->getMessage() . "</pre>";
+        exit();
+    } finally {
+        $Conex->closeDataBase();
+    }
+}
 
-        $db->commit();
+// realizar el login al sistema
+function login(array $credenciales)
+{
+    $Conex = new Conexion;
+    $Usuario = ConsultaUsuario($Conex, ['documento' => $credenciales['documento']]);
 
-        // Registrar en historial
-        $usuarioNombre = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema';
-        (new HistorialMovimientos())->registrar([
-            'modulo'       => 'modelos_colchon',
-            'accion'       => 'crear',
-            'id_registro'  => $nuevoIdModelo,
-            'descripcion'  => "Se registró el modelo '{$nombre}' (serial: {$serial}) con " . count($receta) . " materiales en su receta.",
-            'datos_nuevos' => ['nombre_modelo' => $nombre, 'serial' => $serial, 'receta' => $receta],
-            'usuario_nombre' => $usuarioNombre,
-        ]);
+    if ($Usuario) {
+        $UsuarioEmail = $Usuario[0]['email'];
+        $UsuarioDocumento = $Usuario[0]['documento'];
+        $HashPassword = $Usuario[0]['password_hash'];
 
-        echo json_encode([
-            'ok' => true,
-            'mensaje' => "Modelo '{$nombre}' registrado exitosamente con su receta.",
-            'id_modelo' => $nuevoIdModelo,
-        ]);
+        if ($UsuarioEmail === $credenciales['documento'] or $UsuarioDocumento === $credenciales['documento']) {
+            if (password_verify($credenciales['password'], $HashPassword)) {
+                session_regenerate_id(true);
 
-    } catch (\Exception $e) {
-        if ($db->inTransaction()) {
-            $db->rollBack();
-        }
+                $_SESSION['user_id'] = $Usuario[0]['id'];
+                $_SESSION['rol'] = $Usuario[0]['rol'];
+                $_SESSION['nombre'] = $Usuario[0]['nombre'];
+                $_SESSION['apellido'] = $Usuario[0]['apellido'];
+                $_SESSION['documento'] = $Usuario[0]['documento'];
+                $_SESSION['email'] = $Usuario[0]['email'];
 
-        // Check for duplicate serial
-        if (str_contains($e->getMessage(), 'Duplicate entry')) {
-            echo json_encode(['ok' => false, 'error' => 'Ya existe un modelo con ese serial.']);
+                $Rol = $_SESSION['rol'];
+
+                if ($Rol == 'administrador') {
+                    header("location:../view/panel_admin/panel_admin.php");
+                } elseif ($Rol == 'bodeguero') {
+                    header("location:../view/panel_bodeguero/panel_bodeguero.php");
+                } elseif ($Rol == 'operario') {
+                    header("location:../view/panel_operario/panel_operario.php");
+                }
+                exit();
+            } else {
+                $_SESSION['error'] = 'Contraseña Incorrecta';
+                header("location:../view/login/login.php");
+                exit();
+            }
         } else {
-            error_log('Error registrar_modelo: ' . $e->getMessage());
-            echo json_encode(['ok' => false, 'error' => 'Error al registrar el modelo.']);
-        }
-    }
-
-    exit();
-}
-
-/* ══════════════════════════════════════════════
-   ACTUALIZAR RECETA (transacción DELETE + INSERT)
-   ══════════════════════════════════════════════ */
-if ($accion === 'actualizar_receta') {
-
-    $idModelo  = (int) ($_POST['id_modelo'] ?? 0);
-    $recetaJson = $_POST['receta'] ?? '[]';
-    $receta = json_decode($recetaJson, true);
-
-    if ($idModelo <= 0) {
-        echo json_encode(['ok' => false, 'error' => 'ID de modelo inválido.']);
-        exit();
-    }
-
-    if (!is_array($receta) || count($receta) === 0) {
-        echo json_encode(['ok' => false, 'error' => 'La receta es obligatoria. Agrega al menos un material.']);
-        exit();
-    }
-
-    // Validar cada ingrediente
-    foreach ($receta as $i => $ingrediente) {
-        $idMat = (int) ($ingrediente['id_material'] ?? 0);
-        $cant  = (float) ($ingrediente['cantidad'] ?? 0);
-        if ($idMat <= 0 || $cant <= 0) {
-            echo json_encode(['ok' => false, 'error' => 'Ingrediente #' . ($i + 1) . ': material y cantidad deben ser válidos.']);
+            $_SESSION['error'] = 'Error en el documento';
+            header("location:../view/login/login.php");
             exit();
         }
-    }
-
-    // Verificar que el modelo existe
-    $stmtCheck = $db->prepare("SELECT nombre_modelo FROM modelos_colchon WHERE id_modelo = :id LIMIT 1");
-    $stmtCheck->execute([':id' => $idModelo]);
-    $modeloExistente = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-
-    if (!$modeloExistente) {
-        echo json_encode(['ok' => false, 'error' => 'El modelo no existe.']);
+    } else {
+        $_SESSION['error'] = 'Error, no existe ese usuario';
+        header("location:../view/login/login.php");
         exit();
     }
-
-    try {
-        $db->beginTransaction();
-
-        // 1. Eliminar receta anterior
-        $stmtDel = $db->prepare("DELETE FROM receta_colchon WHERE id_modelo = :id_modelo");
-        $stmtDel->execute([':id_modelo' => $idModelo]);
-
-        // 2. Insertar nueva receta
-        $stmtIns = $db->prepare("
-            INSERT INTO receta_colchon (id_modelo, id_material, cantidad_requerida)
-            VALUES (:id_modelo, :id_material, :cantidad)
-        ");
-
-        foreach ($receta as $ingrediente) {
-            $stmtIns->execute([
-                ':id_modelo'   => $idModelo,
-                ':id_material' => (int) $ingrediente['id_material'],
-                ':cantidad'    => (float) $ingrediente['cantidad'],
-            ]);
-        }
-
-        $db->commit();
-
-        // Registrar en historial
-        $usuarioNombre = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema';
-        (new HistorialMovimientos())->registrar([
-            'modulo'       => 'modelos_colchon',
-            'accion'       => 'editar',
-            'id_registro'  => $idModelo,
-            'descripcion'  => "Se actualizó la receta del modelo '{$modeloExistente['nombre_modelo']}' con " . count($receta) . " materiales.",
-            'datos_nuevos' => ['receta' => $receta],
-            'usuario_nombre' => $usuarioNombre,
-        ]);
-
-        echo json_encode([
-            'ok' => true,
-            'mensaje' => "Receta del modelo '{$modeloExistente['nombre_modelo']}' actualizada exitosamente.",
-        ]);
-
-    } catch (\Exception $e) {
-        if ($db->inTransaction()) {
-            $db->rollBack();
-        }
-        error_log('Error actualizar_receta: ' . $e->getMessage());
-        echo json_encode(['ok' => false, 'error' => 'Error al actualizar la receta.']);
-    }
-
-    exit();
 }
 
-echo json_encode(['ok' => false, 'error' => 'Acción no reconocida.']);
+function ConsultaUsuario($conexion, array $dataConsulta)
+{
+    $consulta = "SELECT * FROM usuarios WHERE documento = :documento OR email = :email";
+
+    try {
+        $conexion->pps = $conexion->getConnection()->prepare($consulta);
+        $conexion->pps->bindParam(":documento", $dataConsulta['documento']);
+        $conexion->pps->bindParam(":email", $dataConsulta['documento']);
+        $conexion->pps->execute();
+
+        return $conexion->pps->fetchAll();
+    } catch (Exception $e) {
+        error_log('Error en ConsultaUsuario: ' . $e->getMessage());
+        return [];
+    } finally {
+        $conexion->closeDataBase();
+    }
+}
