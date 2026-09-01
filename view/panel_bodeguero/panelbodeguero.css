@@ -1482,40 +1482,42 @@ html[data-tema="oscuro"] .perfil-dropdown button:hover {
 }
 
 /* MOBILE SMALL */
-@media(max-width:380px) {
-    .header-left h1 {
-        max-width: calc(100vw - 130px);
-        font-size: 12px;
+@media(max-width:620px) {
+    .task {
+        min-width: 520px;
+     
+        grid-template-columns: 25px minmax(160px, 1fr) 50px 70px 30px;
+        gap: 9px;
     }
+}
 
-    .profile-card {
-        grid-template-columns: 82px minmax(0, 1fr);
-        gap: 11px;
-    }
+.profile-card {
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 11px;
+}
 
-    .profile-card>img {
-        width: 82px;
-        height: 108px;
-    }
+.profile-card>img {
+    width: 82px;
+    height: 108px;
+}
 
-    .profile-info h2 {
-        font-size: 14px
-    }
+.profile-info h2 {
+    font-size: 14px
+}
 
-    .profile-info p {
-        font-size: 9px
-    }
+.profile-info p {
+    font-size: 9px
+}
 
-    .summary-card strong {
-        font-size: 19px
-    }
+.summary-card strong {
+    font-size: 19px
+}
 
-    .summary-card small {
-        font-size: 7px
-    }
+.summary-card small {
+    font-size: 7px
+}
 
-    .edit-menu {
-        width: 90vw;
-        padding: 16px;
-    }
+.edit-menu {
+    width: 90vw;
+    padding: 16px;
 }

@@ -4,6 +4,24 @@
 // session_name("otroNombre")
 session_start();
 
+// ══ LIMPIAR TOKEN DE SESIÓN ÚNICA ══
+// Se hace antes de destruir la sesión para que el próximo login
+// normal (sin nadie más conectado) no dispare una alerta falsa.
+if (isset($_SESSION['user_id'])) {
+    require_once __DIR__ . '/../config/conexion.php';
+
+    try {
+        $conex = new Conexion();
+        $conex->sql = "UPDATE usuarios SET token_sesion = NULL WHERE id_usuario = :id";
+        $conex->pps = $conex->getConnection()->prepare($conex->sql);
+        $conex->pps->bindParam(":id", $_SESSION['user_id']);
+        $conex->pps->execute();
+        $conex->closeDataBase();
+    } catch (\Throwable $th) {
+        error_log('Error al limpiar token_sesion en logout: ' . $th->getMessage());
+    }
+}
+
 // Destruye todas las variables de sesión
 $_SESSION = array();
 

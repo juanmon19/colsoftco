@@ -114,11 +114,11 @@ try {
                     <span>Sistema de Gestión</span>
                 </div>
             </div>
-
-            <button class="mobile-menu" id="mobileMenu" type="button" aria-expanded="false">
-                <span>☰ Menú</span>
-                <span>⌄</span>
-            </button>
+        <button class="mobile-menu" id="btnMenuToggle" type="button"
+                aria-expanded="false" aria-controls="sidebarLinks">
+            <span>☰ Menú</span>
+            <span class="toggle-icono">⌄</span>
+        </button>
 
             <nav class="nav" id="navMenu">
                 <button class="nav-item" onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>

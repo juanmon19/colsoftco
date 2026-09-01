@@ -6,8 +6,15 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
+date_default_timezone_set('America/Bogota');
 
 require '../config/conexion.php';
+require '../config/setting.php';
+require '../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 // Verificar si existe la clase Historial antes de requerirla
 
@@ -77,12 +84,15 @@ if (isset($_POST['registro'])) {
     }
 
     // MANEJO Y SUBIDA DE LA FOTO
+    // Se guarda en la misma carpeta que usa perfil_usuario.php (public/imagenes/perfiles/)
+    // y en la BD se guarda SOLO el nombre del archivo, porque así es como
+    // panel_admin.php arma la URL: `../../public/imagenes/perfiles/${u.foto}`
     $rutaFotoBD = null;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-        $directorioDestino = __DIR__ . '/../public/uploads/usuarios/';
-        
+        $directorioDestino = __DIR__ . '/../public/imagenes/perfiles/';
+
         if (!is_dir($directorioDestino)) {
-            mkdir($directorioDestino, 0777, true);
+            mkdir($directorioDestino, 0755, true);
         }
 
         $extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
@@ -90,7 +100,7 @@ if (isset($_POST['registro'])) {
         $rutaCompleta = $directorioDestino . $nombreArchivo;
 
         if (move_uploaded_file($_FILES['foto']['tmp_name'], $rutaCompleta)) {
-            $rutaFotoBD = 'public/uploads/usuarios/' . $nombreArchivo;
+            $rutaFotoBD = $nombreArchivo;
         }
     }
 
@@ -193,7 +203,43 @@ function login(array $credenciales)
             if (password_verify($credenciales['password'], $HashPassword)) {
                 session_regenerate_id(true);
 
-                $_SESSION['user_id'] = $Usuario[0]['id'];
+               
+                if (!empty($Usuario[0]['token_sesion'])) {
+                    $ipIngreso = $_SERVER['REMOTE_ADDR'] ?? 'IP desconocida';
+                    $fechaIngreso = date('d/m/Y H:i:s');
+
+                    EnviarAlertaSesionDuplicada(
+                        $Usuario[0]['email'],
+                        $Usuario[0]['nombre'] . ' ' . $Usuario[0]['apellido'],
+                        $ipIngreso,
+                        $fechaIngreso
+                    );
+
+                    if (class_exists('HistorialMovimientos')) {
+                        try {
+                            (new HistorialMovimientos())->registrar([
+                                'modulo'         => 'Seguridad',
+                                'accion'         => 'sesion_duplicada',
+                                'id_registro'    => $Usuario[0]['id_usuario'],
+                                'descripcion'    => "Se detectó un nuevo inicio de sesión para {$Usuario[0]['nombre']} {$Usuario[0]['apellido']} (Doc: {$Usuario[0]['documento']}) mientras ya existía una sesión activa. IP: {$ipIngreso}.",
+                                'usuario_id'     => $Usuario[0]['id_usuario'],
+                                'usuario_nombre' => $Usuario[0]['nombre'] . ' ' . $Usuario[0]['apellido'],
+                            ]);
+                        } catch (\Throwable $e) {
+                            error_log('Error al registrar alerta de sesión duplicada: ' . $e->getMessage());
+                        }
+                    }
+                }
+
+                // Generar un nuevo token y guardarlo tanto en la sesión como
+                // en la base de datos. Esto invalida automáticamente
+                // cualquier sesión anterior (verificar_sesion.php compara
+                // este valor en cada petición).
+                $nuevoTokenSesion = bin2hex(random_bytes(32));
+                guardarTokenSesion($Usuario[0]['id_usuario'], $nuevoTokenSesion);
+                $_SESSION['token_sesion'] = $nuevoTokenSesion;
+
+                $_SESSION['user_id'] = $Usuario[0]['id_usuario'];
                 $_SESSION['rol'] = $Usuario[0]['rol'];
                 $_SESSION['nombre'] = $Usuario[0]['nombre'];
                 $_SESSION['apellido'] = $Usuario[0]['apellido'];
@@ -243,5 +289,75 @@ function ConsultaUsuario($conexion, array $dataConsulta)
         return [];
     } finally {
         $conexion->closeDataBase();
+    }
+}
+
+// ══════════════════════════════════════════════
+// CONTROL DE SESIÓN ÚNICA
+// ══════════════════════════════════════════════
+
+/**
+ * Guarda el token de sesión activo del usuario en la base de datos.
+ * Al hacer login desde otro lugar, este valor cambia y la sesión
+ * anterior queda invalidada (ver app/verificar_sesion.php).
+ */
+function guardarTokenSesion($idUsuario, $token)
+{
+    $conex = new Conexion();
+    $conex->sql = "UPDATE usuarios SET token_sesion = :token WHERE id_usuario = :id";
+
+    try {
+        $conex->pps = $conex->getConnection()->prepare($conex->sql);
+        $conex->pps->bindParam(":token", $token);
+        $conex->pps->bindParam(":id", $idUsuario);
+        return $conex->pps->execute();
+    } catch (\Throwable $th) {
+        error_log('Error al guardar token_sesion: ' . $th->getMessage());
+        return false;
+    } finally {
+        $conex->closeDataBase();
+    }
+}
+
+/**
+ * Envía un correo de alerta al dueño de la cuenta cuando se detecta
+ * un nuevo inicio de sesión mientras ya existía una sesión activa.
+ */
+function EnviarAlertaSesionDuplicada($correo, $nombreReceptor, $ip, $fecha)
+{
+    $mail = new PHPMailer(true);
+    try {
+        $mail->SMTPDebug = SMTP::DEBUG_OFF;
+        $mail->isSMTP();
+        $mail->Host       = HOST;
+        $mail->SMTPAuth   = true;
+        $mail->Username   = USERNAME;
+        $mail->Password   = PASSWORD;
+        $mail->SMTPSecure = 'tls';
+        $mail->Port       = 587;
+
+        $mail->setFrom('colsoftco4@gmail.com', 'Colsoftco - Seguridad');
+        $mail->addAddress($correo, $nombreReceptor);
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Alerta de seguridad: nuevo inicio de sesión en tu cuenta';
+
+        $baseUrl = defined('BASE_URL') ? BASE_URL : 'http://localhost/colsoftco';
+        $urlCambioPassword = $baseUrl . '/view/recuperar_contrasena/recuperar_contrasena.php';
+
+        $mail->Body    = '
+            Hola ' . htmlspecialchars($nombreReceptor) . ',<br><br>
+            Detectamos un <b>nuevo inicio de sesión</b> en tu cuenta de COLSOFTCO
+            mientras ya había una sesión activa en otro dispositivo o navegador.<br><br>
+            <b>Fecha y hora:</b> ' . htmlspecialchars($fecha) . '<br>
+            <b>Dirección IP:</b> ' . htmlspecialchars($ip) . '<br><br>
+            Si fuiste tú, puedes ignorar este mensaje; la sesión anterior se cerró automáticamente.<br>
+            Si <b>no reconoces</b> este ingreso, cambia tu contraseña de inmediato haciendo clic aquí:<br><br>
+            <b><a href="' . $urlCambioPassword . '">Cambiar mi contraseña</a></b>
+        ';
+
+        $mail->send();
+    } catch (Exception $e) {
+        error_log('Error al enviar alerta de sesión duplicada: ' . $mail->ErrorInfo);
     }
 }
