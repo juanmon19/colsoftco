@@ -40,6 +40,35 @@ if (isset($_SESSION['token_sesion'])) {
     }
 }
 
+// ══ VERIFICAR CUENTA ACTIVA ══
+if (isset($_SESSION['documento'])) {
+    if (!isset($__dbCheck)) {
+        require_once __DIR__ . '/../config/conexion.php';
+        $__dbCheck = new Conexion();
+    }
+    $__stmtActivo = $__dbCheck->getConnection()->prepare(
+        "SELECT activo FROM usuarios WHERE documento = :doc LIMIT 1"
+    );
+    $__stmtActivo->execute([':doc' => $_SESSION['documento']]);
+    $__rowActivo = $__stmtActivo->fetch(PDO::FETCH_ASSOC);
+
+    if (!$__rowActivo || (int) $__rowActivo['activo'] !== 1) {
+        session_unset();
+        session_destroy();
+        echo '<script>
+            alert("Tu cuenta ha sido desactivada por el administrador. Contacta al administrador.");
+            window.location.href = "' . (strpos($_SERVER['SCRIPT_NAME'], '/app/') !== false ? '../view/login/login.php' : '../login/login.php') . '";
+        </script>';
+        exit();
+    }
+
+    // Actualizar última actividad
+    $__stmtAct = $__dbCheck->getConnection()->prepare(
+        "UPDATE usuarios SET ultima_actividad = NOW() WHERE documento = :doc"
+    );
+    $__stmtAct->execute([':doc' => $_SESSION['documento']]);
+}
+
 /**
  * Genera un token CSRF y lo almacena en la sesión.
  */

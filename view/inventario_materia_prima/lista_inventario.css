@@ -9,6 +9,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 .filtro-busqueda input {
     width: 100%;
     padding: 10px 14px;

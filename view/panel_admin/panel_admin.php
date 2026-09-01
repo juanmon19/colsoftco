@@ -26,6 +26,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrador - COLSOFTCO</title>
+    <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="paneladmin.css">
     
     <script>
@@ -130,6 +131,7 @@ try {
                 <button class="nav-item" onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
                 <button class="nav-item" onclick="window.location.href='../registro_de_producto_terminado/registro_producto_terminado.php'">Registrar Producto Terminado</button>
                 <button class="nav-item" onclick="window.location.href='../receta_de_colchones/receta_colchones.php'">Receta de Colchones</button>
+                <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
             </nav>
 
             <div class="help-box">
@@ -298,6 +300,10 @@ try {
                                     <span class="quick-icon purple-icon">▤</span>
                                     <b>Reporte de inventario</b>
                                 </button>
+                                <button onclick="window.location.href='gestion_usuarios.php'">
+                                    <span class="quick-icon yellow-icon">👥</span>
+                                    <b>Gestión de usuarios</b>
+                                </button>
                             </div>
                         </article>
 
@@ -365,326 +371,8 @@ try {
         });
     </script>
 
-    <script>
-        // ================= TAREAS: CARGA, CREACIÓN, EDICIÓN Y BORRADO (AJAX) =================
-
-        const statusLabels = {
-            'pendiente': 'Pendiente',
-            'por-hacer': 'Por hacer',
-            'terminado': 'Terminado'
-        };
-
-        const priorityLabels = {
-            'low': 'Baja',
-            'medium': 'Media',
-            'high': 'Alta'
-        };
-
-        const menuOverlay = document.getElementById('menuOverlay');
-        const taskTableBody = document.getElementById('taskTableBody');
-        const statTareas = document.getElementById('statTareas');
-        const statInventario = document.getElementById('statInventario');
-        const statProveedores = document.getElementById('statProveedores');
-        const statProductos = document.getElementById('statProductos');
-
-        let tareasCache = [];
-
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str ?? '';
-            return div.innerHTML;
-        }
-
-        function formatearFecha(fechaISO) {
-            if (!fechaISO) return 'Sin fecha';
-            const [y, m, d] = fechaISO.split('-');
-            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-            return `${d} ${meses[parseInt(m, 10) - 1]} ${y}`;
-        }
-
-        function actualizarOverlay() {
-            const hayMenuAbierto = document.querySelector('.edit-menu.open') !== null;
-            menuOverlay.classList.toggle('show', hayMenuAbierto);
-        }
-
-        function cerrarTodosLosMenus(exceptoMenu) {
-            document.querySelectorAll('.edit-menu.open').forEach((menu) => {
-                if (menu !== exceptoMenu) {
-                    menu.classList.remove('open');
-                    const boton = menu.previousElementSibling;
-                    if (boton) boton.setAttribute('aria-expanded', 'false');
-                }
-            });
-            actualizarOverlay();
-        }
-
-        function renderTareas(tareas) {
-            if (!tareas.length) {
-                taskTableBody.innerHTML = '<p class="placeholder">No hay tareas registradas.</p>';
-                return;
-            }
-
-            taskTableBody.innerHTML = tareas.map(t => `
-                <div class="task-row" data-id="${t.id_tarea}">
-                    <strong>${escapeHtml(t.titulo)}</strong>
-                    <span><em class="priority ${t.prioridad}">${priorityLabels[t.prioridad]}</em></span>
-                    <span>${formatearFecha(t.fecha_vencimiento)}</span>
-                    <span><em class="status ${t.estado}">${statusLabels[t.estado]}</em></span>
-                    <div class="task-actions">
-                        <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
-                        <div class="edit-menu">
-                            <div class="edit-menu-group">
-                                <label>Estado</label>
-                                <select class="edit-status">
-                                    <option value="pendiente" ${t.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
-                                    <option value="por-hacer" ${t.estado === 'por-hacer' ? 'selected' : ''}>Por hacer</option>
-                                    <option value="terminado" ${t.estado === 'terminado' ? 'selected' : ''}>Terminado</option>
-                                </select>
-                            </div>
-                            <div class="edit-menu-group">
-                                <label>Prioridad</label>
-                                <select class="edit-priority">
-                                    <option value="low" ${t.prioridad === 'low' ? 'selected' : ''}>Baja</option>
-                                    <option value="medium" ${t.prioridad === 'medium' ? 'selected' : ''}>Media</option>
-                                    <option value="high" ${t.prioridad === 'high' ? 'selected' : ''}>Alta</option>
-                                </select>
-                            </div>
-                            <button type="button" class="edit-apply">Guardar</button>
-                            <button type="button" class="edit-delete">Eliminar</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function cargarTareas() {
-            try {
-                const resp = await fetch('../../app/logica_tareas.php?accion=listar');
-                const data = await resp.json();
-
-                if (!data.ok) {
-                    taskTableBody.innerHTML = '<p class="placeholder">No se pudieron cargar las tareas.</p>';
-                    return;
-                }
-
-                tareasCache = data.tareas;
-                renderTareas(tareasCache);
-            } catch (e) {
-                taskTableBody.innerHTML = '<p class="placeholder">Error de conexión al cargar tareas.</p>';
-                console.error(e);
-            }
-        }
-
-        async function actualizarStats() {
-            try {
-                const resp = await fetch('../../app/dashboard_stats.php');
-                const data = await resp.json();
-                if (!data.ok) return;
-
-                if (statTareas) statTareas.textContent = Number(data.tareas_pendientes).toLocaleString('es-CO');
-                if (statInventario) statInventario.textContent = Number(data.inventario_total).toLocaleString('es-CO');
-                if (statProveedores) statProveedores.textContent = Number(data.proveedores).toLocaleString('es-CO');
-                if (statProductos) statProductos.textContent = Number(data.productos).toLocaleString('es-CO');
-            } catch (e) {
-                console.error('Error al actualizar estadísticas', e);
-            }
-        }
-
-        async function guardarCambiosTarea(boton) {
-            const fila = boton.closest('.task-row');
-            const id = fila.dataset.id;
-            const estado = fila.querySelector('.edit-status').value;
-            const prioridad = fila.querySelector('.edit-priority').value;
-
-            try {
-                const resp = await fetch('../../app/logica_tareas.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `accion=actualizar&id_tarea=${encodeURIComponent(id)}&estado=${encodeURIComponent(estado)}&prioridad=${encodeURIComponent(prioridad)}`
-                });
-                const data = await resp.json();
-
-                if (data.ok) {
-                    await cargarTareas();
-                    actualizarStats();
-                } else {
-                    alert(data.error || 'No se pudo actualizar la tarea.');
-                }
-            } catch (e) {
-                alert('Error de conexión al actualizar la tarea.');
-                console.error(e);
-            }
-        }
-
-        async function eliminarTarea(boton) {
-            const fila = boton.closest('.task-row');
-            const id = fila.dataset.id;
-
-            if (!confirm('¿Eliminar esta tarea?')) return;
-
-            try {
-                const resp = await fetch('../../app/logica_tareas.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `accion=eliminar&id_tarea=${encodeURIComponent(id)}`
-                });
-                const data = await resp.json();
-
-                if (data.ok) {
-                    await cargarTareas();
-                    actualizarStats();
-                } else {
-                    alert(data.error || 'No se pudo eliminar la tarea.');
-                }
-            } catch (e) {
-                alert('Error de conexión al eliminar la tarea.');
-                console.error(e);
-            }
-        }
-
-        // Delegación de eventos: los task-row se crean dinámicamente
-        document.addEventListener('click', (e) => {
-            const boton = e.target.closest('.dots');
-            if (boton && taskTableBody.contains(boton)) {
-                e.stopPropagation();
-                const menu = boton.nextElementSibling;
-                const abierto = menu.classList.contains('open');
-                cerrarTodosLosMenus(menu);
-                menu.classList.toggle('open', !abierto);
-                boton.setAttribute('aria-expanded', String(!abierto));
-                actualizarOverlay();
-                return;
-            }
-
-            const guardar = e.target.closest('.edit-apply');
-            if (guardar) {
-                e.stopPropagation();
-                guardarCambiosTarea(guardar);
-                return;
-            }
-
-            const eliminar = e.target.closest('.edit-delete');
-            if (eliminar) {
-                e.stopPropagation();
-                eliminarTarea(eliminar);
-                return;
-            }
-
-            if (e.target.closest('.edit-menu')) {
-                e.stopPropagation();
-                return;
-            }
-
-            cerrarTodosLosMenus(null);
-        });
-
-        menuOverlay.addEventListener('click', () => cerrarTodosLosMenus(null));
-
-        // ================= MODAL: REGISTRAR NUEVA TAREA =================
-
-        const btnNuevaTarea = document.getElementById('btnNuevaTarea');
-        const modalTareaOverlay = document.getElementById('modalTareaOverlay');
-        const formNuevaTarea = document.getElementById('formNuevaTarea');
-        const btnCancelarTarea = document.getElementById('btnCancelarTarea');
-        const sugerenciasTareas = document.getElementById('sugerenciasTareas');
-        const inputTareaTitulo = document.getElementById('tareaTitulo');
-        const selectTareaPrioridad = document.getElementById('tareaPrioridad');
-        const inputTareaVencimiento = document.getElementById('tareaVencimiento');
-
-        const sugerenciasFijas = [
-            'Solicitar materia prima',
-            'Verificar inventario',
-            'Supervisar producción',
-            'Contactar proveedor',
-            'Generar informe de stock',
-            'Revisar pedidos pendientes',
-            'Programar mantenimiento de maquinaria'
-        ];
-
-        async function cargarSugerencias() {
-            let sugerencias = [...sugerenciasFijas];
-
-            try {
-                const resp = await fetch('../../app/logica_tareas.php?accion=sugerencias');
-                const data = await resp.json();
-                if (data.ok && Array.isArray(data.sugerencias)) {
-                    sugerencias = [...new Set([...sugerencias, ...data.sugerencias])];
-                }
-            } catch (e) {
-                // si falla, se usan solo las sugerencias fijas
-            }
-
-            sugerenciasTareas.innerHTML = sugerencias.map(s => `<option value="${escapeHtml(s)}"></option>`).join('');
-        }
-
-        btnNuevaTarea.addEventListener('click', () => {
-            modalTareaOverlay.classList.add('show');
-            cargarSugerencias();
-            inputTareaTitulo.focus();
-        });
-
-        btnCancelarTarea.addEventListener('click', () => {
-            modalTareaOverlay.classList.remove('show');
-            formNuevaTarea.reset();
-        });
-
-        modalTareaOverlay.addEventListener('click', (e) => {
-            if (e.target === modalTareaOverlay) {
-                modalTareaOverlay.classList.remove('show');
-            }
-        });
-
-        formNuevaTarea.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const titulo = inputTareaTitulo.value.trim();
-            const prioridad = selectTareaPrioridad.value;
-            const vencimiento = inputTareaVencimiento.value;
-
-            if (!titulo) return;
-
-            try {
-                const resp = await fetch('../../app/logica_tareas.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `accion=crear&titulo=${encodeURIComponent(titulo)}&prioridad=${encodeURIComponent(prioridad)}&fecha_vencimiento=${encodeURIComponent(vencimiento)}`
-                });
-                const data = await resp.json();
-
-                if (data.ok) {
-                    modalTareaOverlay.classList.remove('show');
-                    formNuevaTarea.reset();
-                    await cargarTareas();
-                    actualizarStats();
-                } else {
-                    alert(data.error || 'No se pudo registrar la tarea.');
-                }
-            } catch (e) {
-                alert('Error de conexión al registrar la tarea.');
-                console.error(e);
-            }
-        });
-
-        // ================= CARGA INICIAL Y AUTO-ACTUALIZACIÓN =================
-
-        cargarTareas();
-
-        // Refresca las 4 tarjetas y la lista de tareas cada 20 segundos,
-        // así el panel refleja cambios hechos desde cualquier otro módulo
-        // (ventas, inventario, proveedores) sin que el usuario recargue.
-        setInterval(() => {
-            actualizarStats();
-            cargarTareas();
-        }, 20000);
-
-        // También se actualiza al volver a esta pestaña del navegador
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                actualizarStats();
-                cargarTareas();
-            }
-        });
-    </script>
+    <script src="../../public/js/tareas.js"></script>
+    <script src="../../public/js/mensajes_badge.js"></script>
     <script>
         // ================= MENÚ DE PERFIL: DATOS, FOTO Y TEMA =================
 

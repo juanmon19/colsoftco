@@ -22,6 +22,7 @@ if ($accion === 'listar_materiales') {
         SELECT mp.id_material, mp.nombre_material, um.nombre_unidad
         FROM materias_primas mp
         LEFT JOIN unidades_medida um ON um.id_unidad = mp.id_unidad
+        WHERE mp.estado = 'activo'
         ORDER BY mp.nombre_material ASC
     ");
     $stmt->execute();

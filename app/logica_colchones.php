@@ -63,7 +63,7 @@ function evaluarProduccion(PDO $db, int $idModelo, int $cantidad): array
             FROM receta_colchon rc
             INNER JOIN materias_primas mp ON mp.id_material = rc.id_material
             LEFT JOIN unidades_medida um ON um.id_unidad = mp.id_unidad
-            WHERE rc.id_modelo = :id_modelo";
+            WHERE rc.id_modelo = :id_modelo AND mp.estado = 'activo'";
 
     $stmt = $db->prepare($sql);
     $stmt->execute([':id_modelo' => $idModelo]);
@@ -154,7 +154,7 @@ if ($accion === 'fabricar') {
             FROM receta_colchon rc
             INNER JOIN materias_primas mp ON mp.id_material = rc.id_material
             LEFT JOIN unidades_medida um ON um.id_unidad = mp.id_unidad
-            WHERE rc.id_modelo = :id_modelo
+            WHERE rc.id_modelo = :id_modelo AND mp.estado = 'activo'
             FOR UPDATE";
 
         $stmtReceta = $db->prepare($sqlReceta);

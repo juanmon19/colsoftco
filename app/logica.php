@@ -195,6 +195,12 @@ function login(array $credenciales)
     $Usuario = ConsultaUsuario($Conex, ['documento' => $credenciales['documento']]);
 
     if ($Usuario) {
+        // Verificar si la cuenta está activa
+        if (isset($Usuario[0]['activo']) && (int) $Usuario[0]['activo'] !== 1) {
+            $_SESSION['error'] = 'Tu cuenta ha sido desactivada. Contacta al administrador.';
+            header("location:../view/login/login.php");
+            exit();
+        }
         $UsuarioEmail = $Usuario[0]['email'];
         $UsuarioDocumento = $Usuario[0]['documento'];
         $HashPassword = $Usuario[0]['password_hash'];

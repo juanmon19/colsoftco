@@ -14,11 +14,7 @@ $db = new Conexion();
 $conn = $db->getConnection();
 
 $sql = "
-SELECT
-    id_material,
-    nombre_material,
-    stock_actual,
-    stock_minimo
+SELECT id_material, nombre_material, stock_actual, stock_minimo, estado
 FROM materias_primas
 ORDER BY id_material ASC
 ";
@@ -152,6 +148,12 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     placeholder="Buscar por nombre del material...">
             </div>
 
+            <select id="filtroEstado" onchange="filtrarPorEstado()" style="padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;">
+                <option value="todos">Todos</option>
+                <option value="activo" selected>Solo activos</option>
+                <option value="inactivo">Solo inactivos</option>
+            </select>
+
             <div class="filtro-orden">
                 <label for="selectOrden">   Ordenar:</label>
                 <select id="selectOrden">
@@ -178,6 +180,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>Material</th>
                         <th>Stock Actual</th>
                         <th>Stock Mínimo</th>
+                        <th>Alerta Stock</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -198,6 +201,13 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <span class="normal">DISPONIBLE</span>
                                 <?php endif; ?>
                             </td>
+                            <td>
+                                <span style="display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:bold;
+                                             background:<?= $m['estado'] === 'activo' ? '#e5f7ec' : '#fdecea' ?>;
+                                             color:<?= $m['estado'] === 'activo' ? '#1e7e42' : '#c0392b' ?>;">
+                                    <?= $m['estado'] === 'activo' ? 'Activo' : 'Inactivo' ?>
+                                </span>
+                            </td>
                             <td class="acciones">
                                 <a class="btn-editar" href="editar_inventario.php?id=<?= $m['id_material'] ?>">
                                     Editar
@@ -205,6 +215,14 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <a href="eliminar_inventario.php?id=<?= $m['id_material'] ?>" class="btn-eliminar">
                                     Eliminar
                                 </a>
+                                <button class="btn-toggle-estado"
+                                        data-id="<?= $m['id_material'] ?>"
+                                        data-estado="<?= $m['estado'] ?>"
+                                        style="padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:bold;
+                                               background:<?= $m['estado'] === 'activo' ? '#fdecea' : '#e5f7ec' ?>;
+                                               color:<?= $m['estado'] === 'activo' ? '#c0392b' : '#1e7e42' ?>;">
+                                    <?= $m['estado'] === 'activo' ? 'Deshabilitar' : 'Habilitar' ?>
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -332,6 +350,52 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
             window.location.reload();
         }
     });
+    </script>
+
+    <script>
+        // Toggle estado via AJAX
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.btn-toggle-estado');
+            if (!btn) return;
+
+            const id = btn.dataset.id;
+            const estadoActual = btn.dataset.estado;
+            const nuevoEstado = estadoActual === 'activo' ? 'inactivo' : 'activo';
+            const accion = estadoActual === 'activo' ? 'deshabilitar' : 'habilitar';
+
+            if (!confirm(`¿Desea ${accion} esta materia prima?`)) return;
+
+            try {
+                const resp = await fetch('../../../app/logica_inventario_api.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `accion=cambiar_estado&id=${id}&estado=${nuevoEstado}`
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    location.reload();
+                } else {
+                    alert(data.error || 'Error al cambiar estado.');
+                }
+            } catch(e) {
+                alert('Error de conexión.');
+            }
+        });
+
+        // Filtrar por estado
+        function filtrarPorEstado() {
+            const filtro = document.getElementById('filtroEstado').value;
+            const filas = document.querySelectorAll('#listaMateriales tr');
+            filas.forEach(fila => {
+                const estado = fila.querySelector('.btn-toggle-estado')?.dataset.estado;
+                if (!estado) return;
+                if (filtro === 'todos') fila.style.display = '';
+                else fila.style.display = (estado === filtro) ? '' : 'none';
+            });
+        }
+
+        // Apply default filter on load
+        window.addEventListener('DOMContentLoaded', filtrarPorEstado);
     </script>
 
 </body>

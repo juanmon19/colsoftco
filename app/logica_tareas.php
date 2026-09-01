@@ -49,6 +49,12 @@ if ($accion === 'crear') {
         $prioridad = 'medium';
     }
 
+    // Validar que la fecha no sea pasada
+    if ($vencimiento !== '' && $vencimiento < date('Y-m-d')) {
+        echo json_encode(['ok' => false, 'error' => 'No se puede asignar una fecha de vencimiento en el pasado.']);
+        exit();
+    }
+
     $stmt = $db->prepare(
         "INSERT INTO tareas (titulo, prioridad, fecha_vencimiento, estado)
          VALUES (:titulo, :prioridad, :vencimiento, 'pendiente')"

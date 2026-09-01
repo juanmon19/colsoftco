@@ -16,19 +16,16 @@ class InventarioLogica
         $this->conn = $db->getConnection();
     }
 
-    public function listarMateriales()
+    public function listarMateriales($incluirInactivos = false)
     {
+        $filtroEstado = $incluirInactivos ? '' : "WHERE mp.estado = 'activo'";
         $sql = "
-        SELECT
-            mp.*,
-            um.nombre_unidad,
-            p.nombre_empresa
-        FROM materias_primas mp
-        LEFT JOIN unidades_medida um
-            ON mp.id_unidad = um.id_unidad
-        LEFT JOIN proveedores p
-            ON mp.id_proveedor = p.id_proveedor
-        ORDER BY mp.nombre_material ASC
+            SELECT mp.*, um.nombre_unidad, p.nombre_empresa AS proveedor
+            FROM materias_primas mp
+            LEFT JOIN unidades_medida um ON um.id_unidad = mp.id_unidad
+            LEFT JOIN proveedores p ON p.id_proveedor = mp.id_proveedor
+            {$filtroEstado}
+            ORDER BY mp.nombre_material ASC
         ";
 
         $stmt = $this->conn->prepare($sql);
@@ -184,6 +181,20 @@ class InventarioLogica
         ]);
     }
 
+    /**
+     * Cambia el estado (activo/inactivo) de una materia prima.
+     */
+    public function cambiarEstadoMaterial(int $id, string $estado): bool
+    {
+        if (!in_array($estado, ['activo', 'inactivo'], true)) {
+            return false;
+        }
+        $stmt = $this->conn->prepare(
+            "UPDATE materias_primas SET estado = :estado WHERE id_material = :id"
+        );
+        return $stmt->execute([':estado' => $estado, ':id' => $id]);
+    }
+
     /* Verificar si la materia prima está en una receta */
     public function materialTieneReceta($id)
     {
@@ -214,10 +225,7 @@ class InventarioLogica
         return false;
     }
 
-    $sql = "
-        DELETE FROM materias_primas
-        WHERE id_material = ?
-    ";
+    $sql = "UPDATE materias_primas SET estado = 'inactivo' WHERE id_material = ?";
 
     $stmt = $this->conn->prepare($sql);
 

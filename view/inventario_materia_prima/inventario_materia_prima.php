@@ -1,17 +1,20 @@
 <?php
 
 require_once('../../config/conexion.php');
-require_once "../../app/verificar_sesion.php";
+
+/* Evita que el navegador restaure esta página desde su caché al
+   presionar "atrás", lo que mostraría materiales ya eliminados o
+   datos desactualizados. */
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
 
 $db = new Conexion();
 $conn = $db->getConnection();
 
 $sql = "
-SELECT
-    id_material,
-    nombre_material,
-    stock_actual,
-    stock_minimo
+SELECT id_material, nombre_material, stock_actual, stock_minimo, estado
 FROM materias_primas
 ORDER BY id_material ASC
 ";
@@ -129,9 +132,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="container">
 
-        <a class="btn-volver" href="../panel_admin/panel_admin.php">
-            ← Volver
-        </a>
+  
 
         <!-- =========================
              BARRA DE FILTROS
@@ -145,8 +146,14 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     placeholder="Buscar por nombre del material...">
             </div>
 
+            <select id="filtroEstado" onchange="filtrarPorEstado()" style="padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;">
+                <option value="todos">Todos</option>
+                <option value="activo" selected>Solo activos</option>
+                <option value="inactivo">Solo inactivos</option>
+            </select>
+
             <div class="filtro-orden">
-                <label for="selectOrden">Ordenar:</label>
+                <label for="selectOrden">   Ordenar:</label>
                 <select id="selectOrden">
                     <option value="az">Nombre (A-Z)</option>
                     <option value="za">Nombre (Z-A)</option>
@@ -171,6 +178,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>Material</th>
                         <th>Stock Actual</th>
                         <th>Stock Mínimo</th>
+                        <th>Alerta Stock</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -191,13 +199,28 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <span class="normal">DISPONIBLE</span>
                                 <?php endif; ?>
                             </td>
+                            <td>
+                                <span style="display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:bold;
+                                             background:<?= $m['estado'] === 'activo' ? '#e5f7ec' : '#fdecea' ?>;
+                                             color:<?= $m['estado'] === 'activo' ? '#1e7e42' : '#c0392b' ?>;">
+                                    <?= $m['estado'] === 'activo' ? 'Activo' : 'Inactivo' ?>
+                                </span>
+                            </td>
                             <td class="acciones">
-                                <a class="btn-editar" href="../../view/control_de_stock/inventario/editar_inventario.php?id=<?= $m['id_material'] ?>">
+                                <a class="btn-editar" href="../control_de_stock/inventario/editar_inventario.php?id=<?= $m['id_material'] ?>">
                                     Editar
                                 </a>
-                                <a href="../../view/control_de_stock/inventario/eliminar_inventario.php?id=<?= $m['id_material'] ?>" class="btn-eliminar">
+                                <a href="../control_de_stock/inventario/eliminar_inventario.php?id=<?= $m['id_material'] ?>" class="btn-eliminar">
                                     Eliminar
                                 </a>
+                                <button class="btn-toggle-estado"
+                                        data-id="<?= $m['id_material'] ?>"
+                                        data-estado="<?= $m['estado'] ?>"
+                                        style="padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:bold;
+                                               background:<?= $m['estado'] === 'activo' ? '#fdecea' : '#e5f7ec' ?>;
+                                               color:<?= $m['estado'] === 'activo' ? '#c0392b' : '#1e7e42' ?>;">
+                                    <?= $m['estado'] === 'activo' ? 'Deshabilitar' : 'Habilitar' ?>
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -304,7 +327,74 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
         })();
     </script>
 
-    <script src="../../public/js/app.js"></script>
+    <script>
+    /* Detectamos si esta carga de la página viene de la bfcache
+       (botón "atrás/adelante"), combinando dos señales para mayor
+       confiabilidad entre navegadores:
+       1) event.persisted en el evento pageshow
+       2) el "type" reportado por la Navigation Timing API
+       Si cualquiera de las dos indica que venimos de bfcache, forzamos
+       una recarga real para que PHP vuelva a consultar el estado
+       actual de la base de datos en vez de mostrar una copia vieja. */
+    window.addEventListener('pageshow', function (event) {
+        const entradasNav = performance.getEntriesByType('navigation');
+        const tipoNav = entradasNav.length ? entradasNav[0].type : null;
+
+        // TEMPORAL: para diagnosticar, borrar esta línea después de probar
+        console.log('[diagnóstico bfcache] persisted:', event.persisted, '| tipo navegación:', tipoNav);
+
+        if (event.persisted || tipoNav === 'back_forward') {
+            console.log('[diagnóstico bfcache] Recargando por venir de bfcache...');
+            window.location.reload();
+        }
+    });
+    </script>
+
+    <script>
+        // Toggle estado via AJAX
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.btn-toggle-estado');
+            if (!btn) return;
+
+            const id = btn.dataset.id;
+            const estadoActual = btn.dataset.estado;
+            const nuevoEstado = estadoActual === 'activo' ? 'inactivo' : 'activo';
+            const accion = estadoActual === 'activo' ? 'deshabilitar' : 'habilitar';
+
+            if (!confirm(`¿Desea ${accion} esta materia prima?`)) return;
+
+            try {
+                const resp = await fetch('../../../app/logica_inventario_api.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `accion=cambiar_estado&id=${id}&estado=${nuevoEstado}`
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    location.reload();
+                } else {
+                    alert(data.error || 'Error al cambiar estado.');
+                }
+            } catch(e) {
+                alert('Error de conexión.');
+            }
+        });
+
+        // Filtrar por estado
+        function filtrarPorEstado() {
+            const filtro = document.getElementById('filtroEstado').value;
+            const filas = document.querySelectorAll('#listaMateriales tr');
+            filas.forEach(fila => {
+                const estado = fila.querySelector('.btn-toggle-estado')?.dataset.estado;
+                if (!estado) return;
+                if (filtro === 'todos') fila.style.display = '';
+                else fila.style.display = (estado === filtro) ? '' : 'none';
+            });
+        }
+
+        // Apply default filter on load
+        window.addEventListener('DOMContentLoaded', filtrarPorEstado);
+    </script>
 
 </body>
 </html>

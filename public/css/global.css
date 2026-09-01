@@ -1,0 +1,84 @@
+/* ══════════════════════════════════════════════════════════
+   COLSOFTCO — CSS Global Base
+   Se incluye en TODAS las vistas como primer stylesheet.
+   ══════════════════════════════════════════════════════════ */
+
+/* ══ RESET & TIPOGRAFÍA BASE ══ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #152846;
+    background: #f7f9fc;
+    min-height: 100vh;
+}
+
+/* ══ VARIABLES GLOBALES ══ */
+:root {
+    --navy: #0A1F44;
+    --navy-dark: #061d3c;
+    --navy-2: #092b55;
+    --gold: #D4AF37;
+    --bg: #f7f9fc;
+    --text: #152846;
+    --border: #e5eaf0;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    --header-height: 70px;
+}
+
+/* ══ IMÁGENES ESTANDARIZADAS ══ */
+.avatar-header {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-perfil {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logo-header {
+    width: 55px;
+    height: auto;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ══ UTILIDADES ══ */
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+.text-warning { color: var(--warning); }
+.bg-success { background: #e5f7ec; color: var(--success); }
+.bg-danger { background: #fdecea; color: var(--danger); }
+
+/* ══ TEMA OSCURO — Variables base ══ */
+html[data-tema="oscuro"] {
+    --bg: #0f172a;
+    --text: #f1f5f9;
+    --border: #334155;
+}
+
+html[data-tema="oscuro"] body {
+    background: var(--bg);
+    color: var(--text);
+}
