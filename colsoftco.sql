@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-09-2026 a las 01:06:58
+-- Tiempo de generación: 02-09-2026 a las 06:06:01
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -532,7 +532,8 @@ CREATE TABLE `mensajes` (
 --
 
 INSERT INTO `mensajes` (`id_mensaje`, `id_remitente`, `id_destinatario`, `asunto`, `contenido`, `leido`, `fecha_envio`) VALUES
-(1, 7, 19, 'maquinas', 'quiero que revises si la maquina de cerrar esta en buen estado', 1, '2026-08-31 22:52:03');
+(1, 7, 19, 'maquinas', 'quiero que revises si la maquina de cerrar esta en buen estado', 1, '2026-08-31 22:52:03'),
+(2, 8, 14, 'Maquinaria con presunta falla', 'Hola Nicolás, puedes revisar que la maquina de cocido este funcionando correctamente, espero tu respuesta. Gracias', 0, '2026-09-01 22:27:38');
 
 -- --------------------------------------------------------
 
@@ -871,7 +872,7 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `foto`, `telefono`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`, `token_sesion`, `activo`, `ultima_actividad`) VALUES
 (7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '1', '6049e28c28e03d47a5d564194e804e2f6ad2f4e84ebf05f24a24b0ebd61dc039', '1787856046', 'cf7b239575d7117435abdb03929a3799f55c54287cd148e4602203eb85d853dc', 1, '2026-09-01 17:35:56'),
-(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', NULL, NULL, 'administrador', '$2y$10$pGRHa/Lsekzlel4Us/2dz.VyO7sjNgE8tXH2P3wC..Mp1EoArax9u', '1', 'cd21b7fcc2deb9c2541e793fe1acf4800abca7915ca7085e3514690fb007eb7a', '1788234551', NULL, 1, NULL),
+(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'usuario_8_1788319477.jpg', NULL, 'administrador', '$2y$10$mwe6pjtnKSgAIvC0donWSeDPygDJ7/IwEhAlSb59NT3OxA5RRnVG.', '', NULL, '0', 'eff898d43b5911bba9f8a8ba5b7b89fe61f8b5dd6fc9c5ddec92f95a961de09b', 1, '2026-09-01 22:26:12'),
 (14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857', NULL, 1, NULL),
 (18, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', NULL, NULL, 'bodeguero', '$2y$10$CR9Aw8rydge4FXpuFKn8...fME51QFfpgxeJkv0wGEwYi6UQmNKhC', '0', NULL, NULL, 'f6bcb428f16d58fe458a79078edac69c5a868754ba064716f535e1b75bac1806', 1, '2026-08-31 22:45:36'),
 (19, 'majog4892@gmail.com', '1068952788', 'Maria José', 'Gonzalez Rodriguez', 'usuario_19_1788231237.jpg', '3115726095', 'bodeguero', '$2y$10$3LL/y4Si9zVL4rQCEmJE.OAcr2NO6rlP9aIIDEsMpDE3lIjrbBXHa', '0', NULL, NULL, NULL, 1, '2026-08-31 23:18:34');
@@ -1015,7 +1016,7 @@ ALTER TABLE `materias_primas`
 -- AUTO_INCREMENT de la tabla `mensajes`
 --
 ALTER TABLE `mensajes`
-  MODIFY `id_mensaje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_mensaje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `modelos_colchon`
