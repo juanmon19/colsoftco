@@ -1,8 +1,10 @@
 <?php
 
-// Habilitar errores en pantalla para identificar la falla exacta
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// El detalle técnico de los errores va al log del servidor, nunca a pantalla.
+// Para depurar en local, cambia APP_DEBUG a true en tu .env (o config/setting.php).
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
@@ -179,10 +181,9 @@ function saveUser(array $datos)
         }
         return false;
     } catch (\Throwable $th) {
-        // Muestra el mensaje exacto de PDO si falta una columna o hay fallo SQL
-        echo "<h3>Error de Base de Datos / Ejecución:</h3>";
-        echo "<pre>" . $th->getMessage() . "</pre>";
-        exit();
+        // El detalle técnico se va al log del servidor, NUNCA a pantalla.
+        error_log('Error de Base de Datos en saveUser(): ' . $th->getMessage());
+        return false;
     } finally {
         $Conex->closeDataBase();
     }
@@ -243,6 +244,7 @@ function login(array $credenciales)
                 // este valor en cada petición).
                 $nuevoTokenSesion = bin2hex(random_bytes(32));
                 guardarTokenSesion($Usuario[0]['id_usuario'], $nuevoTokenSesion);
+                refrescarUltimaActividad($Usuario[0]['id_usuario']);
                 $_SESSION['token_sesion'] = $nuevoTokenSesion;
 
                 $_SESSION['user_id'] = $Usuario[0]['id_usuario'];
@@ -326,6 +328,29 @@ function guardarTokenSesion($idUsuario, $token)
 }
 
 /**
+ * Marca "ahora" como última actividad justo al iniciar sesión.
+ * Sin esto, el primer chequeo de inactividad en verificar_sesion.php
+ * compara contra un valor viejo (de una sesión anterior) y expira
+ * la sesión inmediatamente después de loguearse.
+ */
+function refrescarUltimaActividad($idUsuario)
+{
+    $conex = new Conexion();
+    $conex->sql = "UPDATE usuarios SET ultima_actividad = NOW() WHERE id_usuario = :id";
+
+    try {
+        $conex->pps = $conex->getConnection()->prepare($conex->sql);
+        $conex->pps->bindParam(":id", $idUsuario);
+        return $conex->pps->execute();
+    } catch (\Throwable $th) {
+        error_log('Error al refrescar ultima_actividad: ' . $th->getMessage());
+        return false;
+    } finally {
+        $conex->closeDataBase();
+    }
+}
+
+/**
  * Envía un correo de alerta al dueño de la cuenta cuando se detecta
  * un nuevo inicio de sesión mientras ya existía una sesión activa.
  */
@@ -346,7 +371,7 @@ function EnviarAlertaSesionDuplicada($correo, $nombreReceptor, $ip, $fecha)
         $mail->addAddress($correo, $nombreReceptor);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Alerta de seguridad: nuevo inicio de sesión en tu cuenta';
+        $mail->Subject = 'Alerta de seguridad: nuevo inicio de sesion en tu cuenta';
 
         $baseUrl = defined('BASE_URL') ? BASE_URL : 'http://localhost/colsoftco';
         $urlCambioPassword = $baseUrl . '/view/recuperar_contrasena/recuperar_contrasena.php';
@@ -357,7 +382,7 @@ function EnviarAlertaSesionDuplicada($correo, $nombreReceptor, $ip, $fecha)
             mientras ya había una sesión activa en otro dispositivo o navegador.<br><br>
             <b>Fecha y hora:</b> ' . htmlspecialchars($fecha) . '<br>
             <b>Dirección IP:</b> ' . htmlspecialchars($ip) . '<br><br>
-            Si fuiste tú, puedes ignorar este mensaje; la sesión anterior se cerró automáticamente.<br>
+            Si fuiste tu, puedes ignorar este mensaje; la sesion anterior se cerró automaticamente.<br>
             Si <b>no reconoces</b> este ingreso, cambia tu contraseña de inmediato haciendo clic aquí:<br><br>
             <b><a href="' . $urlCambioPassword . '">Cambiar mi contraseña</a></b>
         ';

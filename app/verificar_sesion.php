@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/Bogota');
+
 // Configuración de seguridad de sesión
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.cookie_httponly', 1);
@@ -40,14 +42,16 @@ if (isset($_SESSION['token_sesion'])) {
     }
 }
 
-// ══ VERIFICAR CUENTA ACTIVA ══
+// ══ VERIFICAR CUENTA ACTIVA Y EXPIRACIÓN POR INACTIVIDAD ══
+define('MINUTOS_INACTIVIDAD_MAX', 30);
+
 if (isset($_SESSION['documento'])) {
     if (!isset($__dbCheck)) {
         require_once __DIR__ . '/../config/conexion.php';
         $__dbCheck = new Conexion();
     }
     $__stmtActivo = $__dbCheck->getConnection()->prepare(
-        "SELECT activo FROM usuarios WHERE documento = :doc LIMIT 1"
+        "SELECT activo, ultima_actividad FROM usuarios WHERE documento = :doc LIMIT 1"
     );
     $__stmtActivo->execute([':doc' => $_SESSION['documento']]);
     $__rowActivo = $__stmtActivo->fetch(PDO::FETCH_ASSOC);
@@ -60,6 +64,21 @@ if (isset($_SESSION['documento'])) {
             window.location.href = "' . (strpos($_SERVER['SCRIPT_NAME'], '/app/') !== false ? '../view/login/login.php' : '../login/login.php') . '";
         </script>';
         exit();
+    }
+
+    // Si la última actividad registrada supera el umbral, se cierra la sesión.
+    if (!empty($__rowActivo['ultima_actividad'])) {
+        $__minutosInactivo = (time() - strtotime($__rowActivo['ultima_actividad'])) / 60;
+
+        if ($__minutosInactivo > MINUTOS_INACTIVIDAD_MAX) {
+            session_unset();
+            session_destroy();
+            echo '<script>
+                alert("Tu sesión expiró por inactividad. Por favor, inicia sesión de nuevo.");
+                window.location.href = "' . (strpos($_SERVER['SCRIPT_NAME'], '/app/') !== false ? '../view/login/login.php' : '../login/login.php') . '";
+            </script>';
+            exit();
+        }
     }
 
     // Actualizar última actividad

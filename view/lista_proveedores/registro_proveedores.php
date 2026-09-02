@@ -29,9 +29,9 @@ try {
 
     $imagen = $_FILES['imagen'];
 
-    // Máximo 2 MB
-    if ($imagen['size'] > 2 * 1024 * 1024) {
-        throw new Exception("La imagen no puede superar los 2 MB.");
+    // Máximo 5 MB
+    if ($imagen['size'] > 5 * 1024 * 1024) {
+        throw new Exception("La imagen no puede superar los 5 MB.");
     }
 
     // Validar que realmente sea una imagen
