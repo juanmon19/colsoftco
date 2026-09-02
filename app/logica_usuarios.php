@@ -2,6 +2,12 @@
 /**
  * API para gestión de usuarios (solo administrador).
  */
+
+// Sin esto, time() usa la zona horaria por defecto del servidor (normalmente
+// UTC), mientras que ultima_actividad se guarda con NOW() de MySQL. Si no
+// coinciden, la diferencia en segundos queda inflada y "online" nunca da true.
+date_default_timezone_set('America/Bogota');
+
 session_start();
 header('Content-Type: application/json');
 require_once '../config/conexion.php';

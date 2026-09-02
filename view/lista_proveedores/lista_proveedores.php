@@ -32,298 +32,256 @@ $conteos = $logica->contarProveedoresPorEstado();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colsoftco - Lista de Proveedores</title>
+
+    <!-- global.css + layout.css traen los estilos del sidebar/topbar -->
+    <link rel="stylesheet" href="../../public/css/global.css">
+    <link rel="stylesheet" href="../../public/css/layout.css">
     <link href="lista_proveedores.css" rel="stylesheet">
+
+    <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
 
-    <header class="header">
-        <div class="logo">
-            <a href="../../app/ir_panel.php">
-                <img src="../../public/imagenes/logo.png" alt="logo">
-            </a>
-        </div>
+    <?php
+        // Modales de "nueva tarea" del panel_admin no aplican aquí, se omiten.
+        // El modal de "editar perfil" viene incluido dentro de topbar.php.
+    ?>
 
-        <div class="header-title">
-            <h1>Lista de Proveedores</h1>
-        </div>
+    <div class="app">
 
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
+        <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
-    </header>
+        <div class="main">
 
-    <main class="content">
+            <?php
+            $rolActual = 'Administrador';
+            include __DIR__ . '/../partials/topbar.php';
+            ?>
 
-        <div class="controls-container">
+            <main class="content">
 
-            <div class="tabs">
-                <a href="lista_proveedores.php?estado=activo"
-                   class="tab <?= $estadoFiltro === 'activo' ? 'active' : '' ?>">
-                    Activos (<?= $conteos['activo'] ?>)
-                </a>
-                <a href="lista_proveedores.php?estado=inactivo"
-                   class="tab <?= $estadoFiltro === 'inactivo' ? 'active' : '' ?>">
-                    Deshabilitados (<?= $conteos['inactivo'] ?>)
-                </a>
-            </div>
+                <div class="controls-container">
 
-            <div class="actions">
-                <button class="btn-action" onclick="window.location.href='registro_proveedores.php'">
-                    Registrar Proveedor
-                </button>
-
-                <button class="btn-action"
-                    onclick="window.location.href='../historial_movimientos/historial.php'">
-                    historial de movimientos
-                </button>
-            </div>
-
-        </div>
-
-        <!-- =========================
-             BARRA DE FILTROS
-        ========================== -->
-        <div class="filtros-container">
-
-            <div class="filtro-busqueda">
-                <input
-                    type="text"
-                    id="inputBusquedaProveedor"
-                    placeholder="Buscar por nombre, NIT o contacto...">
-            </div>
-
-            <div class="filtro-orden">
-                <label for="selectOrden">Ordenar:</label>
-                <select id="selectOrden">
-                    <option value="az">Nombre (A-Z)</option>
-                    <option value="za">Nombre (Z-A)</option>
-                </select>
-            </div>
-
-            <button type="button" id="btnLimpiarFiltros" class="btn-limpiar-filtros">
-                Limpiar filtros
-            </button>
-
-        </div>
-
-        <p id="mensajeSinResultados" class="mensaje-sin-resultados" style="display:none;">
-            No se encontraron proveedores que coincidan con la búsqueda.
-        </p>
-
-        <div class="provider-list" id="listaProveedores">
-
-            <?php if (count($proveedores) > 0): ?>
-
-                <?php foreach ($proveedores as $proveedor): ?>
-
-                    <div class="provider-card <?php echo $proveedor['estado'] === 'inactivo' ? 'inactivo' : ''; ?>"
-                        data-nombre="<?php echo htmlspecialchars(strtolower($proveedor['nombre_empresa'])); ?>"
-                        data-nit="<?php echo htmlspecialchars(strtolower($proveedor['nit'] ?? '')); ?>"
-                        data-contacto="<?php echo htmlspecialchars(strtolower($proveedor['contacto_nombre'] . ' ' . $proveedor['contacto_apellido'])); ?>">
-
-                        <!-- =========================
-             IMAGEN DEL PROVEEDOR
-        ========================== -->
-                        <div class="provider-logo">
-
-                            <?php if (!empty($proveedor['imagen'])): ?>
-
-                                <img
-                                    src="../../public/imagenes/proveedores/<?php echo htmlspecialchars($proveedor['imagen']); ?>"
-                                    alt="<?php echo htmlspecialchars($proveedor['nombre_empresa']); ?>"
-                                    class="provider-logo-img">
-
-                            <?php else: ?>
-
-                                <div style="
-                    font-weight: bold;
-                    font-size: 24px;
-                    color: #2E8B57;
-                    text-align: center;
-                ">
-                                    <?php
-                                    echo strtoupper(substr(
-                                        $proveedor['nombre_empresa'],
-                                        0,
-                                        3
-                                    ));
-                                    ?>
-                                </div>
-
-                            <?php endif; ?>
-
-                        </div>
-
-
-                        <!-- =========================
-             INFORMACIÓN DEL PROVEEDOR
-        ========================== -->
-                        <div class="provider-info">
-
-                            <p>
-                                <strong>Proveedor:</strong>
-                                <?php echo htmlspecialchars($proveedor['nombre_empresa']); ?>
-                                <?php if ($proveedor['estado'] === 'inactivo'): ?>
-                                    <span class="badge-inactivo">Deshabilitado</span>
-                                <?php endif; ?>
-                            </p>
-
-                            <?php if (isset($proveedor['nit'])): ?>
-                                <p>
-                                    <strong>NIT:</strong>
-                                    <?php echo htmlspecialchars($proveedor['nit']); ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <?php if (isset($proveedor['direccion'])): ?>
-                                <p>
-                                    <strong>Dirección:</strong>
-                                    <?php echo htmlspecialchars($proveedor['direccion']); ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <?php if (isset($proveedor['descripcion_empresa'])): ?>
-                                <p>
-                                    <strong>Descripción:</strong>
-                                    <?php echo htmlspecialchars($proveedor['descripcion_empresa']); ?>
-                                </p>
-                            <?php endif; ?>
-
-                            <p>
-                                <strong>Contacto:</strong>
-                                <?php
-                                echo htmlspecialchars(
-                                    $proveedor['contacto_nombre'] . ' ' .
-                                        $proveedor['contacto_apellido']
-                                );
-                                ?>
-                            </p>
-
-                            <p>
-                                <strong>Correo:</strong>
-                                <?php echo htmlspecialchars($proveedor['email']); ?>
-                            </p>
-
-                            <p>
-                                <strong>Teléfono:</strong>
-                                <?php echo htmlspecialchars($proveedor['telefono']); ?>
-                            </p>
-
-                        </div>
-
-
-                        <!-- =========================
-             BOTONES
-        ========================== -->
-                        <div class="provider-buttons">
-
-                            <div class="btn-group-top">
-
-                                <a href="editar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>" class="btn-card">
-                                    Editar
-                                </a>
-
-                                <?php if ($proveedor['estado'] === 'activo'): ?>
-                                    <a
-                                        href="ambiar_estado_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>&volver=<?php echo urlencode($estadoFiltro); ?>"
-                                        class="btn-card btn-card-deshabilitar">
-                                        Deshabilitar
-                                    </a>
-                                <?php else: ?>
-                                    <a
-                                        href="ambiar_estado_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>&volver=<?php echo urlencode($estadoFiltro); ?>"
-                                        class="btn-card btn-card-habilitar">
-                                        Habilitar
-                                    </a>
-                                <?php endif; ?>
-
-                            </div>
-
-                            <!-- CONTACTAR -->
-                            <a
-                                href="contactar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
-                                class="btn-card btn-card-large">
-                                Contactar
-                            </a>
-
-                        </div>
-
+                    <div class="tabs">
+                        <a href="lista_proveedores.php?estado=activo"
+                           class="tab <?= $estadoFiltro === 'activo' ? 'active' : '' ?>">
+                            Activos (<?= $conteos['activo'] ?>)
+                        </a>
+                        <a href="lista_proveedores.php?estado=inactivo"
+                           class="tab <?= $estadoFiltro === 'inactivo' ? 'active' : '' ?>">
+                            Deshabilitados (<?= $conteos['inactivo'] ?>)
+                        </a>
                     </div>
 
-                <?php endforeach; ?>
+                    <div class="actions">
+                        <button class="btn-action" onclick="window.location.href='registro_proveedores.php'">
+                            Registrar Proveedor
+                        </button>
 
-            <?php else: ?>
-
-                <div class="provider-card">
-
-                    <div class="provider-info">
-
-                        <p>
-                            <?= $estadoFiltro === 'inactivo'
-                                ? 'No hay proveedores deshabilitados por el momento.'
-                                : 'No existen proveedores activos registrados.' ?>
-                        </p>
-
+                        <button class="btn-action"
+                            onclick="window.location.href='../historial_movimientos/historial.php'">
+                            historial de movimientos
+                        </button>
                     </div>
 
                 </div>
 
-            <?php endif; ?>
+                <!-- =========================
+                     BARRA DE FILTROS
+                ========================== -->
+                <div class="filtros-container">
 
-        </div>
+                    <div class="filtro-busqueda">
+                        <input
+                            type="text"
+                            id="inputBusquedaProveedor"
+                            placeholder="Buscar por nombre, NIT o contacto...">
+                    </div>
 
-    </main>
+                    <div class="filtro-orden">
+                        <label for="selectOrden">Ordenar:</label>
+                        <select id="selectOrden">
+                            <option value="az">Nombre (A-Z)</option>
+                            <option value="za">Nombre (Z-A)</option>
+                        </select>
+                    </div>
 
-    <footer>
-        <div class="footer-divider"></div>
+                    <button type="button" id="btnLimpiarFiltros" class="btn-limpiar-filtros">
+                        Limpiar filtros
+                    </button>
 
-        <div class="footer-top">
+                </div>
 
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex.
-                    Eficiencia en inventarios y movimientos empresariales.
+                <p id="mensajeSinResultados" class="mensaje-sin-resultados" style="display:none;">
+                    No se encontraron proveedores que coincidan con la búsqueda.
                 </p>
-            </div>
 
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
+                <div class="provider-list" id="listaProveedores">
+
+                    <?php if (count($proveedores) > 0): ?>
+
+                        <?php foreach ($proveedores as $proveedor): ?>
+
+                            <div class="provider-card <?php echo $proveedor['estado'] === 'inactivo' ? 'inactivo' : ''; ?>"
+                                data-nombre="<?php echo htmlspecialchars(strtolower($proveedor['nombre_empresa'])); ?>"
+                                data-nit="<?php echo htmlspecialchars(strtolower($proveedor['nit'] ?? '')); ?>"
+                                data-contacto="<?php echo htmlspecialchars(strtolower($proveedor['contacto_nombre'] . ' ' . $proveedor['contacto_apellido'])); ?>">
+
+                                <div class="provider-logo">
+
+                                    <?php if (!empty($proveedor['imagen'])): ?>
+
+                                        <img
+                                            src="../../public/imagenes/proveedores/<?php echo htmlspecialchars($proveedor['imagen']); ?>"
+                                            alt="<?php echo htmlspecialchars($proveedor['nombre_empresa']); ?>"
+                                            class="provider-logo-img">
+
+                                    <?php else: ?>
+
+                                        <div style="
+                            font-weight: bold;
+                            font-size: 24px;
+                            color: #2E8B57;
+                            text-align: center;
+                        ">
+                                            <?php
+                                            echo strtoupper(substr(
+                                                $proveedor['nombre_empresa'],
+                                                0,
+                                                3
+                                            ));
+                                            ?>
+                                        </div>
+
+                                    <?php endif; ?>
+
+                                </div>
+
+                                <div class="provider-info">
+
+                                    <p>
+                                        <strong>Proveedor:</strong>
+                                        <?php echo htmlspecialchars($proveedor['nombre_empresa']); ?>
+                                        <?php if ($proveedor['estado'] === 'inactivo'): ?>
+                                            <span class="badge-inactivo">Deshabilitado</span>
+                                        <?php endif; ?>
+                                    </p>
+
+                                    <?php if (isset($proveedor['nit'])): ?>
+                                        <p>
+                                            <strong>NIT:</strong>
+                                            <?php echo htmlspecialchars($proveedor['nit']); ?>
+                                        </p>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($proveedor['direccion'])): ?>
+                                        <p>
+                                            <strong>Dirección:</strong>
+                                            <?php echo htmlspecialchars($proveedor['direccion']); ?>
+                                        </p>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($proveedor['descripcion_empresa'])): ?>
+                                        <p>
+                                            <strong>Descripción:</strong>
+                                            <?php echo htmlspecialchars($proveedor['descripcion_empresa']); ?>
+                                        </p>
+                                    <?php endif; ?>
+
+                                    <p>
+                                        <strong>Contacto:</strong>
+                                        <?php
+                                        echo htmlspecialchars(
+                                            $proveedor['contacto_nombre'] . ' ' .
+                                                $proveedor['contacto_apellido']
+                                        );
+                                        ?>
+                                    </p>
+
+                                    <p>
+                                        <strong>Correo:</strong>
+                                        <?php echo htmlspecialchars($proveedor['email']); ?>
+                                    </p>
+
+                                    <p>
+                                        <strong>Teléfono:</strong>
+                                        <?php echo htmlspecialchars($proveedor['telefono']); ?>
+                                    </p>
+
+                                </div>
+
+                                <div class="provider-buttons">
+
+                                    <div class="btn-group-top">
+
+                                        <a href="editar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>" class="btn-card">
+                                            Editar
+                                        </a>
+
+                                        <?php if ($proveedor['estado'] === 'activo'): ?>
+                                            <a
+                                                href="ambiar_estado_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>&volver=<?php echo urlencode($estadoFiltro); ?>"
+                                                class="btn-card btn-card-deshabilitar">
+                                                Deshabilitar
+                                            </a>
+                                        <?php else: ?>
+                                            <a
+                                                href="ambiar_estado_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>&volver=<?php echo urlencode($estadoFiltro); ?>"
+                                                class="btn-card btn-card-habilitar">
+                                                Habilitar
+                                            </a>
+                                        <?php endif; ?>
+
+                                    </div>
+
+                                    <a
+                                        href="contactar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                        class="btn-card btn-card-large">
+                                        Contactar
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        <?php endforeach; ?>
+
+                    <?php else: ?>
+
+                        <div class="provider-card">
+                            <div class="provider-info">
+                                <p>
+                                    <?= $estadoFiltro === 'inactivo'
+                                        ? 'No hay proveedores deshabilitados por el momento.'
+                                        : 'No existen proveedores activos registrados.' ?>
+                                </p>
+                            </div>
+                        </div>
+
+                    <?php endif; ?>
+
+                </div>
+
+            </main>
+
+            <?php include __DIR__ . '/../partials/footer.php'; ?>
 
         </div>
+    </div>
 
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>Equipo SENA</strong></span>
-        </div>
-    </footer>
+    <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
 
     <script>
         document.querySelectorAll('.tab').forEach(tab => {
-
             tab.addEventListener('click', function() {
-
-                document.querySelectorAll('.tab')
-                    .forEach(t => t.classList.remove('active'));
-
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
             });
-
         });
 
-        // =========================
         // FILTROS: BÚSQUEDA + ORDEN ALFABÉTICO
-        // =========================
         (function() {
-
             const inputBusqueda = document.getElementById('inputBusquedaProveedor');
             const selectOrden = document.getElementById('selectOrden');
             const btnLimpiar = document.getElementById('btnLimpiarFiltros');
@@ -337,12 +295,10 @@ $conteos = $logica->contarProveedoresPorEstado();
             );
 
             function aplicarFiltros() {
-
                 const texto = inputBusqueda.value.trim().toLowerCase();
                 let visibles = 0;
 
                 tarjetas.forEach(tarjeta => {
-
                     const nombre = tarjeta.dataset.nombre || '';
                     const nit = tarjeta.dataset.nit || '';
                     const contacto = tarjeta.dataset.contacto || '';
@@ -354,7 +310,6 @@ $conteos = $logica->contarProveedoresPorEstado();
                         contacto.includes(texto);
 
                     tarjeta.style.display = coincide ? '' : 'none';
-
                     if (coincide) visibles++;
                 });
 
@@ -362,28 +317,19 @@ $conteos = $logica->contarProveedoresPorEstado();
             }
 
             function aplicarOrden() {
-
                 const orden = selectOrden.value;
-
                 const tarjetasOrdenadas = [...tarjetas].sort((a, b) => {
-
                     const nombreA = a.dataset.nombre || '';
                     const nombreB = b.dataset.nombre || '';
-
                     return orden === 'az'
                         ? nombreA.localeCompare(nombreB)
                         : nombreB.localeCompare(nombreA);
                 });
-
-                tarjetasOrdenadas.forEach(tarjeta => {
-                    contenedorLista.appendChild(tarjeta);
-                });
+                tarjetasOrdenadas.forEach(tarjeta => contenedorLista.appendChild(tarjeta));
             }
 
             inputBusqueda.addEventListener('input', aplicarFiltros);
-
             selectOrden.addEventListener('change', aplicarOrden);
-
             btnLimpiar.addEventListener('click', () => {
                 inputBusqueda.value = '';
                 selectOrden.value = 'az';
@@ -391,13 +337,9 @@ $conteos = $logica->contarProveedoresPorEstado();
                 aplicarOrden();
             });
 
-            // Orden inicial A-Z al cargar la página
             aplicarOrden();
-
         })();
     </script>
-
-    <script src="../../public/js/app.js"></script>
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>

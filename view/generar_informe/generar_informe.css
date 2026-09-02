@@ -26,7 +26,6 @@ header {
     color: white;
     flex-wrap: wrap; 
     gap: 15px;
-    border-bottom: 3px solid #d4af37;
 }
 
 .logo img {

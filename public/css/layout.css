@@ -85,6 +85,15 @@ button {
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.08);
 }
+/* Blindaje: algunos módulos (ej. receta_colchones.css) definen su propia
+   regla .nav-item para botones locales. Estas reglas, más específicas,
+   garantizan que el sidebar real siempre se vea igual sin importar el
+   CSS que cargue cada módulo. */
+.sidebar .nav-item {
+    text-align: left;
+    font-weight: 400;
+    justify-content: flex-start;
+}
 .help-box {
     position: absolute;
     left: 19px;
@@ -119,7 +128,7 @@ button {
     display: none;
 }
 
-/* ══ TOPBAR & HEADER ══ */
+/* ══ TOPBAR ══ */
 .main {
     flex: 1;
     display: flex;
@@ -210,295 +219,7 @@ button {
     color: #dc2626 !important;
 }
 
-/* ══ DASHBOARD CONTENT ══ */
-.content {
-    flex: 1;
-    padding: 35px 38px;
-}
-.hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.78fr;
-    gap: 22px;
-    margin-bottom: 25px;
-}
-.profile {
-    display: flex;
-    gap: 30px;
-    align-items: center;
-}
-.profile img {
-    width: 165px;
-    height: 206px;
-    object-fit: cover;
-    border-radius: 15px;
-    box-shadow: 0 3px 9px rgba(10, 30, 60, 0.08);
-}
-.profile-data h2 {
-    margin: 0 0 12px;
-    color: #071d3d;
-    font-size: 28px;
-}
-.profile-data p {
-    margin: 10px 0;
-    font-size: 15px;
-    color: #182b49;
-}
-.small-icon {
-    width: 24px;
-    color: #102947;
-    display: inline-block;
-}
-.stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-}
-.card,
-.stat {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 13px;
-    box-shadow: 0 2px 8px rgba(13, 35, 67, 0.07);
-}
-.stat-content {
-    height: 137px;
-    padding: 28px 20px;
-    position: relative;
-}
-.stat-content span {
-    font-size: 13px;
-    font-weight: 600;
-    color: #263653;
-    display: block;
-    margin-bottom: 14px;
-}
-.stat-content strong {
-    font-size: 29px;
-    color: #0c2345;
-}
-.stat-icon {
-    position: absolute;
-    top: 62px;
-    right: 18px;
-    width: 49px;
-    height: 49px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    font-size: 24px;
-}
-.stat-icon.yellow {
-    background: #fff4d8;
-    color: #dda500;
-}
-.stat-icon.green {
-    background: #e8f7eb;
-    color: #51a967;
-}
-.stat-icon.purple {
-    background: #f0edff;
-    color: #6755d7;
-}
-.stat-icon.blue {
-    background: #e9f1ff;
-    color: #3678e7;
-}
-.stat a {
-    min-height: 56px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 700;
-    color: #263653;
-}
-.stat a b {
-    font-size: 25px;
-    font-weight: 400;
-    color: #7b8798;
-}
-
-/* ══ TAREAS & RIGHT PANEL ══ */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 2.03fr 0.9fr;
-    gap: 28px;
-    align-items: start;
-}
-.tasks {
-    padding: 23px 22px;
-    min-height: 462px;
-}
-.title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-}
-.title-row h3 {
-    margin: 0;
-    font-size: 16px;
-    color: #142746;
-}
-.btn-nueva-tarea {
-    background: #1e3a8a;
-    color: #fff;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-weight: 700;
-}
-.task-row {
-    display: grid;
-    grid-template-columns: 1.65fr 0.9fr 1.05fr 0.8fr 28px;
-    gap: 15px;
-    align-items: center;
-    min-height: 53px;
-    border-bottom: 1px solid var(--border);
-    font-size: 12px;
-}
-.task-row.heading {
-    font-size: 10px;
-    font-weight: 800;
-    min-height: 36px;
-}
-.priority,
-.status {
-    padding: 5px 9px;
-    border-radius: 7px;
-    font-weight: 600;
-    font-size: 11px;
-}
-.priority.high {
-    background: #ffe7e6;
-    color: #dd625f;
-}
-.priority.medium,
-.status.pendiente {
-    background: #fff4d9;
-    color: #d89b12;
-}
-.priority.low,
-.status.terminado {
-    background: #e2f7e6;
-    color: #42a657;
-}
-.status.por-hacer {
-    background: #e9f1ff;
-    color: #3678e7;
-}
-
-/* Menú Edición Tareas */
-.task-actions {
-    position: relative;
-}
-.dots {
-    font-size: 21px;
-    background: transparent;
-    padding: 4px 6px;
-    border-radius: 6px;
-}
-.edit-menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
-    z-index: 1001;
-    width: 190px;
-}
-.edit-menu.open {
-    display: block;
-}
-.edit-menu-group label {
-    font-size: 10px;
-    font-weight: 800;
-    color: var(--muted);
-    display: block;
-    margin-bottom: 5px;
-}
-.edit-menu-group select {
-    width: 100%;
-    padding: 7px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    margin-bottom: 12px;
-}
-.edit-apply,
-.edit-delete {
-    width: 100%;
-    padding: 8px;
-    border-radius: 6px;
-    font-weight: 700;
-}
-.edit-apply {
-    background: var(--navy);
-    color: #fff;
-}
-.edit-delete {
-    background: #fff;
-    border: 1px solid #dc2626;
-    color: #dc2626;
-    margin-top: 6px;
-}
-
-/* Panel Derecho */
-.right {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-.quick,
-.contact {
-    padding: 21px;
-}
-.quick-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-.quick-grid button {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    min-height: 88px;
-    transition: 0.2s;
-}
-.quick-grid button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-}
-.quick-icon {
-    display: block;
-    font-size: 27px;
-    margin-bottom: 9px;
-}
-.yellow-icon {
-    color: #e1a900;
-}
-.blue-icon {
-    color: #3575e5;
-}
-.green-icon {
-    color: #4da961;
-}
-.purple-icon {
-    color: #6a55db;
-}
-.contact p {
-    font-size: 12px;
-    font-weight: 700;
-    margin: 11px 0;
-    color: #122a4c;
-}
-
-/* ══ FOOTER & MODALES ══ */
+/* ══ FOOTER ══ */
 footer {
     height: 67px;
     background: #071d3c;
@@ -509,6 +230,8 @@ footer {
     padding: 0 32px;
     font-size: 11px;
 }
+
+/* ══ MODALES / OVERLAYS (usados por el topbar) ══ */
 .modal-overlay,
 .menu-overlay {
     position: fixed;
@@ -544,7 +267,7 @@ footer {
     gap: 10px;
 }
 .btn-primary {
-    background: #1e3a8a;
+    background: #0A1F44;
     color: #fff;
     padding: 9px 16px;
     border-radius: 6px;
@@ -570,7 +293,7 @@ footer {
     object-fit: cover;
 }
 
-/* ══ TEMA OSCURO AGRUPADO ══ */
+/* ══ TEMA OSCURO (layout) ══ */
 html[data-tema="oscuro"] {
     color-scheme: dark;
 }
@@ -578,18 +301,14 @@ html[data-tema="oscuro"] body,
 html[data-tema="oscuro"] .app,
 html[data-tema="oscuro"] input,
 html[data-tema="oscuro"] select,
-html[data-tema="oscuro"] .perfil-trigger,
-html[data-tema="oscuro"] .task-row {
+html[data-tema="oscuro"] .perfil-trigger {
     background: #0f172a;
     border-color: #334155;
     color: #e2e8f0;
 }
 html[data-tema="oscuro"] .sidebar,
 html[data-tema="oscuro"] .topbar,
-html[data-tema="oscuro"] .card,
-html[data-tema="oscuro"] .stat,
 html[data-tema="oscuro"] .modal-tarea,
-html[data-tema="oscuro"] .edit-menu,
 html[data-tema="oscuro"] .perfil-dropdown,
 html[data-tema="oscuro"] footer {
     background: #111827;
@@ -610,29 +329,11 @@ html[data-tema="oscuro"] .perfil-dropdown button:hover {
     background: #1f2937;
 }
 
-/* ══ RESPONSIVE ══ */
+/* ══ RESPONSIVE (layout) ══ */
 @media (max-width: 1200px) {
     .sidebar {
         width: 240px;
         min-width: 240px;
-    }
-    .hero-grid {
-        grid-template-columns: 1fr;
-    }
-    .stats {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-@media (max-width: 1000px) {
-    .content {
-        padding: 28px 24px;
-    }
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-    .right {
-        grid-template-columns: 1fr 1fr;
-        display: grid;
     }
 }
 @media (max-width: 900px) {
@@ -674,52 +375,6 @@ html[data-tema="oscuro"] .perfil-dropdown button:hover {
         font-size: 22px;
     }
 }
-@media (max-width: 760px) {
-    .stats {
-        grid-template-columns: 1fr 1fr;
-    }
-    .profile {
-        align-items: flex-start;
-    }
-    .profile img {
-        width: 145px;
-        height: 180px;
-    }
-    .right {
-        grid-template-columns: 1fr;
-    }
-    .task-row {
-        grid-template-columns: auto auto 1fr auto;
-        grid-template-areas: "title title title actions" "priority status . ." "date date date date";
-        padding: 12px 2px;
-    }
-    .task-row.heading {
-        display: none;
-    }
-    .task-row strong {
-        grid-area: title;
-    }
-    .task-row span:nth-child(2) {
-        grid-area: priority;
-    }
-    .task-row span:nth-child(3) {
-        grid-area: date;
-    }
-    .task-row span:nth-child(4) {
-        grid-area: status;
-    }
-    .task-actions {
-        grid-area: actions;
-    }
-    .edit-menu {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 320px;
-        z-index: 1001;
-    }
-}
 @media (max-width: 560px) {
     .topbar {
         height: 76px;
@@ -731,16 +386,6 @@ html[data-tema="oscuro"] .perfil-dropdown button:hover {
     .perfil-trigger-text,
     .perfil-caret {
         display: none;
-    }
-    .profile {
-        grid-template-columns: 105px 1fr;
-    }
-    .profile img {
-        width: 105px;
-        height: 135px;
-    }
-    .stat-content strong {
-        font-size: 22px;
     }
     footer {
         height: auto;

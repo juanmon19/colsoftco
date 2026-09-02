@@ -18,23 +18,25 @@ $modelos = $dbConn->query(
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receta Colchones</title>
     <link href="receta_colchones.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../public/css/layout.css">
+    <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
 
-    <header>
-        <a class="logo" href="../../app/ir_panel.php">
-            <img src="../../public/imagenes/logo.png" alt="logo">
-        </a>
-        <span class="header-title">Receta Colchones</span>
+    <div class="app">
 
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
-    </header>
+        <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
+        <div class="main">
 
-    <div class="paneles">
+            <?php
+            $rolActual = 'Administrador';
+            include __DIR__ . '/../partials/topbar.php';
+            ?>
+
+            <main class="content">
+<div class="paneles">
 
         <!-- ══ PANEL PRODUCTO ══ -->
         <div class="panel panel-producto">
@@ -73,40 +75,19 @@ $modelos = $dbConn->query(
                 </p>
             </div>
         </div>
-        <button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
-        <button class="nav-item" onclick="window.location.href='registrar_modelo.php'">📋 Registrar Nuevo Modelo de Colchón</button>
-        <button class="nav-item" onclick="window.location.href='editar_receta.php'">✏️ Editar Receta</button>
+        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
+        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='registrar_modelo.php'">📋 Registrar Nuevo Modelo de Colchón</button>
+        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='editar_receta.php'">✏️ Editar Receta</button>
+    </div>
+            </main>
+
+            <?php include __DIR__ . '/../partials/footer.php'; ?>
+
+        </div>
     </div>
 
-    <footer>
-        <div class="footer-divider"></div>
-
-        <div class="footer-top">
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex.
-                    Eficiencia en inventarios y movimientos empresariales.
-                </p>
-            </div>
-
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>Equipo SENA</strong></span>
-        </div>
-    </footer>
-
-    <script>
+    <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
+<script>
         const selectProducto = document.getElementById('producto');
         const inputCantidad = document.getElementById('cantidad');
         const btnGenerar = document.getElementById('btnGenerar');

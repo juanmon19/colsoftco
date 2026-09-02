@@ -209,46 +209,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Registro de productos terminados</title>
 
     <link href="registro_producto_terminado.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../public/css/layout.css">
+    <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 
 <body>
 
-    <header>
+    <div class="app">
 
-        <div class="logo">
+        <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
-            <a href="../panel_admin/panel_admin.php">
+        <div class="main">
 
-                <img
-                    src="../../public/imagenes/logo.png"
-                    alt="logo">
+            <?php
+            $rolActual = 'Administrador';
+            include __DIR__ . '/../partials/topbar.php';
+            ?>
 
-            </a>
-
-        </div>
-
-
-        <div class="header-title">
-
-            <h1>Registro de Productos terminados</h1>
-
-            <div class="title-underline"></div>
-
-        </div>
-
-
-        <button
-            id="btnLogout"
-            class="btn-logout"
-            onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
-
-    </header>
-
-
-    <!-- ── BODY ── -->
+            <main class="content">
+<!-- ── BODY ── -->
 
     <div class="page-body">
 
@@ -396,29 +376,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </main>
 
     </div>
-    <footer>
-        <div class="footer-divider"></div>
-        <div class="footer-top">
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">Sistema de gestión y administración de materias primas para Max&Flex. Eficiencia en inventarios y movimientos empresariales.</p>
-            </div>
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>Equipo SENA</strong></span>
-        </div>
-    </footer>
+            </main>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+            <?php include __DIR__ . '/../partials/footer.php'; ?>
+
+        </div>
+    </div>
+
+    <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
+<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
 
     <script
         src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js"

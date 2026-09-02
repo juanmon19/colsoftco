@@ -26,23 +26,26 @@ $materialesDisponibles = $dbConn->query("
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Receta de Colchón</title>
     <link href="editar_receta.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../public/css/layout.css">
+    <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
 
-    <header>
-        <a class="logo" href="../../app/ir_panel.php">
-            <img src="../../public/imagenes/logo.png" alt="logo">
-        </a>
-        <span class="header-title">Editar Receta de Colchón</span>
+    <div class="app">
 
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
-    </header>
+        <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
-    <div class="paneles" style="grid-template-columns: 1fr;">
-        <button class="nav-item" onclick="window.location.href='receta_colchones.php'">← Volver a Receta de Colchones</button>
+        <div class="main">
+
+            <?php
+            $rolActual = 'Administrador';
+            include __DIR__ . '/../partials/topbar.php';
+            ?>
+
+            <main class="content">
+<div class="paneles" style="grid-template-columns: 1fr;">
+        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='receta_colchones.php'">← Volver a Receta de Colchones</button>
     </div>
 
     <!-- ══════════════════════════════════════════════ -->
@@ -97,36 +100,15 @@ $materialesDisponibles = $dbConn->query("
         </div>
 
     </div>
+            </main>
 
-    <footer>
-        <div class="footer-divider"></div>
+            <?php include __DIR__ . '/../partials/footer.php'; ?>
 
-        <div class="footer-top">
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex.
-                    Eficiencia en inventarios y movimientos empresariales.
-                </p>
-            </div>
-
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
         </div>
+    </div>
 
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>Equipo SENA</strong></span>
-        </div>
-    </footer>
-
-    <script>
+    <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
+<script>
         /* ══════════════════════════════════════════
            DATOS DE MATERIALES PARA SELECTS DINÁMICOS
            ══════════════════════════════════════════ */

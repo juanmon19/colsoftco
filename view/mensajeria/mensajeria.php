@@ -9,19 +9,25 @@ require_once "../../app/verificar_sesion.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mensajería Interna - COLSOFTCO</title>
     <link rel="stylesheet" href="mensajeria.css">
+    <link rel="stylesheet" href="../../public/css/layout.css">
+    <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
 
-    <header>
-        <a class="logo" href="../../app/ir_panel.php">
-            <img src="../../public/imagenes/logo.png" alt="Logo">
-            <h1>Mensajería Interna</h1>
-        </a>
-        <button class="btn-volver" onclick="window.location.href='../../app/ir_panel.php'">← Volver al Panel</button>
-    </header>
+    <div class="app">
 
-    <div class="container">
+        <?php include __DIR__ . '/../partials/sidebar.php'; ?>
+
+        <div class="main">
+
+            <?php
+            $rolActual = 'Administrador';
+            include __DIR__ . '/../partials/topbar.php';
+            ?>
+
+            <main class="content">
+<div class="container">
 
         <!-- Tabs -->
         <div class="tabs">
@@ -74,12 +80,15 @@ require_once "../../app/verificar_sesion.php";
         </div>
 
     </div>
+            </main>
 
-    <footer>
-        © 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.
-    </footer>
+            <?php include __DIR__ . '/../partials/footer.php'; ?>
 
-    <script src="../../public/js/app.js"></script>
+        </div>
+    </div>
+
+    <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
+<script src="../../public/js/app.js"></script>
     <script>
         function escHtml(str) {
             const d = document.createElement('div');

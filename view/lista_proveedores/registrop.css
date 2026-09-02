@@ -45,7 +45,6 @@ header {
     justify-content: space-between;
     padding: 10px 20px;
     min-height: 66px; 
-    border-bottom: 3px solid #d4af37;
     position: relative; /* <-- Se mantiene relativo para que no baje al hacer scroll */
     z-index: 100;
     box-shadow: 0 2px 12px rgba(11, 61, 145, .35);
@@ -138,7 +137,7 @@ header {
     align-items: center;
     gap: 15px;
     padding: 18px 25px;
-    border-bottom: 3px solid #D4AF37;
+    
 }
 
 .barra-amarilla {
