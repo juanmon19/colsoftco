@@ -207,9 +207,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <a class="btn-editar" href="../control_de_stock/inventario/editar_inventario.php?id=<?= $m['id_material'] ?>">
                                     Editar
                                 </a>
-                                <a href="../control_de_stock/inventario/eliminar_inventario.php?id=<?= $m['id_material'] ?>" class="btn-eliminar">
-                                    Eliminar
-                                </a>
+                        
                                 <button class="btn-toggle-estado"
                                         data-id="<?= $m['id_material'] ?>"
                                         data-estado="<?= $m['estado'] ?>"

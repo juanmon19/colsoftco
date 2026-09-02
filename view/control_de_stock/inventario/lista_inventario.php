@@ -121,7 +121,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <div class="header-title">
-            <h1>Inventario de Materias Primas</h1>
+            <h1>INVENTARIO DE MATERIAS PRIMAS</h1>
         </div>
 
         <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
@@ -212,9 +212,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <a class="btn-editar" href="editar_inventario.php?id=<?= $m['id_material'] ?>">
                                     Editar
                                 </a>
-                                <a href="eliminar_inventario.php?id=<?= $m['id_material'] ?>" class="btn-eliminar">
-                                    Eliminar
-                                </a>
+                                
                                 <button class="btn-toggle-estado"
                                         data-id="<?= $m['id_material'] ?>"
                                         data-estado="<?= $m['estado'] ?>"

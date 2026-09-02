@@ -31,7 +31,6 @@ body {
     min-height: 70px;
     position: relative; 
     z-index: 100;
-    border-bottom: 4px solid #D4AF37; 
     gap: 10px; 
 }
 
@@ -45,7 +44,6 @@ body {
     width: 55px; 
     height: 55px;
     border-radius: 50%;
-    border: 2px solid #d4af37;
     background: white;
 }
 

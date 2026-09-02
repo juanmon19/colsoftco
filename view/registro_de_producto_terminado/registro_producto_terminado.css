@@ -131,7 +131,6 @@ aside {
   flex-direction: column;
   gap: 6px;
   padding: 10px 10px 10px 0;
-  border-right: 4px solid var(--gold);
 }
 
 aside a {
