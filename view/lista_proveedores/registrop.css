@@ -481,3 +481,131 @@ footer {
         text-align: center;
     }
 }
+
+/* TEMA OSCURO navy + dorado */
+html[data-tema="oscuro"] {
+    --bg: #0a1120;
+    --surface: #101a30;
+    --surface-2: #16223c;
+    --text: #e8edf5;
+    --muted: #9aa7bd;
+    --border: rgba(148, 163, 184, .18);
+    --gold: #d4af37;
+    --gold-soft: rgba(212, 175, 55, .12);
+    --shadow: 0 6px 20px rgba(0, 0, 0, .45);
+    --navy: #0A1F44;
+}
+html[data-tema="oscuro"] body {
+    background: var(--bg, #0a1120);
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] header {
+    background: var(--surface, #101a30);
+    border-bottom: 3px solid var(--gold, #d4af37);
+    box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, .45));
+}
+html[data-tema="oscuro"] .header-title h1 {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .btn-logout {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+}
+html[data-tema="oscuro"] .contenedor-principal {
+    background: var(--bg, #0a1120);
+}
+html[data-tema="oscuro"] .card-formulario {
+    background: var(--surface, #101a30);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+    box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, .45));
+}
+html[data-tema="oscuro"] .card-header {
+    background: var(--navy, #0A1F44);
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .card-header h2 {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .barra-amarilla {
+    background: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-volver {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .field-group label {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .field-group input,
+html[data-tema="oscuro"] .field-group textarea {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .field-group input:focus,
+html[data-tema="oscuro"] .field-group textarea:focus {
+    border-color: var(--gold, #d4af37);
+    box-shadow: 0 0 0 3px var(--gold-soft, rgba(212, 175, 55, .12));
+    background: var(--surface-2, #16223c);
+}
+html[data-tema="oscuro"] .btn-limpiar {
+    background: var(--surface-2, #16223c);
+    color: var(--gold, #d4af37);
+    border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-limpiar:hover {
+    background: var(--gold-soft, rgba(212, 175, 55, .12));
+}
+html[data-tema="oscuro"] .btn-registrar {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+}
+html[data-tema="oscuro"] .mensaje {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border-left: 4px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .imagen-proveedor-row {
+    background: var(--surface-2, #16223c);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .imagen-preview {
+    background: var(--surface, #101a30);
+    border-color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .imagen-placeholder {
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .imagen-input-wrapper .imagen-file-label {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+}
+html[data-tema="oscuro"] .imagen-file-name {
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .imagen-input-wrapper small {
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] table {
+    background: var(--surface, #101a30);
+    color: var(--text, #e8edf5);
+    border-color: var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] table thead th {
+    background: var(--navy, #0A1F44);
+    color: var(--gold, #d4af37);
+    border-bottom: 2px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] table tbody td {
+    background: var(--surface, #101a30);
+    color: var(--text, #e8edf5);
+    border-bottom: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] table tbody tr:hover td {
+    background: var(--gold-soft, rgba(212, 175, 55, .12));
+}
+html[data-tema="oscuro"] footer {
+    background: var(--surface, #101a30);
+    color: var(--muted, #9aa7bd);
+}

@@ -317,3 +317,73 @@ footer {
         gap: 12px;
     }
 }
+
+/* TEMA OSCURO navy + dorado */
+html[data-tema="oscuro"] {
+  --bg: #0a1120;
+  --surface: #101a30;
+  --surface-2: #16223c;
+  --text: #e8edf5;
+  --muted: #9aa7bd;
+  --border: rgba(148, 163, 184, .18);
+  --gold: #d4af37;
+  --gold-soft: rgba(212, 175, 55, .12);
+  --shadow: 0 6px 20px rgba(0, 0, 0, .45);
+}
+html[data-tema="oscuro"] body {
+  background: var(--bg, #0a1120);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .contenedor-historial {
+  background: var(--bg, #0a1120);
+}
+html[data-tema="oscuro"] .panel {
+  background: var(--surface, #101a30);
+  border-color: var(--border, rgba(148,163,184,.18));
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+}
+html[data-tema="oscuro"] .panel-header {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-bottom-color: var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .panel-body {
+  background: var(--surface, #101a30);
+}
+html[data-tema="oscuro"] .placeholder {
+  color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .tabla-historial {
+  background: var(--surface, #101a30);
+}
+html[data-tema="oscuro"] .tabla-historial th {
+  background: var(--surface-2, #16223c);
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .tabla-historial td {
+  color: var(--text, #e8edf5);
+  border-top-color: var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .tabla-historial tbody tr:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+}
+html[data-tema="oscuro"] .celda-id {
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .celda-producto {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .btn-ver-pdf {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+}
+html[data-tema="oscuro"] .btn-ver-pdf:hover {
+  background: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-logout {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+}
+html[data-tema="oscuro"] a {
+  color: var(--gold, #d4af37);
+}

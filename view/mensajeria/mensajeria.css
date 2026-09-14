@@ -383,3 +383,186 @@ textarea {
         width: 100%;
     }
 }
+
+/* TEMA OSCURO navy + dorado */
+html[data-tema="oscuro"] {
+    --bg: #0a1120;
+    --surface: #101a30;
+    --surface-2: #16223c;
+    --text: #e8edf5;
+    --muted: #9aa7bd;
+    --border: rgba(148, 163, 184, .18);
+    --gold: #d4af37;
+    --gold-soft: rgba(212, 175, 55, .12);
+    --shadow: 0 6px 20px rgba(0, 0, 0, .45);
+    --navy: #0A1F44;
+}
+html[data-tema="oscuro"] body {
+    background: var(--bg, #0a1120);
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] header {
+    background: var(--surface, #101a30);
+    color: var(--text, #e8edf5);
+    border-bottom: 3px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] header .logo {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] header h1 {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .container {
+    background: var(--bg, #0a1120);
+}
+html[data-tema="oscuro"] .card {
+    background: var(--surface, #101a30);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+    box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, .45));
+}
+html[data-tema="oscuro"] .card h3 {
+    color: var(--text, #e8edf5);
+    border-bottom: 2px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .tabs {
+    background: var(--bg, #0a1120);
+}
+html[data-tema="oscuro"] .tab {
+    background: var(--surface, #101a30);
+    color: var(--muted, #9aa7bd);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .tab:hover:not(.active) {
+    border-color: var(--gold, #d4af37);
+    color: var(--gold, #d4af37);
+    background: var(--surface-2, #16223c);
+}
+html[data-tema="oscuro"] .tab.active {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+    border-color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .placeholder {
+    background: var(--surface-2, #16223c);
+    color: var(--muted, #9aa7bd);
+    border: 1px dashed var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .mensaje-item {
+    background: var(--surface, #101a30);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .mensaje-item:hover {
+    border-color: var(--gold, #d4af37);
+    box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, .45));
+}
+html[data-tema="oscuro"] .mensaje-item.no-leido {
+    background: var(--surface-2, #16223c);
+    border-left: 5px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .mensaje-header strong {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .mensaje-fecha {
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .badge-nuevo {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+}
+html[data-tema="oscuro"] .badge-rol {
+    background: var(--surface-2, #16223c);
+    color: var(--gold, #d4af37);
+    border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .mensaje-asunto {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .mensaje-contenido {
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] label {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] select,
+html[data-tema="oscuro"] input[type="text"],
+html[data-tema="oscuro"] textarea {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] select:focus,
+html[data-tema="oscuro"] input[type="text"]:focus,
+html[data-tema="oscuro"] textarea:focus {
+    border-color: var(--gold, #d4af37);
+    box-shadow: 0 0 0 3px var(--gold-soft, rgba(212, 175, 55, .12));
+}
+html[data-tema="oscuro"] .btn-volver {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+}
+html[data-tema="oscuro"] .btn-primary {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+}
+html[data-tema="oscuro"] .btn-primary:hover {
+    background: var(--gold-soft, rgba(212, 175, 55, .12));
+    color: var(--gold, #d4af37);
+    border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .msg-ok,
+html[data-tema="oscuro"] .msg-error {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border-left: 5px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] blockquote,
+html[data-tema="oscuro"] .cita {
+    background: var(--surface-2, #16223c);
+    color: var(--muted, #9aa7bd);
+    border-left: 4px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .chat,
+html[data-tema="oscuro"] .chat-mensajes,
+html[data-tema="oscuro"] .chat-directo {
+    background: var(--bg, #0a1120);
+}
+html[data-tema="oscuro"] .burbuja-propia,
+html[data-tema="oscuro"] .mensaje-propio {
+    background: var(--gold-soft, rgba(212, 175, 55, .12));
+    color: var(--text, #e8edf5);
+    border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .burbuja-ajena,
+html[data-tema="oscuro"] .mensaje-ajeno,
+html[data-tema="oscuro"] .burbuja,
+html[data-tema="oscuro"] .mensaje-directo {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+    box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, .45));
+}
+html[data-tema="oscuro"] table {
+    background: var(--surface, #101a30);
+    color: var(--text, #e8edf5);
+    border-color: var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] table thead th {
+    background: var(--navy, #0A1F44);
+    color: var(--gold, #d4af37);
+    border-bottom: 2px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] table tbody td {
+    background: var(--surface, #101a30);
+    color: var(--text, #e8edf5);
+    border-bottom: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] table tbody tr:hover td {
+    background: var(--gold-soft, rgba(212, 175, 55, .12));
+}
+html[data-tema="oscuro"] footer {
+    background: var(--surface, #101a30);
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] footer strong {
+    color: var(--gold, #d4af37);
+}

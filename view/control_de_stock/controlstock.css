@@ -554,3 +554,142 @@ footer {
     width: 100%;
   }
 }
+
+/* TEMA OSCURO navy + dorado */
+html[data-tema="oscuro"] {
+  --bg: #0a1120;
+  --surface: #101a30;
+  --surface-2: #16223c;
+  --text: #e8edf5;
+  --muted: #9aa7bd;
+  --border: rgba(148, 163, 184, .18);
+  --gold: #d4af37;
+  --gold-soft: rgba(212, 175, 55, .12);
+  --shadow: 0 6px 20px rgba(0, 0, 0, .45);
+}
+html[data-tema="oscuro"] body {
+  background: var(--bg, #0a1120);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .page-body {
+  background: var(--bg, #0a1120);
+}
+html[data-tema="oscuro"] .content {
+  background: var(--bg, #0a1120);
+}
+html[data-tema="oscuro"] .form-card {
+  background: var(--surface, #101a30);
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .form-header {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-bottom: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .form-body {
+  background: var(--surface, #101a30);
+}
+html[data-tema="oscuro"] label {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .check-opt span {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] input[type="text"],
+html[data-tema="oscuro"] input[type="number"],
+html[data-tema="oscuro"] select {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-color: var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] input:focus,
+html[data-tema="oscuro"] select:focus {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-color: var(--gold, #d4af37);
+  box-shadow: 0 0 0 3px var(--gold-soft, rgba(212,175,55,.12));
+}
+html[data-tema="oscuro"] .select-wrap::after {
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .form-divider {
+  border-top-color: var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .btn-volver {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .btn-volver:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-outline {
+  background: transparent;
+  color: var(--text, #e8edf5);
+  border-color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-outline:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+}
+html[data-tema="oscuro"] .btn-primary {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+}
+html[data-tema="oscuro"] .btn-primary:hover {
+  background: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-logout {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+}
+html[data-tema="oscuro"] .btn-marcar-leida {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+}
+html[data-tema="oscuro"] .mensaje-stock {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-left-color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .tabla-alertas {
+  background: var(--surface, #101a30);
+}
+html[data-tema="oscuro"] .tabla-alertas th {
+  background: var(--surface-2, #16223c);
+  color: var(--gold, #d4af37);
+  border-bottom: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .tabla-alertas td {
+  color: var(--text, #e8edf5);
+  border-bottom-color: var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .tabla-alertas tr:hover td {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+}
+html[data-tema="oscuro"] .badge-stock-bajo {
+  background: rgba(248, 113, 113, .15);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .badge-leida {
+  background: rgba(52, 211, 153, .15);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .badge-no-leida {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .sin-alertas {
+  color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .toast {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-left-color: var(--gold, #d4af37);
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+}
+html[data-tema="oscuro"] a {
+  color: var(--gold, #d4af37);
+}

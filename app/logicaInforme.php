@@ -1,7 +1,12 @@
 <?php
+// DEPRECADO: usar app/logica_informes.php (class InformeLogica).
+// Este archivo se conserva como InformeLogicaLegacy para evitar
+// "Cannot declare class InformeLogica" si ambos se incluyen.
+// Sus métodos getMovimientos/getTotalesPorMes/getComparativo no tienen
+// llamadas actuales; migrar o eliminar tras revisión.
 require_once __DIR__ . '/../config/conexion.php';
 
-class InformeLogica
+class InformeLogicaLegacy
 {
     private $conn;
 

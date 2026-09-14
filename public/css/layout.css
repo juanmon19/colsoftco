@@ -1,9 +1,38 @@
 :root {
     --navy: #061d3c;
     --navy-2: #092b55;
+    --gold: #D4AF37;
+    --gold-hover: #b8941f;
+    --gold-soft: rgba(212, 175, 55, 0.14);
     --bg: #f7f9fc;
+    --surface: #ffffff;
+    --surface-2: #eef2f7;
     --text: #152846;
+    --muted: #64748b;
     --border: #e5eaf0;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    --shadow: 0 4px 14px rgba(10, 31, 68, 0.10);
+}
+/* Paleta oscura también aquí: muchas vistas cargan layout.css
+   sin global.css, así layout es autosuficiente. */
+html[data-tema="oscuro"] {
+    --bg: #0a1120;
+    --surface: #101a30;
+    --surface-2: #16223c;
+    --text: #e8edf5;
+    --muted: #9aa7bd;
+    --border: rgba(148, 163, 184, 0.18);
+    --gold: #d4af37;
+    --gold-hover: #e3c15c;
+    --gold-soft: rgba(212, 175, 55, 0.12);
+    --success: #4ade80;
+    --danger: #f87171;
+    --warning: #fbbf24;
+    --info: #60a5fa;
+    --shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 *,
 *::before,
@@ -293,40 +322,116 @@ footer {
     object-fit: cover;
 }
 
-/* ══ TEMA OSCURO (layout) ══ */
+/* ══ TEMA OSCURO (layout) — navy de marca + dorado, sin gris plano ══ */
 html[data-tema="oscuro"] {
     color-scheme: dark;
 }
-html[data-tema="oscuro"] body,
-html[data-tema="oscuro"] .app,
+html[data-tema="oscuro"] body {
+    background:
+        radial-gradient(1200px 500px at 85% -10%, rgba(212, 175, 55, 0.06), transparent 60%),
+        radial-gradient(900px 500px at -10% 0%, rgba(35, 83, 140, 0.25), transparent 55%),
+        var(--bg);
+    color: var(--text);
+}
+
+/* Controles de formulario en oscuro */
 html[data-tema="oscuro"] input,
 html[data-tema="oscuro"] select,
+html[data-tema="oscuro"] textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+html[data-tema="oscuro"] input::placeholder,
+html[data-tema="oscuro"] textarea::placeholder {
+    color: var(--muted);
+}
+html[data-tema="oscuro"] input:focus,
+html[data-tema="oscuro"] select:focus,
+html[data-tema="oscuro"] textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-soft);
+    outline: none;
+}
+
+/* Sidebar: conserva el degradado navy, más profundo + acento dorado */
+html[data-tema="oscuro"] .sidebar {
+    background: linear-gradient(180deg, #050f22 0%, #0a2547 100%);
+    border-right: 1px solid rgba(212, 175, 55, 0.18);
+}
+html[data-tema="oscuro"] .brand {
+    border-bottom-color: rgba(212, 175, 55, 0.25);
+}
+html[data-tema="oscuro"] .nav-item {
+    color: #e8edf5;
+}
+html[data-tema="oscuro"] .nav-item:hover {
+    background: var(--gold-soft);
+    color: var(--gold);
+}
+html[data-tema="oscuro"] .help-box {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.16), rgba(18, 56, 102, 0.6));
+    border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+/* Topbar: navy de marca con línea dorada inferior */
+html[data-tema="oscuro"] .topbar {
+    background: linear-gradient(105deg, #050f22, #0a2547);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    color: #fff;
+}
+html[data-tema="oscuro"] .welcome p {
+    color: #c3cbdb;
+}
 html[data-tema="oscuro"] .perfil-trigger {
-    background: #0f172a;
-    border-color: #334155;
-    color: #e2e8f0;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
 }
-html[data-tema="oscuro"] .sidebar,
-html[data-tema="oscuro"] .topbar,
-html[data-tema="oscuro"] .modal-tarea,
+html[data-tema="oscuro"] .perfil-trigger-text strong {
+    color: var(--text);
+}
+html[data-tema="oscuro"] .perfil-trigger-text small,
+html[data-tema="oscuro"] .perfil-caret {
+    color: var(--muted);
+}
+
+/* Dropdowns y modales: superficies elevadas */
 html[data-tema="oscuro"] .perfil-dropdown,
-html[data-tema="oscuro"] footer {
-    background: #111827;
-    border-color: #1f2937;
-    color: #e2e8f0;
+html[data-tema="oscuro"] .modal-tarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    box-shadow: var(--shadow);
 }
-html[data-tema="oscuro"] h1,
-html[data-tema="oscuro"] h2,
-html[data-tema="oscuro"] h3,
-html[data-tema="oscuro"] strong {
-    color: #f1f5f9;
+html[data-tema="oscuro"] .perfil-dropdown button {
+    color: var(--text);
 }
-html[data-tema="oscuro"] button {
-    color: #e2e8f0;
-}
-html[data-tema="oscuro"] .nav-item:hover,
 html[data-tema="oscuro"] .perfil-dropdown button:hover {
-    background: #1f2937;
+    background: var(--gold-soft);
+    color: var(--gold);
+}
+html[data-tema="oscuro"] .btn-outline {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+}
+html[data-tema="oscuro"] .btn-primary {
+    background: var(--gold);
+    color: #0A1F44;
+}
+html[data-tema="oscuro"] .btn-primary:hover {
+    background: var(--gold-hover);
+}
+
+/* Footer: navy profundo, texto tenue */
+html[data-tema="oscuro"] footer {
+    background: #050f22;
+    border-top: 1px solid rgba(212, 175, 55, 0.18);
+    color: var(--muted);
+}
+html[data-tema="oscuro"] footer b,
+html[data-tema="oscuro"] footer strong {
+    color: var(--gold);
 }
 
 /* ══ RESPONSIVE (layout) ══ */

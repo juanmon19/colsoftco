@@ -243,6 +243,9 @@ class ProveedorLogica
         ]);
     }
 
+    // ── DEPRECADO: lógica de stock/inventario ──
+    // Usar InventarioLogica::obtenerMaterial / actualizarStockMinimo / eliminarAlerta.
+    // Se conservan por compatibilidad con código antiguo.
     public function obtenerAlertasStock()
     {
         $sql = "SELECT *

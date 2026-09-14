@@ -34,6 +34,7 @@ require_once "../../app/verificar_sesion.php";
             <button class="tab active" data-tab="bandeja" onclick="cambiarTab('bandeja')">📥 Bandeja de entrada</button>
             <button class="tab" data-tab="enviados" onclick="cambiarTab('enviados')">📤 Enviados</button>
             <button class="tab" data-tab="componer" onclick="cambiarTab('componer')">✏️ Componer mensaje</button>
+            <button class="tab" data-tab="chat" onclick="cambiarTab('chat')">💬 Chat directo</button>
         </div>
 
         <!-- Bandeja -->
@@ -79,6 +80,26 @@ require_once "../../app/verificar_sesion.php";
             </div>
         </div>
 
+        <!-- Chat directo con hilos -->
+        <div class="tab-content" id="tab-chat" style="display:none;">
+            <div class="card">
+                <h3>Chat directo</h3>
+                <label for="chatUsuario">Conversar con</label>
+                <select id="chatUsuario" onchange="abrirChat()"><option value="">-- Seleccionar --</option></select>
+                <div id="hiloChat" style="margin:15px 0; display:flex; flex-direction:column; gap:8px;"></div>
+                <div id="citaPreview" style="display:none; border-left:3px solid #D4AF37; padding:6px 10px; background:#f4f6fb;">
+                    <small>Respondiendo a:</small>
+                    <div id="citaTexto" style="font-style:italic;"></div>
+                    <button type="button" onclick="cancelarCita()">✖ Cancelar</button>
+                </div>
+                <form id="formChat" style="display:flex; gap:8px; margin-top:10px;">
+                    <input type="hidden" id="chatPadre" value="">
+                    <input type="text" id="chatTexto" placeholder="Escribe y pulsa Enter..." style="flex:1;" required>
+                    <button type="submit" class="btn-primary">Enviar</button>
+                </form>
+            </div>
+        </div>
+
     </div>
             </main>
 
@@ -117,6 +138,7 @@ require_once "../../app/verificar_sesion.php";
             if (tab === 'bandeja') cargarBandeja();
             if (tab === 'enviados') cargarEnviados();
             if (tab === 'componer') cargarDestinatarios();
+            if (tab === 'chat') cargarChatUsuarios();
         }
 
         // Bandeja
@@ -244,6 +266,78 @@ require_once "../../app/verificar_sesion.php";
 
         // Initial load
         cargarBandeja();
+
+        // ===== Chat directo con hilos =====
+        let chatOtro = 0;
+        async function cargarChatUsuarios() {
+            const sel = document.getElementById('chatUsuario');
+            try {
+                const resp = await fetch('../../app/logica_mensajes.php?accion=listar_usuarios');
+                const data = await resp.json();
+                if (!data.ok) return;
+                const actual = sel.value;
+                sel.innerHTML = '<option value="">-- Seleccionar --</option>' +
+                    data.usuarios.map(u => `<option value="${u.id_usuario}">${escHtml(u.nombre)} ${escHtml(u.apellido)} (${escHtml(u.rol)})</option>`).join('');
+                if (actual) sel.value = actual;
+            } catch (e) { console.error(e); }
+        }
+        async function abrirChat() {
+            chatOtro = parseInt(document.getElementById('chatUsuario').value || '0', 10);
+            cancelarCita();
+            if (!chatOtro) { document.getElementById('hiloChat').innerHTML = ''; return; }
+            const div = document.getElementById('hiloChat');
+            try {
+                const resp = await fetch(`../../app/logica_mensajes.php?accion=hilo&otro=${chatOtro}`);
+                const txt = await resp.text();
+                let data;
+                try { data = JSON.parse(txt); }
+                catch (je) { div.innerHTML = `<p class="placeholder">Error del servidor: ${escHtml(txt.substring(0,200))}</p>`; return; }
+                if (!data.ok) {
+                    div.innerHTML = `<p class="placeholder">${escHtml(data.error || 'No se pudo cargar.')}</p>`; return;
+                }
+                if (!data.mensajes.length) {
+                    div.innerHTML = '<p class="placeholder">Sin mensajes. ¡Saluda primero!</p>'; return;
+                }
+                div.innerHTML = data.mensajes.map(m => `
+                    <div style="border:1px solid #e2e6f0; border-radius:8px; padding:8px; background:${m.leido==0?'#fffbe6':'#fff'}">
+                        ${m.id_padre ? `<blockquote style="margin:0 0 6px; padding-left:8px; border-left:3px solid #D4AF37; color:#555;">${escHtml(m.padre_contenido||'')}</blockquote>` : ''}
+                        <div><strong>${escHtml(m.nombre)} ${escHtml(m.apellido)}</strong> <small>${formatFecha(m.fecha_envio)}</small></div>
+                        <div>${escHtml(m.contenido)}</div>
+                        <button type="button" data-id="${m.id_mensaje}" data-text="${escHtml((m.contenido||'').substring(0,80))}" onclick="responderA(this)">↩ Responder</button>
+                    </div>`).join('');
+                div.scrollTop = div.scrollHeight;
+            } catch (e) { div.innerHTML = `<p class="placeholder">Error de conexión: ${escHtml(e.message)}</p>`; }
+        }
+        function responderA(btn) {
+            document.getElementById('chatPadre').value = btn.dataset.id;
+            document.getElementById('citaTexto').textContent = btn.dataset.text;
+            document.getElementById('citaPreview').style.display = 'block';
+            document.getElementById('chatTexto').focus();
+        }
+        function cancelarCita() {
+            document.getElementById('chatPadre').value = '';
+            document.getElementById('citaPreview').style.display = 'none';
+        }
+        document.getElementById('formChat').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!chatOtro) { alert('Elige un usuario'); return; }
+            const txt = document.getElementById('chatTexto').value.trim();
+            if (!txt) return;
+            const fd = new FormData();
+            fd.append('accion', document.getElementById('chatPadre').value ? 'responder' : 'enviar');
+            fd.append('otro', chatOtro);
+            fd.append('id_destinatario', chatOtro);
+            fd.append('contenido', txt);
+            fd.append('id_padre', document.getElementById('chatPadre').value);
+            fd.append('asunto', 'Chat');
+            const resp = await fetch('../../app/logica_mensajes.php', { method: 'POST', body: fd });
+            const data = await resp.json();
+            if (data.ok) {
+                document.getElementById('chatTexto').value = '';
+                cancelarCita();
+                abrirChat();
+            } else alert(data.error || 'No se pudo enviar');
+        });
     </script>
 </body>
 

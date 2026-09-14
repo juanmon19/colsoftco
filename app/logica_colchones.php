@@ -302,10 +302,10 @@ if ($accion === 'fabricar') {
         $nombreArchivo = 'recibo_' . str_pad($numeroRecibo, 6, '0', STR_PAD_LEFT) . '.pdf';
         $rutaCompleta  = $carpetaRecibos . $nombreArchivo;
 
-        // Convertir Logo a Base64
+        // Convertir Logo a Base64 (solo si GD está disponible; si no, se omite)
         $rutaLogo = __DIR__ . '/../public/imagenes/logo.png';
         $base64Logo = '';
-        if (file_exists($rutaLogo)) {
+        if (extension_loaded('gd') && file_exists($rutaLogo)) {
             $tipoContenido = pathinfo($rutaLogo, PATHINFO_EXTENSION);
             $datosImagen = file_get_contents($rutaLogo);
             $base64Logo = 'data:image/' . $tipoContenido . ';base64,' . base64_encode($datosImagen);

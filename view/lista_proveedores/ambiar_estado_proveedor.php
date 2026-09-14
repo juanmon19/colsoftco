@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= $esDeshabilitar ? 'Deshabilitar' : 'Habilitar' ?> Proveedor</title>

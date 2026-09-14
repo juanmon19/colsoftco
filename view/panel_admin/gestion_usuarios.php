@@ -5,6 +5,7 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
     header('Location: ../login/login.php');
     exit();
 }
+$rolActual = 'Administrador';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -14,59 +15,19 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios - COLSOFTCO</title>
     <link rel="stylesheet" href="../../public/css/global.css">
+    <link rel="stylesheet" href="../../public/css/layout.css">
+    <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f9fc;
-        }
-
-        header {
-            background: linear-gradient(105deg, #061d3c, #062047);
-            min-height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            color: white;
-            border-bottom: 3px solid #D4AF37;
-        }
-
-        header .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: white;
-        }
-
-        header .logo img {
-            width: 45px;
-        }
-
-        header h1 {
-            font-size: 16px;
-            letter-spacing: 1px;
-        }
-
-        .btn-volver {
-            background: #D4AF37;
-            color: #0A1F44;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .btn-volver:hover {
-            background: #fff;
+        /* El contenido crece y empuja el footer al fondo */
+        main.content {
+            flex: 1;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 0 20px;
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 24px 28px;
         }
 
         .card {
@@ -75,6 +36,7 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
             border: 1px solid #e5eaf0;
             padding: 24px;
             margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(13, 35, 67, 0.07);
         }
 
         .card h2 {
@@ -124,10 +86,17 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
             }
         }
 
-        /* Tabla */
+        /* Tabla responsive */
+        .tabla-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: auto;
         }
 
         th {
@@ -138,6 +107,7 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         td {
@@ -158,6 +128,7 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
             font-size: 11px;
             font-weight: bold;
             text-transform: capitalize;
+            white-space: nowrap;
         }
 
         .badge-rol.administrador {
@@ -181,6 +152,7 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
             border-radius: 12px;
             font-size: 11px;
             font-weight: bold;
+            white-space: nowrap;
         }
 
         .badge-estado.activo {
@@ -199,6 +171,7 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
             gap: 5px;
             font-size: 11px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .badge-online .dot {
@@ -231,6 +204,7 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
             font-size: 12px;
             font-weight: bold;
             transition: 0.2s;
+            white-space: nowrap;
         }
 
         .btn-toggle.desactivar {
@@ -258,73 +232,173 @@ if (($_SESSION['rol'] ?? '') !== 'administrador') {
             font-size: 14px;
         }
 
-        footer {
-            background: #0D1B3E;
-            color: rgba(255, 255, 255, 0.5);
-            text-align: center;
-            padding: 12px;
-            font-size: 11px;
-            margin-top: 40px;
+        /* ===== TEMA OSCURO navy + dorado ===== */
+        html[data-tema="oscuro"] .card {
+            background: var(--surface, #101a30);
+            border-color: var(--border, rgba(148, 163, 184, .18));
+            box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, .45));
         }
 
-        footer strong {
-            color: #D4AF37;
+        html[data-tema="oscuro"] .card h2 {
+            color: #fff;
+        }
+
+        html[data-tema="oscuro"] .conectado-badge {
+            background: rgba(74, 222, 128, 0.12);
+            border-color: rgba(74, 222, 128, 0.35);
+            color: #4ade80;
+        }
+
+        html[data-tema="oscuro"] th {
+            background: var(--surface-2, #16223c);
+            color: var(--gold, #d4af37);
+            border-bottom: 2px solid var(--gold, #d4af37);
+        }
+
+        html[data-tema="oscuro"] td {
+            border-bottom-color: var(--border, rgba(148, 163, 184, .18));
+            color: var(--text, #e8edf5);
+        }
+
+        html[data-tema="oscuro"] tr:hover td {
+            background: var(--gold-soft, rgba(212, 175, 55, .12));
+        }
+
+        html[data-tema="oscuro"] .badge-rol.administrador {
+            background: rgba(96, 165, 250, 0.16);
+            color: #60a5fa;
+        }
+
+        html[data-tema="oscuro"] .badge-rol.bodeguero {
+            background: rgba(212, 175, 55, 0.16);
+            color: #e8bd3f;
+        }
+
+        html[data-tema="oscuro"] .badge-rol.operario {
+            background: rgba(139, 124, 246, 0.16);
+            color: #a78bfa;
+        }
+
+        html[data-tema="oscuro"] .badge-estado.activo {
+            background: rgba(74, 222, 128, 0.14);
+            color: #4ade80;
+        }
+
+        html[data-tema="oscuro"] .badge-estado.inactivo {
+            background: rgba(248, 113, 113, 0.14);
+            color: #f87171;
+        }
+
+        html[data-tema="oscuro"] .badge-online.si {
+            color: #4ade80;
+        }
+
+        html[data-tema="oscuro"] .badge-online.no {
+            color: var(--muted, #9aa7bd);
+        }
+
+        html[data-tema="oscuro"] .btn-toggle.desactivar {
+            background: rgba(248, 113, 113, 0.14);
+            color: #f87171;
+        }
+
+        html[data-tema="oscuro"] .btn-toggle.activar {
+            background: rgba(74, 222, 128, 0.14);
+            color: #4ade80;
+        }
+
+        html[data-tema="oscuro"] .placeholder-msg {
+            color: var(--muted, #9aa7bd);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1100px) {
+            .tabla-responsive {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 760px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px 12px;
+            }
+
+            .card {
+                padding: 16px 12px;
+            }
+
+            .card h2 {
+                font-size: 16px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <a class="logo" href="panel_admin.php">
-            <img src="../../public/imagenes/logo.png" alt="Logo">
-            <h1>Gestión de Usuarios</h1>
-        </a>
-        <button class="btn-volver" onclick="window.location.href='panel_admin.php'">← Volver al Panel</button>
-    </header>
+    <div class="app">
 
-    <div class="container">
+        <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
-        <!-- Usuarios conectados -->
-        <div class="card">
-            <h2>🟢 Usuarios Conectados</h2>
-            <div class="conectados-grid" id="conectadosGrid">
-                <p class="placeholder-msg">Cargando...</p>
-            </div>
+        <div class="main">
+
+            <?php include __DIR__ . '/../partials/topbar.php'; ?>
+
+            <main class="content">
+                <div class="container">
+
+                    <!-- Usuarios conectados -->
+                    <div class="card">
+                        <h2>🟢 Usuarios Conectados</h2>
+                        <div class="conectados-grid" id="conectadosGrid">
+                            <p class="placeholder-msg">Cargando...</p>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de usuarios -->
+                    <div class="card">
+                        <h2>👥 Todos los Usuarios</h2>
+                        <div class="tabla-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Documento</th>
+                                        <th>Correo</th>
+                                        <th>Rol</th>
+                                        <th>Estado</th>
+                                        <th>En línea</th>
+                                        <th>Última actividad</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaUsuarios">
+                                    <tr>
+                                        <td colspan="8" class="placeholder-msg">Cargando usuarios...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            <?php include __DIR__ . '/../partials/footer.php'; ?>
+
         </div>
-
-        <!-- Tabla de usuarios -->
-        <div class="card">
-            <h2>👥 Todos los Usuarios</h2>
-            <div style="overflow-x:auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Usuario</th>
-                            <th>Documento</th>
-                            <th>Correo</th>
-                            <th>Rol</th>
-                            <th>Estado</th>
-                            <th>En línea</th>
-                            <th>Última actividad</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaUsuarios">
-                        <tr>
-                            <td colspan="8" class="placeholder-msg">Cargando usuarios...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
     </div>
 
-    <footer>
-        © 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.
-    </footer>
-
+    <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
     <script src="../../public/js/app.js"></script>
     <script>
         function formatearFechaActividad(fechaStr) {

@@ -12,16 +12,8 @@ require_once "../../app/verificar_sesion.php";
     <title>Panel Bodeguero - Max & Flex</title>
     <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="panelbodeguero.css">
-    
-    <script>
-        /* Aplica el tema guardado ANTES de pintar la página, para evitar parpadeo */
-        (function () {
-            const temaGuardado = localStorage.getItem('colsoftco_tema');
-            if (temaGuardado === 'oscuro') {
-                document.documentElement.setAttribute('data-tema', 'oscuro');
-            }
-        })();
-    </script>
+
+    <?php require_once __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
@@ -70,14 +62,7 @@ require_once "../../app/verificar_sesion.php";
             </button>
         </nav>
 
-        <div class="help-box">
-            <div class="help-icon">♧</div>
-            <div>
-                <strong>¿Necesitas ayuda?</strong>
-                <p>Nuestro equipo está<br>para apoyarte.</p>
-                <a href="mailto:contacto@colsoftco.com">Contáctanos</a>
-            </div>
-        </div>
+       
     </aside>
 
     <div class="main">
@@ -346,9 +331,6 @@ require_once "../../app/verificar_sesion.php";
 
 <div class="menu-overlay" id="menuOverlay"></div>
 
-<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-
 <script src="../../public/js/app.js"></script>
 
 <script>
@@ -567,7 +549,6 @@ window.addEventListener('resize', function () {
     document.addEventListener('click', () => cerrarPerfilDropdown());
 </script>
 
-<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+<?php require_once __DIR__ . '/../partials/botpress.php'; ?>
 </body>
 </html>

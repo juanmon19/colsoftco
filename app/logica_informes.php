@@ -21,33 +21,39 @@ class InformeLogica
     }
 
     /**
-     * Busca en la base de datos cuáles meses realmente tienen movimientos
+     * Meses con movimientos (cualquier módulo), como pares año-mes.
+     * Devuelve [['anio'=>2026,'mes'=>8],...] ordenado. Así el comparativo
+     * deja elegir cualquier mes con actividad, no solo materia_prima
+     * ni solo el año actual.
      */
     public function obtenerMesesDisponibles(?int $anio = null): array
     {
-        $anio = $anio ?? (int) date('Y');
-
-        $placeholders = implode(',', array_fill(0, count($this->modulosMateriaPrima), '?'));
-
-        $sql = "
-            SELECT DISTINCT MONTH(fecha_hora) as mes
-            FROM historial_movimientos
-            WHERE modulo IN ($placeholders)
-              AND YEAR(fecha_hora) = ?
-            ORDER BY mes ASC
-        ";
-
-        $params = array_merge($this->modulosMateriaPrima, [$anio]);
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute($params);
-        
-        $meses = [];
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $fila) {
-            $meses[] = (int) $fila['mes'];
+        if ($anio !== null) {
+            $stmt = $this->conn->prepare(
+                "SELECT DISTINCT MONTH(fecha_hora) as mes
+                 FROM historial_movimientos
+                 WHERE YEAR(fecha_hora) = ?
+                 ORDER BY mes ASC"
+            );
+            $stmt->execute([$anio]);
+            $out = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $fila) {
+                $out[] = ['anio' => $anio, 'mes' => (int) $fila['mes']];
+            }
+            return $out;
         }
-        
-        return $meses;
+
+        $stmt = $this->conn->query(
+            "SELECT DISTINCT YEAR(fecha_hora) as anio, MONTH(fecha_hora) as mes
+             FROM historial_movimientos
+             ORDER BY anio ASC, mes ASC"
+        );
+
+        $out = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $fila) {
+            $out[] = ['anio' => (int) $fila['anio'], 'mes' => (int) $fila['mes']];
+        }
+        return $out;
     }
 
     /**
@@ -168,5 +174,87 @@ class InformeLogica
         }
 
         return $materias;
+    }
+
+    /**
+     * Comparativo mes A vs mes B, una fila por material.
+     * Acepta años independientes (ej. dic-2025 vs ene-2026).
+     * Agrupa lo que obtenerMovimientosPorMes devuelve plano (mes-material)
+     * y pivota a columnas A/B + diferencias. Incluye materiales sin
+     * movimiento (ceros) para que no "desaparezcan".
+     */
+    public function obtenerComparativo(int $mesA, int $mesB, ?int $anioA = null, ?int $anioB = null): array
+    {
+        $anioA = $anioA ?? (int) date('Y');
+        $anioB = $anioB ?? $anioA;
+        $mesA = max(1, min(12, $mesA));
+        $mesB = max(1, min(12, $mesB));
+
+        $filasA = $this->obtenerMovimientosPorMes($mesA, $mesA, $anioA);
+        $filasB = ($mesA === $mesB && $anioA === $anioB)
+            ? [] // comparación identidad: B queda en 0
+            : $this->obtenerMovimientosPorMes($mesB, $mesB, $anioB);
+
+        $map = [];
+        $sumar = function (array $filas, string $lado) use (&$map) {
+            foreach ($filas as $r) {
+                $id = $r['id_material'];
+                if (!isset($map[$id])) {
+                    $map[$id] = [
+                        'id_material' => $id,
+                        'nombre' => $r['nombre'],
+                        'entradas_a' => 0.0, 'salidas_a' => 0.0,
+                        'entradas_b' => 0.0, 'salidas_b' => 0.0,
+                    ];
+                }
+                $map[$id]["entradas_{$lado}"] += (float) $r['entradas'];
+                $map[$id]["salidas_{$lado}"] += (float) $r['salidas'];
+            }
+        };
+        $sumar($filasA, 'a');
+        $sumar($filasB, 'b');
+
+        // Materiales sin movimiento en el rango: aparecen con ceros.
+        foreach ($this->obtenerNombresMateriales() as $id => $nombre) {
+            if (!isset($map[$id])) {
+                $map[$id] = [
+                    'id_material' => $id,
+                    'nombre' => $nombre,
+                    'entradas_a' => 0.0, 'salidas_a' => 0.0,
+                    'entradas_b' => 0.0, 'salidas_b' => 0.0,
+                ];
+            }
+        }
+
+        $out = [];
+        foreach ($map as $m) {
+            $eA = round($m['entradas_a'], 2); $sA = round($m['salidas_a'], 2);
+            $eB = round($m['entradas_b'], 2); $sB = round($m['salidas_b'], 2);
+            $out[] = [
+                'id_material' => $m['id_material'],
+                'nombre' => $m['nombre'],
+                'entradas_a' => $eA, 'salidas_a' => $sA,
+                'mov_a' => round($eA - $sA, 2),
+                'entradas_b' => $eB, 'salidas_b' => $sB,
+                'mov_b' => round($eB - $sB, 2),
+                'dif_entradas' => round($eB - $eA, 2),
+                'dif_salidas' => round($sB - $sA, 2),
+                'dif_mov' => round(($eB - $sB) - ($eA - $sA), 2),
+            ];
+        }
+
+        usort($out, fn($a, $b) => strcmp($a['nombre'], $b['nombre']));
+        return $out;
+    }
+
+    /**
+     * "2026-8" o 8 -> [anio, mes]. $defAnio se usa si viene solo el mes (legacy).
+     */
+    public static function parseAnioMes(mixed $valor, int $defAnio, int $defMes): array
+    {
+        if (is_string($valor) && preg_match('/^(\d{4})-(\d{1,2})$/', trim($valor), $m)) {
+            return [(int) $m[1], max(1, min(12, (int) $m[2]))];
+        }
+        return [$defAnio, max(1, min(12, (int) $valor ?: $defMes))];
     }
 }

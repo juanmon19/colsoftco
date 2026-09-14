@@ -16,17 +16,14 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-$mesInicio = max(1, min(12, (int) ($_GET['mes_inicio'] ?? 1)));
-$mesFin    = max(1, min(12, (int) ($_GET['mes_fin'] ?? 12)));
-
-if ($mesInicio > $mesFin) {
-    [$mesInicio, $mesFin] = [$mesFin, $mesInicio];
-}
-
 $MESES = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
 $logica = new InformeLogica();
-$datos = $logica->obtenerMovimientosPorMes($mesInicio, $mesFin);
+
+$anioActual = (int) date('Y');
+[$anioA, $mesA] = InformeLogica::parseAnioMes($_GET['mes_a'] ?? 1, $anioActual, 1);
+[$anioB, $mesB] = InformeLogica::parseAnioMes($_GET['mes_b'] ?? 12, $anioActual, 12);
+$datos = $logica->obtenerComparativo($mesA, $mesB, $anioA, $anioB);
 
 /* =======================================================
    ARMAR EXCEL PERSONALIZADO
@@ -62,7 +59,8 @@ $sheet->getStyle('B1:F1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_C
 
 /* ── 3. Subtítulo (Fechas) ── */
 $sheet->mergeCells('A2:F2');
-$sheet->setCellValue('A2', 'Rango evaluado: ' . $MESES[$mesInicio] . ' – ' . $MESES[$mesFin] . '   |   Generado: ' . date('d/m/Y H:i'));
+$subtitulo = 'Comparando: ' . $MESES[$mesA] . ' ' . $anioA . ' vs ' . $MESES[$mesB] . ' ' . $anioB . '   |   Generado: ' . date('d/m/Y H:i');
+$sheet->setCellValue('A2', $subtitulo);
 $sheet->getStyle('A2')->getFont()->setItalic(true)->setSize(10)->getColor()->setRGB('555555');
 $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 $sheet->getStyle('A2:F2')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F4F6FB');
@@ -70,7 +68,7 @@ $sheet->getRowDimension(2)->setRowHeight(20);
 $sheet->getStyle('A2')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
 /* ── 4. Encabezados de la tabla ── */
-$encabezados = ['Mes', 'Material', 'Entradas', 'Salidas', 'Movimiento Total', 'Stock Final'];
+$encabezados = ['Material', "Ent. {$MESES[$mesA]} {$anioA}", "Sal. {$MESES[$mesA]} {$anioA}", "Ent. {$MESES[$mesB]} {$anioB}", "Sal. {$MESES[$mesB]} {$anioB}", 'Dif. Mov.'];
 $sheet->fromArray($encabezados, null, 'A4');
 
 $sheet->getStyle('A4:F4')->getFont()->setBold(true)->getColor()->setRGB('FFFFFF');
@@ -90,31 +88,15 @@ if (empty($datos)) {
     $fila++;
 } else {
     foreach ($datos as $d) {
-        $entradas = (float) $d['entradas'];
-        $salidas = (float) $d['salidas'];
-        
-        // Matemáticas precisas: La salida se vuelve negativa, y el movimiento total se resta.
-        $salida_negativa = $salidas > 0 ? -$salidas : 0;
-        $mov_total = $entradas - $salidas;
-
-        $sheet->setCellValue("A{$fila}", $MESES[$d['mes']]);
-        $sheet->setCellValue("B{$fila}", $d['nombre']);
-        $sheet->setCellValue("C{$fila}", $entradas);
-        $sheet->setCellValue("D{$fila}", $salida_negativa);
-        $sheet->setCellValue("E{$fila}", $mov_total);
-        $sheet->setCellValue("F{$fila}", $d['stock_final']);
-
-        // Colorear verde y rojo solo si hay valores
-        if ($entradas > 0) {
-            $sheet->getStyle("C{$fila}")->getFont()->getColor()->setRGB('008000');
-        }
-        if ($salidas > 0) {
-            $sheet->getStyle("D{$fila}")->getFont()->getColor()->setRGB('FF0000');
-        }
-
+        $sheet->setCellValue("A{$fila}", $d['nombre']);
+        $sheet->setCellValue("B{$fila}", $d['entradas_a']);
+        $sheet->setCellValue("C{$fila}", $d['salidas_a'] > 0 ? -$d['salidas_a'] : 0);
+        $sheet->setCellValue("D{$fila}", $d['entradas_b']);
+        $sheet->setCellValue("E{$fila}", $d['salidas_b'] > 0 ? -$d['salidas_b'] : 0);
+        $sheet->setCellValue("F{$fila}", $d['dif_mov']);
         $sheet->getStyle("A{$fila}")->getFont()->setBold(true);
-        $sheet->getStyle("E{$fila}:F{$fila}")->getFont()->setBold(true);
-        $sheet->getStyle("C{$fila}:F{$fila}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("F{$fila}")->getFont()->setBold(true);
+        $sheet->getStyle("B{$fila}:F{$fila}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         if ($fila % 2 === 0) {
             $sheet->getStyle("A{$fila}:F{$fila}")->getFill()
@@ -133,7 +115,7 @@ $sheet->getStyle("A4:F" . ($fila - 1))->getBorders()->getAllBorders()
 /* =======================================================
    DESCARGA
    ======================================================= */
-$nombreArchivo = 'Informe_MateriaPrima_' . $MESES[$mesInicio] . '_' . $MESES[$mesFin] . '.xlsx';
+$nombreArchivo = 'Informe_Comparativo_' . $MESES[$mesA] . $anioA . '_vs_' . $MESES[$mesB] . $anioB . '.xlsx';
 
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 header('Content-Disposition: attachment;filename="' . $nombreArchivo . '"');

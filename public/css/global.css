@@ -23,19 +23,25 @@ body {
     min-height: 100vh;
 }
 
-/* ══ VARIABLES GLOBALES ══ */
+/* ══ VARIABLES GLOBALES (tema claro) ══ */
 :root {
     --navy: #0A1F44;
     --navy-dark: #061d3c;
     --navy-2: #092b55;
     --gold: #D4AF37;
+    --gold-hover: #b8941f;
+    --gold-soft: rgba(212, 175, 55, 0.14);
     --bg: #f7f9fc;
+    --surface: #ffffff;
+    --surface-2: #eef2f7;
     --text: #152846;
+    --muted: #64748b;
     --border: #e5eaf0;
     --success: #16a34a;
     --danger: #dc2626;
     --warning: #f59e0b;
     --info: #3b82f6;
+    --shadow: 0 4px 14px rgba(10, 31, 68, 0.10);
     --header-height: 70px;
 }
 
@@ -71,14 +77,53 @@ img {
 .bg-success { background: #e5f7ec; color: var(--success); }
 .bg-danger { background: #fdecea; color: var(--danger); }
 
-/* ══ TEMA OSCURO — Variables base ══ */
+/* ══ TEMA OSCURO — paleta profesional navy + dorado ══
+   El dorado se conserva como acento de marca; las superficies
+   son navy elevados con bordes sutiles, no gris plano. */
 html[data-tema="oscuro"] {
-    --bg: #0f172a;
-    --text: #f1f5f9;
-    --border: #334155;
+    color-scheme: dark;
+    --bg: #0a1120;
+    --surface: #101a30;
+    --surface-2: #16223c;
+    --text: #e8edf5;
+    --muted: #9aa7bd;
+    --border: rgba(148, 163, 184, 0.18);
+    --gold: #d4af37;
+    --gold-hover: #e3c15c;
+    --gold-soft: rgba(212, 175, 55, 0.12);
+    --success: #4ade80;
+    --danger: #f87171;
+    --warning: #fbbf24;
+    --info: #60a5fa;
+    --shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
 html[data-tema="oscuro"] body {
-    background: var(--bg);
+    background:
+        radial-gradient(1200px 500px at 85% -10%, rgba(212, 175, 55, 0.06), transparent 60%),
+        radial-gradient(900px 500px at -10% 0%, rgba(35, 83, 140, 0.25), transparent 55%),
+        var(--bg);
     color: var(--text);
 }
+
+/* Transición suave al cambiar de tema */
+body, .app, .sidebar, .topbar, footer, .card,
+input, select, textarea, button {
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Foco visible dorado y accesible */
+html[data-tema="oscuro"] :is(input, select, textarea, button):focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 1px;
+}
+
+/* Scrollbar acorde al tema */
+html[data-tema="oscuro"] ::-webkit-scrollbar { width: 10px; height: 10px; }
+html[data-tema="oscuro"] ::-webkit-scrollbar-track { background: #0a1120; }
+html[data-tema="oscuro"] ::-webkit-scrollbar-thumb {
+    background: #2b3a58;
+    border-radius: 6px;
+    border: 2px solid #0a1120;
+}
+html[data-tema="oscuro"] ::-webkit-scrollbar-thumb:hover { background: var(--gold); }

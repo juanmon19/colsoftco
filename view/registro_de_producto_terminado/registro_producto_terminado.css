@@ -481,3 +481,138 @@ footer {
   aside a { flex: 1 1 130px; }
   .form-grid { grid-template-columns: 1fr; }
 }
+
+/* TEMA OSCURO navy + dorado */
+html[data-tema="oscuro"] {
+  --bg: #0a1120;
+  --surface: #101a30;
+  --surface-2: #16223c;
+  --text: #e8edf5;
+  --muted: #9aa7bd;
+  --border: rgba(148,163,184,.18);
+  --gold: #d4af37;
+  --gold-soft: rgba(212,175,55,.12);
+  --shadow: 0 6px 20px rgba(0,0,0,.45);
+}
+html[data-tema="oscuro"] body {
+  background: var(--bg, #0a1120);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .page-body {
+  background: var(--bg, #0a1120);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .content {
+  background: var(--bg, #0a1120);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .banner-content h1,
+html[data-tema="oscuro"] .header-title {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] aside a {
+  background: var(--surface, #101a30);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] aside a:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] aside a.active {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+  border-color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .user-card {
+  background: var(--surface, #101a30);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+}
+html[data-tema="oscuro"] .user-meta h2 {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .user-meta .role {
+  color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .form-card {
+  background: var(--surface, #101a30);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+}
+html[data-tema="oscuro"] .form-header {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-left: 4px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .form-body {
+  background: var(--surface, #101a30);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .task-list li {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] label {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] input[type="text"],
+html[data-tema="oscuro"] input[type="number"],
+html[data-tema="oscuro"] select {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] input[type="text"]::placeholder,
+html[data-tema="oscuro"] input[type="number"]::placeholder {
+  color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] input:focus,
+html[data-tema="oscuro"] select:focus {
+  border-color: var(--gold, #d4af37);
+  box-shadow: 0 0 0 3px var(--gold-soft, rgba(212,175,55,.12));
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .form-divider {
+  border-top: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .btn-logout {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+  border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-primary {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+  border: 1px solid var(--gold, #d4af37);
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+}
+html[data-tema="oscuro"] .btn-outline {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .btn-outline:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+  color: var(--gold, #d4af37);
+  border-color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .toast {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-left: 4px solid var(--gold, #d4af37);
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+}
+html[data-tema="oscuro"] a {
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] aside a {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] footer {
+  background: var(--surface, #101a30);
+  color: var(--text, #e8edf5);
+  border-top: 1px solid var(--border, rgba(148,163,184,.18));
+}

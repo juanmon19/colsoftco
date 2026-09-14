@@ -1,7 +1,4 @@
 <?php
-// Inicialización de la sesión.
-// 51 se utiliza otro nombre
-// session_name("otroNombre")
 session_start();
 
 // ══ LIMPIAR TOKEN DE SESIÓN ÚNICA ══

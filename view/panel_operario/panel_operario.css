@@ -661,40 +661,63 @@ footer {
 
 
 /* =========================================================
-   TEMA OSCURO (Aplica a todo el sistema)
-========================================================= */
+   TEMA OSCURO navy + dorado (variables de global.css)
+   ========================================================= */
 
 html[data-tema="oscuro"] { color-scheme: dark; }
-html[data-tema="oscuro"] body { background: #0f172a; }
-html[data-tema="oscuro"] .contenedor { background: #0f172a; }
-html[data-tema="oscuro"] .sidebar { background: #111827; border-color: #1f2937; }
-html[data-tema="oscuro"] .sidebar-links button { color: #e2e8f0; }
-html[data-tema="oscuro"] .sidebar-links button:hover { background: #1f2937; }
-html[data-tema="oscuro"] .header { background: #111827; border-color: #1f2937; }
+html[data-tema="oscuro"] body { background: var(--bg); color: var(--text); }
+html[data-tema="oscuro"] .contenedor { background: transparent; }
+html[data-tema="oscuro"] .sidebar { background: linear-gradient(180deg, #050f22 0%, #0a2547 100%); border-right: 1px solid rgba(212, 175, 55, 0.18); }
+html[data-tema="oscuro"] .sidebar-links button { color: var(--text); }
+html[data-tema="oscuro"] .sidebar-links button:hover { background: var(--gold-soft); color: var(--gold); }
+html[data-tema="oscuro"] .header { background: linear-gradient(105deg, #050f22, #0a2547); border-bottom: 1px solid rgba(212, 175, 55, 0.25); }
 html[data-tema="oscuro"] .header-left h1,
-html[data-tema="oscuro"] .header-left p { color: #e2e8f0; }
+html[data-tema="oscuro"] .header-left p { color: var(--text); }
 html[data-tema="oscuro"] .profile-card,
 html[data-tema="oscuro"] .summary-card,
 html[data-tema="oscuro"] .card,
 html[data-tema="oscuro"] .tareas,
 html[data-tema="oscuro"] .quick-actions,
-html[data-tema="oscuro"] .contact-card { background: #111827; border-color: #1f2937; color: #e2e8f0; }
+html[data-tema="oscuro"] .contact-card { background: var(--surface); border: 1px solid var(--border); color: var(--text); box-shadow: var(--shadow); }
 html[data-tema="oscuro"] .info-usuario h2,
 html[data-tema="oscuro"] .summary-card strong,
-html[data-tema="oscuro"] h3 { color: #f1f5f9; }
-html[data-tema="oscuro"] .task { background: #0f172a; border-color: #1f2937; }
-html[data-tema="oscuro"] .task-main strong { color: #f1f5f9; }
-html[data-tema="oscuro"] .task-main span { color: #94a3b8; }
-html[data-tema="oscuro"] footer { background: #111827; border-color: #1f2937; color: #94a3b8; }
+html[data-tema="oscuro"] h3 { color: #fff; }
+html[data-tema="oscuro"] .task { background: var(--surface-2); border-color: var(--border); }
+html[data-tema="oscuro"] .task-main strong { color: var(--text); }
+html[data-tema="oscuro"] .task-main span { color: var(--muted); }
+html[data-tema="oscuro"] footer { background: #050f22; border-top: 1px solid rgba(212, 175, 55, 0.18); color: var(--muted); }
+html[data-tema="oscuro"] footer b,
+html[data-tema="oscuro"] footer strong { color: var(--gold); }
 html[data-tema="oscuro"] .modal-box,
 html[data-tema="oscuro"] .perfil-dropdown,
-html[data-tema="oscuro"] .edit-menu { background: #111827; border-color: #1f2937; color: #e2e8f0; }
+html[data-tema="oscuro"] .edit-menu { background: var(--surface); border: 1px solid var(--border); color: var(--text); box-shadow: var(--shadow); }
 html[data-tema="oscuro"] .modal-box input,
 html[data-tema="oscuro"] .modal-box select,
-html[data-tema="oscuro"] .edit-menu-group select { background: #0f172a; border-color: #334155; color: #e2e8f0; }
-html[data-tema="oscuro"] .perfil-trigger { background: #0f172a; border-color: #334155; }
-html[data-tema="oscuro"] .perfil-dropdown button { color: #e2e8f0; }
-html[data-tema="oscuro"] .perfil-dropdown button:hover { background: #1f2937; }
+html[data-tema="oscuro"] .edit-menu-group select { background: var(--surface-2); border-color: var(--border); color: var(--text); }
+html[data-tema="oscuro"] .perfil-trigger { background: var(--surface-2); border: 1px solid var(--border); }
+html[data-tema="oscuro"] .perfil-dropdown button { color: var(--text); }
+html[data-tema="oscuro"] .perfil-dropdown button:hover { background: var(--gold-soft); color: var(--gold); }
+
+/* ── PARCHE OSCURO v2: contenido del panel ── */
+html[data-tema="oscuro"] .section-title h3 { color: #fff; }
+html[data-tema="oscuro"] .section-title p { color: var(--muted); }
+html[data-tema="oscuro"] .task-dots { color: var(--muted); }
+html[data-tema="oscuro"] .task-dots:hover { background: var(--gold-soft); color: var(--gold); }
+html[data-tema="oscuro"] .edit-menu-group label { color: var(--muted); }
+html[data-tema="oscuro"] .edit-delete { background: transparent; }
+html[data-tema="oscuro"] .modal-actions .btn-outline {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+}
+html[data-tema="oscuro"] .modal-perfil-foto button {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+}
+html[data-tema="oscuro"] .yellow { background: rgba(212, 175, 55, 0.16); color: #e8bd3f; }
+html[data-tema="oscuro"] .priority.medium { background: rgba(212, 175, 55, 0.16); color: #e8bd3f; }
+html[data-tema="oscuro"] .task-count { background: rgba(212, 175, 55, 0.16); color: #e8bd3f; }
 
 
 /* =========================================================

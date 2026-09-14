@@ -10,9 +10,16 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// URL única de login (absoluta para no depender del cwd ni de la carpeta actual)
+if (!function_exists('colsoftco_login_url')) {
+    function colsoftco_login_url(): string {
+        return '/colsoftco/view/login/login.php';
+    }
+}
+
 // Verificar si el usuario inició sesión
 if (!isset($_SESSION['documento'])) {
-    header("Location: ../login/login.php");
+    header("Location: " . colsoftco_login_url());
     exit();
 }
 
@@ -36,20 +43,20 @@ if (isset($_SESSION['token_sesion'])) {
         session_destroy();
         echo '<script>
             alert("Alguien más ingresó a tu cuenta. Por favor, loguéate de nuevo.");
-            window.location.href = "' . (strpos($_SERVER['SCRIPT_NAME'], '/app/') !== false ? '../view/login/login.php' : '../login/login.php') . '";
+            window.location.href = "' . colsoftco_login_url() . '";
         </script>';
         exit();
     }
 }
 
 // ══ VERIFICAR CUENTA ACTIVA Y EXPIRACIÓN POR INACTIVIDAD ══
-define('MINUTOS_INACTIVIDAD_MAX', 30);
+if (!defined('MINUTOS_INACTIVIDAD_MAX')) {
+    define('MINUTOS_INACTIVIDAD_MAX', 30);
+}
 
-if (isset($_SESSION['documento'])) {
-    if (!isset($__dbCheck)) {
-        require_once __DIR__ . '/../config/conexion.php';
-        $__dbCheck = new Conexion();
-    }
+if (!isset($__dbCheck)) {
+    $__dbCheck = new Conexion();
+}
     $__stmtActivo = $__dbCheck->getConnection()->prepare(
         "SELECT activo, ultima_actividad FROM usuarios WHERE documento = :doc LIMIT 1"
     );
@@ -61,7 +68,7 @@ if (isset($_SESSION['documento'])) {
         session_destroy();
         echo '<script>
             alert("Tu cuenta ha sido desactivada por el administrador. Contacta al administrador.");
-            window.location.href = "' . (strpos($_SERVER['SCRIPT_NAME'], '/app/') !== false ? '../view/login/login.php' : '../login/login.php') . '";
+            window.location.href = "' . colsoftco_login_url() . '";
         </script>';
         exit();
     }
@@ -75,7 +82,7 @@ if (isset($_SESSION['documento'])) {
             session_destroy();
             echo '<script>
                 alert("Tu sesión expiró por inactividad. Por favor, inicia sesión de nuevo.");
-                window.location.href = "' . (strpos($_SERVER['SCRIPT_NAME'], '/app/') !== false ? '../view/login/login.php' : '../login/login.php') . '";
+                window.location.href = "' . colsoftco_login_url() . '";
             </script>';
             exit();
         }
@@ -86,10 +93,10 @@ if (isset($_SESSION['documento'])) {
         "UPDATE usuarios SET ultima_actividad = NOW() WHERE documento = :doc"
     );
     $__stmtAct->execute([':doc' => $_SESSION['documento']]);
-}
 
 /**
  * Genera un token CSRF y lo almacena en la sesión.
+ * (Reservado para uso futuro en formularios — actualmente sin llamadas).
  */
 function generarTokenCSRF(): string {
     if (empty($_SESSION['csrf_token'])) {

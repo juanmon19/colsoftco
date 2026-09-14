@@ -15,16 +15,8 @@ require_once "../../app/verificar_sesion.php";
 
     <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="panel_operario.css">
-    
-    <script>
-        /* Aplica el tema guardado ANTES de pintar la página, para evitar parpadeo */
-        (function () {
-            const temaGuardado = localStorage.getItem('colsoftco_tema');
-            if (temaGuardado === 'oscuro') {
-                document.documentElement.setAttribute('data-tema', 'oscuro');
-            }
-        })();
-    </script>
+
+    <?php require_once __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
@@ -134,11 +126,7 @@ require_once "../../app/verificar_sesion.php";
 
             </nav>
 
-            <div class="help-box">
-                <strong>¿Necesitas ayuda?</strong>
-                <p>Nuestro equipo está para apoyarte.</p>
-                <a href="mailto:contacto@colsoftco.com">Contáctanos</a>
-            </div>
+
 
         </aside>
 
@@ -409,8 +397,7 @@ require_once "../../app/verificar_sesion.php";
          SCRIPTS
     ====================================================== -->
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+    <?php require_once __DIR__ . '/../partials/botpress.php'; ?>
 
     <script src="../../public/js/app.js"></script>
 

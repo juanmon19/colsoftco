@@ -9,21 +9,22 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-$mesInicio = max(1, min(12, (int) ($_GET['mes_inicio'] ?? 1)));
-$mesFin    = max(1, min(12, (int) ($_GET['mes_fin'] ?? 12)));
-
-if ($mesInicio > $mesFin) {
-    [$mesInicio, $mesFin] = [$mesFin, $mesInicio];
-}
-
 $MESES = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
 $logica = new InformeLogica();
-$datos = $logica->obtenerMovimientosPorMes($mesInicio, $mesFin);
+
+// Informe comparativo mes A vs mes B: una fila por material + diferencias.
+// Los valores llegan como "2026-8" (año-mes).
+$anioActual = (int) date('Y');
+[$anioA, $mesA] = InformeLogica::parseAnioMes($_GET['mes_a'] ?? 1, $anioActual, 1);
+[$anioB, $mesB] = InformeLogica::parseAnioMes($_GET['mes_b'] ?? 12, $anioActual, 12);
+$datos = $logica->obtenerComparativo($mesA, $mesB, $anioA, $anioB);
 
 $rutaLogo = __DIR__ . '/../../public/imagenes/logo.png';
 $base64Logo = '';
-if (file_exists($rutaLogo)) {
+// Dompdf necesita la extensión GD para procesar PNG. Si no está instalada
+// (php.ini: extension=gd), se omite el logo en vez de lanzar Fatal error.
+if (extension_loaded('gd') && file_exists($rutaLogo)) {
     $tipoContenido = pathinfo($rutaLogo, PATHINFO_EXTENSION);
     $datosImagen = file_get_contents($rutaLogo);
     $base64Logo = 'data:image/' . $tipoContenido . ';base64,' . base64_encode($datosImagen);
@@ -68,7 +69,7 @@ ob_start();
     <hr class="divider">
 
     <div class="info-box">
-        <p><strong>Rango evaluado:</strong> <?= $MESES[$mesInicio] ?> – <?= $MESES[$mesFin] ?></p>
+        <p><strong>Comparando:</strong> <?= $MESES[$mesA] ?> <?= $anioA ?> vs <?= $MESES[$mesB] ?> <?= $anioB ?></p>
         <p><strong>Fecha de generación:</strong> <?= date('d/m/Y H:i') ?></p>
     </div>
 
@@ -78,30 +79,23 @@ ob_start();
         <table>
             <thead>
                 <tr>
-                    <th>Mes</th>
                     <th>Material</th>
-                    <th>Entradas</th>
-                    <th>Salidas</th>
-                    <th>Mov. Total</th>
-                    <th>Stock Final</th>
+                    <th>Ent. <?= $MESES[$mesA] ?> <?= $anioA ?></th>
+                    <th>Sal. <?= $MESES[$mesA] ?> <?= $anioA ?></th>
+                    <th>Ent. <?= $MESES[$mesB] ?> <?= $anioB ?></th>
+                    <th>Sal. <?= $MESES[$mesB] ?> <?= $anioB ?></th>
+                    <th>Dif. Mov.</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($datos as $d): ?>
-                    <?php 
-                        // Cálculos matemáticos correctos
-                        $entradas = (float) $d['entradas'];
-                        $salidas = (float) $d['salidas'];
-                        $salida_negativa = $salidas > 0 ? -$salidas : 0;
-                        $mov_total = $entradas - $salidas;
-                    ?>
                     <tr>
-                        <td><strong><?= $MESES[$d['mes']] ?></strong></td>
                         <td><?= htmlspecialchars($d['nombre']) ?></td>
-                        <td style="color: <?= $entradas > 0 ? 'green' : '#333' ?>;"><?= $entradas ?></td>
-                        <td style="color: <?= $salidas > 0 ? 'red' : '#333' ?>;"><?= $salida_negativa ?></td>
-                        <td><strong><?= $mov_total ?></strong></td>
-                        <td><strong><?= $d['stock_final'] ?></strong></td>
+                        <td><?= $d['entradas_a'] ?></td>
+                        <td style="color: <?= $d['salidas_a'] > 0 ? 'red' : '#333' ?>;"><?= $d['salidas_a'] > 0 ? -$d['salidas_a'] : 0 ?></td>
+                        <td><?= $d['entradas_b'] ?></td>
+                        <td style="color: <?= $d['salidas_b'] > 0 ? 'red' : '#333' ?>;"><?= $d['salidas_b'] > 0 ? -$d['salidas_b'] : 0 ?></td>
+                        <td><strong><?= $d['dif_mov'] ?></strong></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -126,6 +120,6 @@ $dompdf->loadHtml($html);
 $dompdf->setPaper('A4', 'portrait'); 
 $dompdf->render();
 
-$nombreArchivo = 'Informe_MateriaPrima_' . $MESES[$mesInicio] . '_' . $MESES[$mesFin] . '.pdf';
+$nombreArchivo = 'Informe_Comparativo_' . $MESES[$mesA] . $anioA . '_vs_' . $MESES[$mesB] . $anioB . '.pdf';
 $dompdf->stream($nombreArchivo, ['Attachment' => true]);
 exit;

@@ -84,6 +84,7 @@ $material = $stmt->fetch(PDO::FETCH_ASSOC);
 <html lang="es">
 
 <head>
+    <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Inventario</title>

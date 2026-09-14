@@ -570,7 +570,7 @@ footer {
     object-fit: cover;
 }
 
-/* ══ TEMA OSCURO AGRUPADO ══ */
+/* ══ TEMA OSCURO — navy de marca + dorado (usa variables de global.css) ══ */
 html[data-tema="oscuro"] {
     color-scheme: dark;
 }
@@ -578,37 +578,89 @@ html[data-tema="oscuro"] body,
 html[data-tema="oscuro"] .app,
 html[data-tema="oscuro"] input,
 html[data-tema="oscuro"] select,
+html[data-tema="oscuro"] textarea,
 html[data-tema="oscuro"] .perfil-trigger,
 html[data-tema="oscuro"] .task-row {
-    background: #0f172a;
-    border-color: #334155;
-    color: #e2e8f0;
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text);
 }
-html[data-tema="oscuro"] .sidebar,
-html[data-tema="oscuro"] .topbar,
+html[data-tema="oscuro"] .sidebar {
+    background: linear-gradient(180deg, #050f22 0%, #0a2547 100%);
+    border-right: 1px solid rgba(212, 175, 55, 0.18);
+}
+html[data-tema="oscuro"] .topbar {
+    background: linear-gradient(105deg, #050f22, #0a2547);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+}
 html[data-tema="oscuro"] .card,
 html[data-tema="oscuro"] .stat,
 html[data-tema="oscuro"] .modal-tarea,
 html[data-tema="oscuro"] .edit-menu,
 html[data-tema="oscuro"] .perfil-dropdown,
 html[data-tema="oscuro"] footer {
-    background: #111827;
-    border-color: #1f2937;
-    color: #e2e8f0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    box-shadow: var(--shadow);
 }
-html[data-tema="oscuro"] h1,
-html[data-tema="oscuro"] h2,
-html[data-tema="oscuro"] h3,
-html[data-tema="oscuro"] strong {
-    color: #f1f5f9;
-}
-html[data-tema="oscuro"] button {
-    color: #e2e8f0;
+html[data-tema="oscuro"] footer b,
+html[data-tema="oscuro"] footer strong {
+    color: var(--gold);
 }
 html[data-tema="oscuro"] .nav-item:hover,
 html[data-tema="oscuro"] .perfil-dropdown button:hover {
-    background: #1f2937;
+    background: var(--gold-soft);
+    color: var(--gold);
 }
+html[data-tema="oscuro"] .perfil-dropdown button {
+    color: var(--text);
+}
+
+/* ── PARCHE OSCURO v2: textos y tarjetas del contenido ── */
+html[data-tema="oscuro"] .task-row {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+}
+html[data-tema="oscuro"] .profile-data h2 { color: #fff; }
+html[data-tema="oscuro"] .profile-data p { color: var(--text); }
+html[data-tema="oscuro"] .small-icon { color: var(--gold); }
+html[data-tema="oscuro"] .stat { border-color: var(--border); }
+html[data-tema="oscuro"] .stat-content span { color: var(--muted); }
+html[data-tema="oscuro"] .stat-content strong { color: #fff; }
+html[data-tema="oscuro"] .stat a { color: var(--text); border-top-color: var(--border); }
+html[data-tema="oscuro"] .stat a b { color: var(--muted); }
+html[data-tema="oscuro"] .stat-icon.yellow { background: rgba(212, 175, 55, 0.16); color: #e8bd3f; }
+html[data-tema="oscuro"] .stat-icon.green { background: rgba(74, 222, 128, 0.14); color: #4ade80; }
+html[data-tema="oscuro"] .stat-icon.purple { background: rgba(139, 124, 246, 0.16); color: #a78bfa; }
+html[data-tema="oscuro"] .stat-icon.blue { background: rgba(96, 165, 250, 0.16); color: #60a5fa; }
+html[data-tema="oscuro"] .title-row h3 { color: #fff; }
+html[data-tema="oscuro"] .task-row.heading { color: var(--muted); }
+html[data-tema="oscuro"] .dots { color: var(--muted); }
+html[data-tema="oscuro"] .dots:hover { background: var(--gold-soft); color: var(--gold); }
+html[data-tema="oscuro"] .quick-grid button {
+    background: var(--surface-2);
+    border-color: var(--border);
+    color: var(--text);
+}
+html[data-tema="oscuro"] .quick-grid button:hover {
+    transform: translateY(-2px);
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+    background: var(--surface-2);
+}
+html[data-tema="oscuro"] .contact p { color: var(--text); }
+html[data-tema="oscuro"] .btn-nueva-tarea { background: var(--gold); color: #0A1F44; }
+html[data-tema="oscuro"] .btn-nueva-tarea:hover { background: var(--gold-hover); }
+html[data-tema="oscuro"] .edit-apply { background: var(--gold); color: #0A1F44; }
+html[data-tema="oscuro"] .edit-delete { background: transparent; }
+html[data-tema="oscuro"] .priority.high { background: rgba(248, 113, 113, 0.16); color: #f87171; }
+html[data-tema="oscuro"] .priority.medium,
+html[data-tema="oscuro"] .status.pendiente { background: rgba(212, 175, 55, 0.16); color: #e8bd3f; }
+html[data-tema="oscuro"] .priority.low,
+html[data-tema="oscuro"] .status.terminado { background: rgba(74, 222, 128, 0.14); color: #4ade80; }
+html[data-tema="oscuro"] .status.por-hacer { background: rgba(96, 165, 250, 0.16); color: #60a5fa; }
 
 /* ══ RESPONSIVE ══ */
 @media (max-width: 1200px) {

@@ -380,3 +380,168 @@ footer {
     .footer-top { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
     .footer-bottom { justify-content: center; text-align: center; padding: 0.8rem 1.5rem; }
 }
+
+/* TEMA OSCURO navy + dorado */
+html[data-tema="oscuro"] {
+  --bg: #0a1120;
+  --surface: #101a30;
+  --surface-2: #16223c;
+  --text: #e8edf5;
+  --muted: #9aa7bd;
+  --border: rgba(148,163,184,.18);
+  --gold: #d4af37;
+  --gold-soft: rgba(212,175,55,.12);
+  --shadow: 0 6px 20px rgba(0,0,0,.45);
+}
+html[data-tema="oscuro"] body {
+  background: var(--bg, #0a1120);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .container,
+html[data-tema="oscuro"] .contenedor {
+  background: var(--bg, #0a1120);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .card {
+  background: var(--surface, #101a30);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+}
+html[data-tema="oscuro"] .card-body {
+  background: var(--surface, #101a30);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .card-header {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-bottom: 4px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .form-group label {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .filtro-busqueda input,
+html[data-tema="oscuro"] .form-control {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .filtro-busqueda input::placeholder,
+html[data-tema="oscuro"] .form-control::placeholder {
+  color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .filtro-busqueda input:focus,
+html[data-tema="oscuro"] .form-control:focus {
+  border-color: var(--gold, #d4af37);
+  box-shadow: 0 0 0 3px var(--gold-soft, rgba(212,175,55,.12));
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .btn-logout {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+  border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-volver,
+html[data-tema="oscuro"] .volver {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .btn-volver:hover,
+html[data-tema="oscuro"] .volver:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+  color: var(--gold, #d4af37);
+  border-color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-primary {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+  border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-secondary {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .btn-editar {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .btn-eliminar {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+  color: var(--gold, #d4af37);
+  border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .table-responsive {
+  background: var(--surface, #101a30);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+}
+html[data-tema="oscuro"] .table-responsive table {
+  background: var(--surface, #101a30);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] th {
+  background: var(--surface-2, #16223c);
+  color: var(--gold, #d4af37);
+  border-bottom: 2px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] td {
+  color: var(--text, #e8edf5);
+  border-bottom: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] tr:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+}
+html[data-tema="oscuro"] .normal {
+  background: rgba(52,211,153,.14);
+  color: var(--text, #e8edf5);
+  border: 1px solid rgba(52,211,153,.35);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+html[data-tema="oscuro"] .alerta {
+  background: rgba(248,113,113,.14);
+  color: var(--text, #e8edf5);
+  border: 1px solid rgba(248,113,113,.35);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+html[data-tema="oscuro"] a {
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .acciones a {
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] footer {
+  background: var(--surface, #101a30);
+  color: var(--text, #e8edf5);
+  border-top: 1px solid var(--border, rgba(148,163,184,.18));
+}
+
+/* ===== BARRA DE FILTROS (sin estilos propios: se definen aquí) ===== */
+html[data-tema="oscuro"] .filtros-container {
+  background: var(--surface, #101a30);
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+  border-radius: 10px;
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+  padding: 12px 16px;
+}
+html[data-tema="oscuro"] .filtro-orden label {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .btn-limpiar-filtros {
+  background: transparent;
+  border: 1px solid var(--gold, #d4af37);
+  color: var(--gold, #d4af37);
+  border-radius: 6px;
+  cursor: pointer;
+}
+html[data-tema="oscuro"] .btn-limpiar-filtros:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+}
+html[data-tema="oscuro"] .mensaje-sin-resultados {
+  color: var(--muted, #9aa7bd);
+}

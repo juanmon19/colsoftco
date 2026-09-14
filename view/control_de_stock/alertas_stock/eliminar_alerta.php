@@ -1,11 +1,11 @@
 <?php
 
-require_once '../../../app/logica_proveedores.php';
+require_once '../../../app/logica_inventario.php';
 require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
 
 session_start();
 
-$logica = new ProveedorLogica();
+$logica = new InventarioLogica();
 
 if (!isset($_GET['id'])) {
     header("Location: lista_alertas.php");
@@ -15,7 +15,7 @@ if (!isset($_GET['id'])) {
 $id = $_GET['id'];
 
 /* Obtener material para mostrarlo */
-$material = $logica->obtenerMateriaPorId($id);
+$material = $logica->obtenerMaterial($id);
 
 if (!$material) {
     header("Location: lista_alertas.php");
@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="es">
 
 <head>
+    <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eliminar Alerta</title>

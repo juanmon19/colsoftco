@@ -28,16 +28,8 @@ try {
     <title>Panel Administrador - COLSOFTCO</title>
     <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="paneladmin.css">
-    
-    <script>
-        /* Aplica el tema guardado ANTES de pintar la página, para evitar parpadeo */
-        (function () {
-            const temaGuardado = localStorage.getItem('colsoftco_tema');
-            if (temaGuardado === 'oscuro') {
-                document.documentElement.setAttribute('data-tema', 'oscuro');
-            }
-        })();
-    </script>
+
+    <?php require_once __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
@@ -134,14 +126,7 @@ try {
                 <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
             </nav>
 
-            <div class="help-box">
-                <div class="headset">♧</div>
-                <div>
-                    <strong>¿Necesitas ayuda?</strong>
-                    <p>Nuestro equipo está<br>para apoyarte.</p>
-                    <a href="mailto:juanjosemon19@gmail.com">Contáctanos</a>
-                </div>
-            </div>
+            
         </aside>
 
         <div class="main">
@@ -534,8 +519,7 @@ try {
         aplicarTextoTema();
         cargarPerfil();
     </script>
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+    <?php require_once __DIR__ . '/../partials/botpress.php'; ?>
 </body>
 
 </html>

@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 
 <head>
+    <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eliminar Materia Prima</title>
@@ -322,6 +323,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 padding: 0.8rem 1.5rem;
             }
         }
+
+        /* ===== TEMA OSCURO navy + dorado ===== */
+        html[data-tema="oscuro"] body { background: #0a1120; color: #e8edf5; }
+        html[data-tema="oscuro"] .header {
+            background: linear-gradient(105deg, #050f22, #0a2547);
+            border-bottom-color: rgba(212, 175, 55, 0.4);
+        }
+        html[data-tema="oscuro"] .contenedor { color: #e8edf5; }
+        html[data-tema="oscuro"] .card {
+            background: #101a30;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+        }
+        html[data-tema="oscuro"] .card-header { background: #0c1527; color: #fff; }
+        html[data-tema="oscuro"] .card-body { color: #e8edf5; }
+        html[data-tema="oscuro"] h2 { color: #fff; }
+        html[data-tema="oscuro"] .info { color: #e8edf5; }
+        html[data-tema="oscuro"] .volver,
+        html[data-tema="oscuro"] .btn-cancelar { background: #16223c; border: 1px solid rgba(148, 163, 184, 0.25); }
+        html[data-tema="oscuro"] .btn-eliminar { background: #f87171; color: #0A1F44; }
+        html[data-tema="oscuro"] .btn-eliminar:hover { background: #ef4444; }
+        html[data-tema="oscuro"] footer { background: #050f22; }
     </style>
 </head>
 

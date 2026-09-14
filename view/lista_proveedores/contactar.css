@@ -420,3 +420,149 @@ footer {
         padding: 25px 20px;
     }
 }
+
+/* TEMA OSCURO navy + dorado */
+html[data-tema="oscuro"] {
+    --bg: #0a1120;
+    --surface: #101a30;
+    --surface-2: #16223c;
+    --text: #e8edf5;
+    --muted: #9aa7bd;
+    --border: rgba(148, 163, 184, .18);
+    --gold: #d4af37;
+    --gold-soft: rgba(212, 175, 55, .12);
+    --shadow: 0 6px 20px rgba(0, 0, 0, .45);
+    --navy: #0A1F44;
+}
+html[data-tema="oscuro"] body {
+    background: var(--bg, #0a1120);
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .header {
+    background: var(--surface, #101a30);
+    border-bottom: 3px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .header-title h1 {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .landing-container {
+    background: var(--bg, #0a1120);
+}
+html[data-tema="oscuro"] .provider-card {
+    background: var(--surface, #101a30);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+    box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, .45));
+}
+html[data-tema="oscuro"] .provider-card h2 {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .provider-card p {
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .imagen-preview {
+    background: var(--surface-2, #16223c);
+    border-color: var(--gold, #d4af37);
+    box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, .45));
+}
+html[data-tema="oscuro"] .imagen-placeholder {
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .sin-materiales {
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .link-volver {
+    color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .mensaje-pedido {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .mensaje-exito {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border-left: 4px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .mensaje-error {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border-left: 4px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-contacto {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+}
+html[data-tema="oscuro"] .btn-contacto:hover {
+    background: var(--gold-soft, rgba(212, 175, 55, .12));
+    color: var(--gold, #d4af37);
+    border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-contacto:disabled {
+    background: var(--surface-2, #16223c);
+    color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .btn-logout {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+}
+html[data-tema="oscuro"] .modal-pedido {
+    background: var(--surface, #101a30);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+    box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, .45));
+}
+html[data-tema="oscuro"] .modal-pedido h3 {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .modal-pedido label {
+    color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .unidad-badge {
+    color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .modal-pedido select,
+html[data-tema="oscuro"] .modal-pedido input {
+    background: var(--surface-2, #16223c);
+    color: var(--text, #e8edf5);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .modal-pedido select:focus,
+html[data-tema="oscuro"] .modal-pedido input:focus {
+    border-color: var(--gold, #d4af37);
+    box-shadow: 0 0 0 3px var(--gold-soft, rgba(212, 175, 55, .12));
+}
+html[data-tema="oscuro"] .btn-secundario {
+    background: var(--surface-2, #16223c);
+    color: var(--muted, #9aa7bd);
+    border: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] .btn-primario {
+    background: var(--gold, #d4af37);
+    color: var(--navy, #0A1F44);
+}
+html[data-tema="oscuro"] .btn-primario:hover {
+    background: var(--gold-soft, rgba(212, 175, 55, .12));
+    color: var(--gold, #d4af37);
+    border: 1px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] table {
+    background: var(--surface, #101a30);
+    color: var(--text, #e8edf5);
+    border-color: var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] table thead th {
+    background: var(--navy, #0A1F44);
+    color: var(--gold, #d4af37);
+    border-bottom: 2px solid var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] table tbody td {
+    background: var(--surface, #101a30);
+    color: var(--text, #e8edf5);
+    border-bottom: 1px solid var(--border, rgba(148, 163, 184, .18));
+}
+html[data-tema="oscuro"] table tbody tr:hover td {
+    background: var(--gold-soft, rgba(212, 175, 55, .12));
+}
+html[data-tema="oscuro"] footer {
+    background: var(--surface, #101a30);
+    color: var(--muted, #9aa7bd);
+}

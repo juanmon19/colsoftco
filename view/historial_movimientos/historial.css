@@ -450,3 +450,123 @@ footer {
         flex-direction: row;
     }
 }
+
+/* TEMA OSCURO navy + dorado */
+html[data-tema="oscuro"] {
+  --bg: #0a1120;
+  --surface: #101a30;
+  --surface-2: #16223c;
+  --text: #e8edf5;
+  --muted: #9aa7bd;
+  --border: rgba(148, 163, 184, .18);
+  --gold: #d4af37;
+  --gold-soft: rgba(212, 175, 55, .12);
+  --shadow: 0 6px 20px rgba(0, 0, 0, .45);
+}
+html[data-tema="oscuro"] body {
+  background: var(--bg, #0a1120);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .page-body,
+html[data-tema="oscuro"] .content {
+  background: var(--bg, #0a1120);
+}
+html[data-tema="oscuro"] .tarjeta {
+  background: var(--surface, #101a30);
+  box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,.45));
+  border: 1px solid var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .tarjeta h2 {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .subtitulo,
+html[data-tema="oscuro"] .pagina-actual,
+html[data-tema="oscuro"] .total-resultados,
+html[data-tema="oscuro"] .sin-resultados {
+  color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .campo-filtro label,
+html[data-tema="oscuro"] .opcion-rango {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .campo-filtro input,
+html[data-tema="oscuro"] .campo-filtro select {
+  background: var(--surface-2, #16223c);
+  color: var(--text, #e8edf5);
+  border-color: var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .campo-filtro input:focus,
+html[data-tema="oscuro"] .campo-filtro select:focus {
+  border-color: var(--gold, #d4af37);
+  box-shadow: 0 0 0 2px var(--gold-soft, rgba(212,175,55,.12));
+}
+html[data-tema="oscuro"] .grupo-rango {
+  background: var(--surface-2, #16223c);
+  border-color: var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .btn-primary,
+html[data-tema="oscuro"] .btn-informe {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+}
+html[data-tema="oscuro"] .btn-outline {
+  background: transparent;
+  color: var(--text, #e8edf5);
+  border-color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .btn-outline:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+}
+html[data-tema="oscuro"] .btn-logout {
+  background: var(--gold, #d4af37);
+  color: #0A1F44;
+}
+html[data-tema="oscuro"] .tabla-wrapper {
+  background: var(--surface, #101a30);
+  border-color: var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .tabla-historial thead {
+  background: var(--surface-2, #16223c);
+}
+html[data-tema="oscuro"] .tabla-historial thead th {
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .tabla-historial tbody tr {
+  border-bottom-color: var(--border, rgba(148,163,184,.18));
+}
+html[data-tema="oscuro"] .tabla-historial tbody tr:hover {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+}
+html[data-tema="oscuro"] .tabla-historial td {
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .badge-crear {
+  background: rgba(52, 211, 153, .15);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .badge-editar {
+  background: var(--gold-soft, rgba(212,175,55,.12));
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] .badge-eliminar {
+  background: rgba(248, 113, 113, .15);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .badge-entrada {
+  background: rgba(96, 165, 250, .15);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .badge-salida {
+  background: rgba(167, 139, 250, .15);
+  color: var(--text, #e8edf5);
+}
+html[data-tema="oscuro"] .badge-default {
+  background: var(--surface-2, #16223c);
+  color: var(--muted, #9aa7bd);
+}
+html[data-tema="oscuro"] .pagina-link {
+  color: var(--gold, #d4af37);
+}
+html[data-tema="oscuro"] a {
+  color: var(--gold, #d4af37);
+}

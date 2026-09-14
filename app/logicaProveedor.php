@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $imagen = $_POST['imagen'] ?? '';
 
-            $ok = $logica->registrarProveedor(
+            $logica->registrarProveedor(
                 $_POST['nombre_empresa'],
                 $_POST['contacto_nombre'],
                 $_POST['contacto_apellido'],
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $imagen = $_POST['imagen'] ?? null;
 
-            $ok = $logica->actualizarProveedor(
+            $logica->actualizarProveedor(
                 (int) $_POST['id_proveedor'],
                 $_POST['nombre_empresa'],
                 $_POST['contacto_nombre'],

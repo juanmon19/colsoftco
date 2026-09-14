@@ -252,4 +252,21 @@ class InventarioLogica
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /* Stock mínimo / alertas (canónico: usar estos, no ProveedorLogica) */
+    public function actualizarStockMinimo($id, $stockMinimo)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE materias_primas SET stock_minimo = ? WHERE id_material = ?"
+        );
+        return $stmt->execute([$stockMinimo, $id]);
+    }
+
+    public function eliminarAlerta($id)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE materias_primas SET stock_minimo = 0 WHERE id_material = ?"
+        );
+        return $stmt->execute([$id]);
+    }
 }
