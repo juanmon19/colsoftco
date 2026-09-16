@@ -463,7 +463,7 @@ html[data-tema="oscuro"] footer strong {
         padding: 0 13px;
         align-items: center;
         justify-content: space-between;
-        background: #0b315f;
+        background: #D4AF37;
     }
     .topbar {
         height: 82px;
@@ -476,7 +476,7 @@ html[data-tema="oscuro"] footer strong {
         left: 17px;
         width: 34px;
         height: 34px;
-        background: rgba(255, 255, 255, 0.09);
+        background: #D4AF37;
         font-size: 22px;
     }
 }
@@ -497,5 +497,95 @@ html[data-tema="oscuro"] footer strong {
         flex-direction: column;
         padding: 12px;
         text-align: center;
+    }
+}
+
+/* =========================================================
+   BLINDAJE DEL LAYOUT + MENÚ DESPLEGABLE + MÓDULO ACTIVO
+   Añadido al final para que gane siempre sobre el CSS
+   propio de cada módulo.
+========================================================= */
+
+/* --- Blindaje: ningún CSS de módulo debe descuadrar el shell --- */
+body:has(> .app) {
+    display: block;
+}
+.app {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    min-height: 100vh;
+}
+.app > .sidebar {
+    flex: 0 0 auto;
+}
+.app > .main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+.app > .main > .content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.app > .main > footer {
+    margin-top: auto;
+    flex-shrink: 0;
+}
+/* La marca del sidebar es un <a>: algunos módulos pintan los enlaces
+   en dorado y la descuadran. */
+.sidebar .brand {
+    text-decoration: none;
+    flex-direction: row;
+    align-items: center;
+}
+.sidebar .brand-text strong {
+    color: #f0b500;
+}
+.sidebar .brand-text span {
+    color: #d8dee8;
+}
+
+/* --- Módulo activo en dorado --- */
+.sidebar .nav-item.activo,
+.sidebar .sidebar-links button.activo {
+    background: var(--gold, #D4AF37);
+    color: #0A1F44;
+    font-weight: 700;
+    box-shadow: inset 4px 0 0 rgba(255, 255, 255, 0.45);
+}
+.sidebar .nav-item.activo:hover,
+.sidebar .sidebar-links button.activo:hover {
+    background: var(--gold-hover, #b8941f);
+    color: #0A1F44;
+}
+html[data-tema="oscuro"] .sidebar .nav-item.activo,
+html[data-tema="oscuro"] .sidebar .sidebar-links button.activo {
+    background: var(--gold, #d4af37);
+    color: #08172e;
+}
+
+/* --- Menú desplegable en responsive --- */
+@media (max-width: 900px) {
+    .sidebar {
+        overflow-y: auto;
+    }
+    .sidebar .nav {
+        max-height: 0;
+        margin-top: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, margin-top 0.3s ease;
+    }
+    .sidebar .nav.open {
+        max-height: 1000px;
+        margin-top: 12px;
+    }
+    .mobile-menu .toggle-icono {
+        transition: transform 0.25s ease;
+    }
+    .mobile-menu[aria-expanded="true"] .toggle-icono {
+        transform: rotate(180deg);
     }
 }

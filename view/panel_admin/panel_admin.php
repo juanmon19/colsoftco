@@ -184,8 +184,8 @@ try {
                             <h2 id="nombreCompletoPerfil">Juan Jose Montaño</h2>
                             <p class="role"><b>Rol:</b> Administrador</p>
                             <p><span class="small-icon">✉</span> <span id="emailPerfil">juanjosemon19@gmail.com</span></p>
-                            <p><span class="small-icon">⌕</span> <span id="telefonoPerfil">+57 322-903-5224</span></p>
-                            <p><span class="small-icon">⌖</span> Bogotá, Colombia</p>
+                            <p><span class="small-icon">☏</span> <span id="telefonoPerfil">+57 322-903-5224</span></p>
+                            <p><span class="small-icon">⌕</span> Bogotá, Colombia</p>
                         </div>
                     </article>
 
@@ -270,7 +270,7 @@ try {
                                 </button>
 
                                 <button
-                                    onclick="window.location.href='../registro_de_producto_terminado/registro_producto_terminado.php'">
+                                    onclick="window.location.href='../Receta_de_colchones/registrar_modelo.php'">
                                     <span class="quick-icon blue-icon">◇</span>
                                     <b>Registrar producto</b>
                                 </button>
@@ -278,12 +278,12 @@ try {
                                 <button
                                     onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
                                     <span class="quick-icon green-icon">↓</span>
-                                    <b>Entrada de inventario</b>
+                                    <b>Inventario de Materia Prima</b>
                                 </button>
 
                                 <button onclick="window.location.href='../generar_informe/generar_informe.php'">
                                     <span class="quick-icon purple-icon">▤</span>
-                                    <b>Reporte de inventario</b>
+                                    <b>Informe comparativo</b>
                                 </button>
                                 <button onclick="window.location.href='gestion_usuarios.php'">
                                     <span class="quick-icon yellow-icon">👥</span>
@@ -298,7 +298,7 @@ try {
                             </div>
                             <p>⌖ <span>Bogotá, Colombia</span></p>
                             <p>✉ <span>contacto@colsoftco.com</span></p>
-                            <p>⌕ <span>+57 (1) 234 5678</span></p>
+                            <p>⌕ <span>+57 322 903 5224</span></p>
                             <p>◷ <span>Lun - Vie: 8:00 am - 6:00 pm</span></p>
                         </article>
 
@@ -307,19 +307,20 @@ try {
             </main>
 
             <footer>
-                <span>© 2026 <b>COLSOFTCO</b> - Todos los derechos reservados.</span>
-                <span>Desarrollado por <b>Equipo SENA</b></span>
+                <span>© 2026 <b>COLSOFTCO</b>   </span>
+                <span>Desarrollado por <b>  Equipo COLSOTCO</b></span>
             </footer>
         </div>
     </div>
 
     <script src="../../public/js/app.js"></script>
+    <script src="../../public/js/menu_activo.js"></script>
 
     <script>
         const sidebar = document.getElementById('sidebar');
         const nav = document.getElementById('navMenu');
         const openButton = document.getElementById('mobileOpen');
-        const menuButton = document.getElementById('mobileMenu');
+        const menuButton = document.getElementById('btnMenuToggle');
 
         function openSidebar() {
             sidebar.classList.add('mobile-visible');

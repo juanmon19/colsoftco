@@ -40,12 +40,5 @@
         <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
     </nav>
 
-    <div class="help-box">
-        <div class="headset">♧</div>
-        <div>
-            <strong>¿Necesitas ayuda?</strong>
-            <p>Nuestro equipo está<br>para apoyarte.</p>
-            <a href="mailto:juanjosemon19@gmail.com">Contáctanos</a>
-        </div>
-    </div>
+   
 </aside>
