@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-09-2026 a las 21:12:43
+-- Tiempo de generación: 17-09-2026 a las 02:59:51
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -469,7 +469,9 @@ INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `d
 (395, 'materia_prima', 'editar', 9, 'Se actualizó la materia prima \'Borde perimetral\'', '{\"id_material\":9,\"nombre_material\":\"Borde perimetral\",\"stock_actual\":\"4554.50\",\"stock_minimo\":\"40.00\",\"id_unidad\":2,\"id_proveedor\":3,\"notificar_email\":0,\"correo_notificacion\":null,\"alerta_enviada\":0,\"estado\":\"activo\"}', '{\"nombre_material\":\"Borde perimetral\",\"stock_actual\":\"5000\",\"stock_minimo\":\"40.00\",\"id_unidad\":\"2\",\"id_proveedor\":\"3\"}', NULL, 'Juan Montaño', '::1', '2026-09-13 20:50:13'),
 (396, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-13 21:29:07'),
 (397, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-13 21:35:37'),
-(398, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-14 14:09:57');
+(398, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-14 14:09:57'),
+(399, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-16 16:56:25'),
+(400, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-16 19:58:03');
 
 -- --------------------------------------------------------
 
@@ -568,6 +570,15 @@ CREATE TABLE `mensajes` (
   `leido` tinyint(1) NOT NULL DEFAULT 0,
   `fecha_envio` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `mensajes`
+--
+
+INSERT INTO `mensajes` (`id_mensaje`, `id_remitente`, `id_destinatario`, `id_padre`, `id_conversacion`, `asunto`, `contenido`, `leido`, `fecha_envio`) VALUES
+(8, 14, 7, NULL, '7-14', 'Chat', 'ey', 1, '2026-09-14 14:56:31'),
+(9, 14, 7, NULL, '7-14', 'Chat', 'como me va pear la cara', 1, '2026-09-14 14:56:48'),
+(10, 7, 14, 9, '7-14', 'Chat', 'hey que pasa cabron', 1, '2026-09-14 14:57:01');
 
 -- --------------------------------------------------------
 
@@ -906,11 +917,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `foto`, `telefono`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`, `token_sesion`, `activo`, `ultima_actividad`) VALUES
-(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '1', '7c50d5b790f4843417d25b0e9c606c864292b09ebc377c988b61a6d0b3e0b0bd', '1788796626', '2687d8843443a1fdc06a5bfe8afece96806f9ee92aed67646e8b961252df709c', 1, '2026-09-14 14:10:05'),
+(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '1', '7c50d5b790f4843417d25b0e9c606c864292b09ebc377c988b61a6d0b3e0b0bd', '1788796626', 'c5acfcdaa5e7057057900d265f00c4e674468801aec3546152f76b93586d049f', 1, '2026-09-16 19:59:25'),
 (8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'usuario_8_1788319477.jpg', NULL, 'administrador', '$2y$10$mwe6pjtnKSgAIvC0donWSeDPygDJ7/IwEhAlSb59NT3OxA5RRnVG.', '', NULL, '0', 'eff898d43b5911bba9f8a8ba5b7b89fe61f8b5dd6fc9c5ddec92f95a961de09b', 1, '2026-09-01 22:26:12'),
-(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', NULL, NULL, 'administrador', '$2y$10$EZVWx.J.syl4M3CsNWiFLOQLRH3MLliTuZ19rIlHK8L/UO8/Azp2i', '1', 'ef9b6fe4769c7ac26885c7c42b214eacc75cddf6893561b167a9b1d58cb64cd8', '1782452857', NULL, 1, NULL),
+(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'usuario_14_1789416220.jpg', NULL, 'administrador', '$2y$10$Grxp7he8UqpTGcrAQsKGb./QezRnSp33Ng5swmO68HwfZrq.FXoB2', '', NULL, '0', '0497c498d5d6aad0d8c2578752118721da3fe1107a585e9521147d13a1178518', 1, '2026-09-14 15:03:40'),
 (18, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', NULL, NULL, 'bodeguero', '$2y$10$CR9Aw8rydge4FXpuFKn8...fME51QFfpgxeJkv0wGEwYi6UQmNKhC', '0', NULL, NULL, 'f6bcb428f16d58fe458a79078edac69c5a868754ba064716f535e1b75bac1806', 1, '2026-08-31 22:45:36'),
-(19, 'majog4892@gmail.com', '1068952788', 'Maria José', 'Gonzalez Rodriguez', 'usuario_19_1788231237.jpg', '3115726095', 'bodeguero', '$2y$10$3LL/y4Si9zVL4rQCEmJE.OAcr2NO6rlP9aIIDEsMpDE3lIjrbBXHa', '0', NULL, NULL, 'df90b538f3870dce49aae0afacfc8898de1a4769143b2732806a2dac76b9098f', 1, '2026-09-13 20:39:49');
+(19, 'majog4892@gmail.com', '1068952788', 'Maria José', 'Gonzalez Rodriguez', 'usuario_19_1788231237.jpg', '3115726095', 'bodeguero', '$2y$10$3LL/y4Si9zVL4rQCEmJE.OAcr2NO6rlP9aIIDEsMpDE3lIjrbBXHa', '0', NULL, NULL, NULL, 1, '2026-09-13 20:39:49');
 
 --
 -- Índices para tablas volcadas
@@ -1048,7 +1059,7 @@ ALTER TABLE `conversaciones`
 -- AUTO_INCREMENT de la tabla `historial_movimientos`
 --
 ALTER TABLE `historial_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=399;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=401;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_produccion`
@@ -1066,7 +1077,7 @@ ALTER TABLE `materias_primas`
 -- AUTO_INCREMENT de la tabla `mensajes`
 --
 ALTER TABLE `mensajes`
-  MODIFY `id_mensaje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_mensaje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `modelos_colchon`
