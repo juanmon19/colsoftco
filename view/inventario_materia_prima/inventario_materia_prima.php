@@ -152,6 +152,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="filtro-orden">
                 <label for="selectOrden">   Ordenar:</label>
                 <select id="selectOrden">
+                    <option value="id" selected>ID (ascendente)</option>
                     <option value="az">Nombre (A-Z)</option>
                     <option value="za">Nombre (Z-A)</option>
                 </select>
@@ -184,7 +185,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <tbody id="listaMateriales">
 
                     <?php foreach ($materiales as $m): ?>
-                        <tr data-nombre="<?php echo htmlspecialchars(strtolower($m['nombre_material'])); ?>">
+                        <tr data-id="<?= (int)$m['id_material'] ?>" data-nombre="<?php echo htmlspecialchars(strtolower($m['nombre_material'])); ?>">
                             <td><?= $m['id_material'] ?></td>
                             <td><?= htmlspecialchars($m['nombre_material']) ?></td>
                             <td><?= $m['stock_actual'] ?></td>
@@ -279,6 +280,10 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 const filasOrdenadas = [...filas].sort((a, b) => {
 
+                    if (orden === 'id') {
+                        return (parseInt(a.dataset.id || '0', 10) - parseInt(b.dataset.id || '0', 10));
+                    }
+
                     const nombreA = a.dataset.nombre || '';
                     const nombreB = b.dataset.nombre || '';
 
@@ -297,12 +302,12 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             btnLimpiar.addEventListener('click', () => {
                 inputBusqueda.value = '';
-                selectOrden.value = 'az';
+                selectOrden.value = 'id';
                 aplicarFiltros();
                 aplicarOrden();
             });
 
-            // Orden inicial A-Z al cargar la página
+            // Orden inicial por ID ascendente (coherente con ORDER BY id_material ASC en SQL)
             aplicarOrden();
 
         })();

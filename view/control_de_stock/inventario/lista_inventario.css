@@ -1,13 +1,10 @@
 /* =========================
-   ESTILOS GENERALES
+   ESTILOS GENERALES (sin display/font: el shell lo gobierna layout.css) 
 ========================= */
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
     background: #eef2ff;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
 .filtro-busqueda input {
@@ -284,12 +281,11 @@ tr:hover {
 }
 
 /* =========================
-   FOOTER
+   FOOTER (sin font-family: no pisa layout.css del shell)
 ========================= */
 footer {
     background: #0D1B3E;
     color: #ffffff;
-    font-family: 'Segoe UI', Arial, sans-serif;
     width: 100%;
     box-sizing: border-box;
     margin-top: auto;

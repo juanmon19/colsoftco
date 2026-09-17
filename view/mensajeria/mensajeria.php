@@ -8,8 +8,10 @@ require_once "../../app/verificar_sesion.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mensajería Interna - COLSOFTCO</title>
-    <link rel="stylesheet" href="mensajeria.css">
+    <!-- Orden estándar: global -> layout -> módulo -->
+    <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link rel="stylesheet" href="mensajeria.css">
     <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 

@@ -1,8 +1,8 @@
+/* NOTA PUNTO 6: no usar selector global * con margin/font aquí.
+   global.css + layout.css ya definen reset y tipografía del shell
+   (sidebar/topbar). Solo conservamos box-sizing para no pisarlos. */
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -299,8 +299,9 @@ select:focus {
     background: #16296b;
 }
 
-/* ══ BOTONES DE NAVEGACIÓN ══ */
-.nav-item {
+/* ══ BOTONES LOCALES DEL MÓDULO (antes .nav-item global que pisaba el sidebar) ══
+   PUNTO 6: se antepone .paneles para que NUNCA afecte a .sidebar .nav-item */
+.paneles .nav-item {
     width: 100%;
     min-height: 46px;
     border: 0;
@@ -319,7 +320,7 @@ select:focus {
     margin-top: 8px;
 }
 
-.nav-item:hover {
+.paneles .nav-item:hover {
     background-color: #16296b;
 }
 
@@ -508,7 +509,7 @@ footer {
 
     .btn,
     .btn-fabricar,
-    .nav-item {
+    .paneles .nav-item {
         font-size: 13px;
         width: 100%;
     }

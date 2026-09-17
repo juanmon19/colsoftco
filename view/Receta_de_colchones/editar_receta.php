@@ -25,8 +25,10 @@ $materialesDisponibles = $dbConn->query("
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Receta de Colchón</title>
-    <link href="editar_receta.css" rel="stylesheet">
+    <!-- Orden estándar: global -> layout -> módulo -->
+    <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link href="editar_receta.css" rel="stylesheet">
     <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
@@ -58,7 +60,7 @@ $materialesDisponibles = $dbConn->query("
             <div class="panel-body">
 
                 <label style="display:block;font-weight:bold;font-size:14px;margin-bottom:6px;">Seleccionar Modelo</label>
-                <div style="display:flex;gap:12px;margin-bottom:18px;">
+                <div class="receta-form-row">
                     <select id="editSelectModelo" style="flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
                         <option value="">-- Seleccionar modelo --</option>
                         <?php foreach ($modelos as $m): ?>
@@ -85,7 +87,7 @@ $materialesDisponibles = $dbConn->query("
 
                     <div id="editMensaje" style="display:none;padding:10px 14px;border-radius:6px;font-weight:600;margin-bottom:12px;"></div>
 
-                    <div style="display:flex;gap:12px;justify-content:flex-end;">
+                    <div class="receta-form-actions">
                         <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="guardarReceta()">
                             💾 Guardar Cambios
                         </button>
@@ -130,15 +132,15 @@ $materialesDisponibles = $dbConn->query("
         function agregarFilaReceta(prefix, idMaterial = '', cantidad = '') {
             const container = document.getElementById(prefix + 'RecetaContainer');
             const fila = document.createElement('div');
-            fila.style.cssText = 'display:flex;gap:12px;align-items:center;margin-bottom:10px;';
+            fila.className = 'receta-fila';
             fila.innerHTML = `
-                <select class="receta-material" style="flex:2;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                <select class="receta-material" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
                     ${crearSelectMaterial(idMaterial)}
                 </select>
                 <input type="number" class="receta-cantidad" placeholder="Cantidad" step="0.01" min="0.01"
                        value="${cantidad}"
-                       style="flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
-                <button type="button" onclick="this.parentElement.remove()"
+                       style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                <button type="button" class="receta-quitar" onclick="this.parentElement.remove()"
                         style="background:#dc2626;color:white;border:none;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:bold;font-size:14px;"
                         title="Quitar material">✕</button>
             `;

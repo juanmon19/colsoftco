@@ -141,7 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <main class="content">
 <div class="page-body">
-        <main class="content" style="margin: 0 auto; max-width: 1000px; width: 100%">
+        <!-- FIX anidado: era <main> dentro de <main> (HTML inválido). Ahora es <div>. -->
+        <div class="content registromp-contenido" style="margin: 0 auto; max-width: 1000px; width: 100%">
             <div class="form-card">
                 <div class="form-header">
                     <span class="form-header-bar"></span>
@@ -243,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </form>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
             </main>
 

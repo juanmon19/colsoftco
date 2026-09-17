@@ -10,6 +10,17 @@
  *   <?php $rolActual = 'Bodeguero'; include __DIR__ . '/../partials/topbar.php'; ?>
  */
 $rolActual = $rolActual ?? 'Administrador';
+/* $prefijo lo calcula sidebar.php (se incluye siempre antes); fallback por si acaso */
+if (!isset($prefijo)) {
+    $prefijo = '';
+    $script = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+    if (($pos = strpos($script, '/view/')) !== false) {
+        $segs = array_values(array_filter(explode('/', dirname(substr($script, $pos + 6)))));
+        if (count($segs) > 1) {
+            $prefijo = str_repeat('../', count($segs) - 1);
+        }
+    }
+}
 ?>
 <header class="topbar">
     <button class="mobile-open" id="mobileOpen" type="button" aria-label="Abrir menú">☰</button>
@@ -23,7 +34,7 @@ $rolActual = $rolActual ?? 'Administrador';
         <!-- MENÚ DE PERFIL DESPLEGABLE ÚNICO -->
         <div class="perfil-menu" id="perfilMenu">
             <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                <img id="avatarHeader" class="avatar-header" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                <img id="avatarHeader" class="avatar-header" src="<?= $prefijo ?>../../public/imagenes/usuario.png" alt="Foto de perfil">
                 <span class="perfil-trigger-text">
                     <strong id="nombreHeaderCorto">Usuario</strong>
                     <small><?= htmlspecialchars($rolActual) ?></small>
@@ -32,7 +43,7 @@ $rolActual = $rolActual ?? 'Administrador';
             </button>
 
             <div class="perfil-dropdown" id="perfilDropdown">
-                <button type="button" onclick="window.location.href='../registro/registro.php'">
+                <button type="button" onclick="window.location.href='<?= $prefijo ?>../registro/registro.php'">
                     ➕ Registrar usuario
                 </button>
                 <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
@@ -55,7 +66,7 @@ $rolActual = $rolActual ?? 'Administrador';
         <h3>Editar mis datos</h3>
 
         <div class="modal-perfil-foto">
-            <img id="fotoPerfilModal" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+            <img id="fotoPerfilModal" src="<?= $prefijo ?>../../public/imagenes/usuario.png" alt="Foto de perfil">
             <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
         </div>
 

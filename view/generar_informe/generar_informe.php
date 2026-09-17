@@ -17,8 +17,10 @@ $MESES = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generar Informes</title>
-    <link href="generar_informe.css" rel="stylesheet">
+    <!-- Orden estándar: global -> layout (shell) -> módulo (auditoría responsive) -->
+    <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link href="generar_informe.css" rel="stylesheet">
     <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 <body>
@@ -79,10 +81,10 @@ $MESES = [
         <div class="materias">
             <h2>VISTA PREVIA</h2>
             <p class="form-text" id="prevRango" style="text-align:center;">Cargando...</p>
-            <input type="text" id="buscador" class="mp-buscar" placeholder="Buscar material...">
+            <input type="text" id="buscador" class="mp-buscar informe-buscador" placeholder="Buscar material...">
 
-            <div class="mp-wrap">
-                <table class="mp-tabla comp">
+            <div class="mp-wrap informe-tabla-envolvedora table-responsive">
+                <table class="mp-tabla comp informe-tabla-comparativa">
                     <thead>
                         <tr>
                             <th>MATERIAL</th>

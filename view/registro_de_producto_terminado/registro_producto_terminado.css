@@ -19,7 +19,9 @@
   --btn:    14px;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* NOTA PUNTO 6: reset global reducido. global.css ya define
+   margin/padding y tipografía. */
+*, *::before, *::after { box-sizing: border-box; }
 
 .btn-logout {
     background-color: #D4AF37;
@@ -34,7 +36,9 @@
     margin-left: auto;
 }
 
-header {
+/* PUNTO 6: este header legacy NO debe pisar header.topbar del shell.
+   Se acota a .page-body para no cambiar tipografía/interlineado del sidebar/topbar. */
+.page-body header {
         background: #0A1F44;
         display: flex;
         align-items: center;
@@ -74,19 +78,18 @@ header {
 }
 
 body {
-  font-family: var(--font);
   background: var(--gray-bg);
   min-height: 100vh;
-  color: var(--blue);
-  /* Ajustes para el zoom y footer */
-  display: flex;
-  flex-direction: column;
+  /* PUNTO 6: no definir font-family/display aquí; lo manda global.css/layout.css */
 }
 
 /* ══════════════════════════════════════
-   BANNER (sin header/nav – igual a imagen 2)
+   BANNER LEGACY ELIMINADO (auditoría: código muerto)
+   .banner y .banner-content no se usan en ningún PHP (0 usos).
+   Si se necesita cabecera azul, usar .regpt-cabecera (ver abajo).
+   Se deja alias vacío para no romper includes viejos.
 ══════════════════════════════════════ */
-.banner {
+.regpt-cabecera {
   width: 100%;
   height: 72px;
   background: var(--blue);
@@ -96,9 +99,7 @@ body {
   border-bottom: 4px solid var(--gold);
   box-shadow: 0 2px 12px rgba(11,61,145,.35);
 }
-
-.banner-content h1 {
-  font-family: var(--font);
+.regpt-cabecera-titulo {
   font-size: var(--h1);
   font-weight: 900;
   color: var(--white);
@@ -106,6 +107,9 @@ body {
   text-transform: uppercase;
   text-shadow: 0 2px 10px rgba(0,0,0,.3);
 }
+/* Alias compat (no usar en código nuevo) */
+.banner { display: none; }
+.banner-content h1 { display: none; }
 
 /* ══════════════════════════════════════
    CUERPO PRINCIPAL
@@ -122,9 +126,12 @@ body {
 }
 
 /* ══════════════════════════════════════
-   SIDEBAR
+   SIDEBAR LEGACY ACOTADO (PUNTO 6)
+   Antes era `aside` genérico y pisaba a aside.sidebar del shell.
+   Ahora solo aplica dentro de .page-body si algún día se usa legacy.
+   El sidebar real lo gobierna 100% public/css/layout.css
 ══════════════════════════════════════ */
-aside {
+.page-body aside {
   width: 220px;
   flex-shrink: 0;
   display: flex;
@@ -133,7 +140,7 @@ aside {
   padding: 10px 10px 10px 0;
 }
 
-aside a {
+.page-body aside a {
   display: block;
   background: var(--blue);
   color: var(--white);
@@ -147,21 +154,19 @@ aside a {
   border-left: 4px solid transparent;
 }
 
-aside a:hover {
+.page-body aside a:hover {
   background: var(--blue-light);
   transform: translateX(3px);
 }
 
-aside a.active {
+.page-body aside a.active {
   background: var(--gold);
   color: var(--blue-dark);
   border-left-color: var(--blue-dark);
 }
 
-/* ══════════════════════════════════════
-   CONTENIDO
-══════════════════════════════════════ */
-.content {
+/* CONTENIDO (PUNTO 6: acotado a .page-body para no pisar .app > .main > .content del shell) */
+.page-body .content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -171,49 +176,16 @@ aside a.active {
   justify-content: center;
 }
 
-/* USER CARD */
-.user-card {
-  background: var(--white);
-  border-radius: 5px;
-  padding: 18px 24px;
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  box-shadow: 0 1px 6px rgba(11,61,145,.1);
-}
-
-.user-photo {
-  width: 100px;
-  height: 110px;
-  border-radius: 4px;
-  background: var(--blue);
-  border: 3px solid var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.9rem;
-  color: var(--white);
-  flex-shrink: 0;
-  overflow: hidden;
-}
-
-.user-photo img { width: 100%; height: 100%; object-fit: cover; }
-
-.user-meta h2 {
-  font-size: var(--h2-lg);
-  font-weight: 700;
-  color: var(--blue);
-}
-
-.user-meta .role {
-  font-size: var(--btn);
-  color: var(--gray-text);
-  margin-top: 6px;
-}
+/* USER CARD ELIMINADA (auditoría: 0 usos en PHP/JS).
+   El perfil real vive en partials/topbar.php + app/perfil_usuario.php.
+   Se dejan aliases ocultos por compatibilidad. */
+.user-card, .user-photo, .user-photo img, .user-meta h2, .user-meta .role { display: none; }
 
 /* ══════════════════════════════════════
    TARJETA GENÉRICA (tareas + form)
+   Renombrada a .regpt-* (semántica). Se conserva .form-* como alias.
 ══════════════════════════════════════ */
+.regpt-form-card,
 .form-card {
   background: var(--white);
   border-radius: 5px;
@@ -221,6 +193,7 @@ aside a.active {
   overflow: hidden;
 }
 
+.regpt-form-encabezado,
 .form-header {
   background: #0A1F44;
   color: var(--white);
@@ -235,30 +208,21 @@ aside a.active {
 
 .form-header-bar { display: none; }
 
+.regpt-form-cuerpo,
 .form-body {
   padding: 20px 24px 28px;
 }
 
 /* ══════════════════════════════════════
-   LISTA DE TAREAS
+   LISTA DE TAREAS LEGACY ELIMINADA (0 usos).
+   El sistema real usa .task-row + #taskTableBody en tareas.js
 ══════════════════════════════════════ */
-.task-list {
-  list-style: disc;
-  padding-left: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.task-list li {
-  font-size: var(--table);
-  color: #1a2a4a;
-  font-weight: 500;
-}
+.task-list, .task-list li { display: none; }
 
 /* ══════════════════════════════════════
-   FORMULARIO
+   FORMULARIO (renombrado semántico .regpt-*, alias .form-* conservado)
 ══════════════════════════════════════ */
+.regpt-form-grid,
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -375,7 +339,7 @@ input:focus, select:focus {
 footer {
     background: #0D1B3E;
     color: #ffffff;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    /* PUNTO 6: sin font-family para no pisar layout.css */
     width: 100%;
     box-sizing: border-box;
     margin-top: auto;
@@ -470,7 +434,7 @@ footer {
 ══════════════════════════════════════ */
 @media (max-width: 800px) {
   .page-body { flex-direction: column; padding: 0 12px 32px; }
-  aside {
+  .page-body aside {
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
@@ -478,7 +442,7 @@ footer {
     border-bottom: 4px solid var(--gold);
     padding: 10px;
   }
-  aside a { flex: 1 1 130px; }
+  .page-body aside a { flex: 1 1 130px; }
   .form-grid { grid-template-columns: 1fr; }
 }
 
@@ -510,16 +474,16 @@ html[data-tema="oscuro"] .banner-content h1,
 html[data-tema="oscuro"] .header-title {
   color: var(--text, #e8edf5);
 }
-html[data-tema="oscuro"] aside a {
+html[data-tema="oscuro"] .page-body aside a {
   background: var(--surface, #101a30);
   color: var(--text, #e8edf5);
   border: 1px solid var(--border, rgba(148,163,184,.18));
 }
-html[data-tema="oscuro"] aside a:hover {
+html[data-tema="oscuro"] .page-body aside a:hover {
   background: var(--gold-soft, rgba(212,175,55,.12));
   color: var(--gold, #d4af37);
 }
-html[data-tema="oscuro"] aside a.active {
+html[data-tema="oscuro"] .page-body aside a.active {
   background: var(--gold, #d4af37);
   color: #0A1F44;
   border-color: var(--gold, #d4af37);
@@ -608,7 +572,7 @@ html[data-tema="oscuro"] .toast {
 html[data-tema="oscuro"] a {
   color: var(--gold, #d4af37);
 }
-html[data-tema="oscuro"] aside a {
+html[data-tema="oscuro"] .page-body aside a {
   color: var(--text, #e8edf5);
 }
 html[data-tema="oscuro"] footer {

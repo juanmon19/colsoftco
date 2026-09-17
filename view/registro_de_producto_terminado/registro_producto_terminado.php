@@ -233,10 +233,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="page-body">
 
 
-        <!-- CONTENT -->
+        <!-- CONTENT (FIX: era <main class=content> anidado, ahora <div> para HTML válido) -->
 
-        <main
-            class="content"
+        <div
+            class="content regpt-contenido"
             style="margin: 0 auto; max-width: 1000px; width: 100%;">
 
 
@@ -373,7 +373,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             </div>
 
-        </main>
+        </div>
 
     </div>
             </main>

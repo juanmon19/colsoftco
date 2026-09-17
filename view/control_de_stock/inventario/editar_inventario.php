@@ -84,30 +84,30 @@ $material = $stmt->fetch(PDO::FETCH_ASSOC);
 <html lang="es">
 
 <head>
-    <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Inventario</title>
+    <title>Editar Materia Prima</title>
+    <!-- Orden estándar: global -> layout (shell) -> módulo -->
+    <link rel="stylesheet" href="../../../public/css/global.css">
+    <link rel="stylesheet" href="../../../public/css/layout.css">
     <link rel="stylesheet" href="lista_inventario.css">
+    <?php include __DIR__ . '/../../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
 
-    <header class="header">
-        <div class="logo">
-            <a href="../../app/ir_panel.php">
-                <img src="../../../public/imagenes/logo.png" alt="logo">
-            </a>
-        </div>
+    <div class="app">
 
-        <div class="header-title">
-            <h1>Editar Materia Prima</h1>
-        </div>
+        <?php include __DIR__ . '/../../partials/sidebar.php'; ?>
 
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
-    </header>
+        <div class="main">
+
+            <?php
+            $rolActual = 'Administrador';
+            include __DIR__ . '/../../partials/topbar.php';
+            ?>
+
+            <main class="content">
 
     <div class="contenedor">
 
@@ -170,28 +170,14 @@ $material = $stmt->fetch(PDO::FETCH_ASSOC);
         </div>
 
     </div>
+            </main>
 
-    <footer>
-        <div class="footer-divider"></div>
-        <div class="footer-top">
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">Sistema de gestión y administración de materias primas para Max&Flex. Eficiencia en inventarios y movimientos empresariales.</p>
-            </div>
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 322905224</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
+            <?php include __DIR__ . '/../../partials/footer.php'; ?>
+
         </div>
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex.  </span>
-            <span>Desarrollado por <strong>  Equipo COLSOTCO</strong></span>
-        </div>
-    </footer>
+    </div>
+
+    <?php include __DIR__ . '/../../partials/scripts_layout_footer.php'; ?>
 
 </body>
 </html>

@@ -60,7 +60,7 @@ button {
     display: flex;
 }
 
-/* ══ SIDEBAR ══ */
+/* ══ SIDEBAR — PUNTO 4: fijo en todos los módulos, no se pierde al hacer scroll ══ */
 .sidebar {
     width: 276px;
     min-width: 276px;
@@ -68,7 +68,17 @@ button {
     color: #fff;
     padding: 24px 15px 20px;
     z-index: 20;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+/* El contenido se desplaza a la derecha del sidebar fijo */
+.main {
+    margin-left: 276px;
 }
 .brand {
     height: 80px;
@@ -123,35 +133,8 @@ button {
     font-weight: 400;
     justify-content: flex-start;
 }
-.help-box {
-    position: absolute;
-    left: 19px;
-    right: 26px;
-    bottom: 62px;
-    padding: 17px 15px;
-    border-radius: 9px;
-    background: linear-gradient(
-        135deg,
-        rgba(35, 83, 140, 0.78),
-        rgba(18, 56, 102, 0.84)
-    );
-    display: flex;
-    gap: 12px;
-}
-.help-box p {
-    margin: 6px 0;
-    font-size: 12px;
-    color: #d8e0ec;
-}
-.help-box a {
-    color: #ffc21b;
-    font-size: 12px;
-    font-weight: 700;
-    text-decoration: none;
-}
-.headset {
-    font-size: 29px;
-}
+/* AUDITORÍA: .help-box y .headset eliminados (0 usos en PHP/JS).
+   Eran caja de ayuda legacy del sidebar que ya no existe en partials/sidebar.php. */
 .mobile-menu,
 .mobile-open {
     display: none;
@@ -170,18 +153,34 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     padding: 0 39px;
     color: #fff;
+    min-width: 0;
+}
+.welcome {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 .welcome h1 {
     margin: 0;
     font-size: 27px;
     font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .welcome p {
     margin: 5px 0 0;
     font-size: 15px;
     color: #e1e6ee;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.header-actions {
+    flex-shrink: 0;
+    min-width: 0;
 }
 .perfil-menu {
     position: relative;
@@ -193,6 +192,18 @@ button {
     background: #fff;
     padding: 6px 10px 6px 6px;
     border-radius: 99px;
+    max-width: 100%;
+}
+.perfil-trigger-text {
+    min-width: 0;
+    text-align: left;
+}
+.perfil-trigger-text strong,
+.perfil-trigger-text small {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
 }
 .avatar-header {
     width: 32px;
@@ -369,10 +380,6 @@ html[data-tema="oscuro"] .nav-item:hover {
     background: var(--gold-soft);
     color: var(--gold);
 }
-html[data-tema="oscuro"] .help-box {
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.16), rgba(18, 56, 102, 0.6));
-    border: 1px solid rgba(212, 175, 55, 0.25);
-}
 
 /* Topbar: navy de marca con línea dorada inferior */
 html[data-tema="oscuro"] .topbar {
@@ -434,27 +441,75 @@ html[data-tema="oscuro"] footer strong {
     color: var(--gold);
 }
 
-/* ══ RESPONSIVE (layout) ══ */
+/* ══ RESPONSIVE (layout) — PUNTO 4: misma estructura visual en móvil ══ */
 @media (max-width: 1200px) {
     .sidebar {
         width: 240px;
         min-width: 240px;
+    }
+    .main {
+        margin-left: 240px;
     }
 }
 @media (max-width: 900px) {
     body.menu-open {
         overflow: hidden;
     }
+    /* En móvil el sidebar es off-canvas pero conserva ancho/tipografía/interlineado de desktop */
+    /* FIX drawer: arranca desde arriba del todo, por ENCIMA del topbar,
+       para que el logo COLSOFTCO nunca quede escondido/cortado detrás del header */
     .sidebar {
         position: fixed;
         inset: 0 auto 0 0;
+        top: 0;
         width: 280px;
+        min-width: 280px;
+        max-width: 86vw;
+        height: 100vh;
+        height: 100dvh;
         transform: translateX(-102%);
-        transition: 0.25s;
+        transition: transform 0.25s ease;
         box-shadow: 10px 0 30px rgba(0, 0, 0, 0.25);
+        overflow-y: auto;
+        z-index: 1100;
+        padding-top: 20px;
     }
     .sidebar.mobile-visible {
         transform: translateX(0);
+    }
+    /* El logo siempre visible, nunca colapsado en móvil */
+    .sidebar .brand {
+        display: flex !important;
+        visibility: visible !important;
+        min-height: 80px;
+        flex-shrink: 0;
+    }
+    .sidebar .brand img {
+        width: 58px;
+        height: auto;
+        flex-shrink: 0;
+    }
+    /* Overlay por debajo del drawer pero por encima del contenido */
+    .menu-overlay {
+        z-index: 1050;
+    }
+    .menu-overlay.show {
+        display: flex;
+    }
+    /* El topbar queda DEBAJO del drawer cuando este abre */
+    .topbar {
+        position: relative;
+        z-index: 10;
+    }
+    /* El contenido ocupa todo el ancho en móvil */
+    .main {
+        margin-left: 0;
+    }
+    /* Los items conservan la misma altura/fuente de desktop para no deformarse */
+    .sidebar .nav-item {
+        height: 48px;
+        font-size: 15px;
+        line-height: 1.4;
     }
     .mobile-menu {
         display: flex;
@@ -479,24 +534,129 @@ html[data-tema="oscuro"] footer strong {
         background: #D4AF37;
         font-size: 22px;
     }
+    /* Óvalo COMPLETO en tablet/móvil: se conserva píldora con nombre, rol y caret */
+    .perfil-trigger {
+        flex-shrink: 0;
+        max-width: 46vw;
+    }
+    .perfil-dropdown {
+        max-width: calc(100vw - 32px);
+    }
 }
 @media (max-width: 560px) {
+    /* Topbar combinada: hamburguesa + BIENVENIDO/rol + ÓVALO COMPLETO (como tus capturas 1+2) */
     .topbar {
-        height: 76px;
-        padding-left: 58px;
+        height: auto;
+        min-height: 76px;
+        padding: 10px 10px 10px 56px;
+        gap: 8px;
+        position: relative;
+    }
+    .welcome {
+        flex: 1 1 auto;
+        min-width: 0;
     }
     .welcome h1 {
-        font-size: 16px;
+        font-size: 15px;
+        letter-spacing: 0.3px;
     }
-    .perfil-trigger-text,
+    .welcome p {
+        font-size: 12px;
+        margin-top: 2px;
+    }
+    /* ÓVALO COMPLETO: píldora blanca con foto + nombre + rol + caret, nunca círculo solo */
+    .perfil-trigger {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        width: auto;
+        height: auto;
+        min-height: 46px;
+        padding: 4px 10px 4px 4px;
+        border-radius: 99px;
+        flex-shrink: 0;
+        max-width: 52vw;
+    }
+    .avatar-header {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+    }
+    .perfil-trigger-text {
+        display: block;
+        min-width: 0;
+        line-height: 1.2;
+    }
+    .perfil-trigger-text strong {
+        display: block;
+        font-size: 12px;
+        max-width: 26vw;
+    }
+    .perfil-trigger-text small {
+        display: block;
+        font-size: 10px;
+        max-width: 26vw;
+    }
     .perfil-caret {
-        display: none;
+        display: block;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+    /* El dropdown nunca se sale de la pantalla */
+    .header-actions {
+        flex-shrink: 0;
+        min-width: 0;
+    }
+    .perfil-menu {
+        position: relative;
+    }
+    .perfil-dropdown {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 10px);
+        width: 230px;
+        max-width: calc(100vw - 28px);
+        z-index: 1001;
+    }
+    .perfil-dropdown button {
+        min-height: 44px;
+        font-size: 14px;
     }
     footer {
         height: auto;
         flex-direction: column;
         padding: 12px;
         text-align: center;
+    }
+}
+/* Celulares angostos (<=380px): el óvalo sigue completo, solo más compacto */
+@media (max-width: 380px) {
+    .topbar {
+        padding: 8px 8px 8px 52px;
+    }
+    .welcome h1 {
+        font-size: 13px;
+    }
+    .welcome p {
+        font-size: 11px;
+    }
+    .perfil-trigger {
+        gap: 6px;
+        padding: 3px 8px 3px 3px;
+        min-height: 42px;
+        max-width: 54vw;
+    }
+    .avatar-header {
+        width: 30px;
+        height: 30px;
+    }
+    .perfil-trigger-text strong {
+        font-size: 11px;
+        max-width: 24vw;
+    }
+    .perfil-trigger-text small {
+        font-size: 10px;
+        max-width: 24vw;
     }
 }
 
@@ -588,4 +748,23 @@ html[data-tema="oscuro"] .sidebar .sidebar-links button.activo {
     .mobile-menu[aria-expanded="true"] .toggle-icono {
         transform: rotate(180deg);
     }
+}
+
+/* --- Blindaje: el shell nunca recorta sus propios desplegables --- */
+.app > .main > .topbar,
+.topbar {
+    overflow: visible;
+}
+/* --- Guardia global de selects: a ancho completo, texto con ellipsis,
+   el popup nativo muestra el texto completo. Vale para todos los módulos --- */
+.app .content select,
+.page-body select {
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.app .content .select-wrap,
+.page-body .select-wrap {
+    max-width: 100%;
+    min-width: 0;
 }

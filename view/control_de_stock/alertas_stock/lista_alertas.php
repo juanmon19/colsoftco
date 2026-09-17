@@ -21,34 +21,36 @@ $notificaciones = $logicaAlerta->listarNotificaciones();
 <html lang="es">
 
 <head>
-  <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../controlstock.css">
   <title>Alertas de Stock</title>
+  <!-- Orden estándar: global -> layout (shell) -> módulo -->
+  <link rel="stylesheet" href="../../../public/css/global.css">
+  <link rel="stylesheet" href="../../../public/css/layout.css">
+  <link rel="stylesheet" href="../controlstock.css">
+  <link rel="stylesheet" href="alertas.css">
+  <?php include __DIR__ . '/../../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
 
-  <header>
-    <div class="logo">
-      <a href="../../panel_admin/panel_admin.php">
-        <img src="../../../public/imagenes/logo.png" alt="logo">
-      </a>
-    </div>
+  <div class="app">
 
-    <div class="header-title">
-        <h1>Alertas de Stock</h1>
-    </div>
+    <?php include __DIR__ . '/../../partials/sidebar.php'; ?>
 
-    <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-      Cerrar sesión
-    </button>
-  </header>
+    <div class="main">
 
-  <div class="page-body">
+      <?php
+      $rolActual = 'Administrador';
+      include __DIR__ . '/../../partials/topbar.php';
+      ?>
 
-    <div class="content" style="margin: 0 auto; max-width: 1000px; width: 100%;">
+      <main class="content">
+
+  <!-- Contenido contenido como Registro stock (tarjeta centrada, sin estirar) -->
+  <div class="page-body alerta-page-body">
+
+    <div class="content alerta-contenido" style="margin: 0 auto; max-width: 1100px; width: 100%;">
 
       <div style="text-align: left; margin-bottom: 5px;">
         <a href="../control_de_stock.php" class="btn-volver">
@@ -65,41 +67,45 @@ $notificaciones = $logicaAlerta->listarNotificaciones();
           Materiales por debajo del stock mínimo
         </div>
 
-        <div class="form-body" style="padding: 0;">
+        <!-- FIX acomodo: cuerpo con aire para que la tabla quede separada de los bordes -->
+        <div class="form-body alerta-form-cuerpo">
 
           <?php if (count($materialesEnAlerta) > 0): ?>
 
-            <table class="tabla-alertas">
+            <!-- FIX responsive: scroll horizontal en móvil -->
+            <div class="table-responsive alerta-tabla-envolvedora">
+            <table class="tabla-alertas alerta-tabla-stock">
               <thead>
                 <tr>
-                  <th>Material</th>
-                  <th>Stock Actual</th>
-                  <th>Stock Mínimo</th>
-                  <th>Unidad</th>
-                  <th>Correo Notificado</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
+                  <th class="col-material">Material</th>
+                  <th class="col-num">Stock Actual</th>
+                  <th class="col-num">Stock Mínimo</th>
+                  <th class="col-centro">Unidad</th>
+                  <th class="col-correo">Correo Notificado</th>
+                  <th class="col-estado">Estado</th>
+                  <th class="col-accion">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 <?php foreach ($materialesEnAlerta as $material): ?>
                   <tr>
-                    <td><?= htmlspecialchars($material['nombre_material']) ?></td>
-                    <td><?= htmlspecialchars($material['stock_actual']) ?></td>
-                    <td><?= htmlspecialchars($material['stock_minimo']) ?></td>
-                    <td><?= htmlspecialchars($material['nombre_unidad'] ?? '—') ?></td>
-                    <td><?= htmlspecialchars($material['correo_notificacion'] ?? '— sin configurar —') ?></td>
-                    <td><span class="badge badge-stock-bajo">STOCK BAJO</span></td>
-                    <td>
+                    <td class="col-material"><?= htmlspecialchars($material['nombre_material']) ?></td>
+                    <td class="col-num"><?= htmlspecialchars($material['stock_actual']) ?></td>
+                    <td class="col-num"><?= htmlspecialchars($material['stock_minimo']) ?></td>
+                    <td class="col-centro"><?= htmlspecialchars($material['nombre_unidad'] ?? '—') ?></td>
+                    <td class="col-correo"><?= htmlspecialchars($material['correo_notificacion'] ?? '— sin configurar —') ?></td>
+                    <td class="col-estado"><span class="badge badge-stock-bajo">STOCK BAJO</span></td>
+                    <td class="col-accion">
                         <a href="../inventario/editar_inventario.php?id=<?= (int)$material['id_material'] ?>"
                            class="btn-marcar-leida">
-                           Editar
+                            Editar
                         </a>
                     </td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>
             </table>
+            </div>
 
           <?php else: ?>
 
@@ -121,45 +127,57 @@ $notificaciones = $logicaAlerta->listarNotificaciones();
           Historial de notificaciones
         </div>
 
-        <div class="form-body" style="padding: 0;">
+        <!-- FIX acomodo: cuerpo con aire para que la tabla quede separada de los bordes -->
+        <div class="form-body alerta-form-cuerpo">
 
           <?php if (count($notificaciones) > 0): ?>
 
-            <table class="tabla-alertas">
+            <div class="table-responsive alerta-tabla-envolvedora">
+            <table class="tabla-alertas alerta-tabla-notificaciones">
+              <colgroup>
+                <col class="col-w-material">
+                <col class="col-w-mensaje">
+                <col class="col-w-fecha">
+                <col class="col-w-estado">
+                <col class="col-w-accion">
+              </colgroup>
               <thead>
                 <tr>
-                  <th>Material</th>
-                  <th>Mensaje</th>
-                  <th>Fecha</th>
-                  <th>Estado</th>
-                  <th></th>
+                  <th class="col-material">Material</th>
+                  <th class="col-mensaje">Mensaje</th>
+                  <th class="col-fecha">Fecha</th>
+                  <th class="col-estado">Estado</th>
+                  <th class="col-accion">Acción</th>
                 </tr>
               </thead>
               <tbody>
                 <?php foreach ($notificaciones as $notif): ?>
                   <tr>
-                    <td><?= htmlspecialchars($notif['nombre_material'] ?? '—') ?></td>
-                    <td><?= htmlspecialchars($notif['mensaje']) ?></td>
-                    <td><?= htmlspecialchars($notif['fecha_generada']) ?></td>
-                    <td>
+                    <td class="col-material"><?= htmlspecialchars($notif['nombre_material'] ?? '—') ?></td>
+                    <td class="col-mensaje"><?= htmlspecialchars($notif['mensaje']) ?></td>
+                    <td class="col-fecha"><?= htmlspecialchars($notif['fecha_generada']) ?></td>
+                    <td class="col-estado">
                         <?php if ($notif['leida']): ?>
                             <span class="badge badge-leida">Leída</span>
                         <?php else: ?>
                             <span class="badge badge-no-leida">No leída</span>
                         <?php endif; ?>
                     </td>
-                    <td>
+                    <td class="col-accion">
                         <?php if (!$notif['leida']): ?>
                             <a href="lista_alertas.php?marcar_leida=<?= (int)$notif['id_notificacion'] ?>"
                                class="btn-marcar-leida">
                                 Marcar como leída
                             </a>
+                        <?php else: ?>
+                            <span class="accion-hecha">—</span>
                         <?php endif; ?>
                     </td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>
             </table>
+            </div>
 
           <?php else: ?>
 
@@ -174,39 +192,16 @@ $notificaciones = $logicaAlerta->listarNotificaciones();
 
     </div>
   </div>
+      </main>
 
-  <footer>
-    <div class="footer-divider"></div>
+      <?php include __DIR__ . '/../../partials/footer.php'; ?>
 
-    <div class="footer-top">
-      <div>
-        <p class="footer-brand-name">COLSOFTCO</p>
-        <p class="footer-brand-sub">Sistema de Gestión</p>
-        <p class="footer-brand-desc">
-          Sistema de gestión y administración de materias primas para Max&Flex.
-          Eficiencia en inventarios y movimientos empresariales.
-        </p>
-      </div>
-
-      <div>
-        <p class="footer-col-title">Contacto</p>
-        <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-        <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-        <div class="footer-contact-item">📞 +57 322905224</div>
-        <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-      </div>
     </div>
+  </div>
 
-    <div class="footer-bottom">
-      <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex.  </span>
-      <span>Desarrollado por <strong>  Equipo COLSOTCO</strong></span>
-    </div>
-  </footer>
-
+  <?php include __DIR__ . '/../../partials/scripts_layout_footer.php'; ?>
   <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
   <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-
-  <script src="../../../public/js/app.js"></script>
 </body>
 
 </html>

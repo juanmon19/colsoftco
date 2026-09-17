@@ -1,8 +1,6 @@
+/* AUDITORÍA: reset reducido, misma razón que receta/editar (punto 6) */
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -300,8 +298,9 @@ select:focus {
     background: #16296b;
 }
 
-/* ══ BOTONES DE NAVEGACIÓN ══ */
-.nav-item {
+/* ══ BOTONES LOCALES (renombrado semántico: antes .nav-item global que pisaba sidebar) ══ */
+.paneles .receta-nav-btn,
+.paneles .nav-item {
     width: 100%;
     min-height: 46px;
     border: 0;
@@ -320,7 +319,8 @@ select:focus {
     margin-top: 8px;
 }
 
-.nav-item:hover {
+.paneles .receta-nav-btn:hover,
+.paneles .nav-item:hover {
     background-color: #16296b;
 }
 
@@ -509,7 +509,8 @@ footer {
 
     .btn,
     .btn-fabricar,
-    .nav-item {
+    .paneles .nav-item,
+    .paneles .receta-nav-btn {
         font-size: 13px;
         width: 100%;
     }

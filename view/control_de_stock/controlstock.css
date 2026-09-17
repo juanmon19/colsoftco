@@ -19,15 +19,13 @@
   --btn:    14px;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Reset reducido: global.css ya define margin/padding y tipografía del shell */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
-  font-family: var(--font);
   background: var(--gray-bg);
   min-height: 100vh;
-  color: var(--blue);
-  display: flex;
-  flex-direction: column;
+  /* NOTA: sin font-family/display aquí para no pisar layout.css del shell */
   overflow-x: hidden;
 }
 
@@ -35,7 +33,7 @@ body {
    HEADER ESTANDARIZADO
 ========================================================= */
 
-header {
+header:not(.topbar) {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -45,17 +43,18 @@ header {
     position: sticky; 
     top: 0;
     z-index: 100;
-    gap: 10px; 
-    overflow: hidden; 
+    gap: 10px;
+    /* FIX: overflow visible para no recortar .perfil-dropdown del topbar */
+    overflow: visible;
 }
 
-header .logo {
+header:not(.topbar) .logo {
     display: flex;
     align-items: center;
     flex-shrink: 0; 
 }
 
-header .logo img {
+header:not(.topbar) .logo img {
     width: 50px; 
     height: 50px;
     border-radius: 50%;
@@ -126,12 +125,13 @@ header h1 {
     background:#081935;
 }
 
-/* ══ CONTENIDO ══ */
-.content {
+/* ══ CONTENIDO (acotado: el .content del shell lo gobierna layout.css) ══ */
+.page-body .content {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
 /* ══ FORMULARIO ══ */
@@ -192,7 +192,8 @@ input[type="text"],
 input[type="number"],
 select {
   width: 100%;
-  padding: 9px 12px;
+  max-width: 100%;
+  padding: 9px 32px 9px 12px;
   border: 1.5px solid var(--gray-border);
   border-radius: 4px;
   font-family: var(--font);
@@ -202,6 +203,9 @@ select {
   transition: border-color .2s, box-shadow .2s;
   appearance: none;
   -webkit-appearance: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 input:focus, select:focus {
@@ -211,7 +215,7 @@ input:focus, select:focus {
   background: var(--white);
 }
 
-.select-wrap { position: relative; }
+.select-wrap { position: relative; max-width: 100%; }
 
 .select-wrap::after {
   content: '▾';
@@ -530,7 +534,7 @@ footer {
 
 @media (max-width: 480px) {
   
-  header h1 {
+header:not(.topbar) h1 {
       font-size: 14px !important;
   }
 

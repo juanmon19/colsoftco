@@ -122,7 +122,11 @@ select {
     cursor: not-allowed;
 }
 
-/* ===== TABLA VISTA PREVIA COMPARATIVO ===== */
+/* ===== TABLA VISTA PREVIA COMPARATIVO =====
+   Renombrado semántico (auditoría crítica): .mp-* era críptico.
+   Nuevos: .informe-buscador, .informe-tabla-envolvedora, .informe-tabla-comparativa.
+   Se conservan .mp-* como alias para no romper JS/PHP. */
+.informe-buscador,
 .mp-buscar {
     width: 100%;
     padding: 10px;
@@ -134,6 +138,7 @@ select {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.informe-tabla-envolvedora,
 .mp-wrap {
     max-height: 250px;
     overflow-y: auto;
@@ -142,6 +147,7 @@ select {
     border-radius: 6px;
 }
 
+.informe-tabla-comparativa,
 .mp-tabla {
     width: 100%;
     border-collapse: collapse;
@@ -150,10 +156,14 @@ select {
 }
 
 /* La vista previa tiene 6 columnas: permite scroll horizontal */
+.informe-tabla-comparativa.comp,
 .mp-tabla.comp { min-width: 560px; }
+.informe-tabla-comparativa.comp thead th:not(:first-child),
 .mp-tabla.comp thead th:not(:first-child),
+.informe-tabla-comparativa.comp tbody td:not(:first-child),
 .mp-tabla.comp tbody td:not(:first-child) { text-align: center; white-space: nowrap; }
 
+.informe-tabla-comparativa thead th,
 .mp-tabla thead th {
     background: #0A1F44;
     color: #d4af37;

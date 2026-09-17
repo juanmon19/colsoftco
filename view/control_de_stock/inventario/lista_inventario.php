@@ -30,11 +30,14 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="es">
 
 <head>
-    <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario</title>
+    <title>Inventario de Materias Primas</title>
+    <!-- Orden estándar: global -> layout (shell) -> módulo -->
+    <link rel="stylesheet" href="../../../public/css/global.css">
+    <link rel="stylesheet" href="../../../public/css/layout.css">
     <link rel="stylesheet" href="lista_inventario.css">
+    <?php include __DIR__ . '/../../partials/scripts_layout.php'; ?>
     <style>
         .filtros-container {
             display: flex;
@@ -114,22 +117,18 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
 
-    <header class="header">
-        <div class="logo">
-            <a href="../../../app/ir_panel.php">
-                <img src="../../../public/imagenes/logo.png" alt="logo">
-            </a>
-        </div>
+    <div class="app">
 
-        <div class="header-title">
-            <h1>INVENTARIO DE MATERIAS PRIMAS</h1>
-        </div>
+        <?php include __DIR__ . '/../../partials/sidebar.php'; ?>
 
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
-    </header>
+        <div class="main">
 
+            <?php
+            $rolActual = 'Administrador';
+            include __DIR__ . '/../../partials/topbar.php';
+            ?>
+
+            <main class="content">
 
     <div class="container">
 
@@ -158,6 +157,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="filtro-orden">
                 <label for="selectOrden">   Ordenar:</label>
                 <select id="selectOrden">
+                    <option value="id" selected>ID (ascendente)</option>
                     <option value="az">Nombre (A-Z)</option>
                     <option value="za">Nombre (Z-A)</option>
                 </select>
@@ -190,7 +190,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <tbody id="listaMateriales">
 
                     <?php foreach ($materiales as $m): ?>
-                        <tr data-nombre="<?php echo htmlspecialchars(strtolower($m['nombre_material'])); ?>">
+                        <tr data-id="<?= (int)$m['id_material'] ?>" data-nombre="<?php echo htmlspecialchars(strtolower($m['nombre_material'])); ?>">
                             <td><?= $m['id_material'] ?></td>
                             <td><?= htmlspecialchars($m['nombre_material']) ?></td>
                             <td><?= $m['stock_actual'] ?></td>
@@ -232,28 +232,14 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
     </div>
+            </main>
 
-    <footer>
-        <div class="footer-divider"></div>
-        <div class="footer-top">
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">Sistema de gestión y administración de materias primas para Max&Flex. Eficiencia en inventarios y movimientos empresariales.</p>
-            </div>
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 322905224</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
+            <?php include __DIR__ . '/../../partials/footer.php'; ?>
+
         </div>
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex.  </span>
-            <span>Desarrollado por <strong>  Equipo COLSOTCO</strong></span>
-        </div>
-    </footer>
+    </div>
+
+    <?php include __DIR__ . '/../../partials/scripts_layout_footer.php'; ?>
     <script>
         // =========================
         // FILTROS: BÚSQUEDA + ORDEN ALFABÉTICO
@@ -299,6 +285,10 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 const filasOrdenadas = [...filas].sort((a, b) => {
 
+                    if (orden === 'id') {
+                        return (parseInt(a.dataset.id || '0', 10) - parseInt(b.dataset.id || '0', 10));
+                    }
+
                     const nombreA = a.dataset.nombre || '';
                     const nombreB = b.dataset.nombre || '';
 
@@ -317,12 +307,12 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             btnLimpiar.addEventListener('click', () => {
                 inputBusqueda.value = '';
-                selectOrden.value = 'az';
+                selectOrden.value = 'id';
                 aplicarFiltros();
                 aplicarOrden();
             });
 
-            // Orden inicial A-Z al cargar la página
+            // Orden inicial por ID ascendente (coherente con ORDER BY id_material ASC en SQL)
             aplicarOrden();
 
         })();
@@ -341,11 +331,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
         const entradasNav = performance.getEntriesByType('navigation');
         const tipoNav = entradasNav.length ? entradasNav[0].type : null;
 
-        // TEMPORAL: para diagnosticar, borrar esta línea después de probar
-        console.log('[diagnóstico bfcache] persisted:', event.persisted, '| tipo navegación:', tipoNav);
-
         if (event.persisted || tipoNav === 'back_forward') {
-            console.log('[diagnóstico bfcache] Recargando por venir de bfcache...');
             window.location.reload();
         }
     });

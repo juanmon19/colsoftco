@@ -120,9 +120,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Proveedor</title>
 
+    <!-- Orden estándar: global -> layout (shell) -> módulo -->
+    <link rel="stylesheet" href="../../public/css/global.css">
+    <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="crud_proveedor.css">
 
-    <link rel="stylesheet" href="../../public/css/layout.css">
     <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 

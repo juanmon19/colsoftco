@@ -21,8 +21,10 @@ $materialesDisponibles = $dbConn->query("
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Modelo de Colchón</title>
-    <link href="registrar_modelo.css" rel="stylesheet">
+    <!-- Orden estándar: global -> layout -> módulo -->
+    <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link href="registrar_modelo.css" rel="stylesheet">
     <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 

@@ -17,26 +17,23 @@
     --border-color: #e5eaf0;
 }
 
+/* Reset reducido: global.css ya define margin/padding y tipografía del shell */
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    font-size: 13px;
     background: var(--bg-body);
-    color: var(--text-main);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    /* NOTA: sin font-family/display aquí para no pisar layout.css del shell */
 }
 
 /* =========================================
-   HEADER Y FOOTER
+   HEADER Y FOOTER LEGACY DEL MÓDULO
+   Blindados con :not(.topbar) para NO tocar el header.topbar del shell.
+   El diseño de mensajería queda igual ("dejado así").
    ========================================= */
-header {
+header:not(.topbar) {
     background: var(--primary);
     min-height: 70px;
     display: flex;
@@ -49,7 +46,7 @@ header {
     gap: 10px;
 }
 
-header .logo {
+header:not(.topbar) .logo {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -57,19 +54,22 @@ header .logo {
     color: var(--blanco);
 }
 
-header .logo img {
+header:not(.topbar) .logo img {
     width: 45px;
     height: auto;
 }
 
-header h1 {
+header:not(.topbar) h1 {
     font-size: 16px;
     letter-spacing: 1px;
     text-align: center;
     flex: 1;
 }
 
-footer {
+/* Footer legacy del módulo: sin pisar el footer del shell (partials/footer.php).
+   Se acota a .mensajeria-pie; se conserva footer genérico solo como alias. */
+.mensajeria-pie,
+footer:not(.shell-footer) {
     background: #0D1B3E; /* Tono ligeramente más oscuro para el pie */
     color: rgba(255, 255, 255, 0.6);
     text-align: center;
@@ -342,15 +342,30 @@ textarea {
 
 /* =========================================
    DISEÑO RESPONSIVO (AUTO-AJUSTE)
+   Renombrado semántico: .mensajeria-* como principal, alias viejos conservados.
+   FIX: breakpoint tablet 900px (antes solo 600px, se solapaba entre 601-900px)
    ========================================= */
+@media (max-width: 900px) {
+    .container {
+        margin: 16px auto;
+        padding: 0 14px;
+    }
+    .card {
+        padding: 16px;
+    }
+    .mensaje-item {
+        padding: 12px;
+    }
+}
 @media (max-width: 600px) {
-    header {
+    /* Blindado: no tocar header.topbar del shell */
+    header:not(.topbar) {
         flex-direction: column;
         justify-content: center;
         padding: 15px;
     }
 
-    header h1 {
+    header:not(.topbar) h1 {
         margin: 10px 0;
     }
 

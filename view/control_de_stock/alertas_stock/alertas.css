@@ -1,24 +1,21 @@
-/* ===== RESET ===== */
+/* ===== RESET (reducido: global.css ya define margin/padding) ===== */
 
 *{
-    margin:0;
-    padding:0;
     box-sizing:border-box;
 }
 
-/* ===== GENERAL ===== */
+/* ===== GENERAL (sin font/display: el shell lo gobierna layout.css) ===== */
 
 body{
-    font-family: Arial, sans-serif;
     background:#eef3ff;
     min-height:100vh;
 }
 
 /* =========================================================
-   HEADER ESTANDARIZADO
+   HEADER LEGACY — blindado para NO recortar el topbar del shell
 ========================================================= */
 
-header {
+header:not(.topbar) {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -31,16 +28,16 @@ header {
     z-index: 100;
     border-bottom: 4px solid #D4AF37; 
     gap: 10px; 
-    overflow: hidden; 
+    overflow: visible;
 }
 
-header .logo {
+header:not(.topbar) .logo {
     display: flex;
     align-items: center;
     flex-shrink: 0; 
 }
 
-header .logo img {
+header:not(.topbar) .logo img {
     width: 50px; 
     height: 50px;
     border-radius: 50%;
@@ -57,7 +54,7 @@ header .logo img {
     justify-content: center;
 }
 
-header h1 {
+header:not(.topbar) h1 {
     margin: 0;
     color: white;
     font-size: 16px; 
@@ -96,30 +93,133 @@ header h1 {
     background:#081935;
 }
 
-/* ===== TABLAS ===== */
+/* ===== TABLAS (renombrado semántico: .alerta-tabla-*; se conserva table genérico + .tabla-alertas como alias) ===== */
 
+/* Página de lista contenida como Registro stock (tarjeta centrada, sin estirar) */
+.alerta-page-body {
+    justify-content:center;
+}
+.alerta-page-body .alerta-contenido {
+    max-width:1100px;
+    margin:0 auto;
+    width:100%;
+}
+
+/* Cuerpo de las tarjetas de alerta con aire: la tabla queda separada
+   de los bordes (ya no toca los filos de la tarjeta) */
+.alerta-form-cuerpo {
+    padding:22px;
+}
+
+.table-responsive,
+.alerta-tabla-envolvedora {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+    background: white;
+}
+
+.alerta-tabla-stock,
+.alerta-tabla-notificaciones,
+.tabla-alertas,
 table{
     width:100%;
-    border-collapse:collapse;
+    min-width: 720px;
+    /* Modelo separado: respeta el radius y separa encabezado del cuerpo */
+    border-collapse:separate;
+    border-spacing:0;
     background:white;
+    border:1px solid #e2e8f0;
     border-radius:12px;
     overflow:hidden;
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
 }
 
 thead th{
     background:#0A1F44;
     color:white;
-    padding:16px;
+    padding:16px 20px;
     text-align:center;
-    font-size:16px;
+    vertical-align:middle;
+    font-size:14px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+    white-space:nowrap;
+    /* Línea dorada que separa el encabezado del cuerpo */
+    border-bottom:3px solid #D4AF37;
 }
 
 tbody td{
-    padding:16px;
+    padding:16px 20px;
     text-align:center;
+    vertical-align:middle;
     border-bottom:1px solid #e5e7eb;
-    font-size:15px;
+    font-size:14px;
+}
+tbody tr:last-child td{
+    border-bottom:none;
+}
+
+/* Columnas de texto largo alineadas a la izquierda para lectura cómoda */
+.alerta-tabla-notificaciones .col-material,
+.alerta-tabla-notificaciones .col-mensaje,
+.alerta-tabla-stock .col-material {
+    text-align:left;
+}
+.alerta-tabla-notificaciones .col-mensaje {
+    min-width:280px;
+}
+
+/* Fecha, estado y acción siempre en una línea y centrados */
+.col-fecha,
+.col-estado,
+.col-accion {
+    white-space:nowrap;
+    text-align:center;
+}
+.col-fecha small {
+    display:block;
+    color:#6b7280;
+    font-size:12px;
+}
+
+/* Anchos de columna de la tabla de notificaciones (alineación perfecta) */
+.alerta-tabla-notificaciones .col-w-material { width:16%; }
+.alerta-tabla-notificaciones .col-w-mensaje  { width:auto; }
+.alerta-tabla-notificaciones .col-w-fecha    { width:170px; }
+.alerta-tabla-notificaciones .col-w-estado   { width:120px; }
+.alerta-tabla-notificaciones .col-w-accion   { width:190px; }
+
+/* Badges y botón de acción sin cortes de línea */
+.alerta-tabla-notificaciones .badge {
+    display:inline-block;
+    white-space:nowrap;
+}
+.alerta-tabla-notificaciones .btn-marcar-leida {
+    display:inline-block;
+    white-space:nowrap;
+}
+.accion-hecha {
+    color:#9ca3af;
+}
+
+/* Tabla de stock: números y correo bien acomodados */
+.alerta-tabla-stock .col-num {
+    text-align:center;
+    white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+}
+.alerta-tabla-stock .col-centro {
+    text-align:center;
+    white-space:nowrap;
+}
+.alerta-tabla-stock .col-correo {
+    text-align:left;
+    min-width:200px;
+}
+.alerta-tabla-stock .badge {
+    display:inline-block;
+    white-space:nowrap;
 }
 
 tbody tr:hover{
@@ -300,15 +400,23 @@ input[readonly]{
         width:95%;
     }
 
-    /* Contenedor desplazable para la tabla en móviles */
-    .container {
-        overflow-x: auto;
+    /* El scroll horizontal lo da .table-responsive/.alerta-tabla-envolvedora.
+       NUNCA display:block sobre table: rompía la alineación thead/tbody. */
+    .alerta-form-cuerpo{
+        padding:12px;
     }
-    
-    table{
-        display:block;
-        overflow-x:auto;
-        white-space: nowrap;
+    .alerta-tabla-envolvedora table {
+        min-width:640px;
+    }
+
+    thead th{
+        padding:12px 10px;
+        font-size:12px;
+    }
+
+    tbody td{
+        padding:12px 10px;
+        font-size:13px;
     }
 
     .botones{
@@ -324,10 +432,15 @@ input[readonly]{
     .card{
         width:100%;
     }
+
+    .btn-volver{
+        width:100%;
+        text-align:center;
+    }
 }
 
 @media (max-width: 480px) {
-    header h1 {
+    header:not(.topbar) h1 {
         font-size: 14px !important;
     }
 }

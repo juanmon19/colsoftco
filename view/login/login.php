@@ -95,7 +95,8 @@ if (isset($_SESSION['mensaje'])) {
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
-    <script src="../js/app.js"></script>
+    <!-- FIX auditoría: ruta rota ../js/app.js (404) -> pública correcta -->
+    <script src="../../public/js/app.js"></script>
 
     <script>
         // Limpiar el formulario al cargar o regresar a la página

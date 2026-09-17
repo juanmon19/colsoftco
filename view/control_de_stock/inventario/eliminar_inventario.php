@@ -73,13 +73,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eliminar Materia Prima</title>
 
+    <!-- Orden estándar: global -> layout (shell) -> el <style> del módulo -->
+    <link rel="stylesheet" href="../../../public/css/global.css">
+    <link rel="stylesheet" href="../../../public/css/layout.css">
+    <?php include __DIR__ . '/../../partials/scripts_layout.php'; ?>
+
     <style>
+        /* NOTA shell: sin display/font en body (lo gobierna layout.css) */
         body {
-            font-family: Arial, sans-serif;
             background: #eef2ff;
             margin: 0;
-            display: flex;
-            flex-direction: column;
             min-height: 100vh;
         }
 
@@ -350,19 +353,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
 
-    <header class="header">
-        <div class="logo">
-            <a href="../../app/ir_panel.php">
-                <img src="../../../public/imagenes/logo.png" alt="logo">
-            </a>
-        </div>
-        <div class="header-title">
-            <h1>Eliminar Materia Prima</h1>
-        </div>
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
-    </header>
+    <div class="app">
+
+        <?php include __DIR__ . '/../../partials/sidebar.php'; ?>
+
+        <div class="main">
+
+            <?php
+            $rolActual = 'Administrador';
+            include __DIR__ . '/../../partials/topbar.php';
+            ?>
+
+            <main class="content">
 
     <div class="contenedor">
         <a href="lista_inventario.php" class="volver">
@@ -393,27 +395,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <footer>
-        <div class="footer-divider"></div>
-        <div class="footer-top">
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">Sistema de gestión y administración de materias primas para Max&Flex. Eficiencia en inventarios y movimientos empresariales.</p>
-            </div>
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 322905224</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
+            </main>
+
+            <?php include __DIR__ . '/../../partials/footer.php'; ?>
+
         </div>
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex.  </span>
-            <span>Desarrollado por <strong>  Equipo COLSOTCO</strong></span>
-        </div>
-    </footer>
+    </div>
+
+    <?php include __DIR__ . '/../../partials/scripts_layout_footer.php'; ?>
 
     <script>
     /* Interceptamos el envío del formulario para que la confirmación

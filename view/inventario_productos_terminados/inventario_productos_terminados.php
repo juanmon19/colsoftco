@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
 
 // ==== CARGA INICIAL DE LA TABLA ====
 $productosDb = $conn->query(
-    "SELECT id_producto, nombre_producto, stock_actual FROM productos_terminados ORDER BY nombre_producto"
+    "SELECT id_producto, nombre_producto, stock_actual FROM productos_terminados ORDER BY id_producto ASC"
 )->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
@@ -149,10 +149,7 @@ $productosDb = $conn->query(
             <main class="content">
 <div class="container">
 
-        <a class="btn-volver" href="../panel_admin/panel_admin.php">
-            ← Volver
-        </a>
-
+        
         <!-- =========================
              BARRA DE FILTROS
         ========================== -->
@@ -168,6 +165,7 @@ $productosDb = $conn->query(
             <div class="filtro-orden">
                 <label for="selectOrden">Ordenar:</label>
                 <select id="selectOrden">
+                    <option value="id" selected>ID (ascendente)</option>
                     <option value="az">Nombre (A-Z)</option>
                     <option value="za">Nombre (Z-A)</option>
                 </select>
@@ -295,11 +293,14 @@ $productosDb = $conn->query(
                 texto === '' || p.nombre.toLowerCase().includes(texto)
             );
 
-            visibles = visibles.sort((a, b) =>
-                orden === 'az'
+            visibles = visibles.sort((a, b) => {
+                if (orden === 'id') {
+                    return a.id - b.id;
+                }
+                return orden === 'az'
                     ? a.nombre.localeCompare(b.nombre)
-                    : b.nombre.localeCompare(a.nombre)
-            );
+                    : b.nombre.localeCompare(a.nombre);
+            });
 
             visibles.forEach((p) => {
                 const tr = document.createElement("tr");
@@ -325,7 +326,7 @@ $productosDb = $conn->query(
 
         btnLimpiarFiltros.addEventListener('click', () => {
             inputBusqueda.value = '';
-            selectOrden.value = 'az';
+            selectOrden.value = 'id';
             renderTabla();
         });
 

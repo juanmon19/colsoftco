@@ -1,45 +1,111 @@
-<script src="../../public/js/app.js"></script>
-<script src="../../public/js/menu_activo.js"></script>
+<?php
+/* Prefijo de rutas (lo normal es que sidebar.php ya lo haya calculado;
+   este fallback cubre cualquier otro orden de includes). Sirve también
+   para cargar los .js a cualquier profundidad de vista. */
+if (!isset($prefijo)) {
+    $prefijo = '';
+    $script = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+    if (($pos = strpos($script, '/view/')) !== false) {
+        $segs = array_values(array_filter(explode('/', dirname(substr($script, $pos + 6)))));
+        if (count($segs) > 1) {
+            $prefijo = str_repeat('../', count($segs) - 1);
+        }
+    }
+}
+$prefijoJs = json_encode($prefijo . '../../');
+?>
+<script src="<?= $prefijo ?>../../public/js/app.js"></script>
+<script src="<?= $prefijo ?>../../public/js/menu_activo.js"></script>
 
 <script>
+    // Base para los endpoints del perfil, válida a cualquier profundidad de vista
+    const PREFIJO_APP = <?= $prefijoJs ?>;
     // ================= SIDEBAR MÓVIL =================
+    // FIX: al abrir el drawer el logo queda visible (CSS z-index) y el
+    // menú interno queda DESPLEGADO y se mantiene así entre vistas.
     const sidebar = document.getElementById('sidebar');
     const nav = document.getElementById('navMenu');
     const openButton = document.getElementById('mobileOpen');
     const menuButton = document.getElementById('btnMenuToggle');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const NAV_KEY = 'colsoftco_nav_open';
+
+    function pintarMenuButton() {
+        if (!menuButton || !nav) return;
+        menuButton.setAttribute('aria-expanded', nav.classList.contains('open') ? 'true' : 'false');
+    }
 
     function openSidebar() {
         sidebar.classList.add('mobile-visible');
         document.body.classList.add('menu-open');
+        // El menú siempre abre desplegado (como en tu 2da captura)
+        if (nav) nav.classList.add('open');
+        try { sessionStorage.setItem(NAV_KEY, '1'); } catch (e) {}
+        pintarMenuButton();
+        if (menuOverlay) menuOverlay.classList.add('show');
     }
     function closeSidebar() {
         sidebar.classList.remove('mobile-visible');
         document.body.classList.remove('menu-open');
+        // OJO: NO colapsamos nav aquí para que "se quede desplegado"
+        if (menuOverlay) menuOverlay.classList.remove('show');
+    }
+    function toggleSidebar() {
+        if (sidebar.classList.contains('mobile-visible')) closeSidebar();
+        else openSidebar();
     }
 
-    if (openButton) openButton.addEventListener('click', openSidebar);
+    // Estado inicial: si ya estaba desplegado, mantenerlo (móvil y desktop)
+    try {
+        if (sessionStorage.getItem(NAV_KEY) === '1' && nav) nav.classList.add('open');
+    } catch (e) {}
+    // En móvil, si el drawer abre por cualquier vía, el nav va abierto
+    if (window.innerWidth <= 900 && sidebar.classList.contains('mobile-visible') && nav) {
+        nav.classList.add('open');
+    }
+    pintarMenuButton();
+
+    if (openButton) openButton.addEventListener('click', (e) => { e.stopPropagation(); toggleSidebar(); });
 
     if (menuButton) {
-        menuButton.addEventListener('click', () => {
+        menuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
             nav.classList.toggle('open');
-            menuButton.setAttribute('aria-expanded', nav.classList.contains('open'));
+            try { sessionStorage.setItem(NAV_KEY, nav.classList.contains('open') ? '1' : '0'); } catch (err) {}
+            pintarMenuButton();
+            // Si el drawer estaba cerrado y estamos en móvil, abrirlo al desplegar
+            if (window.innerWidth <= 900 && nav.classList.contains('open')) {
+                sidebar.classList.add('mobile-visible');
+                document.body.classList.add('menu-open');
+                if (menuOverlay) menuOverlay.classList.add('show');
+            }
         });
     }
+
+    if (menuOverlay) menuOverlay.addEventListener('click', closeSidebar);
 
     document.addEventListener('click', (e) => {
         if (window.innerWidth <= 900 &&
             sidebar.classList.contains('mobile-visible') &&
             !sidebar.contains(e.target) &&
-            e.target !== openButton) {
+            e.target !== openButton &&
+            !openButton.contains(e.target)) {
             closeSidebar();
         }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('mobile-visible')) closeSidebar();
     });
 
     window.addEventListener('resize', () => {
         if (window.innerWidth > 900) {
             sidebar.classList.remove('mobile-visible');
-            nav.classList.remove('open');
             document.body.classList.remove('menu-open');
+            if (menuOverlay) menuOverlay.classList.remove('show');
+            // En desktop el nav siempre visible por CSS; limpiamos .open para estado neutro
+            if (nav) nav.classList.remove('open');
+            if (menuButton) menuButton.setAttribute('aria-expanded', 'false');
         }
     });
 
@@ -90,7 +156,7 @@
 
     async function cargarPerfil() {
         try {
-            const resp = await fetch('../../app/perfil_usuario.php?accion=obtener');
+            const resp = await fetch(PREFIJO_APP + 'app/perfil_usuario.php?accion=obtener');
             const data = await resp.json();
             if (!data.ok) return;
 
@@ -103,7 +169,7 @@
             if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '';
 
             if (u.foto) {
-                const url = `../../public/imagenes/perfiles/${u.foto}`;
+                const url = `${PREFIJO_APP}public/imagenes/perfiles/${u.foto}`;
                 if (avatarHeader) avatarHeader.src = url;
                 if (fotoPerfilGrande) fotoPerfilGrande.src = url;
                 if (fotoPerfilModal) fotoPerfilModal.src = url;
@@ -134,7 +200,7 @@
         formData.append('foto', archivo);
 
         try {
-            const resp = await fetch('../../app/perfil_usuario.php', { method: 'POST', body: formData });
+            const resp = await fetch(PREFIJO_APP + 'app/perfil_usuario.php', { method: 'POST', body: formData });
             const data = await resp.json();
             if (data.ok) {
                 if (avatarHeader) avatarHeader.src = data.url;
@@ -163,7 +229,7 @@
     formEditarPerfil.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
-            const resp = await fetch('../../app/perfil_usuario.php', {
+            const resp = await fetch(PREFIJO_APP + 'app/perfil_usuario.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `accion=actualizar&nombre=${encodeURIComponent(perfilNombre.value.trim())}` +

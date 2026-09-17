@@ -17,8 +17,10 @@ $modelos = $dbConn->query(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receta Colchones</title>
-    <link href="receta_colchones.css" rel="stylesheet">
+    <!-- Orden estándar: global -> layout -> módulo -->
+    <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link href="receta_colchones.css" rel="stylesheet">
     <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 

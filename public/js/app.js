@@ -3,11 +3,13 @@
  */
 
 // ===============================
-// CERRAR SESIÓN
+// CERRAR SESIÓN (válido a cualquier profundidad: calcula la raíz
+// de la app a partir de /view/ en la URL en vez de usar ../../ fijo)
 // ===============================
 function cerrarSesion() {
     if (confirm("¿Desea cerrar la sesión?")) {
-        window.location.href = "../../app/logout.php";
+        var m = window.location.pathname.match(/^(.*\/)view\//);
+        window.location.href = (m ? m[1] : '../../') + "app/logout.php";
     }
 }
 

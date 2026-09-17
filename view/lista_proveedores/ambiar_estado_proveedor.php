@@ -63,26 +63,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= $esDeshabilitar ? 'Deshabilitar' : 'Habilitar' ?> Proveedor</title>
 
+<!-- Orden estándar: global -> layout (shell) -> módulo -->
+<link rel="stylesheet" href="../../public/css/global.css">
+<link rel="stylesheet" href="../../public/css/layout.css">
 <link rel="stylesheet" href="crud_proveedor.css">
+<?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 
 </head>
 <body>
 
-    <header class="header">
-        <div class="logo">
-            <a href="../lista_proveedores/lista_proveedores.php">
-                <img src="../../public/imagenes/logo.png" alt="logo">
-            </a>
-        </div>
+    <div class="app">
 
-        <div class="header-title">
-            <h1><?= $esDeshabilitar ? 'Deshabilitar' : 'Habilitar' ?> Proveedor</h1>
-        </div>
+        <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
-            Cerrar sesión
-        </button>
-    </header>
+        <div class="main">
+
+            <?php
+            $rolActual = 'Administrador';
+            include __DIR__ . '/../partials/topbar.php';
+            ?>
+
+            <main class="content">
 
     <div class="contenedor">
 
@@ -161,33 +162,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
     </div>
+            </main>
 
-    <footer>
-        <div class="footer-divider"></div>
+            <?php include __DIR__ . '/../partials/footer.php'; ?>
 
-        <div class="footer-top">
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex.
-                    Eficiencia en inventarios y movimientos empresariales.
-                </p>
-            </div>
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 322905224</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
         </div>
+    </div>
 
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex.  </span>
-            <span>Desarrollado por <strong>  Equipo COLSOTCO</strong></span>
-        </div>
-    </footer>
+    <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>

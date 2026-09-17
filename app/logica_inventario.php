@@ -25,7 +25,7 @@ class InventarioLogica
             LEFT JOIN unidades_medida um ON um.id_unidad = mp.id_unidad
             LEFT JOIN proveedores p ON p.id_proveedor = mp.id_proveedor
             {$filtroEstado}
-            ORDER BY mp.nombre_material ASC
+            ORDER BY mp.id_material ASC
         ";
 
         $stmt = $this->conn->prepare($sql);

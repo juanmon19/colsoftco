@@ -1,8 +1,7 @@
+/* NOTA PUNTO 6: no usar selector global * con margin/font aquí.
+   global.css + layout.css ya definen reset y tipografía del shell. */
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -300,8 +299,8 @@ select:focus {
     background: #16296b;
 }
 
-/* ══ BOTONES DE NAVEGACIÓN ══ */
-.nav-item {
+/* ══ BOTONES LOCALES DEL MÓDULO (antes .nav-item global que pisaba el sidebar) ══ */
+.paneles .nav-item {
     width: 100%;
     min-height: 46px;
     border: 0;
@@ -320,7 +319,7 @@ select:focus {
     margin-top: 8px;
 }
 
-.nav-item:hover {
+.paneles .nav-item:hover {
     background-color: #16296b;
 }
 
@@ -416,6 +415,51 @@ footer {
    RESPONSIVE ADAPTATIVO (MEDIA QUERIES)
 ══════════════════════════════════════════════ */
 
+/* ══════════════════════════════════════════════
+   PUNTO 5: SISTEMA FLEX/GIRD PARA EDITAR RECETA
+   Desktop en fila, móvil en columna legible.
+   Estas clases sustituyen los style="display:flex..." en línea del PHP/JS.
+══════════════════════════════════════════════ */
+.receta-form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    align-items: stretch;
+}
+.receta-form-row select {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.receta-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+#editRecetaContainer,
+#regRecetaContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.receta-fila {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.receta-fila .receta-material {
+    flex: 2 1 0;
+    min-width: 0;
+}
+.receta-fila .receta-cantidad {
+    flex: 1 1 0;
+    min-width: 0;
+}
+.receta-fila .receta-quitar {
+    flex-shrink: 0;
+}
+
 /* TABLETS (hasta 992px) */
 @media (max-width: 992px) {
     .paneles {
@@ -460,27 +504,45 @@ footer {
         padding: 16px;
     }
 
-    /* Filas dinámicas generadas en JavaScript para recetas */
+    /* PUNTO 5: filas de receta en columna legible en móvil */
+    .receta-form-row {
+        flex-direction: column;
+    }
+    .receta-form-row .btn {
+        width: 100%;
+    }
+    .receta-fila,
     #editRecetaContainer > div,
     #regRecetaContainer > div {
-        flex-wrap: wrap !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        flex-wrap: nowrap !important;
         gap: 8px !important;
         background: #ffffff;
-        padding: 10px;
+        padding: 12px;
         border-radius: 8px;
         border: 1px solid #e2e8f0;
         margin-bottom: 12px !important;
     }
 
     #editRecetaContainer .receta-material,
-    #regRecetaContainer .receta-material {
+    #regRecetaContainer .receta-material,
+    .receta-fila .receta-material {
         flex: 1 1 100% !important;
         width: 100% !important;
     }
 
     #editRecetaContainer .receta-cantidad,
-    #regRecetaContainer .receta-cantidad {
-        flex: 1 1 calc(100% - 60px) !important;
+    #regRecetaContainer .receta-cantidad,
+    .receta-fila .receta-cantidad {
+        flex: 1 1 100% !important;
+        width: 100% !important;
+    }
+    .receta-fila .receta-quitar {
+        width: 100%;
+    }
+    .receta-form-actions .btn {
+        width: 100%;
     }
 
     .footer-top {
@@ -509,7 +571,7 @@ footer {
 
     .btn,
     .btn-fabricar,
-    .nav-item {
+    .paneles .nav-item {
         font-size: 13px;
         width: 100%;
     }

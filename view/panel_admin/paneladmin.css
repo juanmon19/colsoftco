@@ -132,18 +132,34 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     padding: 0 39px;
     color: #fff;
+    min-width: 0;
+}
+.welcome {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 .welcome h1 {
     margin: 0;
     font-size: 27px;
     font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .welcome p {
     margin: 5px 0 0;
     font-size: 15px;
     color: #e1e6ee;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.header-actions {
+    flex-shrink: 0;
+    min-width: 0;
 }
 .perfil-menu {
     position: relative;
@@ -155,6 +171,18 @@ button {
     background: #fff;
     padding: 6px 10px 6px 6px;
     border-radius: 99px;
+    max-width: 100%;
+}
+.perfil-trigger-text {
+    min-width: 0;
+    text-align: left;
+}
+.perfil-trigger-text strong,
+.perfil-trigger-text small {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
 }
 .avatar-header {
     width: 32px;
@@ -773,16 +801,73 @@ html[data-tema="oscuro"] .status.por-hacer { background: rgba(96, 165, 250, 0.16
     }
 }
 @media (max-width: 560px) {
+    /* ÓVALO COMPLETO en panel admin (igual que resto del sistema) */
     .topbar {
-        height: 76px;
-        padding-left: 58px;
+        height: auto;
+        min-height: 76px;
+        padding: 10px 10px 10px 58px;
+        gap: 8px;
+        position: relative;
+    }
+    .welcome {
+        flex: 1 1 auto;
+        min-width: 0;
     }
     .welcome h1 {
-        font-size: 16px;
+        font-size: 15px;
     }
-    .perfil-trigger-text,
+    .welcome p {
+        font-size: 12px;
+        margin-top: 2px;
+    }
+    .perfil-trigger {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        width: auto;
+        height: auto;
+        min-height: 46px;
+        padding: 4px 10px 4px 4px;
+        border-radius: 99px;
+        flex-shrink: 0;
+        max-width: 52vw;
+    }
+    .avatar-header {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+    }
+    .perfil-trigger-text {
+        display: block;
+        min-width: 0;
+        line-height: 1.2;
+    }
+    .perfil-trigger-text strong {
+        display: block;
+        font-size: 12px;
+        max-width: 26vw;
+    }
+    .perfil-trigger-text small {
+        display: block;
+        font-size: 10px;
+        max-width: 26vw;
+    }
     .perfil-caret {
-        display: none;
+        display: block;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+    .header-actions {
+        flex-shrink: 0;
+        min-width: 0;
+    }
+    .perfil-dropdown {
+        max-width: calc(100vw - 28px);
+        right: 0;
+    }
+    .perfil-dropdown button {
+        min-height: 44px;
+        font-size: 14px;
     }
     .profile {
         grid-template-columns: 105px 1fr;

@@ -69,7 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <main class="content">
 <div class="page-body">
 
-    <div class="content" style="margin: 0 auto; max-width: 1000px; width: 100%;">
+    <!-- FIX: era <div class=content> anidado dentro de <main class=content> (doble constraint) -->
+    <div class="content stock-contenido" style="margin: 0 auto; max-width: 1000px; width: 100%; min-width: 0;">
 
       <?php if (!empty($mensaje)): ?>
         <div class="mensaje-stock">
@@ -87,7 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <form id="regForm" method="POST">
             <div class="form-grid">
 
-              <div class="form-group">
+              <!-- FIX desplegable: a ancho completo para que las opciones largas no se vean recortadas -->
+              <div class="form-group full">
                 <label for="producto">Producto</label>
                 <div class="select-wrap">
                   <select id="producto" name="producto" required>

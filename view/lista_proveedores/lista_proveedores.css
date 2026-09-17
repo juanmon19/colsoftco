@@ -1,18 +1,14 @@
+/* NOTA PUNTO 6: reset global eliminado. global.css ya hace
+   box-sizing + margin/padding y define la tipografía del shell.
+   Definir * o body aquí cambiaba interlineado/fuente del sidebar. */
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
-/* ===== GENERAL ===== */
+/* ===== GENERAL (solo fondo del módulo; el layout del shell lo manda layout.css) ===== */
 body {
-    font-family: Arial, Helvetica, sans-serif;
     background-color: #f4f4f4;
-    margin: 0;
-    font-size: 14px;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
 /* =========================
@@ -462,11 +458,10 @@ body {
     }
 }
 
-/* ===== FOOTER ===== */
+/* ===== FOOTER (PUNTO 6: sin font-family para no pisar layout.css) ===== */
 footer {
     background: #0D1B3E;
     color: #ffffff;
-    font-family: 'Segoe UI', Arial, sans-serif;
     width: 100%;
     box-sizing: border-box;
     margin-top: 0;

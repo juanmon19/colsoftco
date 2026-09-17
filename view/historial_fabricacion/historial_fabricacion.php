@@ -20,8 +20,10 @@ $historial = $dbConn->query(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Fabricación</title>
-    <link href="historial_fabricacion.css" rel="stylesheet">
+    <!-- Orden estándar: global -> layout -> módulo -->
+    <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link href="historial_fabricacion.css" rel="stylesheet">
     <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
@@ -54,7 +56,9 @@ $historial = $dbConn->query(
 
                 <?php else: ?>
 
-                    <table class="tabla-historial">
+                    <!-- FIX responsive: envoltorio con scroll horizontal en móvil -->
+                    <div class="table-responsive hist-tabla-envolvedora">
+                    <table class="tabla-historial hist-tabla-produccion">
                         <thead>
                             <tr>
                                 <th>Recibo</th>
@@ -96,6 +100,7 @@ $historial = $dbConn->query(
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    </div>
 
                 <?php endif; ?>
 

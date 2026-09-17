@@ -46,28 +46,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="es">
 
 <head>
-    <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eliminar Alerta</title>
+    <title>Eliminar Alerta de Stock</title>
+    <!-- Orden estándar: global -> layout (shell) -> módulo -->
+    <link rel="stylesheet" href="../../../public/css/global.css">
+    <link rel="stylesheet" href="../../../public/css/layout.css">
     <link rel="stylesheet" href="alertas.css">
+    <?php include __DIR__ . '/../../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
 
-<header>
-    <div class="logo">
-        <a href="lista_alertas.php">
-            <img src="../../../public/imagenes/logo.png" alt="logo">
-        </a>
-    </div>
-    
-    <div class="header-title">
-        <h1>Eliminar Alerta de Stock</h1>
-    </div>
+<div class="app">
 
-    <div style="width: 50px; flex-shrink: 0;"></div>
-</header>
+    <?php include __DIR__ . '/../../partials/sidebar.php'; ?>
+
+    <div class="main">
+
+        <?php
+        $rolActual = 'Administrador';
+        include __DIR__ . '/../../partials/topbar.php';
+        ?>
+
+        <main class="content">
 
 <div class="container">
 
@@ -113,6 +115,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
 </div>
+        </main>
+
+        <?php include __DIR__ . '/../../partials/footer.php'; ?>
+
+    </div>
+</div>
+
+<?php include __DIR__ . '/../../partials/scripts_layout_footer.php'; ?>
 
 </body>
 </html>
