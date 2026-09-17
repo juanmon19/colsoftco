@@ -388,7 +388,7 @@ require_once "../../app/verificar_sesion.php";
 
         <div class="footer-bottom">
             <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>Equipo SENA</strong></span>
+            <span>Desarrollado por <strong>  Equipo COLSOTCO</strong></span>
         </div>
     </footer>
 
@@ -400,6 +400,7 @@ require_once "../../app/verificar_sesion.php";
     <?php require_once __DIR__ . '/../partials/botpress.php'; ?>
 
     <script src="../../public/js/app.js"></script>
+    <script src="../../public/js/menu_activo.js"></script>
 
     <script>
         const sidebar = document.getElementById("sidebar");

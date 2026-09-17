@@ -837,3 +837,19 @@ html[data-tema="oscuro"] .task-count { background: rgba(212, 175, 55, 0.16); col
     .footer-top { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
     .footer-bottom { justify-content: center; text-align: center; padding: 0.8rem 1.5rem; }
 }
+
+/* ===== Módulo activo en dorado ===== */
+.sidebar .sidebar-links button.activo {
+    background: #D4AF37;
+    color: #0A1F44;
+    font-weight: 700;
+    box-shadow: inset 4px 0 0 rgba(255, 255, 255, 0.45);
+}
+.sidebar .sidebar-links button.activo:hover {
+    background: #b8941f;
+    color: #0A1F44;
+}
+html[data-tema="oscuro"] .sidebar .sidebar-links button.activo {
+    background: #d4af37;
+    color: #08172e;
+}

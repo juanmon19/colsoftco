@@ -183,13 +183,13 @@ $material = $stmt->fetch(PDO::FETCH_ASSOC);
                 <p class="footer-col-title">Contacto</p>
                 <div class="footer-contact-item">📍 Bogotá, Colombia</div>
                 <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
+                <div class="footer-contact-item">📞 +57 322905224</div>
                 <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
             </div>
         </div>
         <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>Equipo SENA</strong></span>
+            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex.  </span>
+            <span>Desarrollado por <strong>  Equipo COLSOTCO</strong></span>
         </div>
     </footer>
 

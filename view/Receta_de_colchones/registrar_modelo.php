@@ -60,7 +60,7 @@ $materialesDisponibles = $dbConn->query("
                     </div>
                 </div>
 
-                <h3 style="font-size:16px;margin-bottom:12px;color:#0A1F44;">🧪 Receta (Obligatoria)</h3>
+                <h3 style="font-size:16px;margin-bottom:12px;color:#D4AF37;">🧪 Receta (Obligatoria)</h3>
                 <p style="font-size:13px;color:#666;margin-bottom:12px;">Agrega los materiales que componen este modelo de colchón.</p>
 
                 <div id="regRecetaContainer">

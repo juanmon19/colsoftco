@@ -1557,3 +1557,19 @@ html[data-tema="oscuro"] .priority.medium { background: rgba(212, 175, 55, 0.16)
     width: 90vw;
     padding: 16px;
 }
+
+/* ===== Módulo activo en dorado ===== */
+.sidebar .sidebar-links button.activo {
+    background: #D4AF37;
+    color: #0A1F44;
+    font-weight: 700;
+    box-shadow: inset 4px 0 0 rgba(255, 255, 255, 0.45);
+}
+.sidebar .sidebar-links button.activo:hover {
+    background: #b8941f;
+    color: #0A1F44;
+}
+html[data-tema="oscuro"] .sidebar .sidebar-links button.activo {
+    background: #d4af37;
+    color: #08172e;
+}

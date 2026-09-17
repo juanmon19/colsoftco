@@ -1,4 +1,5 @@
 <script src="../../public/js/app.js"></script>
+<script src="../../public/js/menu_activo.js"></script>
 
 <script>
     // ================= SIDEBAR MÓVIL =================

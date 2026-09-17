@@ -86,6 +86,17 @@ if ($accion === 'actualizar') {
     if ($estado !== null && in_array($estado, ['pendiente', 'por-hacer', 'terminado'], true)) {
         $campos[] = 'estado = :estado';
         $params[':estado'] = $estado;
+
+        // Módulo estadisticas: sella fecha_cierre al terminar (NULL al reabrir).
+        // Silencioso si la migración aún no se aplicó.
+        try {
+            $col = $db->query("SHOW COLUMNS FROM tareas LIKE 'fecha_cierre'")->fetch();
+            if ($col) {
+                $campos[] = $estado === 'terminado' ? 'fecha_cierre = NOW()' : 'fecha_cierre = NULL';
+            }
+        } catch (Throwable $e) {
+            // sin columna: se actualiza solo el estado
+        }
     }
 
     if ($prioridad !== null && in_array($prioridad, ['low', 'medium', 'high'], true)) {
