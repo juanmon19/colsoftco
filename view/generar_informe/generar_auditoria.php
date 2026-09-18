@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../app/verificar_sesion.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Dompdf\Dompdf;

@@ -6,20 +6,20 @@ require_once __DIR__ . "/../config/conexion.php";
 $conexion = new Conexion();
 $db = $conexion->getConnection();
 
-// 1. Intentamos obtener el ID si existe, o el documento/email de la sesión
-$idUsuario = $_SESSION['id_usuario'] ?? $_SESSION['id'] ?? $_SESSION['usuario_id'] ?? null;
+// Identidad canónica: el documento de la sesión manda (verificar_sesion.php ya
+// validó token, actividad y refrescó nombre/rol desde la BD).
+// Se ignora cualquier id viejo que no pertenezca a ese documento para no
+// mostrar otro usuario (ej. ver a Juan estando logueado como María José).
 $documentoSesion = $_SESSION['documento'] ?? null;
-$emailSesion = $_SESSION['email'] ?? null;
-
-// 2. Si no hay ID, lo buscamos en la base de datos
-if (!$idUsuario && ($documentoSesion || $emailSesion)) {
-    $stmtId = $db->prepare("SELECT id_usuario FROM usuarios WHERE documento = :doc OR email = :email LIMIT 1");
-    $stmtId->execute([':doc' => $documentoSesion, ':email' => $emailSesion]);
-    $idUsuario = $stmtId->fetchColumn();
-    
-    // ¡NUEVO! Lo guardamos en la sesión para estabilizarlo
+$idUsuario = null;
+if ($documentoSesion) {
+    $stmtId = $db->prepare("SELECT id_usuario FROM usuarios WHERE documento = :doc LIMIT 1");
+    $stmtId->execute([':doc' => $documentoSesion]);
+    $idUsuario = $stmtId->fetchColumn() ?: null;
     if ($idUsuario) {
-        $_SESSION['id_usuario'] = $idUsuario;
+        $_SESSION['user_id'] = (int) $idUsuario;
+        $_SESSION['id_usuario'] = (int) $idUsuario;
+        unset($_SESSION['id'], $_SESSION['usuario_id']);
     }
 }
 

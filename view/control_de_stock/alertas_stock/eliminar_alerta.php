@@ -1,9 +1,8 @@
 <?php
 
+require_once __DIR__ . '/../../../app/verificar_sesion.php';
 require_once '../../../app/logica_inventario.php';
 require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
-
-session_start();
 
 $logica = new InventarioLogica();
 

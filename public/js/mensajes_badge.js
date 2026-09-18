@@ -1,8 +1,9 @@
 (function() {
     'use strict';
+    const BASE_APP = (typeof PREFIJO_APP !== 'undefined') ? PREFIJO_APP : '/colsoftco/';
     async function actualizarBadgeMensajes() {
         try {
-            const resp = await fetch('../../app/logica_mensajes.php?accion=no_leidos');
+            const resp = await fetch(BASE_APP + 'app/logica_mensajes.php?accion=no_leidos');
             const data = await resp.json();
             const badge = document.getElementById('badgeMensajesNoLeidos');
             if (!badge) return;

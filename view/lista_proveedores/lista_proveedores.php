@@ -22,6 +22,8 @@ if (!in_array($estadoFiltro, ['activo', 'inactivo'], true)) {
 
 $proveedores = $logica->getProveedores($estadoFiltro);
 $conteos = $logica->contarProveedoresPorEstado();
+// Solo el admin gestiona proveedores; bodeguero/operario solo lectura + solicitud.
+$soloLecturaProveedores = !es_admin();
 
 ?>
 
@@ -75,6 +77,7 @@ $conteos = $logica->contarProveedoresPorEstado();
                     </div>
 
                     <div class="actions">
+                        <?php if (!$soloLecturaProveedores): ?>
                         <button class="btn-action" onclick="window.location.href='registro_proveedores.php'">
                             Registrar Proveedor
                         </button>
@@ -83,6 +86,9 @@ $conteos = $logica->contarProveedoresPorEstado();
                             onclick="window.location.href='../historial_movimientos/historial.php'">
                             historial de movimientos
                         </button>
+                        <?php else: ?>
+                        <span class="badge-solo-lectura">Vista de solo lectura — solicita pedidos con “Solicitar pedido”</span>
+                        <?php endif; ?>
                     </div>
 
                 </div>
@@ -213,6 +219,7 @@ $conteos = $logica->contarProveedoresPorEstado();
 
                                 <div class="provider-buttons">
 
+                                    <?php if (!$soloLecturaProveedores): ?>
                                     <div class="btn-group-top">
 
                                         <a href="editar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>" class="btn-card">
@@ -240,6 +247,13 @@ $conteos = $logica->contarProveedoresPorEstado();
                                         class="btn-card btn-card-large">
                                         Contactar
                                     </a>
+                                    <?php else: ?>
+                                    <a
+                                        href="contactar_proveedor.php?id=<?php echo (int)$proveedor['id_proveedor']; ?>"
+                                        class="btn-card btn-card-large">
+                                        Solicitar pedido
+                                    </a>
+                                    <?php endif; ?>
 
                                 </div>
 

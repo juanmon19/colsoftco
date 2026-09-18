@@ -570,3 +570,9 @@ html[data-tema="oscuro"] .pagina-link {
 html[data-tema="oscuro"] a {
   color: var(--gold, #d4af37);
 }
+
+/* Calendario + aviso de actividad del día */
+#fechaDia { color-scheme: dark; }
+.aviso-fecha { display: block; margin-top: 6px; font-size: 12px; }
+.aviso-fecha.ok { color: #4ade80; }
+.aviso-fecha.vacio { color: #fbbf24; }

@@ -2,11 +2,18 @@
 header('Content-Type: application/json');
 session_start();
 require_once '../config/conexion.php';
+require_once __DIR__ . '/permisos.php';
 require_once __DIR__ . '/logica_inventario.php';
 require_once __DIR__ . '/HistorialMovimientos.php';
 
 if (!isset($_SESSION['documento'])) {
     echo json_encode(['ok' => false, 'error' => 'Sesión no válida.']);
+    exit();
+}
+
+// Cambiar estados del inventario es de bodega/administración; el operario es solo lectura.
+if (es_operario()) {
+    echo json_encode(['ok' => false, 'error' => 'Tu rol solo puede consultar el inventario.']);
     exit();
 }
 

@@ -36,6 +36,8 @@ $materiales = $stmtMateriales->fetchAll(PDO::FETCH_ASSOC);
 
 $mensaje = '';
 $mensajeTipo = ''; // 'exito' o 'error'
+// Bodeguero/Operario no contactan al proveedor: solicitan al admin.
+$esSolicitudInterna = !es_admin();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -61,8 +63,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nombreMaterial = $infoMaterial['nombre_material'] ?? 'Material';
         $unidadMaterial = $infoMaterial['nombre_unidad'] ?? '';
 
+        $nombreSolicitante = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema';
+        $rolSolicitante = rol_legible();
+
+        if ($esSolicitudInterna) {
+            // =====================================
+            // SOLICITUD INTERNA AL ADMINISTRADOR
+            // No se crea pedido ni se contacta al proveedor.
+            // Se avisa a todos los admins por mensajería + correo.
+            // =====================================
+            $textoSolicitud = "El {$rolSolicitante} {$nombreSolicitante} solicita pedir '{$nombreMaterial}' (cantidad: {$cantidad} {$unidadMaterial}) al proveedor '{$proveedor['nombre_empresa']}'. Por favor gestiónalo desde el módulo de proveedores.";
+            try {
+                $admins = $conn->query("SELECT id_usuario, email FROM usuarios WHERE rol = 'administrador' AND activo = 1")->fetchAll(PDO::FETCH_ASSOC);
+                $miId = (int) ($_SESSION['user_id'] ?? 0);
+                foreach ($admins as $adm) {
+                    if ((int) $adm['id_usuario'] === $miId) {
+                        continue;
+                    }
+                    $stmtMsg = $conn->prepare("INSERT INTO mensajes (id_remitente, id_destinatario, asunto, contenido) VALUES (:rem, :dest, :asunto, :contenido)");
+                    $stmtMsg->execute([
+                        ':rem' => $miId,
+                        ':dest' => (int) $adm['id_usuario'],
+                        ':asunto' => "Solicitud de pedido: {$proveedor['nombre_empresa']}",
+                        ':contenido' => $textoSolicitud,
+                    ]);
+                }
+                // Correo al buzón admin configurado
+                if (defined('USERNAME') && filter_var(USERNAME, FILTER_VALIDATE_EMAIL)) {
+                    enviarCorreoSolicitudAdmin(USERNAME, $proveedor['nombre_empresa'], $nombreMaterial, (string) $cantidad, (string) $unidadMaterial, $nombreSolicitante, $rolSolicitante);
+                }
+            } catch (Throwable $e) {
+                error_log('Error en solicitud interna de pedido: ' . $e->getMessage());
+            }
+
+            (new HistorialMovimientos())->registrar([
+                'modulo'       => 'pedidos_proveedor',
+                'accion'       => 'solicitud',
+                'id_registro'  => $idProveedor,
+                'descripcion'  => "Solicitud interna: {$nombreSolicitante} ({$rolSolicitante}) pidió {$cantidad} {$unidadMaterial} de '{$nombreMaterial}' al proveedor '{$proveedor['nombre_empresa']}'",
+                'datos_nuevos' => [
+                    'id_proveedor'    => $idProveedor,
+                    'id_material'     => $idMaterial,
+                    'cantidad_pedida' => $cantidad,
+                ],
+                'usuario_nombre' => $nombreSolicitante,
+            ]);
+
+            $mensajeTipo = 'exito';
+            $mensaje = "Solicitud enviada al administrador. Él gestionará el pedido con el proveedor.";
+        } else {
         // =====================================
-        // GUARDAR PEDIDO EN LA BASE DE DATOS
+        // FLUJO ADMIN: GUARDAR PEDIDO EN LA BASE DE DATOS
         // =====================================
 
         $stmtInsert = $conn->prepare("
@@ -124,6 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensaje = "No se pudo registrar el pedido. Intenta de nuevo.";
             $mensajeTipo = 'error';
         }
+        }
     }
 }
 
@@ -165,6 +217,39 @@ function enviarCorreoPedido($correoDestino, $nombreEmpresaProveedor, $nombreMate
 
     } catch (Exception $e) {
         error_log("Error enviando correo de pedido: {$mail->ErrorInfo}");
+        return false;
+    }
+}
+
+function enviarCorreoSolicitudAdmin($correoAdmin, $nombreEmpresaProveedor, $nombreMaterial, $cantidad, $unidadMaterial, $solicitante, $rolSolicitante)
+{
+    $mail = new PHPMailer(true);
+    try {
+        $mail->SMTPDebug = SMTP::DEBUG_OFF;
+        $mail->isSMTP();
+        $mail->Host       = HOST;
+        $mail->SMTPAuth   = true;
+        $mail->Username   = USERNAME;
+        $mail->Password   = PASSWORD;
+        $mail->SMTPSecure = 'tls';
+        $mail->Port       = 587;
+        $mail->CharSet    = 'UTF-8';
+
+        $mail->setFrom('colsoftco4@gmail.com', 'COLSOFTCO - Solicitudes');
+        $mail->addAddress($correoAdmin, 'Administrador COLSOFTCO');
+
+        $mail->isHTML(true);
+        $mail->Subject = "Solicitud de pedido ({$rolSolicitante}): {$nombreEmpresaProveedor}";
+        $mail->Body    = "<p>El {$rolSolicitante} <b>" . htmlspecialchars($solicitante) . "</b> solicita realizar un pedido:</p>"
+            . "<p><b>Proveedor:</b> " . htmlspecialchars($nombreEmpresaProveedor) . "<br>"
+            . "<b>Materia prima:</b> " . htmlspecialchars($nombreMaterial) . "<br>"
+            . "<b>Cantidad:</b> " . htmlspecialchars(trim($cantidad . ' ' . $unidadMaterial)) . "</p>"
+            . "<p>Ingresa al módulo de proveedores para gestionarlo.</p>";
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Error enviando solicitud al admin: {$mail->ErrorInfo}");
         return false;
     }
 }
@@ -215,6 +300,9 @@ function enviarCorreoPedido($correoDestino, $nombreEmpresaProveedor, $nombreMate
             </div>
 
             <h2><?= htmlspecialchars($proveedor['nombre_empresa']) ?></h2>
+            <?php if ($esSolicitudInterna): ?>
+            <p class="aviso-solicitud">Estás en modo solicitud: tu pedido llegará al administrador, no al proveedor.</p>
+            <?php endif; ?>
             <p><?= htmlspecialchars($proveedor['descripcion_empresa']) ?></p>
 
             <?php if (!empty($mensaje)): ?>
@@ -232,7 +320,7 @@ function enviarCorreoPedido($correoDestino, $nombreEmpresaProveedor, $nombreMate
             <?php else: ?>
 
                 <button id="btnContactar" class="btn-contacto">
-                    Realizar Pedido
+                    <?= $esSolicitudInterna ? 'Solicitar Pedido al Administrador' : 'Realizar Pedido' ?>
                 </button>
 
             <?php endif; ?>

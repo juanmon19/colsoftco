@@ -9,6 +9,8 @@ $dbConn = $conexion->getConnection();
 $modelos = $dbConn->query(
     "SELECT id_modelo, nombre_modelo FROM modelos_colchon ORDER BY nombre_modelo ASC"
 )->fetchAll(PDO::FETCH_ASSOC);
+// Operario: solo lectura (ve recetas para ensamblar, sin crear ni editar).
+$soloLecturaReceta = es_operario();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -78,8 +80,12 @@ $modelos = $dbConn->query(
             </div>
         </div>
         <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
+        <?php if (!$soloLecturaReceta): ?>
         <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='registrar_modelo.php'">📋 Registrar Nuevo Modelo de Colchón</button>
         <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='editar_receta.php'">✏️ Editar Receta</button>
+        <?php else: ?>
+        <p class="aviso-solo-lectura">Modo solo lectura: puedes consultar recetas para ensamblar, pero no crear ni editar modelos.</p>
+        <?php endif; ?>
     </div>
             </main>
 

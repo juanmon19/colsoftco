@@ -9,7 +9,14 @@
  * distinto a "Administrador", ej:
  *   <?php $rolActual = 'Bodeguero'; include __DIR__ . '/../partials/topbar.php'; ?>
  */
-$rolActual = $rolActual ?? 'Administrador';
+// El rol SIEMPRE viene de la sesión para que no "cambie" al navegar.
+// Se ignora cualquier $rolActual hardcodeado en las vistas.
+require_once __DIR__ . '/../../app/permisos.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$rolActual = rol_legible();
+$rolKey = rol_actual();
 /* $prefijo lo calcula sidebar.php (se incluye siempre antes); fallback por si acaso */
 if (!isset($prefijo)) {
     $prefijo = '';
@@ -43,9 +50,11 @@ if (!isset($prefijo)) {
             </button>
 
             <div class="perfil-dropdown" id="perfilDropdown">
+                <?php if (($rolKey ?? '') === 'administrador' || ($rolKey ?? '') === ''): ?>
                 <button type="button" onclick="window.location.href='<?= $prefijo ?>../registro/registro.php'">
                     ➕ Registrar usuario
                 </button>
+                <?php endif; ?>
                 <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
                 <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
                 <button type="button" id="btnTemaOscuro">

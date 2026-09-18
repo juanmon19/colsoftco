@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../../app/verificar_sesion.php';
 require_once('../../config/conexion.php');
 
 /* Evita que el navegador restaure esta página desde su caché al
@@ -23,6 +24,9 @@ $stmt = $conn->prepare($sql);
 $stmt->execute();
 
 $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// El operario consulta y registra (registromp), pero no edita ni cambia estados.
+$soloLecturaInv = es_operario();
 
 ?>
 
@@ -178,14 +182,16 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>Stock Mínimo</th>
                         <th>Alerta Stock</th>
                         <th>Estado</th>
+                        <?php if (!$soloLecturaInv): ?>
                         <th>Acciones</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
 
                 <tbody id="listaMateriales">
 
                     <?php foreach ($materiales as $m): ?>
-                        <tr data-id="<?= (int)$m['id_material'] ?>" data-nombre="<?php echo htmlspecialchars(strtolower($m['nombre_material'])); ?>">
+                        <tr data-id="<?= (int)$m['id_material'] ?>" data-nombre="<?php echo htmlspecialchars(strtolower($m['nombre_material'])); ?>" data-estado="<?= htmlspecialchars($m['estado']) ?>">
                             <td><?= $m['id_material'] ?></td>
                             <td><?= htmlspecialchars($m['nombre_material']) ?></td>
                             <td><?= $m['stock_actual'] ?></td>
@@ -204,11 +210,12 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?= $m['estado'] === 'activo' ? 'Activo' : 'Inactivo' ?>
                                 </span>
                             </td>
+                            <?php if (!$soloLecturaInv): ?>
                             <td class="acciones">
                                 <a class="btn-editar" href="../control_de_stock/inventario/editar_inventario.php?id=<?= $m['id_material'] ?>">
                                     Editar
                                 </a>
-                        
+
                                 <button class="btn-toggle-estado"
                                         data-id="<?= $m['id_material'] ?>"
                                         data-estado="<?= $m['estado'] ?>"
@@ -218,6 +225,7 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?= $m['estado'] === 'activo' ? 'Deshabilitar' : 'Habilitar' ?>
                                 </button>
                             </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
 
@@ -366,12 +374,12 @@ $materiales = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         });
 
-        // Filtrar por estado
+        // Filtrar por estado (lee el data-estado de la fila; en solo lectura no hay botones)
         function filtrarPorEstado() {
             const filtro = document.getElementById('filtroEstado').value;
             const filas = document.querySelectorAll('#listaMateriales tr');
             filas.forEach(fila => {
-                const estado = fila.querySelector('.btn-toggle-estado')?.dataset.estado;
+                const estado = fila.dataset.estado || fila.querySelector('.btn-toggle-estado')?.dataset.estado;
                 if (!estado) return;
                 if (filtro === 'todos') fila.style.display = '';
                 else fila.style.display = (estado === filtro) ? '' : 'none';

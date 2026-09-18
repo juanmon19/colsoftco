@@ -33,6 +33,7 @@ try {
 </head>
 
 <body>
+<?php if (!empty($_SESSION['aviso_rol'])): ?><script>document.addEventListener('DOMContentLoaded',()=>{alert(<?= json_encode($_SESSION['aviso_rol']) ?>);});</script><?php unset($_SESSION['aviso_rol']); endif; ?>
 
     <div class="menu-overlay" id="menuOverlay"></div>
 

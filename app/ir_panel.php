@@ -1,6 +1,14 @@
 <?php
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Si llega con ?denegado=1 es porque la guardia de roles bloqueó una ruta.
+// Se guarda el aviso y se le devuelve a SU panel (el rol nunca cambia).
+if (isset($_GET['denegado'])) {
+    $_SESSION['aviso_rol'] = 'No tienes permiso para ese módulo. Te devolvimos a tu panel.';
+}
 
 if (!isset($_SESSION['rol'])) {
     header("Location: ../view/login/login.php");

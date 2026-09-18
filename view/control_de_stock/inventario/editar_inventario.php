@@ -1,10 +1,9 @@
 <?php
 
+require_once __DIR__ . '/../../../app/verificar_sesion.php';
 require_once '../../../config/conexion.php';
 require_once __DIR__ . '/../../../app/HistorialMovimientos.php';
 require_once __DIR__ . '/../../../app/alerta_stock.php';
-
-session_start();
 
 $db = new Conexion();
 $conn = $db->getConnection();

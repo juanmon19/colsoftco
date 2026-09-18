@@ -167,13 +167,14 @@ function construirQuery(array $filtros, int $pagina): string
 
                     <div class="campo-filtro" data-para="dia">
                         <label for="fechaDia">Selecciona el día</label>
-                        <select id="fechaDia" name="fecha_dia">
-                            <?php foreach ($fechasDisponibles as $fecha): ?>
-                                <option value="<?= htmlspecialchars($fecha) ?>">
-                                    <?= date('d/m/Y', strtotime($fecha)) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <input type="date" id="fechaDia" name="fecha_dia"
+                            value="<?= htmlspecialchars($fechasDisponibles[0] ?? date('Y-m-d')) ?>"
+                            <?php if (!empty($fechasDisponibles)): ?>
+                            min="<?= htmlspecialchars(end($fechasDisponibles)) ?>"
+                            <?php endif; ?>
+                            max="<?= date('Y-m-d') ?>"
+                            style="color-scheme: dark;">
+                        <small id="avisoDia" class="aviso-fecha"></small>
                     </div>
 
                     <div class="campo-filtro oculto" data-para="semana">
@@ -337,6 +338,26 @@ function construirQuery(array $filtros, int $pagina): string
     <script>
         const radios = document.querySelectorAll('input[name="tipo"]');
         const campos = document.querySelectorAll('.campo-filtro[data-para]');
+
+        // Calendario: avisa si el día elegido no tiene actividad registrada.
+        const FECHAS_CON_ACTIVIDAD = <?= json_encode(array_values($fechasDisponibles), JSON_UNESCAPED_UNICODE) ?>;
+        const inputDia = document.getElementById('fechaDia');
+        const avisoDia = document.getElementById('avisoDia');
+        function actualizarAvisoDia() {
+            if (!inputDia || !avisoDia) return;
+            if (!inputDia.value) { avisoDia.textContent = ''; return; }
+            if (FECHAS_CON_ACTIVIDAD.includes(inputDia.value)) {
+                avisoDia.textContent = '✔ Con actividad registrada';
+                avisoDia.className = 'aviso-fecha ok';
+            } else {
+                avisoDia.textContent = 'Sin actividad ese día (el PDF saldrá vacío)';
+                avisoDia.className = 'aviso-fecha vacio';
+            }
+        }
+        if (inputDia) {
+            inputDia.addEventListener('change', actualizarAvisoDia);
+            actualizarAvisoDia();
+        }
 
         function actualizarCampoFecha() {
             const tipoSeleccionadoEl = document.querySelector('input[name="tipo"]:checked');

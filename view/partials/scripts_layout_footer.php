@@ -16,6 +16,9 @@ $prefijoJs = json_encode($prefijo . '../../');
 ?>
 <script src="<?= $prefijo ?>../../public/js/app.js"></script>
 <script src="<?= $prefijo ?>../../public/js/menu_activo.js"></script>
+<?php if (!empty($_SESSION['aviso_rol'])): ?>
+<script>document.addEventListener('DOMContentLoaded', () => { if (window.showToast) showToast(<?= json_encode($_SESSION['aviso_rol']) ?>, 'error'); else alert(<?= json_encode($_SESSION['aviso_rol']) ?>); });</script>
+<?php unset($_SESSION['aviso_rol']); endif; ?>
 
 <script>
     // Base para los endpoints del perfil, válida a cualquier profundidad de vista

@@ -7,12 +7,14 @@ ini_set('display_startup_errors', 0);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 date_default_timezone_set('America/Bogota');
 
-require '../config/conexion.php';
-require '../config/setting.php';
-require '../vendor/autoload.php';
+require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/../config/setting.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -38,7 +40,7 @@ if (isset($_POST['login'])) {
         ]);
     } else {
         $_SESSION['error'] = 'Ingrese sus credenciales';
-        header("location:../view/registro/registro.php");
+        header("location:../view/login/login.php");
         exit();
     }
 }
@@ -208,9 +210,6 @@ function login(array $credenciales)
 
         if ($UsuarioEmail === $credenciales['documento'] or $UsuarioDocumento === $credenciales['documento']) {
             if (password_verify($credenciales['password'], $HashPassword)) {
-                session_regenerate_id(true);
-
-               
                 if (!empty($Usuario[0]['token_sesion'])) {
                     $ipIngreso = $_SERVER['REMOTE_ADDR'] ?? 'IP desconocida';
                     $fechaIngreso = date('d/m/Y H:i:s');
@@ -245,10 +244,15 @@ function login(array $credenciales)
                 $nuevoTokenSesion = bin2hex(random_bytes(32));
                 guardarTokenSesion($Usuario[0]['id_usuario'], $nuevoTokenSesion);
                 refrescarUltimaActividad($Usuario[0]['id_usuario']);
+                // Sesión fresca: se borra cualquier resto del usuario anterior
+                // (evita que id_usuario/id/usuario_id viejos hagan ver otro nombre).
+                $_SESSION = [];
+                session_regenerate_id(true);
                 $_SESSION['token_sesion'] = $nuevoTokenSesion;
 
-                $_SESSION['user_id'] = $Usuario[0]['id_usuario'];
-                $_SESSION['rol'] = $Usuario[0]['rol'];
+                $_SESSION['user_id'] = (int) $Usuario[0]['id_usuario'];
+                $_SESSION['id_usuario'] = (int) $Usuario[0]['id_usuario'];
+                $_SESSION['rol'] = strtolower(trim($Usuario[0]['rol']));
                 $_SESSION['nombre'] = $Usuario[0]['nombre'];
                 $_SESSION['apellido'] = $Usuario[0]['apellido'];
                 $_SESSION['documento'] = $Usuario[0]['documento'];

@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../../../app/verificar_sesion.php';
 require_once('../../../config/conexion.php');
 
 /* Evita que el navegador restaure esta página desde su caché al

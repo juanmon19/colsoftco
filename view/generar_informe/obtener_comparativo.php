@@ -2,6 +2,7 @@
 // Vista previa JSON del informe comparativo (una fila por material + diferencias).
 // GET: mes_a=2026-8&mes_b=2026-9
 header('Content-Type: application/json');
+require_once __DIR__ . '/../../app/verificar_sesion.php';
 require_once "../../config/conexion.php";
 require_once __DIR__ . '/../../app/logica_informes.php';
 

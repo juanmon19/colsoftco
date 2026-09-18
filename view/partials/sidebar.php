@@ -1,17 +1,13 @@
 <?php
 /**
- * Partial: Sidebar de navegación (COLSOFTCO)
- *
- * Cómo incluirlo desde cualquier vista en view/<modulo>/<archivo>.php:
- *   <?php include __DIR__ . '/../partials/sidebar.php'; ?>
- *
- * Desde subniveles (view/<modulo>/<sub>/<archivo>.php):
- *   <?php include __DIR__ . '/../../partials/sidebar.php'; ?>
- *   (las rutas se auto-ajustan con $prefijo, no hay que hacer nada más)
- *
- * $prefijo se calcula solo según la profundidad de la vista:
- * view/<modulo>/ -> '' ; view/<modulo>/<sub>/ -> '../', etc.
+ * Partial: Sidebar de navegación (COLSOFTCO) — filtrado por rol.
+ * El rol siempre sale de $_SESSION, nunca de $rolActual hardcodeado.
  */
+require_once __DIR__ . '/../../app/permisos.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$rolKey = rol_actual();
 if (!isset($prefijo)) {
     $prefijo = '';
     $script = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
@@ -22,6 +18,7 @@ if (!isset($prefijo)) {
         }
     }
 }
+$ver = fn(string $archivo) => puede_acceder($archivo, $rolKey ?: 'administrador');
 ?>
 <div class="menu-overlay" id="menuOverlay"></div>
 
@@ -42,17 +39,34 @@ if (!isset($prefijo)) {
 
     <nav class="nav" id="navMenu">
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../../app/ir_panel.php'">🏠 Panel Principal</button>
+        <?php if ($ver('lista_proveedores.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>
+        <?php endif; ?>
+        <?php if ($ver('historial.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../historial_movimientos/historial.php'">Historial de Movimientos</button>
+        <?php endif; ?>
+        <?php if ($ver('generar_informe.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../generar_informe/generar_informe.php'">Generar Informe</button>
+        <?php endif; ?>
+        <?php if ($ver('registromp.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../registromp/registromp.php'">Registrar Materia Prima</button>
+        <?php endif; ?>
+        <?php if ($ver('control_de_stock.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../control_de_stock/control_de_stock.php'">Control de Stock</button>
+        <?php endif; ?>
+        <?php if ($ver('inventario_materia_prima.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../inventario_materia_prima/inventario_materia_prima.php'">Inventario de Materia Prima</button>
+        <?php endif; ?>
+        <?php if ($ver('inventario_productos_terminados.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
+        <?php endif; ?>
+        <?php if ($ver('registro_producto_terminado.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../registro_de_producto_terminado/registro_producto_terminado.php'">Registrar Producto Terminado</button>
+        <?php endif; ?>
+        <?php if ($ver('receta_colchones.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../Receta_de_colchones/receta_colchones.php'">Receta de Colchones</button>
+        <?php endif; ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
     </nav>
 
-   
 </aside>

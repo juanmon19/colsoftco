@@ -126,9 +126,10 @@
         `).join('');
     }
 
+    const BASE_APP = (typeof PREFIJO_APP !== 'undefined') ? PREFIJO_APP : '/colsoftco/';
     async function cargarTareas() {
         try {
-            const resp = await fetch('../../app/logica_tareas.php?accion=listar');
+            const resp = await fetch(BASE_APP + 'app/logica_tareas.php?accion=listar');
             const data = await resp.json();
             if (!data.ok) {
                 taskTableBody.innerHTML = '<p class="placeholder">No se pudieron cargar las tareas.</p>';
@@ -153,7 +154,7 @@
         const prioridad = fila.querySelector('.edit-priority').value;
 
         try {
-            const resp = await fetch('../../app/logica_tareas.php', {
+            const resp = await fetch(BASE_APP + 'app/logica_tareas.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `accion=actualizar&id_tarea=${encodeURIComponent(id)}&estado=${encodeURIComponent(estado)}&prioridad=${encodeURIComponent(prioridad)}`
@@ -175,7 +176,7 @@
         if (!confirm('¿Eliminar esta tarea?')) return;
 
         try {
-            const resp = await fetch('../../app/logica_tareas.php', {
+            const resp = await fetch(BASE_APP + 'app/logica_tareas.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `accion=eliminar&id_tarea=${encodeURIComponent(id)}`
@@ -195,7 +196,7 @@
         if (!sugerenciasTareas) return;
         let sugerencias = [...sugerenciasFijas];
         try {
-            const resp = await fetch('../../app/logica_tareas.php?accion=sugerencias');
+            const resp = await fetch(BASE_APP + 'app/logica_tareas.php?accion=sugerencias');
             const data = await resp.json();
             if (data.ok && Array.isArray(data.sugerencias)) {
                 sugerencias = [...new Set([...sugerencias, ...data.sugerencias])];
@@ -274,7 +275,7 @@
         }
 
         try {
-            const resp = await fetch('../../app/logica_tareas.php', {
+            const resp = await fetch(BASE_APP + 'app/logica_tareas.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `accion=crear&titulo=${encodeURIComponent(titulo)}&prioridad=${encodeURIComponent(prioridad)}&fecha_vencimiento=${encodeURIComponent(vencimiento)}`

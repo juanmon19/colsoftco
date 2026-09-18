@@ -10,6 +10,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once __DIR__ . '/permisos.php';
+
 // URL única de login (absoluta para no depender del cwd ni de la carpeta actual)
 if (!function_exists('colsoftco_login_url')) {
     function colsoftco_login_url(): string {
@@ -58,10 +60,21 @@ if (!isset($__dbCheck)) {
     $__dbCheck = new Conexion();
 }
     $__stmtActivo = $__dbCheck->getConnection()->prepare(
-        "SELECT activo, ultima_actividad FROM usuarios WHERE documento = :doc LIMIT 1"
+        "SELECT id_usuario, nombre, apellido, email, rol, activo, ultima_actividad FROM usuarios WHERE documento = :doc LIMIT 1"
     );
     $__stmtActivo->execute([':doc' => $_SESSION['documento']]);
     $__rowActivo = $__stmtActivo->fetch(PDO::FETCH_ASSOC);
+    // Refresca la sesión desde la BD para que cambios de nombre/rol hechos
+    // por el admin apliquen sin re-login (evita ver otro nombre/rol viejo).
+    if ($__rowActivo) {
+        $_SESSION['user_id'] = (int) ($__rowActivo['id_usuario'] ?? $_SESSION['user_id'] ?? 0);
+        $_SESSION['id_usuario'] = (int) $_SESSION['user_id'];
+        unset($_SESSION['id'], $_SESSION['usuario_id']);
+        $_SESSION['nombre'] = $__rowActivo['nombre'] ?? ($_SESSION['nombre'] ?? '');
+        $_SESSION['apellido'] = $__rowActivo['apellido'] ?? ($_SESSION['apellido'] ?? '');
+        $_SESSION['email'] = $__rowActivo['email'] ?? ($_SESSION['email'] ?? '');
+        $_SESSION['rol'] = strtolower(trim($__rowActivo['rol'] ?? ($_SESSION['rol'] ?? '')));
+    }
 
     if (!$__rowActivo || (int) $__rowActivo['activo'] !== 1) {
         session_unset();
@@ -93,6 +106,24 @@ if (!isset($__dbCheck)) {
         "UPDATE usuarios SET ultima_actividad = NOW() WHERE documento = :doc"
     );
     $__stmtAct->execute([':doc' => $_SESSION['documento']]);
+
+// ══ GUARDIA AUTOMÁTICA DE ROLES ══
+// Todas las vistas que incluyen este archivo quedan protegidas según app/permisos.php.
+// Así el rol NO cambia al navegar: si un bodeguero entra a una ruta de admin,
+// se le devuelve a su panel en vez de mostrarle contenido de otro rol.
+{
+    $__script = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+    $__base = basename($__script);
+    // Rutas abiertas aun con sesión (cambio/recupero de clave, ver recibo público si aplica)
+    $__abiertas = ['login.php', 'recuperar_contrasena.php', 'cambio_contrasena.php'];
+    if ($__base !== '' && !in_array($__base, $__abiertas, true) && strpos($__script, '/view/') !== false) {
+        $__rol = strtolower(trim($_SESSION['rol'] ?? ''));
+        if (!puede_acceder($__base, $__rol)) {
+            header("Location: /colsoftco/app/ir_panel.php?denegado=1");
+            exit();
+        }
+    }
+}
 
 /**
  * Genera un token CSRF y lo almacena en la sesión.

@@ -1,6 +1,23 @@
 <?php
 
 require_once "../../app/verificar_sesion.php";
+require_once "../../config/conexion.php";
+
+// Datos reales del panel (igual que panel_admin, pero con alcance de bodega).
+try {
+    $dbPanel = (new Conexion())->getConnection();
+    $inventarioBodega = (float) $dbPanel->query("SELECT COALESCE(SUM(stock_actual), 0) FROM materias_primas")->fetchColumn();
+    $productosBodega = (float) $dbPanel->query("SELECT COALESCE(SUM(stock_actual), 0) FROM productos_terminados")->fetchColumn();
+    $proveedoresBodega = (int) $dbPanel->query("SELECT COUNT(*) FROM proveedores")->fetchColumn();
+    try {
+        $tareasBodega = (int) $dbPanel->query("SELECT COUNT(*) FROM tareas WHERE estado = 'pendiente'")->fetchColumn();
+    } catch (Throwable $e) {
+        $tareasBodega = 0;
+    }
+} catch (Throwable $e) {
+    $inventarioBodega = $productosBodega = 0;
+    $proveedoresBodega = $tareasBodega = 0;
+}
 
 ?>
 
@@ -11,19 +28,23 @@ require_once "../../app/verificar_sesion.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Bodeguero - Max & Flex</title>
     <link rel="stylesheet" href="../../public/css/global.css">
+    <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="panelbodeguero.css">
+    <link rel="stylesheet" href="../panel_admin/paneladmin.css">
 
     <?php require_once __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
+<?php if (!empty($_SESSION['aviso_rol'])): ?><script>document.addEventListener('DOMContentLoaded',()=>{alert(<?= json_encode($_SESSION['aviso_rol']) ?>);});</script><?php unset($_SESSION['aviso_rol']); endif; ?>
+<div class="menu-overlay" id="menuOverlay"></div>
 <div class="app">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR COMPARTIDO (misma estructura que módulos y panel_admin) -->
     <aside class="sidebar" id="sidebar">
         <div class="brand">
             <img src="../../public/imagenes/logo.png" alt="COLSOFTCO">
-            <div>
+            <div class="brand-text">
                 <strong>COLSOFTCO</strong>
                 <span>Sistema de Gestión</span>
             </div>
@@ -35,47 +56,28 @@ require_once "../../app/verificar_sesion.php";
             <span class="toggle-icono">⌄</span>
         </button>
 
-        <nav class="sidebar-links" id="sidebarLinks">
-            <button onclick="window.location.href='../historial_movimientos/historial.php'">
-                <span>☑</span> Historial de Movimientos
-            </button>
-            <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
-                <span>♙</span> Lista de Proveedores
-            </button>
-            <button onclick="window.location.href='../registromp/registromp.php'">
-                <span>＋</span> Registrar Materia Prima
-            </button>
-            <button onclick="window.location.href='../generar_informe/generar_informe.php'">
-                <span>▥</span> Generar Informe
-            </button>
-            <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
-                <span>◇</span> Inventario de Materia Prima
-            </button>
-            <button onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">
-                <span>□</span> Inventario de Productos
-            </button>
-            <button onclick="window.location.href='../receta_de_colchones/receta_colchones.php'">
-                <span>⚙</span> Receta de Colchones
-            </button>
-            <button onclick="window.location.href='../mensajeria/mensajeria.php'">
-                <span>📨</span> Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span>
-            </button>
+        <nav class="nav" id="navMenu">
+            <button class="nav-item active" onclick="window.location.href='panel_bodeguero.php'">🏠 Panel Principal</button>
+            <button class="nav-item" onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>
+            <button class="nav-item" onclick="window.location.href='../control_de_stock/control_de_stock.php'">Control de Stock</button>
+            <button class="nav-item" onclick="window.location.href='../registromp/registromp.php'">Registrar Materia Prima</button>
+            <button class="nav-item" onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">Inventario de Materia Prima</button>
+            <button class="nav-item" onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
+            <button class="nav-item" onclick="window.location.href='../registro_de_producto_terminado/registro_producto_terminado.php'">Registrar Producto Terminado</button>
+            <button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
+            <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
         </nav>
-
-       
     </aside>
 
     <div class="main">
 
-        <!-- HEADER -->
-        <header class="header">
+        <!-- HEADER COMPARTIDO (misma estructura que módulos y panel_admin) -->
+        <header class="topbar">
             <button class="mobile-open" id="mobileOpen" type="button" aria-label="Abrir menú">☰</button>
 
-            <div class="header-left">
-                <div>
-                    <h1 id="saludoHeader">BIENVENIDO, NICOLÁS SANTIAGO</h1>
-                    <p>Bodeguero</p>
-                </div>
+            <div class="welcome">
+                <h1 id="saludoHeader">BIENVENIDO</h1>
+                <p>Bodeguero</p>
             </div>
 
             <div class="header-actions">
@@ -83,9 +85,9 @@ require_once "../../app/verificar_sesion.php";
                 <!-- MENÚ DE PERFIL DESPLEGABLE -->
                 <div class="perfil-menu" id="perfilMenu">
                     <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                        <img id="avatarHeader" class="avatar-header" src="../../public/imagenes/bodeguero.jpeg" alt="Foto de perfil">
+                        <img id="avatarHeader" class="avatar-header" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
                         <span class="perfil-trigger-text">
-                            <strong id="nombreHeaderCorto">Nicolás Santiago</strong>
+                            <strong id="nombreHeaderCorto">Usuario</strong>
                             <small>Bodeguero</small>
                         </span>
                         <span class="perfil-caret">⌄</span>
@@ -109,167 +111,139 @@ require_once "../../app/verificar_sesion.php";
 
         <main class="content">
 
-            <!-- PERFIL -->
-            <section class="profile-card">
-                <img id="fotoPerfilGrande" src="../../public/imagenes/bodeguero.jpeg" alt="Foto de perfil">
+                <!-- PERFIL + ESTADÍSTICAS (mismo diseño que panel_admin) -->
+                <section class="hero-grid">
 
-                <div class="profile-info">
-                    <div class="profile-heading">
-                        <div>
-                            <h2 id="nombreCompletoPerfil">Nicolás Santiago Polo Moreno</h2>
-                            <p><strong>Rol:</strong> Bodeguero</p>
-                        </div>
-                        <span class="online"><i></i> Activo</span>
-                    </div>
+                    <article class="profile">
+                        <img id="fotoPerfilGrande" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
 
-                    <div class="profile-details">
-                        <span>▣ Gestión de bodega</span>
-                        <span>◇ Control de inventario</span>
-                        <span>⌖ Bogotá, Colombia</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- RESUMEN DEL BODEGUERO (datos reales) -->
-            <section class="summary-grid">
-                <article class="summary-card">
-                    <div class="summary-icon yellow">☑</div>
-                    <span>Tareas pendientes</span>
-                    <strong id="statTareas">0</strong>
-                    <small>Actividades por realizar</small>
-                </article>
-
-                <article class="summary-card">
-                    <div class="summary-icon green">◇</div>
-                    <span>Materia prima</span>
-                    <strong id="statInventario">0</strong>
-                    <small>Existencias registradas</small>
-                </article>
-
-                <article class="summary-card">
-                    <div class="summary-icon purple">▣</div>
-                    <span>Productos terminados</span>
-                    <strong id="statProductos">0</strong>
-                    <small>Unidades en bodega</small>
-                </article>
-
-                <article class="summary-card">
-                    <div class="summary-icon blue">♙</div>
-                    <span>Proveedores</span>
-                    <strong id="statProveedores">0</strong>
-                    <small>Registrados en el sistema</small>
-                </article>
-            </section>
-
-            <!-- TAREAS + ACCIONES -->
-            <section class="dashboard-grid">
-
-                <article class="tasks card">
-                    <div class="section-title section-title-row">
-                        <div>
-                            <span class="section-icon">☑</span>
-                            <div>
-                                <h3>Tareas Pendientes</h3>
-                                <p>Actividades de la bodega que requieren seguimiento</p>
-                            </div>
-                        </div>
-                        <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
-                    </div>
-
-                    <div class="tasks-list" id="tasksListBody">
-                        <p class="placeholder">Cargando tareas...</p>
-                    </div>
-                </article>
-
-                <aside class="side-content">
-
-                    <!-- ACCIONES -->
-                    <article class="quick-actions card">
-                        <div class="section-title compact">
-                            <div>
-                                <span class="section-icon">ϟ</span>
-                                <div>
-                                    <h3>Acciones rápidas</h3>
-                                    <p>Funciones frecuentes del bodeguero</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="quick-grid">
-                            <button onclick="window.location.href='../registromp/registromp.php'">
-                                <span class="quick-icon green">＋</span>
-                                <strong>Registrar materia prima</strong>
-                            </button>
-
-                            <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
-                                <span class="quick-icon blue">◇</span>
-                                <strong>Ver inventario</strong>
-                            </button>
-
-                            <button onclick="window.location.href='../historial_movimientos/historial.php'">
-                                <span class="quick-icon yellow">☑</span>
-                                <strong>Historial de movimientos</strong>
-                            </button>
-
-                            <button onclick="window.location.href='../generar_informe/generar_informe.php'">
-                                <span class="quick-icon purple">▤</span>
-                                <strong>Generar informe</strong>
-                            </button>
+                        <div class="profile-data">
+                            <h2 id="nombreCompletoPerfil">Cargando…</h2>
+                            <p class="role"><b>Rol:</b> Bodeguero</p>
+                            <p><span class="small-icon">✉</span> <span id="emailPerfil">—</span></p>
+                            <p><span class="small-icon">☏</span> <span id="telefonoPerfil">—</span></p>
+                            <p><span class="small-icon">⌕</span> Bogotá, Colombia</p>
                         </div>
                     </article>
 
-                    <!-- INFORMACIÓN -->
-                    <article class="contact-card card">
-                        <div class="section-title compact">
-                            <div>
-                                <span class="section-icon">⌕</span>
-                                <div>
-                                    <h3>Información de contacto</h3>
-                                    <p>Soporte y atención</p>
-                                </div>
+                    <div class="stats">
+
+                        <article class="stat">
+                            <div class="stat-content">
+                                <span>Tareas pendientes</span>
+                                <strong id="statTareas"><?= (int) $tareasBodega ?></strong>
+                                <i class="stat-icon yellow">▣</i>
+                            </div>
+                            <a href="#tareas">Ver detalles <b>›</b></a>
+                        </article>
+
+                        <article class="stat">
+                            <div class="stat-content">
+                                <span>Inventario total</span>
+                                <strong id="statInventario"><?= number_format($inventarioBodega, 0, ',', '.') ?></strong>
+                                <i class="stat-icon green">◇</i>
+                            </div>
+                            <a href="../inventario_materia_prima/inventario_materia_prima.php">Ver inventario
+                                <b>›</b></a>
+                        </article>
+
+                        <article class="stat">
+                            <div class="stat-content">
+                                <span>Proveedores</span>
+                                <strong id="statProveedores"><?= (int) $proveedoresBodega ?></strong>
+                                <i class="stat-icon purple">♙</i>
+                            </div>
+                            <a href="../lista_proveedores/lista_proveedores.php">Ver proveedores <b>›</b></a>
+                        </article>
+
+                        <article class="stat">
+                            <div class="stat-content">
+                                <span>Productos</span>
+                                <strong id="statProductos"><?= number_format($productosBodega, 0, ',', '.') ?></strong>
+                                <i class="stat-icon blue">◇</i>
+                            </div>
+                            <a href="../inventario_productos_terminados/inventario_productos_terminados.php">Ver
+                                productos <b>›</b></a>
+                        </article>
+
+                    </div>
+                </section>
+
+                <!-- TAREAS + DERECHA (mismo diseño que panel_admin) -->
+                <section class="dashboard-grid">
+
+                    <article class="tasks card" id="tareas">
+                        <div class="title-row">
+                            <h3><span>▣</span> Tareas Pendientes</h3>
+                            <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
+                        </div>
+
+                        <div class="task-table">
+                            <div class="task-row heading">
+                                <span>TAREA</span>
+                                <span>PRIORIDAD</span>
+                                <span>VENCIMIENTO</span>
+                                <span>ESTADO</span>
+                                <span></span>
+                            </div>
+
+                            <div id="taskTableBody">
+                                <p class="placeholder">Cargando tareas...</p>
                             </div>
                         </div>
 
-                        <div class="contact-list">
-                            <p><span>⌖</span> Bogotá, Colombia</p>
-                            <p><span>✉</span> contacto@colsoftco.com</p>
-                            <p><span>⌕</span> +57 (1) 234-5678</p>
-                            <p><span>◷</span> Lun - Vie: 8:00 am - 6:00 pm</p>
+                        <div class="tasks-summary" id="tasksSummary">
+                            <span class="sum-loading">Calculando resumen…</span>
                         </div>
                     </article>
 
-                </aside>
-            </section>
-        </main>
+                    <aside class="right">
 
-        <!-- FOOTER -->
-        <footer>
-            <div class="footer-main">
-                <div>
-                    <strong class="footer-brand">COLSOFTCO</strong>
-                    <span class="footer-sub">SISTEMA DE GESTIÓN</span>
-                    <p>
-                        Sistema de gestión y administración de materias primas para Max&Flex.
-                        Eficiencia en inventarios y movimientos empresariales.
-                    </p>
-                </div>
+                        <article class="quick card">
+                            <div class="title-row">
+                                <h3><span>ϟ</span> Acciones rápidas</h3>
+                            </div>
 
-                <div class="footer-contact">
-                    <strong>CONTACTO</strong>
-                    <span>📍 Bogotá, Colombia</span>
-                    <span>✉ contacto@colsoftco.com</span>
-                    <span>📞 +57 (1) 234-5678</span>
-                    <span>◷ Lun - Vie: 8:00 am - 6:00 pm</span>
-                </div>
-            </div>
+                            <div class="quick-grid">
+                                <button onclick="window.location.href='../registromp/registromp.php'">
+                                    <span class="quick-icon green-icon">＋</span>
+                                    <b>Registrar materia prima</b>
+                                </button>
 
-            <div class="footer-bottom">
-                <span>© 2026 <b>COLSOFTCO</b> · Max&Flex. Todos los derechos reservados.</span>
-                <span>Desarrollado por <b>  Equipo COLSOTCO</b></span>
-            </div>
-        </footer>
-    </div>
-</div>
+                                <button onclick="window.location.href='../control_de_stock/control_de_stock.php'">
+                                    <span class="quick-icon yellow-icon">📦</span>
+                                    <b>Control de stock</b>
+                                </button>
+
+                                <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
+                                    <span class="quick-icon green-icon">↓</span>
+                                    <b>Inventario de Materia Prima</b>
+                                </button>
+
+                                <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
+                                    <span class="quick-icon purple-icon">♙</span>
+                                    <b>Proveedores</b>
+                                </button>
+                            </div>
+                        </article>
+
+                        <article class="contact card">
+                            <div class="title-row">
+                                <h3><span>⌕</span> Información de contacto</h3>
+                            </div>
+                            <p>⌖ <span>Bogotá, Colombia</span></p>
+                            <p>✉ <span>contacto@colsoftco.com</span></p>
+                            <p>⌕ <span>+57 (1) 234-5678</span></p>
+                            <p>◷ <span>Lun - Vie: 8:00 am - 6:00 pm</span></p>
+                        </article>
+
+                    </aside>
+                </section>
+            </main>
+
+            <?php include __DIR__ . '/../partials/footer.php'; ?>
+        </div><!-- /.main -->
+    </div><!-- /.app -->
 
 <!-- ══ MODAL NUEVA TAREA ══ -->
 <div class="modal-overlay" id="modalTareaOverlay">
@@ -304,7 +278,7 @@ require_once "../../app/verificar_sesion.php";
         <h3>Editar mis datos</h3>
 
         <div class="modal-perfil-foto">
-            <img id="fotoPerfilModal" src="../../public/imagenes/bodeguero.jpeg" alt="Foto de perfil">
+            <img id="fotoPerfilModal" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
             <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
         </div>
 
@@ -329,56 +303,84 @@ require_once "../../app/verificar_sesion.php";
     </div>
 </div>
 
-<div class="menu-overlay" id="menuOverlay"></div>
-
 <script src="../../public/js/app.js"></script>
-    <script src="../../public/js/menu_activo.js"></script>
+<script src="../../public/js/menu_activo.js"></script>
 
 <script>
-const sidebar = document.getElementById('sidebar');
-const sidebarLinks = document.getElementById('sidebarLinks');
-const menuToggle = document.getElementById('btnMenuToggle');
-const mobileOpen = document.getElementById('mobileOpen');
+    // Sidebar compartido (igual que módulos y panel_admin).
+    const sidebar = document.getElementById('sidebar');
+    const nav = document.getElementById('navMenu');
+    const openButton = document.getElementById('mobileOpen');
+    const menuButton = document.getElementById('btnMenuToggle');
 
-function openSidebar() {
-    sidebar.classList.add('mobile-visible');
-    document.body.classList.add('menu-open');
-}
-
-function closeSidebar() {
-    sidebar.classList.remove('mobile-visible');
-    document.body.classList.remove('menu-open');
-}
-
-mobileOpen.addEventListener('click', openSidebar);
-
-menuToggle.addEventListener('click', function () {
-    sidebarLinks.classList.toggle('abierto');
-    menuToggle.classList.toggle('abierto');
-    menuToggle.setAttribute(
-        'aria-expanded',
-        sidebarLinks.classList.contains('abierto')
-    );
-});
-
-document.addEventListener('click', function (event) {
-    if (
-        window.innerWidth <= 900 &&
-        sidebar.classList.contains('mobile-visible') &&
-        !sidebar.contains(event.target) &&
-        event.target !== mobileOpen
-    ) {
-        closeSidebar();
+    function openSidebar() {
+        sidebar.classList.add('mobile-visible');
+        document.body.classList.add('menu-open');
     }
-});
-
-window.addEventListener('resize', function () {
-    if (window.innerWidth > 900) {
-        closeSidebar();
-        sidebarLinks.classList.remove('abierto');
-        menuToggle.classList.remove('abierto');
+    function closeSidebar() {
+        sidebar.classList.remove('mobile-visible');
+        document.body.classList.remove('menu-open');
     }
-});
+    if (openButton) openButton.addEventListener('click', openSidebar);
+    if (menuButton) menuButton.addEventListener('click', () => {
+        nav.classList.toggle('open');
+        menuButton.setAttribute('aria-expanded', nav.classList.contains('open'));
+    });
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 900 &&
+            sidebar.classList.contains('mobile-visible') &&
+            !sidebar.contains(e.target) &&
+            e.target !== openButton) {
+            closeSidebar();
+        }
+    });
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 900) {
+            sidebar.classList.remove('mobile-visible');
+            if (nav) nav.classList.remove('open');
+            document.body.classList.remove('menu-open');
+        }
+    });
+
+    // Refresca las 4 stats con datos reales sin recargar.
+    async function refrescarStatsBodega() {
+        try {
+            const resp = await fetch('/colsoftco/app/dashboard_stats.php');
+            const data = await resp.json();
+            if (!data.ok) return;
+            const fmt = (n) => Number(n).toLocaleString('es-CO');
+            if (document.getElementById('statInventario')) document.getElementById('statInventario').textContent = fmt(data.inventario_total);
+            if (document.getElementById('statProductos')) document.getElementById('statProductos').textContent = fmt(data.productos);
+            if (document.getElementById('statProveedores')) document.getElementById('statProveedores').textContent = fmt(data.proveedores);
+        } catch (e) { /* stats server-side ya visibles */ }
+    }
+    refrescarStatsBodega();
+    setInterval(refrescarStatsBodega, 30000);
+
+    // Resumen de tareas: rellena la tarjeta para que no quede el hueco en blanco.
+    async function actualizarResumenTareas() {
+        const el = document.getElementById('tasksSummary');
+        if (!el) return;
+        try {
+            const resp = await fetch('/colsoftco/app/logica_tareas.php?accion=listar');
+            const data = await resp.json();
+            if (!data.ok) return;
+            const t = data.tareas || [];
+            const pend = t.filter(x => x.estado === 'pendiente').length;
+            const hacer = t.filter(x => x.estado === 'por-hacer').length;
+            const term = t.filter(x => x.estado === 'terminado').length;
+            const pct = t.length ? Math.round(term / t.length * 100) : 0;
+            el.innerHTML =
+                `<span class="sum-pill">Total <b>${t.length}</b></span>` +
+                `<span class="sum-pill pend">Pendientes <b>${pend}</b></span>` +
+                `<span class="sum-pill hacer">Por hacer <b>${hacer}</b></span>` +
+                `<span class="sum-pill term">Terminadas <b>${term}</b></span>` +
+                `<div class="tasks-progress"><i style="width:${pct}%"></i></div>` +
+                `<span>${pct}% terminado</span>`;
+        } catch (e) { /* se conserva el placeholder */ }
+    }
+    actualizarResumenTareas();
+    setInterval(actualizarResumenTareas, 30000);
 </script>
 
 <script src="../../public/js/tareas.js"></script>
@@ -410,6 +412,8 @@ window.addEventListener('resize', function () {
     const nombreHeaderCorto = document.getElementById('nombreHeaderCorto');
     const nombreCompletoPerfil = document.getElementById('nombreCompletoPerfil');
     const saludoHeader = document.getElementById('saludoHeader');
+    const emailPerfil = document.getElementById('emailPerfil');
+    const telefonoPerfil = document.getElementById('telefonoPerfil');
 
     function togglePerfilDropdown() {
         const abierto = perfilDropdown.classList.contains('open');
@@ -441,6 +445,8 @@ window.addEventListener('resize', function () {
             nombreHeaderCorto.textContent = nombreCorto;
             nombreCompletoPerfil.textContent = nombreCompleto;
             saludoHeader.textContent = `BIENVENIDO, ${nombreCorto.toUpperCase()}`;
+            if (emailPerfil) emailPerfil.textContent = u.email || '—';
+            if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '—';
 
             if (u.foto) {
                 const url = `../../public/imagenes/perfiles/${u.foto}`;

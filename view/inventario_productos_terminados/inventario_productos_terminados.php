@@ -9,6 +9,9 @@ $conn = $db->getConnection();
 
 $usuarioNombre = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema';
 
+// El operario consulta el inventario, pero no agrega, edita ni elimina.
+$soloLecturaInv = es_operario();
+
 /**
  * ==== ENDPOINT AJAX ====
  * Esta misma página atiende las acciones de agregar / actualizar / eliminar
@@ -16,6 +19,11 @@ $usuarioNombre = trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido']
  */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
     header('Content-Type: application/json; charset=utf-8');
+
+    if ($soloLecturaInv) {
+        echo json_encode(['ok' => false, 'error' => 'Tu rol solo puede consultar el inventario.']);
+        exit();
+    }
 
     $accion = $_POST['ajax_action'];
 
@@ -181,6 +189,10 @@ $productosDb = $conn->query(
             No se encontraron productos que coincidan con la búsqueda.
         </p>
 
+        <?php if ($soloLecturaInv): ?>
+        <p class="aviso-solo-lectura">Modo solo lectura: puedes consultar existencias. Para registrar o ajustar stock pide apoyo a bodega o administración.</p>
+        <?php endif; ?>
+
         <div class="table-responsive">
             <table>
                 <thead>
@@ -188,7 +200,9 @@ $productosDb = $conn->query(
                         <th>ID</th>
                         <th>Producto</th>
                         <th>Cantidad</th>
+                        <?php if (!$soloLecturaInv): ?>
                         <th>Acciones</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
 
@@ -267,6 +281,8 @@ $productosDb = $conn->query(
                             ];
                         }, $productosDb), JSON_UNESCAPED_UNICODE) ?>;
 
+        const SOLO_LECTURA = <?= $soloLecturaInv ? 'true' : 'false' ?>;
+
         let editingId = null; // Identificador numérico del objeto en edición (Permanece en null en inserciones)
         let deletingId = null; // Almacenador temporal del ID agendado para descarte definitivo
 
@@ -304,16 +320,19 @@ $productosDb = $conn->query(
 
             visibles.forEach((p) => {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${p.id}</td>
-                    <td>${p.nombre}</td>
-                    <td>${formatCantidad(p.cantidad)}</td>
+                const celdaAcciones = SOLO_LECTURA ? `` : `
                     <td class="acciones">
                         <div class="action-cell">
                             <button class="btn-actualizar" onclick="openEditModal(${p.id})">Actualizar</button>
                             <button class="btn-eliminar"   onclick="openDeleteModal(${p.id})">Eliminar</button>
                         </div>
                     </td>
+                `;
+                tr.innerHTML = `
+                    <td>${p.id}</td>
+                    <td>${p.nombre}</td>
+                    <td>${formatCantidad(p.cantidad)}</td>
+                    ${celdaAcciones}
                 `;
                 tbody.appendChild(tr);
             });

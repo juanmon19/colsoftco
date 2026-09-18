@@ -882,3 +882,26 @@ html[data-tema="oscuro"] .sidebar .sidebar-links button.activo {
     background: #d4af37;
     color: #08172e;
 }
+
+/* FIX sidebar full-height: fijo como en módulos y admin para que nunca quede
+   la franja blanca al hacer scroll. paneladmin.css (cargado después) manda en
+   el resto de clases compartidas. */
+@media (min-width:901px){
+  .sidebar{position:fixed !important;top:0;left:0;height:100vh;height:100dvh;width:276px;min-width:276px;overflow-y:auto;overflow-x:hidden;z-index:20}
+  .main{margin-left:276px !important}
+}
+@media (min-width:901px) and (max-width:1200px){
+  .sidebar{width:240px;min-width:240px}
+  .main{margin-left:240px !important}
+}
+
+/* Tareas (mismo render que admin/bodeguero via tareas.js) */
+.task-row{display:grid;grid-template-columns:1.65fr 0.9fr 1.05fr 0.8fr 28px;gap:15px;align-items:center;min-height:53px;border-bottom:1px solid var(--border,#e5e7eb);font-size:12px}
+.priority,.status{padding:5px 9px;border-radius:7px;font-weight:600;font-size:11px}
+.priority.high{background:#ffe7e6;color:#dd625f}
+.priority.medium,.status.pendiente{background:#fff4d9;color:#d89b12}
+.priority.low,.status.terminado{background:#e2f7e6;color:#42a657}
+.status.por-hacer{background:#e9f1ff;color:#3678e7}
+.task-actions{position:relative}
+.dots{font-size:21px;background:transparent;padding:4px 6px;border-radius:6px;cursor:pointer}
+.tasks-list .task-row strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

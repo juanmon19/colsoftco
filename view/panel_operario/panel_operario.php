@@ -1,6 +1,23 @@
 <?php
 
 require_once "../../app/verificar_sesion.php";
+require_once "../../config/conexion.php";
+
+// Datos reales del panel (igual que admin/bodeguero).
+try {
+    $dbPanel = (new Conexion())->getConnection();
+    $inventarioOp = (float) $dbPanel->query("SELECT COALESCE(SUM(stock_actual), 0) FROM materias_primas")->fetchColumn();
+    $productosOp = (float) $dbPanel->query("SELECT COALESCE(SUM(stock_actual), 0) FROM productos_terminados")->fetchColumn();
+    $proveedoresOp = (int) $dbPanel->query("SELECT COUNT(*) FROM proveedores")->fetchColumn();
+    try {
+        $tareasOp = (int) $dbPanel->query("SELECT COUNT(*) FROM tareas WHERE estado = 'pendiente'")->fetchColumn();
+    } catch (Throwable $e) {
+        $tareasOp = 0;
+    }
+} catch (Throwable $e) {
+    $inventarioOp = $productosOp = 0;
+    $proveedoresOp = $tareasOp = 0;
+}
 
 ?>
 
@@ -14,287 +31,232 @@ require_once "../../app/verificar_sesion.php";
     <title>Panel Operario - Max & Flex</title>
 
     <link rel="stylesheet" href="../../public/css/global.css">
+    <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="panel_operario.css">
+    <link rel="stylesheet" href="../panel_admin/paneladmin.css">
 
     <?php require_once __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
+<?php if (!empty($_SESSION['aviso_rol'])): ?><script>document.addEventListener('DOMContentLoaded',()=>{alert(<?= json_encode($_SESSION['aviso_rol']) ?>);});</script><?php unset($_SESSION['aviso_rol']); endif; ?>
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<div class="app">
 
-    <header class="header">
-
-        <button class="mobile-open" id="mobileOpen" type="button" aria-label="Abrir menú">☰</button>
-
-        <div class="header-left">
-            <h1 id="saludoHeader">BIENVENIDO, JAFET DAVID</h1>
-            <p>Operario</p>
-        </div>
-
-        <div class="header-actions">
-
-            <!-- MENÚ DE PERFIL DESPLEGABLE -->
-            <div class="perfil-menu" id="perfilMenu">
-                <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                    <img id="avatarHeader" class="avatar-header" src="../../public/imagenes/operario.jpg" alt="Foto de perfil">
-                    <span class="perfil-trigger-text">
-                        <strong id="nombreHeaderCorto">Jafet David</strong>
-                        <small>Operario</small>
-                    </span>
-                    <span class="perfil-caret">⌄</span>
-                </button>
-
-                <div class="perfil-dropdown" id="perfilDropdown">
-                    <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
-                    <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
-                    <button type="button" id="btnTemaOscuro">
-                        <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
-                    </button>
-                    <div class="perfil-dropdown-divider"></div>
-                    <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
-                </div>
-            </div>
-
-            <input type="file" id="inputFotoPerfil" accept="image/png, image/jpeg, image/webp" hidden>
-
-        </div>
-
-    </header>
-
-
-    <!-- =====================================================
-         CONTENEDOR
-    ====================================================== -->
-
-    <div class="contenedor">
-
-        <!-- =================================================
-             SIDEBAR
-        ================================================== -->
-
+        <!-- SIDEBAR COMPARTIDO (misma estructura que módulos, admin y bodeguero) -->
         <aside class="sidebar" id="sidebar">
-
             <div class="brand">
                 <img src="../../public/imagenes/logo.png" alt="Logo COLSOFTCO">
-                <div>
+                <div class="brand-text">
                     <strong>COLSOFTCO</strong>
                     <span>Sistema de Gestión</span>
                 </div>
             </div>
 
-            <button class="mobile-menu" id="menuToggle" type="button">
+            <button class="mobile-menu" id="btnMenuToggle" type="button"
+                    aria-expanded="false" aria-controls="sidebarLinks">
                 <span>☰ Menú</span>
-                <span>▾</span>
+                <span class="toggle-icono">⌄</span>
             </button>
 
-            <nav class="sidebar-links" id="sidebarLinks">
-
-                <button onclick="window.location.href='../historial_movimientos/historial.php'">
-                    <span>☑</span> Historial de movimientos
-                </button>
-
-                <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
-                    <span>♙</span> Lista de Proveedores
-                </button>
-
-                <button onclick="window.location.href='../registromp/registromp.php'">
-                    <span>＋</span> Registrar Materia Prima
-                </button>
-
-                <button onclick="window.location.href='../generar_informe/generar_informe.php'">
-                    <span>▤</span> Generar Informe
-                </button>
-
-                <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
-                    <span>◇</span> Inventario de Materia Prima
-                </button>
-
-                <button onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">
-                    <span>□</span> Inventario de Productos
-                </button>
-
-                <button onclick="window.location.href='../receta_de_colchones/receta_colchones.php'">
-                    <span>⚙</span> Receta de Colchones
-                </button>
-
-                <button onclick="window.location.href='../mensajeria/mensajeria.php'">
-                    <span>📨</span> Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span>
-                </button>
-
+            <nav class="nav" id="navMenu">
+                <button class="nav-item active" onclick="window.location.href='panel_operario.php'">🏠 Panel Principal</button>
+                <button class="nav-item" onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>
+                <button class="nav-item" onclick="window.location.href='../Receta_de_colchones/receta_colchones.php'">Receta de Colchones</button>
+                <button class="nav-item" onclick="window.location.href='../registromp/registromp.php'">Registrar Materia Prima</button>
+                <button class="nav-item" onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">Inventario de Materia Prima</button>
+                <button class="nav-item" onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
+                <button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
+                <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
             </nav>
-
-
-
         </aside>
 
+        <div class="main">
 
-        <!-- =================================================
-             CONTENIDO
-        ================================================== -->
+        <!-- HEADER COMPARTIDO (misma estructura que módulos, admin y bodeguero) -->
+        <header class="topbar">
+            <button class="mobile-open" id="mobileOpen" type="button" aria-label="Abrir menú">☰</button>
 
-        <main class="contenido">
+            <div class="welcome">
+                <h1 id="saludoHeader">BIENVENIDO</h1>
+                <p>Operario</p>
+            </div>
 
-            <!-- PERFIL -->
-            <section class="profile-card">
-
-                <img id="fotoPerfilGrande" src="../../public/imagenes/operario.jpg" alt="Foto de perfil">
-
-                <div class="info-usuario">
-
-                    <div class="profile-heading">
-                        <div>
-                            <h2 id="nombreCompletoPerfil">Jafet David Pineda Céspedes</h2>
-                            <p><strong>Rol:</strong> Operario</p>
-                        </div>
-
-                        <span class="online">
-                            <i></i>
-                            Activo
+            <div class="header-actions">
+                <div class="perfil-menu" id="perfilMenu">
+                    <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
+                        <img id="avatarHeader" class="avatar-header" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                        <span class="perfil-trigger-text">
+                            <strong id="nombreHeaderCorto">Usuario</strong>
+                            <small>Operario</small>
                         </span>
-                    </div>
+                        <span class="perfil-caret">⌄</span>
+                    </button>
 
-                    <div class="profile-details">
-                        <span>▣ Área de producción</span>
-                        <span>◇ Control de inventario</span>
-                        <span>⌖ Bogotá, Colombia</span>
+                    <div class="perfil-dropdown" id="perfilDropdown">
+                        <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
+                        <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
+                        <button type="button" id="btnTemaOscuro">
+                            <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
+                        </button>
+                        <div class="perfil-dropdown-divider"></div>
+                        <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
                     </div>
-
                 </div>
 
-            </section>
+                <input type="file" id="inputFotoPerfil" accept="image/png, image/jpeg, image/webp" hidden>
+            </div>
+        </header>
 
-            <!-- TARJETAS (datos reales) -->
-            <section class="summary-grid">
+        <main class="content">
 
-                <article class="summary-card">
-                    <div class="summary-icon yellow">☑</div>
-                    <span>Tareas pendientes</span>
-                    <strong id="statTareas">0</strong>
-                    <small>Actividades por realizar</small>
-                </article>
+                <!-- PERFIL + ESTADÍSTICAS (mismo diseño que panel_admin) -->
+                <section class="hero-grid">
 
-                <article class="summary-card">
-                    <div class="summary-icon green">◇</div>
-                    <span>Materia prima</span>
-                    <strong id="statInventario">0</strong>
-                    <small>Existencias registradas</small>
-                </article>
+                    <article class="profile">
+                        <img id="fotoPerfilGrande" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
 
-                <article class="summary-card">
-                    <div class="summary-icon purple">▣</div>
-                    <span>Productos terminados</span>
-                    <strong id="statProductos">0</strong>
-                    <small>Unidades disponibles</small>
-                </article>
-
-                <article class="summary-card">
-                    <div class="summary-icon blue">♙</div>
-                    <span>Proveedores</span>
-                    <strong id="statProveedores">0</strong>
-                    <small>Registrados en el sistema</small>
-                </article>
-
-            </section>
-
-
-            <!-- DASHBOARD -->
-            <section class="dashboard-grid">
-
-                <!-- TAREAS -->
-                <article class="tareas card">
-
-                    <div class="section-title section-title-row">
-                        <div>
-                            <span class="section-icon">☑</span>
-                            <div>
-                                <h3>Tareas Pendientes</h3>
-                                <p>Actividades asignadas al operario</p>
-                            </div>
+                        <div class="profile-data">
+                            <h2 id="nombreCompletoPerfil">Cargando…</h2>
+                            <p class="role"><b>Rol:</b> Operario</p>
+                            <p><span class="small-icon">✉</span> <span id="emailPerfil">—</span></p>
+                            <p><span class="small-icon">☏</span> <span id="telefonoPerfil">—</span></p>
+                            <p><span class="small-icon">⌕</span> Bogotá, Colombia</p>
                         </div>
-                        <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
-                    </div>
-
-                    <div class="tasks-list" id="tasksListBody">
-                        <p class="placeholder">Cargando tareas...</p>
-                    </div>
-
-                </article>
-
-
-                <!-- COLUMNA DERECHA -->
-                <aside class="side-content">
-
-                    <!-- ACCIONES -->
-                    <article class="quick-actions card">
-
-                        <div class="section-title compact">
-                            <div>
-                                <span class="section-icon">ϟ</span>
-                                <div>
-                                    <h3>Acciones rápidas</h3>
-                                    <p>Funciones frecuentes</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="quick-grid">
-
-                            <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
-                                <span class="quick-icon blue">◇</span>
-                                <strong>Ver inventario</strong>
-                            </button>
-
-                            <button onclick="window.location.href='../registromp/registromp.php'">
-                                <span class="quick-icon green">＋</span>
-                                <strong>Registrar materia prima</strong>
-                            </button>
-
-                            <button onclick="window.location.href='../lista_verificacion/lista_verificacion.php'">
-                                <span class="quick-icon yellow">☑</span>
-                                <strong>Lista de verificación</strong>
-                            </button>
-
-                            <button onclick="window.location.href='../generar_informe/generar_informe.php'">
-                                <span class="quick-icon purple">▤</span>
-                                <strong>Generar informe</strong>
-                            </button>
-
-                        </div>
-
                     </article>
 
-                    <!-- CONTACTO -->
-                    <article class="contact-card card">
+                    <div class="stats">
 
-                        <div class="section-title compact">
-                            <div>
-                                <span class="section-icon">⌕</span>
-                                <div>
-                                    <h3>Información de contacto</h3>
-                                    <p>Soporte y atención</p>
-                                </div>
+                        <article class="stat">
+                            <div class="stat-content">
+                                <span>Tareas pendientes</span>
+                                <strong id="statTareas"><?= (int) $tareasOp ?></strong>
+                                <i class="stat-icon yellow">▣</i>
+                            </div>
+                            <a href="#tareas">Ver detalles <b>›</b></a>
+                        </article>
+
+                        <article class="stat">
+                            <div class="stat-content">
+                                <span>Inventario total</span>
+                                <strong id="statInventario"><?= number_format($inventarioOp, 0, ',', '.') ?></strong>
+                                <i class="stat-icon green">◇</i>
+                            </div>
+                            <a href="../inventario_materia_prima/inventario_materia_prima.php">Ver inventario
+                                <b>›</b></a>
+                        </article>
+
+                        <article class="stat">
+                            <div class="stat-content">
+                                <span>Proveedores</span>
+                                <strong id="statProveedores"><?= (int) $proveedoresOp ?></strong>
+                                <i class="stat-icon purple">♙</i>
+                            </div>
+                            <a href="../lista_proveedores/lista_proveedores.php">Ver proveedores <b>›</b></a>
+                        </article>
+
+                        <article class="stat">
+                            <div class="stat-content">
+                                <span>Productos</span>
+                                <strong id="statProductos"><?= number_format($productosOp, 0, ',', '.') ?></strong>
+                                <i class="stat-icon blue">◇</i>
+                            </div>
+                            <a href="../inventario_productos_terminados/inventario_productos_terminados.php">Ver
+                                productos <b>›</b></a>
+                        </article>
+
+                    </div>
+                </section>
+
+                <!-- TAREAS + DERECHA (mismo diseño que panel_admin) -->
+                <section class="dashboard-grid">
+
+                    <article class="tasks card" id="tareas">
+                        <div class="title-row">
+                            <h3><span>▣</span> Tareas Pendientes</h3>
+                            <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
+                        </div>
+
+                        <div class="task-table">
+                            <div class="task-row heading">
+                                <span>TAREA</span>
+                                <span>PRIORIDAD</span>
+                                <span>VENCIMIENTO</span>
+                                <span>ESTADO</span>
+                                <span></span>
+                            </div>
+
+                            <div id="taskTableBody">
+                                <p class="placeholder">Cargando tareas...</p>
                             </div>
                         </div>
 
-                        <div class="contact-list">
-                            <p>📍 Bogotá, Colombia</p>
-                            <p>✉ contacto@colsoftco.com</p>
-                            <p>📞 +57 (1) 234-5678</p>
-                            <p>🕐 Lun - Vie: 8:00 am - 6:00 pm</p>
+                        <div class="tasks-summary" id="tasksSummary">
+                            <span class="sum-loading">Calculando resumen…</span>
                         </div>
-
                     </article>
 
-                </aside>
+                    <aside class="right">
 
-            </section>
+                        <article class="quick card">
+                            <div class="title-row">
+                                <h3><span>ϟ</span> Acciones rápidas</h3>
+                            </div>
 
-        </main>
+                            <div class="quick-grid">
+                                <button onclick="window.location.href='../Receta_de_colchones/receta_colchones.php'">
+                                    <span class="quick-icon blue-icon">⚙</span>
+                                    <b>Ver recetas</b>
+                                </button>
 
-    </div>
+                                <button onclick="window.location.href='../registromp/registromp.php'">
+                                    <span class="quick-icon green-icon">＋</span>
+                                    <b>Registrar materia prima</b>
+                                </button>
+
+                                <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
+                                    <span class="quick-icon yellow-icon">◇</span>
+                                    <b>Inventario de materia prima</b>
+                                </button>
+
+                                <button onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">
+                                    <span class="quick-icon purple-icon">▣</span>
+                                    <b>Inventario de productos</b>
+                                </button>
+
+                                <button onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">
+                                    <span class="quick-icon green-icon">🏭</span>
+                                    <b>Historial fabricación</b>
+                                </button>
+
+                                <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
+                                    <span class="quick-icon yellow-icon">♙</span>
+                                    <b>Proveedores</b>
+                                </button>
+                            </div>
+                        </article>
+
+                        <article class="contact card">
+                            <div class="title-row">
+                                <h3><span>⌕</span> Información de contacto</h3>
+                            </div>
+                            <p>⌖ <span>Bogotá, Colombia</span></p>
+                            <p>✉ <span>contacto@colsoftco.com</span></p>
+                            <p>⌕ <span>+57 (1) 234-5678</span></p>
+                            <p>◷ <span>Lun - Vie: 8:00 am - 6:00 pm</span></p>
+                        </article>
+
+                    </aside>
+
+                </section>
+
+            </main>
+
+            <?php include __DIR__ . '/../partials/footer.php'; ?>
+
+        </div><!-- /.main -->
+    </div><!-- /.app -->
 
 
     <!-- ══ MODAL NUEVA TAREA ══ -->
@@ -330,7 +292,7 @@ require_once "../../app/verificar_sesion.php";
             <h3>Editar mis datos</h3>
 
             <div class="modal-perfil-foto">
-                <img id="fotoPerfilModal" src="../../public/imagenes/operario.jpg" alt="Foto de perfil">
+                <img id="fotoPerfilModal" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
                 <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
             </div>
 
@@ -355,44 +317,6 @@ require_once "../../app/verificar_sesion.php";
         </div>
     </div>
 
-    <div class="menu-overlay" id="menuOverlay"></div>
-
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
-    <footer>
-        <div class="footer-divider"></div>
-
-        <div class="footer-top">
-
-            <div>
-                <p class="footer-brand-name">COLSOFTCO</p>
-                <p class="footer-brand-sub">Sistema de Gestión</p>
-                <p class="footer-brand-desc">
-                    Sistema de gestión y administración de materias primas para Max&Flex. 
-                    Eficiencia en inventarios y movimientos empresariales.
-                </p>
-            </div>
-
-            <div>
-                <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 (1) 234-5678</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
-            </div>
-
-        </div>
-
-        <div class="footer-bottom">
-            <span>© 2026 <strong>COLSOFTCO</strong> · Max&Flex. Todos los derechos reservados.</span>
-            <span>Desarrollado por <strong>  Equipo COLSOTCO</strong></span>
-        </div>
-    </footer>
-
-
     <!-- =====================================================
          SCRIPTS
     ====================================================== -->
@@ -403,29 +327,80 @@ require_once "../../app/verificar_sesion.php";
     <script src="../../public/js/menu_activo.js"></script>
 
     <script>
-        const sidebar = document.getElementById("sidebar");
-        const mobileOpen = document.getElementById("mobileOpen");
-        const menuToggle = document.getElementById("menuToggle");
-        const sidebarLinks = document.getElementById("sidebarLinks");
+        // Sidebar compartido (igual que módulos, admin y bodeguero).
+        const sidebar = document.getElementById('sidebar');
+        const nav = document.getElementById('navMenu');
+        const openButton = document.getElementById('mobileOpen');
+        const menuButton = document.getElementById('btnMenuToggle');
 
-        mobileOpen.addEventListener("click", function () {
-            sidebar.classList.add("mobile-visible");
+        function openSidebar() {
+            sidebar.classList.add('mobile-visible');
+            document.body.classList.add('menu-open');
+        }
+        function closeSidebar() {
+            sidebar.classList.remove('mobile-visible');
+            document.body.classList.remove('menu-open');
+        }
+        if (openButton) openButton.addEventListener('click', openSidebar);
+        if (menuButton) menuButton.addEventListener('click', () => {
+            nav.classList.toggle('open');
+            menuButton.setAttribute('aria-expanded', nav.classList.contains('open'));
         });
-
-        menuToggle.addEventListener("click", function () {
-            sidebarLinks.classList.toggle("abierto");
-        });
-
-        document.addEventListener("click", function (event) {
-            if (
-                window.innerWidth <= 900 &&
-                sidebar.classList.contains("mobile-visible") &&
-                !sidebar.contains(event.target) &&
-                event.target !== mobileOpen
-            ) {
-                sidebar.classList.remove("mobile-visible");
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 900 &&
+                sidebar.classList.contains('mobile-visible') &&
+                !sidebar.contains(e.target) &&
+                e.target !== openButton) {
+                closeSidebar();
             }
         });
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 900) {
+                sidebar.classList.remove('mobile-visible');
+                if (nav) nav.classList.remove('open');
+                document.body.classList.remove('menu-open');
+            }
+        });
+
+        // Refresca las stats con datos reales sin recargar.
+        async function refrescarStatsOperario() {
+            try {
+                const resp = await fetch('/colsoftco/app/dashboard_stats.php');
+                const data = await resp.json();
+                if (!data.ok) return;
+                const fmt = (n) => Number(n).toLocaleString('es-CO');
+                if (document.getElementById('statInventario')) document.getElementById('statInventario').textContent = fmt(data.inventario_total);
+                if (document.getElementById('statProductos')) document.getElementById('statProductos').textContent = fmt(data.productos);
+                if (document.getElementById('statProveedores')) document.getElementById('statProveedores').textContent = fmt(data.proveedores);
+            } catch (e) {}
+        }
+        refrescarStatsOperario();
+        setInterval(refrescarStatsOperario, 30000);
+
+        // Resumen de tareas: rellena la tarjeta para que no quede el hueco en blanco.
+        async function actualizarResumenTareas() {
+            const el = document.getElementById('tasksSummary');
+            if (!el) return;
+            try {
+                const resp = await fetch('/colsoftco/app/logica_tareas.php?accion=listar');
+                const data = await resp.json();
+                if (!data.ok) return;
+                const t = data.tareas || [];
+                const pend = t.filter(x => x.estado === 'pendiente').length;
+                const hacer = t.filter(x => x.estado === 'por-hacer').length;
+                const term = t.filter(x => x.estado === 'terminado').length;
+                const pct = t.length ? Math.round(term / t.length * 100) : 0;
+                el.innerHTML =
+                    `<span class="sum-pill">Total <b>${t.length}</b></span>` +
+                    `<span class="sum-pill pend">Pendientes <b>${pend}</b></span>` +
+                    `<span class="sum-pill hacer">Por hacer <b>${hacer}</b></span>` +
+                    `<span class="sum-pill term">Terminadas <b>${term}</b></span>` +
+                    `<div class="tasks-progress"><i style="width:${pct}%"></i></div>` +
+                    `<span>${pct}% terminado</span>`;
+            } catch (e) { /* se conserva el placeholder */ }
+        }
+        actualizarResumenTareas();
+        setInterval(actualizarResumenTareas, 30000);
     </script>
 
     <script src="../../public/js/tareas.js"></script>
@@ -457,6 +432,8 @@ require_once "../../app/verificar_sesion.php";
         const nombreHeaderCorto = document.getElementById('nombreHeaderCorto');
         const nombreCompletoPerfil = document.getElementById('nombreCompletoPerfil');
         const saludoHeader = document.getElementById('saludoHeader');
+        const emailPerfil = document.getElementById('emailPerfil');
+        const telefonoPerfil = document.getElementById('telefonoPerfil');
 
         function togglePerfilDropdown() {
             const abierto = perfilDropdown.classList.contains('open');
@@ -487,6 +464,8 @@ require_once "../../app/verificar_sesion.php";
                 nombreHeaderCorto.textContent = nombreCorto;
                 nombreCompletoPerfil.textContent = nombreCompleto;
                 saludoHeader.textContent = `BIENVENIDO, ${nombreCorto.toUpperCase()}`;
+                if (emailPerfil) emailPerfil.textContent = u.email || '—';
+                if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '—';
 
                 if (u.foto) {
                     const url = `../../public/imagenes/perfiles/${u.foto}`;

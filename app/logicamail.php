@@ -1,14 +1,16 @@
 <?php
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require '../vendor/autoload.php';
-require '../config/setting.php';
-require '../config/conexion.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config/setting.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 // --- BLOQUE 1: SOLICITUD DE RESETEO ---
 if (isset($_POST['send'])):
@@ -19,7 +21,7 @@ if (isset($_POST['send'])):
             $token_ = bin2hex(random_bytes(32));
 
             // Se corrigió el punto y coma y ahora updateUser retorna true/false
-            if (updateUser($token_, TIEMPO_VIDA, $Usuario[0]->id_usuario)) {
+            if (updateUser($token_, tiempo_expiracion_token(), $Usuario[0]->id_usuario)) {
                 EnviarCorreoResetPassword($Usuario[0]->email, $Usuario[0]->usuario, $Usuario[0]->id_usuario, $token_);
                 $_SESSION['response'] = 'Hemos enviado un correo con las instrucciones.';
                 header("Location: ../view/login/login.php?message=ok");
@@ -64,38 +66,38 @@ if (isset($_POST['save'])):
         // Verificar que las contraseñas coincidan
         if ($Password !== $ConfirmarPassword) {
             $_SESSION['error'] = 'Las contraseñas no coinciden.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
+            header("Location: ../view/cambiocontrasena/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
         // Validar requisitos de la contraseña
         if (strlen($Password) < 8) {
             $_SESSION['error'] = 'La contraseña debe tener mínimo 8 caracteres.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
+            header("Location: ../view/cambiocontrasena/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
         if (!preg_match('/[A-Z]/', $Password)) {
             $_SESSION['error'] = 'La contraseña debe tener al menos una letra mayúscula.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
+            header("Location: ../view/cambiocontrasena/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
         if (!preg_match('/[a-z]/', $Password)) {
             $_SESSION['error'] = 'La contraseña debe tener al menos una letra minúscula.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
+            header("Location: ../view/cambiocontrasena/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
         if (!preg_match('/[0-9]/', $Password)) {
             $_SESSION['error'] = 'La contraseña debe tener al menos un número.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
+            header("Location: ../view/cambiocontrasena/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
         if (!preg_match('/[\W_]/', $Password)) {
             $_SESSION['error'] = 'La contraseña debe tener al menos un carácter especial.';
-            header("Location: ../view/cambiocontraseña/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
+            header("Location: ../view/cambiocontrasena/cambio_contrasena.php?id=" . $id . "&token=" . urlencode($token));
             exit();
         }
 
@@ -220,7 +222,7 @@ function EnviarCorreoResetPassword($Correo, $NombreReceptor, $userid, $token_Use
         
         // Uso de & en lugar de && para los parámetros URL estándar
         $baseUrl = defined('BASE_URL') ? BASE_URL : 'http://localhost/colsoftco';
-        $mail->Body    = 'Usted ha solicitado un cambio de contraseña. <br><br> <b><a href="' . $baseUrl . '/view/cambiocontraseña/cambio_contrasena.php?id=' . urlencode($userid) . '&token=' . urlencode($token_User) . '">Cambiar Contraseña</a></b>';
+        $mail->Body    = 'Usted ha solicitado un cambio de contraseña. <br><br> <b><a href="' . $baseUrl . '/view/cambiocontrasena/cambio_contrasena.php?id=' . urlencode($userid) . '&token=' . urlencode($token_User) . '">Cambiar Contraseña</a></b>';
 
         $mail->send();
     } catch (Exception $e) {
