@@ -66,6 +66,9 @@ $ver = fn(string $archivo) => puede_acceder($archivo, $rolKey ?: 'administrador'
         <?php if ($ver('receta_colchones.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../Receta_de_colchones/receta_colchones.php'">Receta de Colchones</button>
         <?php endif; ?>
+        <?php if ($ver('tareas.php')): ?>
+        <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../tareas/tareas.php'">☑ Tareas</button>
+        <?php endif; ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
     </nav>
 

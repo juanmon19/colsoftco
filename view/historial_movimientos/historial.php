@@ -173,7 +173,7 @@ function construirQuery(array $filtros, int $pagina): string
                             min="<?= htmlspecialchars(end($fechasDisponibles)) ?>"
                             <?php endif; ?>
                             max="<?= date('Y-m-d') ?>"
-                            style="color-scheme: dark;">
+                            style="color-scheme: white;">
                         <small id="avisoDia" class="aviso-fecha"></small>
                     </div>
 

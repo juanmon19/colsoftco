@@ -1,0 +1,66 @@
+/* Kanban de tareas — COLSOFTCO (bandejas por estado con arrastrar y soltar) */
+.kanban{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+.kanban-col{background:#f1f5f9;border-radius:12px;padding:10px;min-height:180px}
+.kanban-head{display:flex;align-items:center;gap:8px;padding:4px 6px 10px}
+.kanban-head h4{margin:0;font-size:13px;font-weight:800;color:#0A1F44;text-transform:uppercase;letter-spacing:.4px}
+.kanban-count{background:#0A1F44;color:#fff;border-radius:999px;font-size:11px;font-weight:800;padding:2px 9px}
+.kanban-dot{width:10px;height:10px;border-radius:50%}
+.kanban-col[data-estado="pendiente"] .kanban-dot{background:#d89b12}
+.kanban-col[data-estado="por-hacer"] .kanban-dot{background:#3678e7}
+.kanban-col[data-estado="terminado"] .kanban-dot{background:#42a657}
+.kanban-list{display:flex;flex-direction:column;gap:8px;min-height:120px;border-radius:8px;transition:background .15s,outline .15s}
+.kanban-list.drag-over{background:#e0e9f7;outline:2px dashed #3678e7}
+.kanban-card{background:#fff;border:1px solid #e5e7eb;border-left:4px solid #94a3b8;border-radius:10px;padding:10px 12px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:grab}
+.kanban-card:active{cursor:grabbing}
+.kanban-card.dragging{opacity:.5}
+.kanban-card.priority-high{border-left-color:#dd625f}
+.kanban-card.priority-medium{border-left-color:#d89b12}
+.kanban-card.priority-low{border-left-color:#42a657}
+.kanban-card-top{display:flex;align-items:flex-start;gap:6px}
+.kanban-card-top strong{flex:1;font-size:13px;color:#0A1F44;overflow:hidden;text-overflow:ellipsis}
+.kanban-meta{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11px;color:#64748b;flex-wrap:wrap}
+.kanban-user{margin-top:6px;font-size:11px;color:#475569;background:#f1f5f9;border-radius:999px;padding:2px 10px;display:inline-block}
+.kanban-empty{border:1px dashed #cbd5e1;border-radius:8px;padding:14px;text-align:center;color:#94a3b8;font-size:12px;background:transparent}
+.task-actions{position:relative;flex-shrink:0}
+@media (max-width:900px){.kanban{grid-template-columns:1fr}}
+
+/* Pestañas Kanban | Calendario */
+.view-tabs{display:inline-flex;background:#eef2f7;border-radius:999px;padding:3px;gap:2px}
+.view-tabs button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;color:#64748b;cursor:pointer}
+.view-tabs button.active{background:#0A1F44;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.title-actions{display:flex;align-items:center;gap:10px}
+
+/* Calendario mensual estilo Samsung */
+.calendario-tareas{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px}
+.cal-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cal-titulo{flex:1}
+.cal-titulo h4{margin:0;font-size:17px;color:#0A1F44}
+.cal-titulo span{font-size:12px;color:#64748b}
+.cal-nav{width:34px;height:34px;border-radius:50%;border:1px solid #e2e8f0;background:#f8fafc;font-size:20px;line-height:1;color:#0A1F44;cursor:pointer}
+.cal-nav:hover{background:#eef2f7}
+.cal-hoy{border:1px solid #0A1F44;background:transparent;color:#0A1F44;border-radius:999px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer}
+.cal-hoy:hover{background:#0A1F44;color:#fff}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;font-weight:800;color:#94a3b8;padding:6px 0;text-transform:uppercase}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day{min-height:64px;border:0;border-radius:12px;background:#f8fafc;padding:6px;display:flex;flex-direction:column;gap:3px;align-items:stretch;text-align:left;cursor:pointer}
+.cal-day:hover{background:#eef4ff}
+.cal-day.otro-mes{opacity:.38}
+.cal-num{font-size:12px;font-weight:800;color:#0A1F44;width:24px;height:24px;display:grid;place-items:center;border-radius:50%}
+.cal-day.hoy .cal-num{background:#0A1F44;color:#fff}
+.cal-day.sel{outline:2px solid #D4AF37;background:#fffbeb}
+.cal-ev{font-size:10px;font-weight:700;border-radius:6px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+.ev-alta{background:#ffe7e6;color:#b91c1c}
+.ev-media{background:#fff4d9;color:#b45309}
+.ev-baja{background:#e2f7e6;color:#15803d}
+.cal-mas{font-size:10px;color:#64748b;font-weight:700}
+.cal-detalle{margin-top:12px;border-top:1px solid #eef2f7;padding-top:10px}
+.cal-detalle h5{margin:0 0 8px;font-size:13px;color:#0A1F44}
+.cal-detalle ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.cal-detalle li{display:flex;align-items:center;gap:8px;font-size:13px;background:#f8fafc;border-radius:8px;padding:8px 12px}
+.cal-detalle li strong{flex:1;font-weight:600}
+.cal-detalle li.vacia{color:#94a3b8;background:transparent}
+.mini{font-size:10px;font-weight:800;border-radius:999px;padding:3px 10px}
+.mini.pend{background:#fff4d9;color:#b45309}
+.mini.hacer{background:#e9f1ff;color:#1d4ed8}
+.mini.term{background:#e2f7e6;color:#15803d}
+@media (max-width:640px){.cal-day{min-height:48px}.cal-ev{display:none}.cal-day .cal-mas{display:block}}

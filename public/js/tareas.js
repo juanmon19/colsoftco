@@ -1,26 +1,29 @@
 /**
- * tareas.js — Módulo compartido de gestión de tareas.
+ * tareas.js — Tareas individuales en Kanban.
  * Se incluye en los 3 paneles (admin, bodeguero, operario).
- * 
- * Requiere que el HTML tenga estos IDs:
- * - #taskTableBody: contenedor de filas de tareas
+ *
+ * Cada usuario ve SOLO sus tareas; el admin ve las de todos y puede
+ * asignar (modal con select de usuario + nombre en la tarjeta).
+ *
+ * Requiere en el HTML:
+ * - #taskTableBody: tablero kanban
  * - #menuOverlay: overlay para menús contextuales
  * - #statTareas: stat card de tareas pendientes
- * - #modalTareaOverlay: overlay del modal de nueva tarea
- * - #formNuevaTarea: formulario de nueva tarea
- * - #tareaTitulo, #tareaPrioridad, #tareaVencimiento: inputs del form
- * - #btnNuevaTarea, #btnCancelarTarea: botones del modal
- * - #sugerenciasTareas: datalist para autocompletado
+ * - #modalTareaOverlay, #formNuevaTarea, #tareaTitulo, #tareaPrioridad,
+ *   #tareaVencimiento, #btnNuevaTarea, #btnCancelarTarea, #sugerenciasTareas
+ * - Opcional (solo admin): #wrapAsignado > #tareaAsignado
  */
 
 (function () {
     'use strict';
 
-    const statusLabels = {
-        'pendiente': 'Pendiente',
-        'por-hacer': 'Por hacer',
-        'terminado': 'Terminado'
-    };
+    const BASE_APP = (typeof PREFIJO_APP !== 'undefined') ? PREFIJO_APP : '/colsoftco/';
+
+    const columnas = [
+        { key: 'pendiente',  titulo: 'Pendientes' },
+        { key: 'por-hacer',  titulo: 'Por hacer' },
+        { key: 'terminado',  titulo: 'Terminadas' }
+    ];
 
     const priorityLabels = {
         'low': 'Baja',
@@ -48,9 +51,13 @@
     const sugerenciasTareas = document.getElementById('sugerenciasTareas');
     const inputTareaTitulo = document.getElementById('tareaTitulo');
     const inputTareaVencimiento = document.getElementById('tareaVencimiento');
+    const wrapAsignado = document.getElementById('wrapAsignado');
+    const selectAsignado = document.getElementById('tareaAsignado');
 
     // Si no existen los elementos, no inicializar
     if (!taskTableBody || !formNuevaTarea) return;
+
+    let esAdmin = false;
 
     // ══ Establecer fecha mínima (hoy) ══
     if (inputTareaVencimiento) {
@@ -87,18 +94,25 @@
         actualizarOverlay();
     }
 
-    function renderTareas(tareas) {
-        if (!tareas.length) {
-            taskTableBody.innerHTML = '<p class="placeholder">No hay tareas registradas.</p>';
-            return;
-        }
-
-        taskTableBody.innerHTML = tareas.map(t => `
-            <div class="task-row" data-id="${t.id_tarea}">
+    function tarjetaHTML(t) {
+        const asignado = t.asignado
+            ? `<span class="kanban-user">👤 ${escapeHtml(t.asignado)}</span>`
+            : (esAdmin ? `<span class="kanban-user">👤 Sin asignar</span>` : '');
+        const grupoDueno = esAdmin
+            ? `<div class="edit-menu-group">
+                   <label>Asignada a</label>
+                   <select class="edit-owner">
+                       <option value="">Sin asignar</option>
+                       ${(window.__tareasUsuarios || []).map(u =>
+                           `<option value="${u.id_usuario}" ${String(t.id_usuario ?? '') === String(u.id_usuario) ? 'selected' : ''}>${escapeHtml(u.nombre + ' ' + u.apellido)} (${escapeHtml(u.rol)})</option>`
+                       ).join('')}
+                   </select>
+               </div>`
+            : '';
+        return `
+        <article class="kanban-card priority-${t.prioridad}" draggable="true" data-id="${t.id_tarea}">
+            <div class="kanban-card-top">
                 <strong>${escapeHtml(t.titulo)}</strong>
-                <span><em class="priority ${t.prioridad}">${priorityLabels[t.prioridad]}</em></span>
-                <span>${formatearFecha(t.fecha_vencimiento)}</span>
-                <span><em class="status ${t.estado}">${statusLabels[t.estado]}</em></span>
                 <div class="task-actions">
                     <button class="dots" type="button" aria-label="Editar tarea" aria-expanded="false">⋮</button>
                     <div class="edit-menu">
@@ -118,15 +132,55 @@
                                 <option value="high" ${t.prioridad === 'high' ? 'selected' : ''}>Alta</option>
                             </select>
                         </div>
+                        ${grupoDueno}
                         <button type="button" class="edit-apply">Guardar</button>
                         <button type="button" class="edit-delete">Eliminar</button>
                     </div>
                 </div>
             </div>
-        `).join('');
+            <div class="kanban-meta">
+                <span><em class="priority ${t.prioridad}">${priorityLabels[t.prioridad]}</em></span>
+                <span>${formatearFecha(t.fecha_vencimiento)}</span>
+            </div>
+            ${asignado}
+        </article>`;
     }
 
-    const BASE_APP = (typeof PREFIJO_APP !== 'undefined') ? PREFIJO_APP : '/colsoftco/';
+    function renderTareas(tareas) {
+        taskTableBody.innerHTML = columnas.map(col => {
+            const items = tareas.filter(t => t.estado === col.key);
+            const tarjetas = items.length
+                ? items.map(tarjetaHTML).join('')
+                : '<p class="kanban-empty">Sin tareas. Arrastra aquí o crea una nueva.</p>';
+            return `
+            <div class="kanban-col" data-estado="${col.key}">
+                <div class="kanban-head">
+                    <span class="kanban-dot"></span>
+                    <h4>${col.titulo}</h4>
+                    <span class="kanban-count">${items.length}</span>
+                </div>
+                <div class="kanban-list" data-estado="${col.key}">${tarjetas}</div>
+            </div>`;
+        }).join('');
+    }
+
+    function configurarAsignado(data) {
+        esAdmin = !!data.es_admin;
+        window.__tareasUsuarios = Array.isArray(data.usuarios) ? data.usuarios : [];
+        if (!wrapAsignado || !selectAsignado) return;
+        if (!esAdmin || !Array.isArray(data.usuarios)) {
+            wrapAsignado.style.display = 'none';
+            return;
+        }
+        wrapAsignado.style.display = '';
+        const actual = selectAsignado.value;
+        selectAsignado.innerHTML = '<option value="">Para mí</option>' +
+            data.usuarios.map(u =>
+                `<option value="${u.id_usuario}">${escapeHtml(u.nombre + ' ' + u.apellido)} (${escapeHtml(u.rol)})</option>`
+            ).join('');
+        if (actual) selectAsignado.value = actual;
+    }
+
     async function cargarTareas() {
         try {
             const resp = await fetch(BASE_APP + 'app/logica_tareas.php?accion=listar');
@@ -135,11 +189,28 @@
                 taskTableBody.innerHTML = '<p class="placeholder">No se pudieron cargar las tareas.</p>';
                 return;
             }
+            configurarAsignado(data);
             renderTareas(data.tareas);
             // Actualizar stat card
             if (statTareas) {
                 const pendientes = data.tareas.filter(t => t.estado === 'pendiente').length;
                 statTareas.textContent = pendientes.toLocaleString('es-CO');
+            }
+            // Resumen al pie de la tarjeta (si la página lo incluye)
+            const resumen = document.getElementById('tasksSummary');
+            if (resumen) {
+                const t = data.tareas || [];
+                const pend = t.filter(x => x.estado === 'pendiente').length;
+                const hacer = t.filter(x => x.estado === 'por-hacer').length;
+                const term = t.filter(x => x.estado === 'terminado').length;
+                const pct = t.length ? Math.round(term / t.length * 100) : 0;
+                resumen.innerHTML =
+                    `<span class="sum-pill">Total <b>${t.length}</b></span>` +
+                    `<span class="sum-pill pend">Pendientes <b>${pend}</b></span>` +
+                    `<span class="sum-pill hacer">Por hacer <b>${hacer}</b></span>` +
+                    `<span class="sum-pill term">Terminadas <b>${term}</b></span>` +
+                    `<div class="tasks-progress"><i style="width:${pct}%"></i></div>` +
+                    `<span>${pct}% terminado</span>`;
             }
         } catch (e) {
             taskTableBody.innerHTML = '<p class="placeholder">Error de conexión al cargar tareas.</p>';
@@ -148,16 +219,22 @@
     }
 
     async function guardarCambiosTarea(boton) {
-        const fila = boton.closest('.task-row');
-        const id = fila.dataset.id;
-        const estado = fila.querySelector('.edit-status').value;
-        const prioridad = fila.querySelector('.edit-priority').value;
+        const tarjeta = boton.closest('.kanban-card');
+        const id = tarjeta.dataset.id;
+        const estado = tarjeta.querySelector('.edit-status').value;
+        const prioridad = tarjeta.querySelector('.edit-priority').value;
+        const selDueno = tarjeta.querySelector('.edit-owner');
+
+        let body = `accion=actualizar&id_tarea=${encodeURIComponent(id)}&estado=${encodeURIComponent(estado)}&prioridad=${encodeURIComponent(prioridad)}`;
+        if (esAdmin && selDueno) {
+            body += `&id_usuario=${encodeURIComponent(selDueno.value ? selDueno.value : '0')}`;
+        }
 
         try {
             const resp = await fetch(BASE_APP + 'app/logica_tareas.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `accion=actualizar&id_tarea=${encodeURIComponent(id)}&estado=${encodeURIComponent(estado)}&prioridad=${encodeURIComponent(prioridad)}`
+                body: body
             });
             const data = await resp.json();
             if (data.ok) {
@@ -170,9 +247,24 @@
         }
     }
 
+    async function moverTarea(id, estado) {
+        try {
+            const resp = await fetch(BASE_APP + 'app/logica_tareas.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `accion=actualizar&id_tarea=${encodeURIComponent(id)}&estado=${encodeURIComponent(estado)}`
+            });
+            const data = await resp.json();
+            if (!data.ok) alert(data.error || 'No se pudo mover la tarea.');
+        } catch (e) {
+            alert('Error de conexión al mover la tarea.');
+        }
+        await cargarTareas();
+    }
+
     async function eliminarTarea(boton) {
-        const fila = boton.closest('.task-row');
-        const id = fila.dataset.id;
+        const tarjeta = boton.closest('.kanban-card');
+        const id = tarjeta.dataset.id;
         if (!confirm('¿Eliminar esta tarea?')) return;
 
         try {
@@ -205,7 +297,7 @@
         sugerenciasTareas.innerHTML = sugerencias.map(s => `<option value="${escapeHtml(s)}"></option>`).join('');
     }
 
-    // Event delegation
+    // Event delegation: menú ⋮, guardar, eliminar
     document.addEventListener('click', (e) => {
         const boton = e.target.closest('.dots');
         if (boton && taskTableBody.contains(boton)) {
@@ -233,6 +325,41 @@
     if (menuOverlay) {
         menuOverlay.addEventListener('click', () => cerrarTodosLosMenus(null));
     }
+
+    // Arrastrar y soltar entre columnas
+    let idArrastrado = null;
+    document.addEventListener('dragstart', (e) => {
+        const tarjeta = e.target.closest('.kanban-card');
+        if (!tarjeta || !taskTableBody.contains(tarjeta)) return;
+        idArrastrado = tarjeta.dataset.id;
+        tarjeta.classList.add('dragging');
+        try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', idArrastrado); } catch (err) {}
+    });
+    document.addEventListener('dragend', () => {
+        idArrastrado = null;
+        document.querySelectorAll('.kanban-card.dragging').forEach(t => t.classList.remove('dragging'));
+        document.querySelectorAll('.kanban-list.drag-over').forEach(l => l.classList.remove('drag-over'));
+    });
+    document.addEventListener('dragover', (e) => {
+        const lista = e.target.closest('.kanban-list');
+        if (!lista || !taskTableBody.contains(lista)) return;
+        e.preventDefault();
+        lista.classList.add('drag-over');
+        try { e.dataTransfer.dropEffect = 'move'; } catch (err) {}
+    });
+    document.addEventListener('dragleave', (e) => {
+        const lista = e.target.closest('.kanban-list');
+        if (lista && !lista.contains(e.relatedTarget)) lista.classList.remove('drag-over');
+    });
+    document.addEventListener('drop', (e) => {
+        const lista = e.target.closest('.kanban-list');
+        if (!lista || !taskTableBody.contains(lista)) return;
+        e.preventDefault();
+        lista.classList.remove('drag-over');
+        const nuevoEstado = lista.dataset.estado;
+        const id = idArrastrado || (function () { try { return e.dataTransfer.getData('text/plain'); } catch (err) { return null; } })();
+        if (id && nuevoEstado) moverTarea(id, nuevoEstado);
+    });
 
     // Modal: nueva tarea
     if (btnNuevaTarea) {
@@ -274,11 +401,16 @@
             return;
         }
 
+        let body = `accion=crear&titulo=${encodeURIComponent(titulo)}&prioridad=${encodeURIComponent(prioridad)}&fecha_vencimiento=${encodeURIComponent(vencimiento)}`;
+        if (esAdmin && selectAsignado && selectAsignado.value) {
+            body += `&id_usuario=${encodeURIComponent(selectAsignado.value)}`;
+        }
+
         try {
             const resp = await fetch(BASE_APP + 'app/logica_tareas.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `accion=crear&titulo=${encodeURIComponent(titulo)}&prioridad=${encodeURIComponent(prioridad)}&fecha_vencimiento=${encodeURIComponent(vencimiento)}`
+                body: body
             });
             const data = await resp.json();
             if (data.ok) {

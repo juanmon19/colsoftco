@@ -28,6 +28,7 @@ try {
     <title>Panel Administrador - COLSOFTCO</title>
     <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="paneladmin.css">
+    <link rel="stylesheet" href="../../public/css/kanban.css">
 
     <?php require_once __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
@@ -57,6 +58,11 @@ try {
 
                 <label for="tareaVencimiento">Fecha de vencimiento</label>
                 <input type="date" id="tareaVencimiento">
+
+                <div id="wrapAsignado" style="display:none">
+                    <label for="tareaAsignado">Asignar a (solo admin)</label>
+                    <select id="tareaAsignado"></select>
+                </div>
 
                 <div class="modal-actions">
                     <button type="button" id="btnCancelarTarea" class="btn-outline">Cancelar</button>
@@ -239,22 +245,20 @@ try {
                     <article class="tasks card" id="tareas">
                         <div class="title-row">
                             <h3><span>▣</span> Tareas Pendientes</h3>
-                            <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
-                        </div>
-
-                        <div class="task-table">
-                            <div class="task-row heading">
-                                <span>TAREA</span>
-                                <span>PRIORIDAD</span>
-                                <span>VENCIMIENTO</span>
-                                <span>ESTADO</span>
-                                <span></span>
-                            </div>
-
-                            <div id="taskTableBody">
-                                <p class="placeholder">Cargando tareas...</p>
+                            <div class="title-actions">
+                                <div class="view-tabs">
+                                    <button type="button" data-vista="kanban" class="active">Kanban</button>
+                                    <button type="button" data-vista="calendario">Calendario</button>
+                                </div>
+                                <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
                             </div>
                         </div>
+
+                        <div class="kanban" id="taskTableBody">
+                            <p class="placeholder">Cargando tareas...</p>
+                        </div>
+
+                        <div class="calendario-tareas" id="calTareas" hidden></div>
                     </article>
 
                     <aside class="right">
@@ -289,6 +293,10 @@ try {
                                 <button onclick="window.location.href='gestion_usuarios.php'">
                                     <span class="quick-icon yellow-icon">👥</span>
                                     <b>Gestión de usuarios</b>
+                                </button>
+                                <button onclick="window.location.href='../tareas/tareas.php'">
+                                    <span class="quick-icon blue-icon">📅</span>
+                                    <b>Calendario de tareas</b>
                                 </button>
                             </div>
                         </article>
@@ -359,6 +367,7 @@ try {
     </script>
 
     <script src="../../public/js/tareas.js"></script>
+    <script src="../../public/js/calendario_tareas.js"></script>
     <script src="../../public/js/mensajes_badge.js"></script>
     <script>
         // ================= MENÚ DE PERFIL: DATOS, FOTO Y TEMA =================

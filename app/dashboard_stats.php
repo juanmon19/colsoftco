@@ -1,8 +1,11 @@
 <?php
 
 header('Content-Type: application/json');
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../config/conexion.php';
+require_once __DIR__ . '/permisos.php';
 
 // Verificar que el usuario esté autenticado
 if (!isset($_SESSION['documento'])) {
@@ -17,9 +20,16 @@ $inventarioTotal  = (float) $db->query("SELECT COALESCE(SUM(stock_actual), 0) FR
 $proveedoresTotal = (int) $db->query("SELECT COUNT(*) FROM proveedores")->fetchColumn();
 $productosTotal   = (float) $db->query("SELECT COALESCE(SUM(stock_actual), 0) FROM productos_terminados")->fetchColumn();
 
-/* Si todavía no has ejecutado crear_tabla_tareas.sql, esto no truena la página */
+/* Tareas pendientes: cada usuario ve las SUYAS; el admin ve el total. */
 try {
-    $tareasPendientes = (int) $db->query("SELECT COUNT(*) FROM tareas WHERE estado = 'pendiente'")->fetchColumn();
+    if (es_admin()) {
+        $tareasPendientes = (int) $db->query("SELECT COUNT(*) FROM tareas WHERE estado = 'pendiente'")->fetchColumn();
+    } else {
+        $me = (int) ($_SESSION['user_id'] ?? $_SESSION['id_usuario'] ?? 0);
+        $stmt = $db->prepare("SELECT COUNT(*) FROM tareas WHERE estado = 'pendiente' AND id_usuario = :me");
+        $stmt->execute([':me' => $me]);
+        $tareasPendientes = (int) $stmt->fetchColumn();
+    }
 } catch (Exception $e) {
     $tareasPendientes = 0;
 }

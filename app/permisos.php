@@ -72,6 +72,7 @@ if (!defined('PERMISOS_MODULOS')) {
         'ver_recibo.php'            => ['bodeguero', 'operario'],
 
         // ---- Transversales ----
+        'tareas.php'     => ['bodeguero', 'operario'], // módulo de tareas (Kanban + calendario)
         'mensajeria.php' => ['bodeguero', 'operario'],
         'cambio_contrasena.php' => ['bodeguero', 'operario'],
         'recuperar_contrasena.php' => ['bodeguero', 'operario'],

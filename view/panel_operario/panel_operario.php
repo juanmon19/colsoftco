@@ -10,7 +10,10 @@ try {
     $productosOp = (float) $dbPanel->query("SELECT COALESCE(SUM(stock_actual), 0) FROM productos_terminados")->fetchColumn();
     $proveedoresOp = (int) $dbPanel->query("SELECT COUNT(*) FROM proveedores")->fetchColumn();
     try {
-        $tareasOp = (int) $dbPanel->query("SELECT COUNT(*) FROM tareas WHERE estado = 'pendiente'")->fetchColumn();
+        $meOp = (int) ($_SESSION['user_id'] ?? $_SESSION['id_usuario'] ?? 0);
+        $stmtOp = $dbPanel->prepare("SELECT COUNT(*) FROM tareas WHERE estado = 'pendiente' AND id_usuario = :me");
+        $stmtOp->execute([':me' => $meOp]);
+        $tareasOp = (int) $stmtOp->fetchColumn();
     } catch (Throwable $e) {
         $tareasOp = 0;
     }
@@ -34,6 +37,7 @@ try {
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="panel_operario.css">
     <link rel="stylesheet" href="../panel_admin/paneladmin.css">
+    <link rel="stylesheet" href="../../public/css/kanban.css">
 
     <?php require_once __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
@@ -175,22 +179,20 @@ try {
                     <article class="tasks card" id="tareas">
                         <div class="title-row">
                             <h3><span>▣</span> Tareas Pendientes</h3>
-                            <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
-                        </div>
-
-                        <div class="task-table">
-                            <div class="task-row heading">
-                                <span>TAREA</span>
-                                <span>PRIORIDAD</span>
-                                <span>VENCIMIENTO</span>
-                                <span>ESTADO</span>
-                                <span></span>
-                            </div>
-
-                            <div id="taskTableBody">
-                                <p class="placeholder">Cargando tareas...</p>
+                            <div class="title-actions">
+                                <div class="view-tabs">
+                                    <button type="button" data-vista="kanban" class="active">Kanban</button>
+                                    <button type="button" data-vista="calendario">Calendario</button>
+                                </div>
+                                <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
                             </div>
                         </div>
+
+                        <div class="kanban" id="taskTableBody">
+                            <p class="placeholder">Cargando tareas...</p>
+                        </div>
+
+                        <div class="calendario-tareas" id="calTareas" hidden></div>
 
                         <div class="tasks-summary" id="tasksSummary">
                             <span class="sum-loading">Calculando resumen…</span>
@@ -233,6 +235,11 @@ try {
                                 <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
                                     <span class="quick-icon yellow-icon">♙</span>
                                     <b>Proveedores</b>
+                                </button>
+
+                                <button onclick="window.location.href='../tareas/tareas.php'">
+                                    <span class="quick-icon blue-icon">📅</span>
+                                    <b>Calendario de tareas</b>
                                 </button>
                             </div>
                         </article>
@@ -277,6 +284,11 @@ try {
 
                 <label for="tareaVencimiento">Fecha de vencimiento</label>
                 <input type="date" id="tareaVencimiento">
+
+                <div id="wrapAsignado" style="display:none">
+                    <label for="tareaAsignado">Asignar a (solo admin)</label>
+                    <select id="tareaAsignado"></select>
+                </div>
 
                 <div class="modal-actions">
                     <button type="button" id="btnCancelarTarea" class="btn-outline">Cancelar</button>
@@ -376,34 +388,11 @@ try {
         }
         refrescarStatsOperario();
         setInterval(refrescarStatsOperario, 30000);
-
-        // Resumen de tareas: rellena la tarjeta para que no quede el hueco en blanco.
-        async function actualizarResumenTareas() {
-            const el = document.getElementById('tasksSummary');
-            if (!el) return;
-            try {
-                const resp = await fetch('/colsoftco/app/logica_tareas.php?accion=listar');
-                const data = await resp.json();
-                if (!data.ok) return;
-                const t = data.tareas || [];
-                const pend = t.filter(x => x.estado === 'pendiente').length;
-                const hacer = t.filter(x => x.estado === 'por-hacer').length;
-                const term = t.filter(x => x.estado === 'terminado').length;
-                const pct = t.length ? Math.round(term / t.length * 100) : 0;
-                el.innerHTML =
-                    `<span class="sum-pill">Total <b>${t.length}</b></span>` +
-                    `<span class="sum-pill pend">Pendientes <b>${pend}</b></span>` +
-                    `<span class="sum-pill hacer">Por hacer <b>${hacer}</b></span>` +
-                    `<span class="sum-pill term">Terminadas <b>${term}</b></span>` +
-                    `<div class="tasks-progress"><i style="width:${pct}%"></i></div>` +
-                    `<span>${pct}% terminado</span>`;
-            } catch (e) { /* se conserva el placeholder */ }
-        }
-        actualizarResumenTareas();
-        setInterval(actualizarResumenTareas, 30000);
+        // El resumen de tareas lo pinta tareas.js (misma carga de datos).
     </script>
 
     <script src="../../public/js/tareas.js"></script>
+    <script src="../../public/js/calendario_tareas.js"></script>
     <script src="../../public/js/mensajes_badge.js"></script>
 
     <script>

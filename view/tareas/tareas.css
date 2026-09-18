@@ -1,0 +1,91 @@
+/* Módulo de Tareas — estilos de la tarjeta (mismo diseño del panel admin) */
+.tareas-pagina { display: flex; flex-direction: column; gap: 16px; }
+.card {
+    background: #fff;
+    border: 1px solid #e5eaf0;
+    border-radius: 13px;
+    box-shadow: 0 2px 8px rgba(13, 35, 67, 0.07);
+}
+.tasks { padding: 23px 22px; min-height: 462px; }
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.title-row h3 { margin: 0; font-size: 16px; color: #142746; }
+.btn-nueva-tarea {
+    background: #1e3a8a;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+}
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.title-row h3 { margin: 0; font-size: 16px; color: #142746; }
+.btn-nueva-tarea {
+    background: #1e3a8a;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+}
+.priority {
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-weight: 600;
+    font-size: 11px;
+}
+.priority.high { background: #ffe7e6; color: #dd625f; }
+.priority.medium { background: #fff4d9; color: #d89b12; }
+.priority.low { background: #e2f7e6; color: #42a657; }
+.task-actions { position: relative; }
+.dots { font-size: 21px; background: transparent; padding: 4px 6px; border-radius: 6px; }
+.edit-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: #fff;
+    border: 1px solid #e5eaf0;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    z-index: 1001;
+    width: 190px;
+}
+.edit-menu.open { display: block; }
+.edit-menu-group label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #64748b;
+    display: block;
+    margin-bottom: 5px;
+}
+.edit-menu-group select {
+    width: 100%;
+    padding: 7px;
+    border: 1px solid #e5eaf0;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+.edit-apply, .edit-delete {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    font-weight: 700;
+}
+.edit-apply { background: #0A1F44; color: #fff; }
+.edit-delete { background: #fff; border: 1px solid #dc2626; color: #dc2626; margin-top: 6px; }
+.placeholder { color: #94a3b8; padding: 16px 4px; }
+.modulo-head h2 { margin: 0; font-size: 20px; color: #0A1F44; }
+.modulo-head p { margin: 4px 0 0; color: #64748b; font-size: 13px; }

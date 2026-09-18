@@ -572,7 +572,15 @@ html[data-tema="oscuro"] a {
 }
 
 /* Calendario + aviso de actividad del día */
-#fechaDia { color-scheme: dark; }
+/* Calendario + aviso de actividad del día */
+#fechaDia {
+    color-scheme: light; /* por defecto (modo claro) */
+}
+
+html[data-tema="oscuro"] #fechaDia {
+    color-scheme: dark;
+}
+
 .aviso-fecha { display: block; margin-top: 6px; font-size: 12px; }
 .aviso-fecha.ok { color: #4ade80; }
 .aviso-fecha.vacio { color: #fbbf24; }
