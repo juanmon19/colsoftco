@@ -29,6 +29,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../partials/seo.php'; ?>
     <title>Panel Bodeguero - Max & Flex</title>
     <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
@@ -47,7 +48,7 @@ try {
     <!-- SIDEBAR COMPARTIDO (misma estructura que módulos y panel_admin) -->
     <aside class="sidebar" id="sidebar">
         <div class="brand">
-            <img src="../../public/imagenes/logo.png" alt="COLSOFTCO">
+            <img src="../../public/imagenes/logo.png" alt="COLSOFTCO" width="58" height="58">
             <div class="brand-text">
                 <strong>COLSOFTCO</strong>
                 <span>Sistema de Gestión</span>
@@ -55,7 +56,7 @@ try {
         </div>
 
         <button class="mobile-menu" id="btnMenuToggle" type="button"
-                aria-expanded="false" aria-controls="sidebarLinks">
+                aria-expanded="false" aria-controls="navMenu">
             <span>☰ Menú</span>
             <span class="toggle-icono">⌄</span>
         </button>
@@ -89,7 +90,7 @@ try {
                 <!-- MENÚ DE PERFIL DESPLEGABLE -->
                 <div class="perfil-menu" id="perfilMenu">
                     <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                        <img id="avatarHeader" class="avatar-header" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                        <img id="avatarHeader" class="avatar-header" width="32" height="32" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
                         <span class="perfil-trigger-text">
                             <strong id="nombreHeaderCorto">Usuario</strong>
                             <small>Bodeguero</small>
@@ -119,7 +120,7 @@ try {
                 <section class="hero-grid">
 
                     <article class="profile">
-                        <img id="fotoPerfilGrande" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                        <img id="fotoPerfilGrande" width="165" height="206" fetchpriority="high" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
 
                         <div class="profile-data">
                             <h2 id="nombreCompletoPerfil">Cargando…</h2>
@@ -290,7 +291,7 @@ try {
         <h3>Editar mis datos</h3>
 
         <div class="modal-perfil-foto">
-            <img id="fotoPerfilModal" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+            <img id="fotoPerfilModal" width="165" height="206" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
             <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
         </div>
 
@@ -315,8 +316,8 @@ try {
     </div>
 </div>
 
-<script src="../../public/js/app.js"></script>
-<script src="../../public/js/menu_activo.js"></script>
+<script src="../../public/js/app.js" defer></script>
+<script src="../../public/js/menu_activo.js" defer></script>
 
 <script>
     // Sidebar compartido (igual que módulos y panel_admin).
@@ -371,9 +372,9 @@ try {
     // El resumen de tareas lo pinta tareas.js (misma carga de datos).
 </script>
 
-<script src="../../public/js/tareas.js"></script>
-<script src="../../public/js/calendario_tareas.js"></script>
-<script src="../../public/js/mensajes_badge.js"></script>
+<script src="../../public/js/tareas.js" defer></script>
+<script src="../../public/js/calendario_tareas.js" defer></script>
+<script src="../../public/js/mensajes_badge.js" defer></script>
 
 <script>
     // ================= MENÚ DE PERFIL: DATOS, FOTO Y TEMA =================
@@ -465,9 +466,10 @@ try {
         const archivo = inputFotoPerfil.files[0];
         if (!archivo) return;
 
-        const formData = new FormData();
-        formData.append('accion', 'foto');
-        formData.append('foto', archivo);
+            const formData = new FormData();
+            formData.append('accion', 'foto');
+            formData.append('foto', archivo);
+            formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]')?.content || '');
 
         try {
             const resp = await fetch('../../app/perfil_usuario.php', { method: 'POST', body: formData });

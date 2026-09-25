@@ -41,7 +41,7 @@ if (!isset($prefijo)) {
         <!-- MENÚ DE PERFIL DESPLEGABLE ÚNICO -->
         <div class="perfil-menu" id="perfilMenu">
             <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                <img id="avatarHeader" class="avatar-header" src="<?= $prefijo ?>../../public/imagenes/usuario.png" alt="Foto de perfil">
+                <img id="avatarHeader" class="avatar-header" width="32" height="32" src="<?= $prefijo ?>../../public/imagenes/usuario.png" alt="Foto de perfil">
                 <span class="perfil-trigger-text">
                     <strong id="nombreHeaderCorto">Usuario</strong>
                     <small><?= htmlspecialchars($rolActual) ?></small>
@@ -75,7 +75,7 @@ if (!isset($prefijo)) {
         <h3>Editar mis datos</h3>
 
         <div class="modal-perfil-foto">
-            <img id="fotoPerfilModal" src="<?= $prefijo ?>../../public/imagenes/usuario.png" alt="Foto de perfil">
+            <img id="fotoPerfilModal" width="165" height="206" src="<?= $prefijo ?>../../public/imagenes/usuario.png" alt="Foto de perfil">
             <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
         </div>
 

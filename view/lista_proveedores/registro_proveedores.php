@@ -20,62 +20,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 try {
 
     // =====================================
-    // VALIDAR IMAGEN
+    // VALIDAR IMAGEN (endurecido H4: MIME olfateado + getimagesize
+    // + RE-ENCODE con GD; el polyglot con firma falsa no sobrevive)
     // =====================================
+
+    require_once __DIR__ . '/../../app/upload_seguro.php';
+
+    if (!validarTokenCSRF($_POST['csrf_token'] ?? '')) {
+        throw new Exception("Sesión inválida. Recarga la página.");
+    }
 
     if (!isset($_FILES['imagen']) || $_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
         throw new Exception("Debe seleccionar una imagen para el proveedor.");
     }
 
-    $imagen = $_FILES['imagen'];
-
-    // Máximo 5 MB
-    if ($imagen['size'] > 5 * 1024 * 1024) {
-        throw new Exception("La imagen no puede superar los 5 MB.");
-    }
-
-    // Validar que realmente sea una imagen
-    $tipoImagen = getimagesize($imagen['tmp_name']);
-
-    if ($tipoImagen === false) {
-        throw new Exception("El archivo seleccionado no es una imagen válida.");
-    }
-
-    // Validar extensión
-    $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
-
-    $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
-
-    if (!in_array($extension, $extensionesPermitidas, true)) {
-        throw new Exception("Solo se permiten imágenes JPG, PNG o WEBP.");
-    }
-
-    // =====================================
-    // CREAR NOMBRE ÚNICO
-    // =====================================
-
-    $nombreImagen = 'proveedor_' . uniqid() . '.' . $extension;
-
-    // =====================================
-    // RUTA DE DESTINO
-    // =====================================
-
     $carpetaImagenes = __DIR__ . '/../../public/imagenes/proveedores/';
 
-    // Crear carpeta si no existe
-    if (!is_dir($carpetaImagenes)) {
-        mkdir($carpetaImagenes, 0755, true);
-    }
+    // Máximo 5 MB, re-codificada a JPG/PNG/WEBP con nombre aleatorio.
+    $nombreImagen = guardarImagenSegura($_FILES['imagen'], $carpetaImagenes, 5 * 1024 * 1024, 'proveedor');
 
     $rutaImagen = $carpetaImagenes . $nombreImagen;
-
-    // =====================================
-    // GUARDAR IMAGEN
-    // =====================================
-
-    if (!move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
-        throw new Exception("No fue posible guardar la imagen.");
-    }
 
     // =====================================
     // REGISTRAR PROVEEDOR
@@ -97,9 +61,7 @@ try {
 
     // Si falla el registro, eliminamos la imagen
     if (!$resultado) {
-        if (file_exists($rutaImagen)) {
-            unlink($rutaImagen);
-        }
+        borrarArchivoSeguro($carpetaImagenes, $nombreImagen);
 
         $mensaje = "Error al registrar proveedor";
     } else {
@@ -142,6 +104,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../partials/seo.php'; ?>
     <title>Registro de Proveedores</title>
     <!-- Orden estándar: global -> layout (shell) -> módulo -->
     <link rel="stylesheet" href="../../public/css/global.css">
@@ -186,6 +149,7 @@ try {
             </div>
 
             <form method="POST" enctype="multipart/form-data" id="formProveedor">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generarTokenCSRF()) ?>">
 
                 <div class="field-group imagen-section">
                     <label>Logo / Imagen del Proveedor</label>
@@ -424,7 +388,7 @@ try {
         });
     </script>
 
-    <script src="../../public/js/app.js"></script>
+    <script src="../../public/js/app.js" defer></script>
 
 </body>
 

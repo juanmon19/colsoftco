@@ -1,0 +1,9 @@
+# COLSOFTCO — robots.txt
+# Sistema interno: se permite el rastreo de la portada y los assets
+# públicos. Las vistas bajo /view/ exigen sesión de todos modos.
+User-agent: *
+Allow: /
+
+# Evita indexar resultados de búsqueda/filtros internos
+Disallow: /*?*orden=
+Disallow: /*?*buscar=

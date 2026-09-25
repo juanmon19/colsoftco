@@ -12,6 +12,33 @@ AddDefaultCharset UTF-8
     RewriteEngine Off
 </IfModule>
 
+#4. Compresión (ahorra transferencia en CSS/JS/HTML/JSON/SVG)
+<IfModule mod_deflate.c>
+    <FilesMatch "\.(html|css|js|json|svg|xml|txt)$">
+        SetOutputFilter DEFLATE
+    </FilesMatch>
+</IfModule>
+
+#5. Caché eficiente de estáticos (Lighthouse: "tiempos de vida de caché")
+# Los PHP no se cachean (llevan no-store de sesión); esto solo afecta
+# imágenes, CSS, JS y fuentes, que llevan hash implícito por despliegue.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/gif "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType text/css "access plus 30 days"
+    ExpiresByType application/javascript "access plus 30 days"
+    ExpiresByType font/woff2 "access plus 30 days"
+</IfModule>
+<IfModule mod_headers.c>
+    <FilesMatch "\.(png|jpg|jpeg|webp|gif|svg|css|js|woff2)$">
+        Header set Cache-Control "public, max-age=2592000, immutable"
+    </FilesMatch>
+</IfModule>
+
 # Páginas de error personalizadas
 ErrorDocument 400 /colsoftco/view/errores/error_400.php
 ErrorDocument 403 /colsoftco/view/errores/error_403.php

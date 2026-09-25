@@ -6,7 +6,8 @@ require_once "../../app/verificar_sesion.php";
 
 $logica = new ProveedorLogica();
 
-$id = $_GET['id'] ?? 0;
+// H2: el id viaja al nombre de archivo → entero estricto (adiós traversal).
+$id = (int) ($_GET['id'] ?? 0);
 
 $proveedor = $logica->getProveedorById($id);
 
@@ -24,50 +25,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
 
-        $archivo = $_FILES['imagen'];
+        require_once __DIR__ . '/../../app/upload_seguro.php';
 
-        // Extensiones permitidas
-        $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
-
-        $extension = strtolower(
-            pathinfo($archivo['name'], PATHINFO_EXTENSION)
-        );
-
-        if (!in_array($extension, $extensionesPermitidas)) {
-            die("Formato de imagen no permitido.");
-        }
-
-        // Validar tamaño máximo: 2 MB
-        if ($archivo['size'] > 2 * 1024 * 1024) {
-            die("La imagen no puede superar los 2 MB.");
+        if (!validarTokenCSRF($_POST['csrf_token'] ?? '')) {
+            die("Sesión inválida. Recarga la página.");
         }
 
         // Carpeta donde se guardan las imágenes
         $carpetaImagenes = __DIR__ . '/../../public/imagenes/proveedores/';
 
-        // Crear carpeta si no existe
-        if (!is_dir($carpetaImagenes)) {
-            mkdir($carpetaImagenes, 0777, true);
+        // Re-codificada, nombre aleatorio, máximo 2 MB (H4: el contenido
+        // nunca se valida solo por extensión).
+        try {
+            $nuevoNombre = guardarImagenSegura($_FILES['imagen'], $carpetaImagenes, 2 * 1024 * 1024, 'proveedor_' . $id);
+        } catch (RuntimeException $e) {
+            die(htmlspecialchars($e->getMessage()));
         }
 
-        // Nombre único
-        $nuevoNombre = 'proveedor_' . $id . '_' . time() . '.' . $extension;
-
-        $rutaDestino = $carpetaImagenes . $nuevoNombre;
-
-        // Mover imagen
-        if (!move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-            die("No se pudo guardar la nueva imagen.");
-        }
-
-        // Eliminar imagen anterior
+        // Eliminar imagen anterior (basename interno impide salidas del dir)
         if (!empty($imagen)) {
-
-            $imagenAnterior = $carpetaImagenes . $imagen;
-
-            if (file_exists($imagenAnterior)) {
-                unlink($imagenAnterior);
-            }
+            borrarArchivoSeguro($carpetaImagenes, $imagen);
         }
 
         $imagen = $nuevoNombre;
@@ -118,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../partials/seo.php'; ?>
     <title>Editar Proveedor</title>
 
     <!-- Orden estándar: global -> layout (shell) -> módulo -->
@@ -159,6 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="card-body">
 
                 <form method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generarTokenCSRF()) ?>">
 
                     <div class="form-grid">
 
@@ -310,9 +289,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </script>
 
-    <script src="../../public/js/app.js"></script>
+    <script src="../../public/js/app.js" defer></script>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 </body>
 

@@ -346,7 +346,7 @@ button {
 .stat a b {
     font-size: 25px;
     font-weight: 400;
-    color: #7b8798;
+    color: #475569;
 }
 
 /* ══ TAREAS & RIGHT PANEL ══ */
@@ -401,21 +401,21 @@ button {
 }
 .priority.high {
     background: #ffe7e6;
-    color: #dd625f;
+    color: #b91c1c;
 }
 .priority.medium,
 .status.pendiente {
     background: #fff4d9;
-    color: #d89b12;
+    color: #92400e;
 }
 .priority.low,
 .status.terminado {
     background: #e2f7e6;
-    color: #42a657;
+    color: #166534;
 }
 .status.por-hacer {
     background: #e9f1ff;
-    color: #3678e7;
+    color: #1d4ed8;
 }
 
 /* Menú Edición Tareas */
@@ -447,7 +447,7 @@ button {
 .edit-menu-group label {
     font-size: 10px;
     font-weight: 800;
-    color: var(--muted);
+    color: #475569;
     display: block;
     margin-bottom: 5px;
 }

@@ -85,6 +85,7 @@ $material = $stmt->fetch(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../../partials/seo.php'; ?>
     <title>Editar Materia Prima</title>
     <!-- Orden estándar: global -> layout (shell) -> módulo -->
     <link rel="stylesheet" href="../../../public/css/global.css">

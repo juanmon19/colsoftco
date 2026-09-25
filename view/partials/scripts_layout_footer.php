@@ -201,6 +201,7 @@ $prefijoJs = json_encode($prefijo . '../../');
         const formData = new FormData();
         formData.append('accion', 'foto');
         formData.append('foto', archivo);
+        formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]')?.content || '');
 
         try {
             const resp = await fetch(PREFIJO_APP + 'app/perfil_usuario.php', { method: 'POST', body: formData });

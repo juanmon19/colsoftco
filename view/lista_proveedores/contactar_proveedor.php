@@ -262,6 +262,7 @@ function enviarCorreoSolicitudAdmin($correoAdmin, $nombreEmpresaProveedor, $nomb
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../partials/seo.php'; ?>
     <title>Contactar Proveedor - COLSOFTCO</title>
     <!-- Orden estándar: global -> layout (shell) -> módulo -->
     <link rel="stylesheet" href="../../public/css/global.css">

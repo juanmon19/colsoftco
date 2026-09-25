@@ -140,8 +140,8 @@ html[data-tema="oscuro"] ::-webkit-scrollbar-thumb:hover { background: var(--gol
 .tasks-summary{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid #e5e7eb;font-size:12px;color:#475569}
 .sum-pill{background:#f1f5f9;border-radius:999px;padding:4px 12px}
 .sum-pill b{font-weight:800}
-.sum-pill.pend{background:#fff4d9;color:#b45309}
+.sum-pill.pend{background:#fff4d9;color:#92400e}
 .sum-pill.hacer{background:#e9f1ff;color:#1d4ed8}
-.sum-pill.term{background:#e2f7e6;color:#15803d}
+.sum-pill.term{background:#e2f7e6;color:#166534}
 .tasks-progress{flex:1 1 120px;height:8px;background:#eef2f7;border-radius:99px;overflow:hidden;min-width:100px}
 .tasks-progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0A1F44,#D4AF37);border-radius:99px;transition:width .4s ease}

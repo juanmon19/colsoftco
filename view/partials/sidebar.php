@@ -24,7 +24,7 @@ $ver = fn(string $archivo) => puede_acceder($archivo, $rolKey ?: 'administrador'
 
 <aside class="sidebar" id="sidebar">
     <a class="brand" href="<?= $prefijo ?>../../app/ir_panel.php" style="text-decoration:none;">
-        <img src="<?= $prefijo ?>../../public/imagenes/logo.png" alt="COLSOFTCO">
+        <img src="<?= $prefijo ?>../../public/imagenes/logo.png" alt="COLSOFTCO" width="58" height="58">
         <div class="brand-text">
             <strong>COLSOFTCO</strong>
             <span>Sistema de Gestión</span>
@@ -32,7 +32,7 @@ $ver = fn(string $archivo) => puede_acceder($archivo, $rolKey ?: 'administrador'
     </a>
 
     <button class="mobile-menu" id="btnMenuToggle" type="button"
-            aria-expanded="false" aria-controls="sidebarLinks">
+            aria-expanded="false" aria-controls="navMenu">
         <span>☰ Menú</span>
         <span class="toggle-icono">⌄</span>
     </button>

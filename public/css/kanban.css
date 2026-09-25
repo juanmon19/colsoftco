@@ -20,13 +20,13 @@
 .kanban-card-top strong{flex:1;font-size:13px;color:#0A1F44;overflow:hidden;text-overflow:ellipsis}
 .kanban-meta{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11px;color:#64748b;flex-wrap:wrap}
 .kanban-user{margin-top:6px;font-size:11px;color:#475569;background:#f1f5f9;border-radius:999px;padding:2px 10px;display:inline-block}
-.kanban-empty{border:1px dashed #cbd5e1;border-radius:8px;padding:14px;text-align:center;color:#94a3b8;font-size:12px;background:transparent}
+.kanban-empty{border:1px dashed #cbd5e1;border-radius:8px;padding:14px;text-align:center;color:#475569;font-size:12px;background:transparent}
 .task-actions{position:relative;flex-shrink:0}
 @media (max-width:900px){.kanban{grid-template-columns:1fr}}
 
 /* Pestañas Kanban | Calendario */
 .view-tabs{display:inline-flex;background:#eef2f7;border-radius:999px;padding:3px;gap:2px}
-.view-tabs button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;color:#64748b;cursor:pointer}
+.view-tabs button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;color:#475569;cursor:pointer}
 .view-tabs button.active{background:#0A1F44;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .title-actions{display:flex;align-items:center;gap:10px}
 
@@ -52,7 +52,7 @@
 .ev-alta{background:#ffe7e6;color:#b91c1c}
 .ev-media{background:#fff4d9;color:#b45309}
 .ev-baja{background:#e2f7e6;color:#15803d}
-.cal-mas{font-size:10px;color:#64748b;font-weight:700}
+.cal-mas{font-size:10px;color:#475569;font-weight:700}
 .cal-detalle{margin-top:12px;border-top:1px solid #eef2f7;padding-top:10px}
 .cal-detalle h5{margin:0 0 8px;font-size:13px;color:#0A1F44}
 .cal-detalle ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -60,7 +60,43 @@
 .cal-detalle li strong{flex:1;font-weight:600}
 .cal-detalle li.vacia{color:#94a3b8;background:transparent}
 .mini{font-size:10px;font-weight:800;border-radius:999px;padding:3px 10px}
-.mini.pend{background:#fff4d9;color:#b45309}
+.mini.pend{background:#fff4d9;color:#92400e}
 .mini.hacer{background:#e9f1ff;color:#1d4ed8}
-.mini.term{background:#e2f7e6;color:#15803d}
+.mini.term{background:#e2f7e6;color:#166534}
 @media (max-width:640px){.cal-day{min-height:48px}.cal-ev{display:none}.cal-day .cal-mas{display:block}}
+
+/* ══ TEMA OSCURO — Kanban, pestañas, resumen y calendario ══ */
+html[data-tema="oscuro"] .kanban-col{background:var(--surface-2);border:1px solid var(--border)}
+html[data-tema="oscuro"] .kanban-head h4{color:var(--text)}
+html[data-tema="oscuro"] .kanban-list.drag-over{background:rgba(54,120,231,.18);outline-color:#5b95f5}
+html[data-tema="oscuro"] .kanban-card{background:var(--surface);border-color:var(--border);box-shadow:0 2px 10px rgba(0,0,0,.35)}
+html[data-tema="oscuro"] .kanban-card-top strong{color:#fff}
+html[data-tema="oscuro"] .kanban-meta{color:var(--muted)}
+html[data-tema="oscuro"] .kanban-user{background:rgba(148,163,184,.14);color:#c6d2e3}
+html[data-tema="oscuro"] .kanban-empty{border-color:var(--border);color:var(--muted)}
+html[data-tema="oscuro"] .view-tabs{background:rgba(148,163,184,.12)}
+html[data-tema="oscuro"] .view-tabs button{color:var(--muted)}
+html[data-tema="oscuro"] .view-tabs button.active{background:var(--gold);color:#08172e}
+html[data-tema="oscuro"] .tasks-summary{border-color:var(--border);color:var(--muted)}
+html[data-tema="oscuro"] .sum-pill{background:rgba(148,163,184,.14);color:var(--text)}
+html[data-tema="oscuro"] .tasks-progress{background:rgba(148,163,184,.16)}
+html[data-tema="oscuro"] .calendario-tareas{background:var(--surface);border-color:var(--border)}
+html[data-tema="oscuro"] .cal-titulo h4{color:#fff}
+html[data-tema="oscuro"] .cal-titulo span{color:var(--muted)}
+html[data-tema="oscuro"] .cal-nav{border-color:var(--border);background:transparent;color:var(--text)}
+html[data-tema="oscuro"] .cal-nav:hover{background:rgba(148,163,184,.14)}
+html[data-tema="oscuro"] .cal-hoy{border-color:var(--gold);color:var(--gold)}
+html[data-tema="oscuro"] .cal-hoy:hover{background:var(--gold);color:#08172e}
+html[data-tema="oscuro"] .cal-dow{color:var(--muted)}
+html[data-tema="oscuro"] .cal-day{background:rgba(148,163,184,.07)}
+html[data-tema="oscuro"] .cal-day:hover{background:rgba(54,120,231,.18)}
+html[data-tema="oscuro"] .cal-num{color:var(--text)}
+html[data-tema="oscuro"] .cal-day.hoy .cal-num{background:var(--gold);color:#08172e}
+html[data-tema="oscuro"] .cal-day.sel{outline-color:var(--gold);background:rgba(212,175,55,.10)}
+html[data-tema="oscuro"] .cal-mas{color:var(--muted)}
+html[data-tema="oscuro"] .cal-detalle{border-color:var(--border)}
+html[data-tema="oscuro"] .cal-detalle h5{color:#fff}
+html[data-tema="oscuro"] .cal-detalle li{background:rgba(148,163,184,.08)}
+html[data-tema="oscuro"] .cal-detalle li.vacia{color:var(--muted);background:transparent}
+html[data-tema="oscuro"] .edit-menu{background:var(--surface);border-color:var(--border);color:var(--text)}
+html[data-tema="oscuro"] .edit-menu-group label{color:var(--muted)}

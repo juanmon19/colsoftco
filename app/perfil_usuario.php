@@ -101,33 +101,28 @@ if ($accion === 'actualizar') {
     exit();
 }
 
-/* ══ Subir / cambiar la foto de perfil ══ */
+/* ══ Subir / cambiar la foto de perfil (endurecido H4: re-encode + CSRF) ══ */
 if ($accion === 'foto') {
+    if (!validarTokenCSRF($_POST['csrf_token'] ?? '')) {
+        echo json_encode(['ok' => false, 'error' => 'Sesión inválida. Recarga la página.']);
+        exit();
+    }
+
     if (empty($_FILES['foto']) || $_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
         echo json_encode(['ok' => false, 'error' => 'No se recibió ninguna imagen.']);
         exit();
     }
 
-    $archivo = $_FILES['foto'];
-    $permitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
-    $tipo = mime_content_type($archivo['tmp_name']);
-
-    if (!isset($permitidos[$tipo])) {
-        echo json_encode(['ok' => false, 'error' => 'Formato no permitido. Usa JPG, PNG o WEBP.']);
-        exit();
-    }
-
-    if ($archivo['size'] > 7 * 1024 * 1024) {
-        echo json_encode(['ok' => false, 'error' => 'La imagen no puede pesar más de 7MB.']);
-        exit();
-    }
-
-    $extension  = $permitidos[$tipo];
-    $nombreArchivo = 'usuario_' . $idUsuario . '_' . time() . '.' . $extension;
-    $rutaDestino   = $carpetaFotos . $nombreArchivo;
-
-    if (!move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-        echo json_encode(['ok' => false, 'error' => 'No se pudo guardar la imagen en el servidor.']);
+    require_once __DIR__ . '/upload_seguro.php';
+    try {
+        $nombreArchivo = guardarImagenSegura(
+            $_FILES['foto'],
+            $carpetaFotos,
+            1 * 1024 * 1024,
+            'usuario_' . (int) $idUsuario
+        );
+    } catch (RuntimeException $e) {
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
         exit();
     }
 
@@ -135,9 +130,7 @@ if ($accion === 'foto') {
     $stmtAnterior = $db->prepare("SELECT foto FROM usuarios WHERE id_usuario = :id");
     $stmtAnterior->execute([':id' => $idUsuario]);
     $fotoAnterior = $stmtAnterior->fetchColumn();
-    if ($fotoAnterior && is_file($carpetaFotos . $fotoAnterior)) {
-        @unlink($carpetaFotos . $fotoAnterior);
-    }
+    borrarArchivoSeguro($carpetaFotos, $fotoAnterior ?: null);
 
     // 1. FORZAMOS EL ID A NÚMERO ENTERO PARA EVITAR CONFLICTOS CON PDO
     $idUsuarioInt = (int) $idUsuario;

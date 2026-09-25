@@ -14,6 +14,7 @@ header("Expires: 0");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../partials/seo.php'; ?>
     <title>Colsoftco - Tareas</title>
 
     <link rel="stylesheet" href="../../public/css/global.css">
@@ -107,9 +108,9 @@ header("Expires: 0");
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-    <script src="../../public/js/tareas.js"></script>
-    <script src="../../public/js/calendario_tareas.js"></script>
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script src="../../public/js/tareas.js" defer></script>
+    <script src="../../public/js/calendario_tareas.js" defer></script>
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
 </body>

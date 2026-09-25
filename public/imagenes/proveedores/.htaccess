@@ -1,0 +1,11 @@
+# COLSOFTCO — Defensa en profundidad (auditoría AppSec H1/H4)
+# Aunque la app solo guarda JPG/PNG/WEBP re-codificados, este directorio
+# NUNCA debe ejecutar scripts aunque un atacante logre plantar uno.
+php_flag engine off
+RemoveHandler .php .phtml .phar
+RemoveType .php .phtml .phar
+<FilesMatch "\.(php|phtml|phar|htaccess|htpasswd|inc)$">
+    Require all denied
+</FilesMatch>
+# Los archivos aquí son solo imágenes: no permitir auto-index ni includes.
+Options -Indexes -Includes

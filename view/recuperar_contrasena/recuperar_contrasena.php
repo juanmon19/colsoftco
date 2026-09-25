@@ -11,6 +11,7 @@ session_start();
   <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../partials/seo.php'; ?>
   <title>Recuperar contraseña</title>
   <link href="recuperar_contrasena.css" rel="stylesheet">
 </head>
@@ -92,7 +93,7 @@ session_start();
     </div>
   </footer>
 
-<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+<script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
 <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 </body>
 

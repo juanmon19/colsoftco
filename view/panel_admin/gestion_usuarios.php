@@ -13,6 +13,7 @@ $rolActual = 'Administrador';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../partials/seo.php'; ?>
     <title>Gestión de Usuarios - COLSOFTCO</title>
     <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
@@ -399,7 +400,7 @@ $rolActual = 'Administrador';
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-    <script src="../../public/js/app.js"></script>
+    <script src="../../public/js/app.js" defer></script>
     <script>
         function formatearFechaActividad(fechaStr) {
             if (!fechaStr) return 'Nunca';

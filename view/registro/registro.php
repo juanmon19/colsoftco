@@ -11,6 +11,7 @@ require_once "../../app/verificar_sesion.php";
     <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../partials/seo.php'; ?>
     <title>Registro de Usuarios </title>
     <link href="registro.css" rel="stylesheet">
 
@@ -175,6 +176,7 @@ require_once "../../app/verificar_sesion.php";
             <form id="formRegistro" method="POST" action="../../app/logica.php" enctype="multipart/form-data">
 
                 <input type="hidden" name="registro" value="1">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generarTokenCSRF()) ?>">
 
                 <div class="campo-imagen">
                     <label>Imagen del Usuario</label>
@@ -187,7 +189,7 @@ require_once "../../app/verificar_sesion.php";
                             <label for="foto" class="btn-seleccionar-imagen">Seleccionar Imagen</label>
                             <input type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg">
                             <span id="nombreArchivo" class="texto-archivo">Ningún archivo seleccionado</span>
-                            <small class="texto-ayuda">Formatos permitidos: JPG, PNG. Máximo 2 MB.</small>
+                            <small class="texto-ayuda">Formatos permitidos: JPG, PNG. Máximo 1 MB.</small>
                         </div>
                     </div>
                 </div>
@@ -578,9 +580,9 @@ require_once "../../app/verificar_sesion.php";
 
 </script>
 
-    <script src="../../public/js/app.js"></script>
+    <script src="../../public/js/app.js" defer></script>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
 </body>

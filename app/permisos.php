@@ -99,6 +99,28 @@ if (!function_exists('es_operario')) {
         return ($rol ?? rol_actual()) === 'operario';
     }
 }
+if (!function_exists('generarTokenCSRF')) {
+    /**
+     * Genera un token CSRF y lo almacena en la sesión.
+     */
+    function generarTokenCSRF(): string {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
+}
+if (!function_exists('validarTokenCSRF')) {
+    /**
+     * Valida que el token CSRF recibido coincida con el de la sesión.
+     */
+    function validarTokenCSRF(string $token): bool {
+        return isset($_SESSION['csrf_token']) && $token !== '' && hash_equals($_SESSION['csrf_token'], $token);
+    }
+}
 if (!function_exists('rol_legible')) {
     function rol_legible(?string $rol = null): string {
         $r = $rol ?? rol_actual();

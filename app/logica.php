@@ -45,8 +45,22 @@ if (isset($_POST['login'])) {
     }
 }
 
-// registro nuevos usuarios
+// registro nuevos usuarios (solo administrador + CSRF: este endpoint NO pasa
+// por verificar_sesion, así que la puerta se cierra aquí mismo)
 if (isset($_POST['registro'])) {
+    require_once __DIR__ . '/permisos.php';
+
+    if (!es_admin()) {
+        $_SESSION['mensaje'] = 'Sin permiso para registrar usuarios.';
+        header("location:../view/login/login.php");
+        exit();
+    }
+
+    if (!validarTokenCSRF($_POST['csrf_token'] ?? '')) {
+        $_SESSION['mensaje'] = 'Sesión inválida. Recarga la página e inténtalo de nuevo.';
+        header("location:../view/registro/registro.php");
+        exit();
+    }
 
     $Email = $_POST['email'] ?? '';
     $Documento = $_POST['documento'] ?? '';
@@ -87,24 +101,25 @@ if (isset($_POST['registro'])) {
         exit();
     }
 
-    // MANEJO Y SUBIDA DE LA FOTO
+    // MANEJO Y SUBIDA DE LA FOTO (endurecido H1/H3: MIME olfateado, re-encode
+    // con GD, nombre aleatorio; la extensión del cliente jamás se usa).
     // Se guarda en la misma carpeta que usa perfil_usuario.php (public/imagenes/perfiles/)
     // y en la BD se guarda SOLO el nombre del archivo, porque así es como
     // panel_admin.php arma la URL: `../../public/imagenes/perfiles/${u.foto}`
     $rutaFotoBD = null;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-        $directorioDestino = __DIR__ . '/../public/imagenes/perfiles/';
-
-        if (!is_dir($directorioDestino)) {
-            mkdir($directorioDestino, 0755, true);
-        }
-
-        $extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-        $nombreArchivo = 'usr_' . time() . '_' . uniqid() . '.' . $extension;
-        $rutaCompleta = $directorioDestino . $nombreArchivo;
-
-        if (move_uploaded_file($_FILES['foto']['tmp_name'], $rutaCompleta)) {
-            $rutaFotoBD = $nombreArchivo;
+        require_once __DIR__ . '/upload_seguro.php';
+        try {
+            $rutaFotoBD = guardarImagenSegura(
+                $_FILES['foto'],
+                __DIR__ . '/../public/imagenes/perfiles/',
+                7 * 1024 * 1024,
+                'usr'
+            );
+        } catch (RuntimeException $e) {
+            $_SESSION['mensaje'] = $e->getMessage();
+            header("location:../view/registro/registro.php");
+            exit();
         }
     }
 

@@ -18,6 +18,7 @@ $soloLecturaReceta = es_operario();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include __DIR__ . '/../partials/seo.php'; ?>
     <title>Receta Colchones</title>
     <!-- Orden estándar: global -> layout -> módulo -->
     <link rel="stylesheet" href="../../public/css/global.css">
@@ -255,9 +256,9 @@ $soloLecturaReceta = es_operario();
         }
     </script>
 
-    <script src="../../public/js/app.js"></script>
+    <script src="../../public/js/app.js" defer></script>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
 </body>

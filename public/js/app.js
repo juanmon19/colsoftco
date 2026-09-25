@@ -70,3 +70,34 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
 });
+
+// ===============================
+// ACCESIBILIDAD: widget de terceros (Botpress)
+// El botón flotante del chat se inyecta sin alt ni roles válidos y
+// Lighthouse lo penaliza. Como no controlamos su código, se corrige
+// al vuelo: alt descriptivo + roles compatibles.
+// ===============================
+(function () {
+    'use strict';
+
+    function corregirBotpress() {
+        document.querySelectorAll('img.bpFabImage').forEach(function (img) {
+            if (!img.getAttribute('alt')) {
+                img.setAttribute('alt', 'Abrir chat de ayuda');
+            }
+            // Solo roles compatibles con <img>: presentation/none o ninguno.
+            var rol = img.getAttribute('role');
+            if (rol && rol !== 'presentation' && rol !== 'none' && rol !== 'img') {
+                img.removeAttribute('role');
+            }
+        });
+    }
+
+    corregirBotpress();
+
+    try {
+        var obs = new MutationObserver(function () { corregirBotpress(); });
+        obs.observe(document.documentElement, { childList: true, subtree: true });
+        setTimeout(function () { obs.disconnect(); }, 30000);
+    } catch (e) { /* sin observer: se aplicó una vez al cargar */ }
+})();
