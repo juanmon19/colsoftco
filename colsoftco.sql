@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-09-2026 a las 02:59:51
+-- Tiempo de generación: 07-10-2026 a las 19:47:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -471,7 +471,53 @@ INSERT INTO `historial_movimientos` (`id`, `modulo`, `accion`, `id_registro`, `d
 (397, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-13 21:35:37'),
 (398, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-14 14:09:57'),
 (399, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-16 16:56:25'),
-(400, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-16 19:58:03');
+(400, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-16 19:58:03'),
+(401, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-17 23:16:43'),
+(402, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-18 00:13:56'),
+(403, 'Seguridad', 'sesion_duplicada', 19, 'Se detectó un nuevo inicio de sesión para Maria José Gonzalez Rodriguez (Doc: 1068952788) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 19, 'Maria José Gonzalez Rodriguez', '::1', '2026-09-18 00:32:57'),
+(404, 'Seguridad', 'sesion_duplicada', 19, 'Se detectó un nuevo inicio de sesión para Maria José Gonzalez Rodriguez (Doc: 1068952788) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 19, 'Maria José Gonzalez Rodriguez', '::1', '2026-09-18 00:39:30'),
+(405, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-18 00:44:54'),
+(406, 'Seguridad', 'sesion_duplicada', 19, 'Se detectó un nuevo inicio de sesión para Maria José Gonzalez Rodriguez (Doc: 1068952788) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 19, 'Maria José Gonzalez Rodriguez', '::1', '2026-09-18 01:21:58'),
+(407, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-18 02:15:24'),
+(408, 'Seguridad', 'sesion_duplicada', 19, 'Se detectó un nuevo inicio de sesión para Maria José Gonzalez Rodriguez (Doc: 1068952788) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 19, 'Maria José Gonzalez Rodriguez', '::1', '2026-09-18 02:17:02'),
+(409, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-18 13:59:14'),
+(410, 'Seguridad', 'sesion_duplicada', 14, 'Se detectó un nuevo inicio de sesión para Nicolas Polo (Doc: 1013116788) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 14, 'Nicolas Polo', '::1', '2026-09-18 14:12:03'),
+(411, 'Seguridad', 'sesion_duplicada', 8, 'Se detectó un nuevo inicio de sesión para Santiago Avellaneda (Doc: 1025062749) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 8, 'Santiago Avellaneda', '::1', '2026-09-18 14:12:17'),
+(412, 'pedidos_proveedor', 'solicitud', 3, 'Solicitud interna: Nicolas Polo (Bodeguero) pidió 23 Metros de \'Borde perimetral\' al proveedor \'Grupo Espumados S.A.S\'', NULL, '{\"id_proveedor\":\"3\",\"id_material\":\"9\",\"cantidad_pedida\":\"23\"}', NULL, 'Nicolas Polo', '::1', '2026-09-18 14:12:37'),
+(413, 'Seguridad', 'sesion_duplicada', 18, 'Se detectó un nuevo inicio de sesión para Jafet Pineda (Doc: 1072746605) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 18, 'Jafet Pineda', '::1', '2026-09-18 14:15:43'),
+(414, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-18 15:35:23'),
+(415, 'Seguridad', 'sesion_duplicada', 14, 'Se detectó un nuevo inicio de sesión para Nicolas Polo (Doc: 1013116788) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 14, 'Nicolas Polo', '::1', '2026-09-18 16:04:45'),
+(416, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-19 10:24:09'),
+(417, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-19 10:25:43'),
+(418, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-19 10:29:03'),
+(419, 'Seguridad', 'sesion_duplicada', 19, 'Se detectó un nuevo inicio de sesión para Maria José Gonzalez Rodriguez (Doc: 1068952788) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 19, 'Maria José Gonzalez Rodriguez', '::1', '2026-09-19 12:05:46'),
+(420, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-19 14:52:11'),
+(421, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-19 19:18:31'),
+(422, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-19 19:52:51'),
+(423, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-19 20:30:47'),
+(424, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-09-21 21:05:27'),
+(425, 'proveedores', 'deshabilitar', 3, 'Se deshabilitó el proveedor \'Grupo Espumados S.A.S\'', '{\"estado\":\"activo\"}', '{\"estado\":\"inactivo\"}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:05:05'),
+(426, 'proveedores', 'habilitar', 3, 'Se habilitó el proveedor \'Grupo Espumados S.A.S\'', '{\"estado\":\"inactivo\"}', '{\"estado\":\"activo\"}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:05:12'),
+(427, 'proveedores', 'editar', 3, 'Se actualizó el proveedor \'Grupo Espumados S.A.S\'', '{\"id_proveedor\":3,\"nombre_empresa\":\"Grupo Espumados S.A.S\",\"nit\":\"900345678-3\",\"direccion\":\"Cali, Valle del Cauca\",\"descripcion_empresa\":\"Fabricación de resortes para colchones\",\"contacto_nombre\":\"Andres\",\"contacto_apellido\":\"Martinez\",\"telefono\":\"3103333333\",\"email\":\"jafetdavidpi@gmail.com\",\"imagen\":\"proveedor_3_1787250256.jpeg\",\"estado\":\"activo\",\"activo\":1}', '{\"csrf_token\":\"294b15e630c86262a0d31634103655b2199a210bf8b61bf25474065e87c4e08a\",\"nombre_empresa\":\"Grupo Espumados S.A.S\",\"nit\":\"900345678-3\",\"contacto_nombre\":\"Andres\",\"contacto_apellido\":\"Martinez\",\"telefono\":\"3103333333\",\"email\":\"juanjosemon19@gmail.com\",\"direccion\":\"Cali, Valle del Cauca\",\"descripcion_empresa\":\"Fabricación de resortes para colchones\"}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:05:29'),
+(428, 'pedidos_proveedor', 'crear', 8, 'Se solicitó un pedido de \'Borde perimetral\' (cantidad: 15) al proveedor \'Grupo Espumados S.A.S\'', NULL, '{\"id_proveedor\":\"3\",\"id_material\":\"9\",\"cantidad_pedida\":\"15\"}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:05:53'),
+(429, 'pedidos_proveedor', 'crear', 9, 'Se solicitó un pedido de \'Borde perimetral\' (cantidad: 15) al proveedor \'Grupo Espumados S.A.S\'', NULL, '{\"id_proveedor\":\"3\",\"id_material\":\"9\",\"cantidad_pedida\":\"15\"}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:05:58'),
+(430, 'materia_prima', 'crear', 16, 'Se registró la materia prima \'Tela Jacquard\' con stock inicial de 45', NULL, '{\"nombre_material\":\"Tela Jacquard\",\"stock_actual\":\"45\",\"stock_minimo\":0,\"id_unidad\":\"1\",\"id_proveedor\":\"2\"}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:08:17'),
+(431, 'producto_terminado', 'crear', 10, 'Se registró producción de 5 unidades de \'Doble\'', NULL, '{\"nombre_producto\":\"Doble\",\"cantidad\":\"5\"}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:09:44'),
+(432, 'materia_prima', 'salida', 1, 'Salida de 42 Kilogramos de \'Espuma de poliuretano\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":3824}', '{\"stock_actual\":3782}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(433, 'materia_prima', 'salida', 2, 'Salida de 14 Metros de \'Tela Jacquard\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":4623}', '{\"stock_actual\":4609}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(434, 'materia_prima', 'salida', 5, 'Salida de 2.6 Litros de \'Pegante industrial\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":4920.2}', '{\"stock_actual\":4917.599999999999}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(435, 'materia_prima', 'salida', 1, 'Salida de 44 Kilogramos de \'Espuma de poliuretano\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":3824}', '{\"stock_actual\":3780}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(436, 'materia_prima', 'salida', 2, 'Salida de 14 Metros de \'Tela Jacquard\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":4623}', '{\"stock_actual\":4609}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(437, 'materia_prima', 'salida', 3, 'Salida de 320 Unidades de \'Resortes Bonnell\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":2560}', '{\"stock_actual\":2240}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(438, 'materia_prima', 'salida', 4, 'Salida de 8 Metros de \'Fieltro aislante\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":4800.5}', '{\"stock_actual\":4792.5}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(439, 'materia_prima', 'salida', 5, 'Salida de 3 Litros de \'Pegante industrial\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":4920.2}', '{\"stock_actual\":4917.2}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(440, 'materia_prima', 'salida', 6, 'Salida de 1 Unidades de \'Hilo de costura\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":4975.7}', '{\"stock_actual\":4974.7}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(441, 'materia_prima', 'salida', 8, 'Salida de 7 Metros de \'Tela antideslizante\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":4831.5}', '{\"stock_actual\":4824.5}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(442, 'materia_prima', 'salida', 9, 'Salida de 20 Metros de \'Borde perimetral\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":5000}', '{\"stock_actual\":4980}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(443, 'materia_prima', 'salida', 10, 'Salida de 2 Metros de \'Empaque plastico\' para fabricar 2 unidades de \'Doble\'', '{\"stock_actual\":4959}', '{\"stock_actual\":4957}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(444, 'producto_terminado', 'crear', 9, 'Se fabricaron 2 unidades de \'Doble\'', NULL, '{\"unidades_fabricadas\":2,\"nombre_producto\":\"Doble\"}', NULL, 'Juan Montaño', '::1', '2026-09-21 22:10:06'),
+(445, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-10-06 10:43:43'),
+(446, 'Seguridad', 'sesion_duplicada', 7, 'Se detectó un nuevo inicio de sesión para Juan Montaño (Doc: 1068952619) mientras ya existía una sesión activa. IP: ::1.', NULL, NULL, 7, 'Juan Montaño', '::1', '2026-10-07 12:42:14');
 
 -- --------------------------------------------------------
 
@@ -513,7 +559,8 @@ INSERT INTO `historial_produccion` (`id`, `id_modelo`, `cantidad`, `fecha_fabric
 (19, 3, 2, '2026-08-27 11:52:45', 'Juan Montaño'),
 (20, 9, 2, '2026-08-27 13:59:31', 'Jafet Pineda'),
 (21, 3, 2, '2026-08-28 20:32:46', 'Juan Montaño'),
-(22, 11, 2, '2026-09-13 20:48:57', 'Juan Montaño');
+(22, 11, 2, '2026-09-13 20:48:57', 'Juan Montaño'),
+(23, 9, 2, '2026-09-21 22:10:06', 'Juan Montaño');
 
 -- --------------------------------------------------------
 
@@ -539,19 +586,20 @@ CREATE TABLE `materias_primas` (
 --
 
 INSERT INTO `materias_primas` (`id_material`, `nombre_material`, `stock_actual`, `stock_minimo`, `id_unidad`, `id_proveedor`, `notificar_email`, `correo_notificacion`, `alerta_enviada`, `estado`) VALUES
-(1, 'Espuma de poliuretano', 3824.00, 200.00, 1, 1, 1, 'juanjosemon19@gmail.com', 0, 'activo'),
-(2, 'Tela Jacquard', 4623.00, 50.00, 2, 2, 0, NULL, 0, 'activo'),
-(3, 'Resortes Bonnell', 2560.00, 300.00, 3, 3, 0, NULL, 0, 'activo'),
-(4, 'Fieltro aislante', 4800.50, 15.00, 2, 1, 1, 'nicolaspolo096@gmail.com', 0, 'activo'),
-(5, 'Pegante industrial', 4920.20, 20.00, 4, 4, 0, NULL, 0, 'activo'),
-(6, 'Hilo de costura', 4975.70, 50.00, 3, 2, 0, NULL, 0, 'activo'),
+(1, 'Espuma de poliuretano', 3738.00, 200.00, 1, 1, 1, 'juanjosemon19@gmail.com', 0, 'activo'),
+(2, 'Tela Jacquard', 4595.00, 50.00, 2, 2, 0, NULL, 0, 'activo'),
+(3, 'Resortes Bonnell', 2240.00, 300.00, 3, 3, 0, NULL, 0, 'activo'),
+(4, 'Fieltro aislante', 4792.50, 15.00, 2, 1, 1, 'nicolaspolo096@gmail.com', 0, 'activo'),
+(5, 'Pegante industrial', 4914.60, 20.00, 4, 4, 0, NULL, 0, 'activo'),
+(6, 'Hilo de costura', 4974.70, 50.00, 3, 2, 0, NULL, 0, 'activo'),
 (7, 'Espuma viscoelastica', 4880.00, 70.00, 1, 1, 1, 'juanjosemon19@gmail.com', 0, 'activo'),
-(8, 'Tela antideslizante', 4831.50, 40.00, 2, 2, 0, NULL, 0, 'activo'),
-(9, 'Borde perimetral', 5000.00, 40.00, 2, 3, 0, NULL, 0, 'activo'),
-(10, 'Empaque plastico', 4959.00, 80.00, 2, 4, 0, NULL, 0, 'activo'),
-(11, 'Tela ', 5000.00, 30.00, 2, 2, 0, NULL, 0, 'activo'),
+(8, 'Tela antideslizante', 4824.50, 40.00, 2, 2, 0, NULL, 0, 'activo'),
+(9, 'Borde perimetral', 4980.00, 40.00, 2, 3, 0, NULL, 0, 'activo'),
+(10, 'Empaque plastico', 4957.00, 80.00, 2, 4, 0, NULL, 0, 'activo'),
+(11, 'Tela ', 5000.00, 500.00, 2, 2, 1, 'juanjosemon19@gmail.com', 0, 'activo'),
 (13, 'Fieltro aislante', 5000.00, 0.00, 3, 4, 0, NULL, 0, 'activo'),
-(15, 'Tela Jacquard', 550.00, 0.00, 1, 2, 0, NULL, 0, 'activo');
+(15, 'Tela Jacquard', 550.00, 0.00, 1, 2, 0, NULL, 0, 'activo'),
+(16, 'Tela Jacquard', 45.00, 0.00, 1, 2, 0, NULL, 0, 'activo');
 
 -- --------------------------------------------------------
 
@@ -578,7 +626,10 @@ CREATE TABLE `mensajes` (
 INSERT INTO `mensajes` (`id_mensaje`, `id_remitente`, `id_destinatario`, `id_padre`, `id_conversacion`, `asunto`, `contenido`, `leido`, `fecha_envio`) VALUES
 (8, 14, 7, NULL, '7-14', 'Chat', 'ey', 1, '2026-09-14 14:56:31'),
 (9, 14, 7, NULL, '7-14', 'Chat', 'como me va pear la cara', 1, '2026-09-14 14:56:48'),
-(10, 7, 14, 9, '7-14', 'Chat', 'hey que pasa cabron', 1, '2026-09-14 14:57:01');
+(10, 7, 14, 9, '7-14', 'Chat', 'hey que pasa cabron', 1, '2026-09-14 14:57:01'),
+(11, 14, 7, NULL, NULL, 'Solicitud de pedido: Grupo Espumados S.A.S', 'El Bodeguero Nicolas Polo solicita pedir \'Borde perimetral\' (cantidad: 23 Metros) al proveedor \'Grupo Espumados S.A.S\'. Por favor gestiónalo desde el módulo de proveedores.', 1, '2026-09-18 14:12:35'),
+(12, 14, 8, NULL, NULL, 'Solicitud de pedido: Grupo Espumados S.A.S', 'El Bodeguero Nicolas Polo solicita pedir \'Borde perimetral\' (cantidad: 23 Metros) al proveedor \'Grupo Espumados S.A.S\'. Por favor gestiónalo desde el módulo de proveedores.', 0, '2026-09-18 14:12:35'),
+(13, 7, 19, NULL, '7-19', 'Chat', 'quiero que revises la maquina de cerrar', 0, '2026-09-21 22:11:13');
 
 -- --------------------------------------------------------
 
@@ -656,7 +707,9 @@ INSERT INTO `pedidos_proveedor` (`id_pedido`, `id_proveedor`, `id_material`, `ca
 (4, 1, 1, 15.00, 'PENDIENTE', '2026-08-25 22:49:02'),
 (5, 1, 1, 8.00, 'PENDIENTE', '2026-08-27 00:44:30'),
 (6, 3, 3, 500.00, 'PENDIENTE', '2026-08-27 20:07:15'),
-(7, 4, 10, 45.00, 'PENDIENTE', '2026-08-29 01:34:32');
+(7, 4, 10, 45.00, 'PENDIENTE', '2026-08-29 01:34:32'),
+(8, 3, 9, 15.00, 'PENDIENTE', '2026-09-22 03:05:49'),
+(9, 3, 9, 15.00, 'PENDIENTE', '2026-09-22 03:05:53');
 
 -- --------------------------------------------------------
 
@@ -685,7 +738,7 @@ INSERT INTO `productos_terminados` (`id_producto`, `nombre_producto`, `stock_act
 (7, 'Descanso Real', 1.00, 0.00, '2026-08-25 20:10:20'),
 (8, 'King', 4.00, 0.00, '2026-08-25 20:13:12'),
 (9, 'Premium Gold', 5.00, 0.00, '2026-08-25 22:45:43'),
-(10, 'Doble', 2.00, 0.00, '2026-08-27 13:59:31');
+(10, 'Doble', 9.00, 0.00, '2026-08-27 13:59:31');
 
 -- --------------------------------------------------------
 
@@ -715,7 +768,7 @@ CREATE TABLE `proveedores` (
 INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit`, `direccion`, `descripcion_empresa`, `contacto_nombre`, `contacto_apellido`, `telefono`, `email`, `imagen`, `estado`, `activo`) VALUES
 (1, 'Espumas Colombia SAS', '900123456-1', 'Bogotá D.C.', 'Fabricación y comercialización de espumas para colchones', 'Carlos', 'Ramirez', '3101111111', 'karolgomez1603@gmail.com', 'proveedor_1_1787250011.jpeg', 'inactivo', 1),
 (2, 'Textiles Andinos SAS', '800234567-2', 'Medellín, Antioquia', 'Producción de textiles para la industria colchonera', 'Laura', 'Gomez', '3102222222', 'contacto@textilesandinos.com', 'proveedor_2_1786563827.jpg', 'activo', 1),
-(3, 'Grupo Espumados S.A.S', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'jafetdavidpi@gmail.com', 'proveedor_3_1787250256.jpeg', 'activo', 1),
+(3, 'Grupo Espumados S.A.S', '900345678-3', 'Cali, Valle del Cauca', 'Fabricación de resortes para colchones', 'Andres', 'Martinez', '3103333333', 'juanjosemon19@gmail.com', 'proveedor_3_1787250256.jpeg', 'activo', 1),
 (4, 'Insumos beatex SAS', '900456789-4', 'Barranquilla, Atlántico', 'Distribución de insumos industriales', 'Paula', 'Torres', '3104444444', 'diegogo3027@gmail.com', 'proveedor_4_1787250112.jpg', 'activo', 1),
 (8, 'Resortes Inalres S.A.S', '83947593487', 'Cl 14 107-54', 'Empresa de resortes reforzados', 'Jafet', 'Pineda', '3116364875', 'jafetdavidpi@gmail.com', 'proveedor_8_1787250218.png', 'activo', 1);
 
@@ -852,19 +905,24 @@ CREATE TABLE `tareas` (
   `fecha_vencimiento` date DEFAULT NULL,
   `estado` enum('pendiente','por-hacer','terminado') NOT NULL DEFAULT 'pendiente',
   `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
-  `fecha_cierre` datetime DEFAULT NULL
+  `fecha_cierre` datetime DEFAULT NULL,
+  `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tareas`
 --
 
-INSERT INTO `tareas` (`id_tarea`, `titulo`, `prioridad`, `fecha_vencimiento`, `estado`, `fecha_creacion`, `fecha_cierre`) VALUES
-(1, 'Solicitar espuma', 'medium', '2026-05-20', 'pendiente', '2026-08-19 23:35:28', NULL),
-(2, 'Pedido N° 346', 'high', '2026-05-18', 'terminado', '2026-08-19 23:35:28', '2026-09-13 23:14:24'),
-(3, 'Verificar inventario', 'medium', '2026-05-21', 'pendiente', '2026-08-19 23:35:28', NULL),
-(4, 'Supervisar el área de producción', 'high', '2026-05-19', 'pendiente', '2026-08-19 23:35:28', NULL),
-(5, 'Contactar proveedor N° 12', 'low', '2026-05-22', 'terminado', '2026-08-19 23:35:28', NULL);
+INSERT INTO `tareas` (`id_tarea`, `titulo`, `prioridad`, `fecha_vencimiento`, `estado`, `fecha_creacion`, `fecha_cierre`, `id_usuario`) VALUES
+(1, 'Solicitar espuma', 'medium', '2026-05-20', 'pendiente', '2026-08-19 23:35:28', NULL, NULL),
+(2, 'Pedido N° 346', 'high', '2026-05-18', 'pendiente', '2026-08-19 23:35:28', NULL, NULL),
+(3, 'Verificar inventario', 'medium', '2026-05-21', 'pendiente', '2026-08-19 23:35:28', NULL, NULL),
+(4, 'Supervisar el área de producción', 'high', '2026-05-19', 'por-hacer', '2026-08-19 23:35:28', NULL, NULL),
+(5, 'Contactar proveedor N° 12', 'low', '2026-05-22', 'terminado', '2026-08-19 23:35:28', '2026-09-18 14:08:44', NULL),
+(9, 'Solicitar materia prima', 'medium', '2026-10-20', 'por-hacer', '2026-09-18 02:14:36', NULL, 19),
+(10, 'Verificar inventario', 'high', '2026-09-30', 'por-hacer', '2026-09-18 02:16:13', NULL, 19),
+(11, 'Verificar inventario', 'low', '2026-09-25', 'terminado', '2026-09-18 14:18:02', '2026-09-18 14:36:28', 18),
+(12, 'Verificar inventario', 'low', '2026-11-12', 'pendiente', '2026-09-21 22:04:21', NULL, 18);
 
 -- --------------------------------------------------------
 
@@ -917,11 +975,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `email`, `documento`, `nombre`, `apellido`, `foto`, `telefono`, `rol`, `password_hash`, `request_password`, `token_password`, `expired_session`, `token_sesion`, `activo`, `ultima_actividad`) VALUES
-(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'usuario_7_1787250604.png', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '1', '7c50d5b790f4843417d25b0e9c606c864292b09ebc377c988b61a6d0b3e0b0bd', '1788796626', 'c5acfcdaa5e7057057900d265f00c4e674468801aec3546152f76b93586d049f', 1, '2026-09-16 19:59:25'),
-(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'usuario_8_1788319477.jpg', NULL, 'administrador', '$2y$10$mwe6pjtnKSgAIvC0donWSeDPygDJ7/IwEhAlSb59NT3OxA5RRnVG.', '', NULL, '0', 'eff898d43b5911bba9f8a8ba5b7b89fe61f8b5dd6fc9c5ddec92f95a961de09b', 1, '2026-09-01 22:26:12'),
-(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'usuario_14_1789416220.jpg', NULL, 'administrador', '$2y$10$Grxp7he8UqpTGcrAQsKGb./QezRnSp33Ng5swmO68HwfZrq.FXoB2', '', NULL, '0', '0497c498d5d6aad0d8c2578752118721da3fe1107a585e9521147d13a1178518', 1, '2026-09-14 15:03:40'),
-(18, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', NULL, NULL, 'bodeguero', '$2y$10$CR9Aw8rydge4FXpuFKn8...fME51QFfpgxeJkv0wGEwYi6UQmNKhC', '0', NULL, NULL, 'f6bcb428f16d58fe458a79078edac69c5a868754ba064716f535e1b75bac1806', 1, '2026-08-31 22:45:36'),
-(19, 'majog4892@gmail.com', '1068952788', 'Maria José', 'Gonzalez Rodriguez', 'usuario_19_1788231237.jpg', '3115726095', 'bodeguero', '$2y$10$3LL/y4Si9zVL4rQCEmJE.OAcr2NO6rlP9aIIDEsMpDE3lIjrbBXHa', '0', NULL, NULL, NULL, 1, '2026-09-13 20:39:49');
+(7, 'juanjosemon19@gmail.com', '1068952619', 'Juan', 'Montaño', 'usuario_7_1789835202.webp', '3229035224', 'administrador', '$2y$10$qxT0RGurIZCj3dPj7c7gX.NlqVNM7bJGvRGnTNiVXO0QC8SVAzVB2', '1', 'e62592f9df37e8665b4c3dd24516d175c9e6bae1ad48c697cfcd6058ace350ea', '1790046385', '5211112b54e232ef93e781f8e7dd080be244a2eeb8ce7c43ad2f72b5a3aaaf8f', 1, '2026-10-07 12:44:00'),
+(8, 'avellanedamaldonadosantiago@gmail.com', '1025062749', 'Santiago', 'Avellaneda', 'usuario_8_1788319477.jpg', NULL, 'administrador', '$2y$10$mwe6pjtnKSgAIvC0donWSeDPygDJ7/IwEhAlSb59NT3OxA5RRnVG.', '', NULL, '0', '6191080aee91600737694424a40e41fc81468da45f5a48072ca20d11e8bed2b8', 1, '2026-09-18 14:12:18'),
+(14, 'nicolaspolo096@gmail.com', '1013116788', 'Nicolas', 'Polo', 'usuario_14_1789416220.jpg', NULL, 'operario', '$2y$10$Grxp7he8UqpTGcrAQsKGb./QezRnSp33Ng5swmO68HwfZrq.FXoB2', '0', NULL, '0', '974ced6fcdff7f41ed97ded06172cafb2bec81e777dd3cb441b8557662cf0023', 1, '2026-09-18 16:14:08'),
+(18, 'jafetdavidpi@gmail.com', '1072746605', 'Jafet', 'Pineda', 'usuario_18_1789759051.jpg', NULL, 'operario', '$2y$10$CR9Aw8rydge4FXpuFKn8...fME51QFfpgxeJkv0wGEwYi6UQmNKhC', '0', NULL, NULL, '12827c524d26841280c379577133718f1d1bbf454c37aa3b902c1db0783a3ef5', 1, '2026-09-18 14:35:40'),
+(19, 'majog4892@gmail.com', '1068952788', 'Maria José', 'Gonzalez Rodriguez', 'usuario_19_1788231237.jpg', '3115726095', 'bodeguero', '$2y$10$3LL/y4Si9zVL4rQCEmJE.OAcr2NO6rlP9aIIDEsMpDE3lIjrbBXHa', '0', NULL, NULL, NULL, 1, '2026-09-21 22:15:46');
 
 --
 -- Índices para tablas volcadas
@@ -1023,7 +1081,8 @@ ALTER TABLE `receta_colchon`
 -- Indices de la tabla `tareas`
 --
 ALTER TABLE `tareas`
-  ADD PRIMARY KEY (`id_tarea`);
+  ADD PRIMARY KEY (`id_tarea`),
+  ADD KEY `idx_tareas_usuario` (`id_usuario`);
 
 --
 -- Indices de la tabla `unidades_medida`
@@ -1059,25 +1118,25 @@ ALTER TABLE `conversaciones`
 -- AUTO_INCREMENT de la tabla `historial_movimientos`
 --
 ALTER TABLE `historial_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=401;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=447;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_produccion`
 --
 ALTER TABLE `historial_produccion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `materias_primas`
 --
 ALTER TABLE `materias_primas`
-  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
 --
 ALTER TABLE `mensajes`
-  MODIFY `id_mensaje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_mensaje` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `modelos_colchon`
@@ -1095,7 +1154,7 @@ ALTER TABLE `notificaciones`
 -- AUTO_INCREMENT de la tabla `pedidos_proveedor`
 --
 ALTER TABLE `pedidos_proveedor`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `productos_terminados`
@@ -1119,7 +1178,7 @@ ALTER TABLE `receta_colchon`
 -- AUTO_INCREMENT de la tabla `tareas`
 --
 ALTER TABLE `tareas`
-  MODIFY `id_tarea` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_tarea` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `unidades_medida`
