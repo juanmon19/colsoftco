@@ -38,10 +38,6 @@ header("Expires: 0");
             <main class="content">
                 <div class="tareas-pagina">
 
-                    <div class="modulo-head">
-                        <h2>☑ Gestión de Tareas</h2>
-                        <p>Tus tareas en Kanban o Calendario. Arrastra las tarjetas entre columnas para cambiar su estado.</p>
-                    </div>
 
                     <article class="tasks card" id="tareas">
                         <div class="title-row">

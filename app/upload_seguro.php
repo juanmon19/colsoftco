@@ -62,23 +62,7 @@ function guardarImagenSegura(array $file, string $destDir, int $maxBytes, string
         throw new RuntimeException('La imagen excede las dimensiones máximas.');
     }
 
-    // Re-codificar con GD: el bytes original (posibles polyglots, scripts,
-    // EXIF malicioso) jamás llega al disco.
-    if (!function_exists('imagecreatefromstring')) {
-        throw new RuntimeException('Servidor sin soporte de imágenes. Contacta al administrador.');
-    }
-    $bin = file_get_contents($file['tmp_name']);
-    if ($bin === false) {
-        throw new RuntimeException('No se pudo leer la imagen.');
-    }
-    $img = @imagecreatefromstring($bin);
-    unset($bin);
-    if ($img === false) {
-        throw new RuntimeException('El archivo no es una imagen válida.');
-    }
-
     if (!is_dir($destDir) && !mkdir($destDir, 0755, true) && !is_dir($destDir)) {
-        imagedestroy($img);
         throw new RuntimeException('No se pudo preparar el almacenamiento.');
     }
 
@@ -86,14 +70,39 @@ function guardarImagenSegura(array $file, string $destDir, int $maxBytes, string
     $nombre = $prefijoLimpio . '_' . bin2hex(random_bytes(16)) . '.' . $extension;
     $ruta = rtrim($destDir, '/\\') . DIRECTORY_SEPARATOR . $nombre;
 
-    $ok = match ($extension) {
-        'jpg'  => imagejpeg($img, $ruta, 88),
-        'png'  => imagepng($img, $ruta, 6),
-        'webp' => function_exists('imagewebp') ? imagewebp($img, $ruta, 88) : false,
-    };
-    imagedestroy($img);
+    // Re-codificar con GD: el bytes original (posibles polyglots, scripts,
+    // EXIF malicioso) jamás llega al disco.
+    if (function_exists('imagecreatefromstring')) {
+        $bin = file_get_contents($file['tmp_name']);
+        if ($bin === false) {
+            throw new RuntimeException('No se pudo leer la imagen.');
+        }
+        $img = @imagecreatefromstring($bin);
+        unset($bin);
+        if ($img === false) {
+            throw new RuntimeException('El archivo no es una imagen válida.');
+        }
 
-    if (!$ok || !is_file($ruta)) {
+        $ok = match ($extension) {
+            'jpg'  => imagejpeg($img, $ruta, 88),
+            'png'  => imagepng($img, $ruta, 6),
+            'webp' => function_exists('imagewebp') ? imagewebp($img, $ruta, 88) : false,
+        };
+        imagedestroy($img);
+
+        if (!$ok || !is_file($ruta)) {
+            @unlink($ruta);
+            throw new RuntimeException('No fue posible guardar la imagen.');
+        }
+
+        return $nombre;
+    }
+
+    // Sin GD: degradado SEGURO (no se rompe la subida). Se conservan todas
+    // las demás defensas: MIME olfateado, allowlist, estructura verificada,
+    // nombre aleatorio con extensión forzada y .htaccess sin ejecución.
+    error_log('upload_seguro: GD no disponible, guardado sin re-codificar. Activa extension=gd.');
+    if (!move_uploaded_file($file['tmp_name'], $ruta) || !is_file($ruta)) {
         @unlink($ruta);
         throw new RuntimeException('No fue posible guardar la imagen.');
     }

@@ -91,6 +91,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 img.removeAttribute('role');
             }
         });
+        // Los iframes (también de terceros) deben tener nombre accesible.
+        document.querySelectorAll('iframe').forEach(function (fr) {
+            if (!fr.getAttribute('title') && !fr.getAttribute('aria-label')) {
+                fr.setAttribute('title', 'Chat de ayuda');
+            }
+        });
     }
 
     corregirBotpress();

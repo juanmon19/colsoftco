@@ -125,9 +125,9 @@ try {
                         <div class="profile-data">
                             <h2 id="nombreCompletoPerfil">Cargando…</h2>
                             <p class="role"><b>Rol:</b> Bodeguero</p>
-                            <p><span class="small-icon">✉</span> <span id="emailPerfil">—</span></p>
-                            <p><span class="small-icon">☏</span> <span id="telefonoPerfil">—</span></p>
-                            <p><span class="small-icon">⌕</span> Bogotá, Colombia</p>
+                            <p><span class="small-icon" aria-hidden="true">✉</span> <span id="emailPerfil">—</span></p>
+                            <p><span class="small-icon" aria-hidden="true">☏</span> <span id="telefonoPerfil">—</span></p>
+                            <p><span class="small-icon" aria-hidden="true">⌕</span> Bogotá, Colombia</p>
                         </div>
                     </article>
 
@@ -137,7 +137,7 @@ try {
                             <div class="stat-content">
                                 <span>Tareas pendientes</span>
                                 <strong id="statTareas"><?= (int) $tareasBodega ?></strong>
-                                <i class="stat-icon yellow">▣</i>
+                                <i aria-hidden="true" class="stat-icon yellow">▣</i>
                             </div>
                             <a href="#tareas">Ver detalles <b>›</b></a>
                         </article>
@@ -146,7 +146,7 @@ try {
                             <div class="stat-content">
                                 <span>Inventario total</span>
                                 <strong id="statInventario"><?= number_format($inventarioBodega, 0, ',', '.') ?></strong>
-                                <i class="stat-icon green">◇</i>
+                                <i aria-hidden="true" class="stat-icon green">◇</i>
                             </div>
                             <a href="../inventario_materia_prima/inventario_materia_prima.php">Ver inventario
                                 <b>›</b></a>
@@ -156,7 +156,7 @@ try {
                             <div class="stat-content">
                                 <span>Proveedores</span>
                                 <strong id="statProveedores"><?= (int) $proveedoresBodega ?></strong>
-                                <i class="stat-icon purple">♙</i>
+                                <i aria-hidden="true" class="stat-icon purple">♙</i>
                             </div>
                             <a href="../lista_proveedores/lista_proveedores.php">Ver proveedores <b>›</b></a>
                         </article>
@@ -165,7 +165,7 @@ try {
                             <div class="stat-content">
                                 <span>Productos</span>
                                 <strong id="statProductos"><?= number_format($productosBodega, 0, ',', '.') ?></strong>
-                                <i class="stat-icon blue">◇</i>
+                                <i aria-hidden="true" class="stat-icon blue">◇</i>
                             </div>
                             <a href="../inventario_productos_terminados/inventario_productos_terminados.php">Ver
                                 productos <b>›</b></a>
@@ -209,27 +209,27 @@ try {
 
                             <div class="quick-grid">
                                 <button onclick="window.location.href='../registromp/registromp.php'">
-                                    <span class="quick-icon green-icon">＋</span>
+                                    <span aria-hidden="true" class="quick-icon green-icon">＋</span>
                                     <b>Registrar materia prima</b>
                                 </button>
 
                                 <button onclick="window.location.href='../control_de_stock/control_de_stock.php'">
-                                    <span class="quick-icon yellow-icon">📦</span>
+                                    <span aria-hidden="true" class="quick-icon yellow-icon">📦</span>
                                     <b>Control de stock</b>
                                 </button>
 
                                 <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
-                                    <span class="quick-icon green-icon">↓</span>
+                                    <span aria-hidden="true" class="quick-icon green-icon">↓</span>
                                     <b>Inventario de Materia Prima</b>
                                 </button>
 
                                 <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
-                                    <span class="quick-icon purple-icon">♙</span>
+                                    <span aria-hidden="true" class="quick-icon purple-icon">♙</span>
                                     <b>Proveedores</b>
                                 </button>
 
                                 <button onclick="window.location.href='../tareas/tareas.php'">
-                                    <span class="quick-icon blue-icon">📅</span>
+                                    <span aria-hidden="true" class="quick-icon blue-icon">📅</span>
                                     <b>Calendario de tareas</b>
                                 </button>
                             </div>
