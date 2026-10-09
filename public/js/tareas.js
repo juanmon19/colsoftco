@@ -19,6 +19,9 @@
 
     const BASE_APP = (typeof PREFIJO_APP !== 'undefined') ? PREFIJO_APP : '/colsoftco/';
 
+    // CONTRATO CON LA BD: los key DEBEN ser idénticos al ENUM de
+    // tareas.estado ('pendiente', 'por-hacer', 'terminado').
+    // Solo los 'titulo' son etiquetas visibles y se pueden renombrar.
     const columnas = [
         { key: 'pendiente',  titulo: 'Pendientes' },
         { key: 'por-hacer',  titulo: 'Por hacer' },

@@ -372,8 +372,8 @@ try {
     // El resumen de tareas lo pinta tareas.js (misma carga de datos).
 </script>
 
-<script src="../../public/js/tareas.js" defer></script>
-<script src="../../public/js/calendario_tareas.js" defer></script>
+<script src="../../public/js/tareas.js?v=2" defer></script>
+<script src="../../public/js/calendario_tareas.js?v=2" defer></script>
 <script src="../../public/js/mensajes_badge.js" defer></script>
 
 <script>

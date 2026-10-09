@@ -25,8 +25,12 @@ $proveedores = $conn->query("SELECT * FROM proveedores")->fetchAll(PDO::FETCH_AS
  * desde la base de datos.
  */
 $materias_primas = $conn->query("
-    SELECT id_material, nombre_material
-    FROM materias_primas
+    SELECT m.id_material, m.nombre_material, m.id_unidad, m.id_proveedor,
+           m.estado, u.sigla, u.nombre_unidad, p.nombre_empresa
+    FROM materias_primas m
+    LEFT JOIN unidades_medida u ON u.id_unidad = m.id_unidad
+    LEFT JOIN proveedores p ON p.id_proveedor = m.id_proveedor
+    ORDER BY m.nombre_material ASC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 $mensaje = '';
@@ -40,19 +44,35 @@ if (isset($_GET['msg'], $_GET['tipo'])) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $nombre_material = trim($_POST['nombre_material'] ?? '');
+    // El producto llega por ID de catálogo: nombre y unidad se toman de la
+    // BD (canónicos) y se IGNORA lo que mande el cliente en id_unidad.
+    // Así una tela siempre queda en metros aunque manipulen el formulario.
+    $idMaterialPost = (int) ($_POST['id_material'] ?? 0);
     $stock_actual = $_POST['stock_actual'] ?? '';
-    $id_unidad = $_POST['id_unidad'] ?? '';
-    $id_proveedor = $_POST['id_proveedor'] ?? '';
+    $id_proveedor = (int) ($_POST['id_proveedor'] ?? 0);
+
+    $stmtMat = $conn->prepare(
+        "SELECT nombre_material, id_unidad FROM materias_primas WHERE id_material = :id LIMIT 1"
+    );
+    $stmtMat->execute([':id' => $idMaterialPost]);
+    $matPost = $stmtMat->fetch(PDO::FETCH_ASSOC);
+
+    $stmtProv = $conn->prepare(
+        "SELECT COUNT(*) FROM proveedores WHERE id_proveedor = :id AND estado = 'activo'"
+    );
+    $stmtProv->execute([':id' => $id_proveedor]);
+    $provOk = ((int) $stmtProv->fetchColumn()) > 0;
 
     // El formulario ya no pide stock mínimo, pero la columna en la BD es
     // NOT NULL sin valor por defecto, así que se envía 0 automáticamente.
     $stock_minimo = 0;
 
-    if ($nombre_material === '' || $stock_actual === '' || $id_unidad === '' || $id_proveedor === '') {
-        $mensajeRedirect = 'Por favor complete todos los campos obligatorios.';
+    if (!$matPost || !$provOk || $stock_actual === '' || !is_numeric($stock_actual) || (float) $stock_actual < 0) {
+        $mensajeRedirect = 'Datos inválidos: verifica producto, cantidad y proveedor.';
         $tipoRedirect = 'error';
     } else {
+        $nombre_material = $matPost['nombre_material'];
+        $id_unidad = (int) $matPost['id_unidad'];
         try {
             $sql = "INSERT INTO materias_primas
                     (
@@ -165,13 +185,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label for="producto">Producto</label>
                                 <div class="select-wrap">
 
-                                    <select id="producto" name="nombre_material" required>
+                                    <select id="producto" name="id_material" required>
 
                                         <option value="">-- Seleccione --</option>
 
                                         <?php foreach ($materias_primas as $material): ?>
 
-                                            <option value="<?= htmlspecialchars($material['nombre_material']) ?>">
+                                            <option value="<?= (int) $material['id_material'] ?>"
+                                                data-unidad="<?= (int) $material['id_unidad'] ?>"
+                                                data-unidad-txt="<?= htmlspecialchars(($material['nombre_unidad'] ?? '') . ' (' . ($material['sigla'] ?? '') . ')') ?>"
+                                                data-prov="<?= (int) $material['id_proveedor'] ?>">
                                                 <?= htmlspecialchars($material['nombre_material']) ?>
                                             </option>
 
@@ -186,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label for="unidad">Unidad de medida</label>
                                 <div class="select-wrap">
                                     <select id="unidad" name="id_unidad" required>
-                                        <option value="">-- Seleccione --</option>
+                                        <option value="">-- Seleccione un producto --</option>
 
                                         <?php foreach ($unidades as $unidad): ?>
 
@@ -197,6 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <?php endforeach; ?>
 
                                     </select>
+                                    <small id="avisoUnidad" class="aviso-unidad" style="display:none"></small>
                                 </div>
                             </div>
 
@@ -214,9 +238,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
 
                             <div class="form-group full">
-                                <label>Proveedor</label>
+                                <label for="proveedor">Proveedor</label>
 
-                                <select name="id_proveedor" required>
+                                <select id="proveedor" name="id_proveedor" required>
 
                                     <option value="">Seleccione</option>
 
@@ -272,6 +296,68 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
        actual en vez de crear una nueva. Así, al presionar "atrás", el
        navegador siempre pide una página nueva al servidor en vez de
        reenviar el formulario o mostrar un estado desactualizado. */
+    /* Selects enlazados: el proveedor filtra los productos de su catálogo
+       (si solo suministra telas, no aparecen resortes) y el producto FIJA
+       su unidad canónica (la tela solo permite metros). El servidor vuelve
+       a validar todo, así que manipular el HTML no sirve. */
+    const selProducto = document.getElementById('producto');
+    const selUnidad = document.getElementById('unidad');
+    const selProveedor = document.getElementById('proveedor');
+    const avisoUnidad = document.getElementById('avisoUnidad');
+    const todasUnidades = selUnidad ? Array.from(selUnidad.options).map(o => ({ v: o.value, t: o.text })) : [];
+
+    function opcionesProducto() {
+        return selProducto ? Array.from(selProducto.options).filter(o => o.value !== '') : [];
+    }
+
+    function filtrarProductos() {
+        if (!selProducto || !selProveedor) return;
+        const prov = selProveedor.value;
+        let visibles = 0;
+        opcionesProducto().forEach(o => {
+            const ok = prov === '' || o.dataset.prov === prov;
+            o.hidden = !ok;
+            o.disabled = !ok; // Safari ignora hidden en <option>
+            if (ok) visibles++;
+        });
+        // Si el producto elegido ya no lo surte ese proveedor, se resetea.
+        const actual = selProducto.selectedOptions[0];
+        if (actual && actual.value !== '' && actual.hidden) {
+            selProducto.value = '';
+            fijarUnidad();
+        }
+    }
+
+    function fijarUnidad() {
+        if (!selProducto || !selUnidad) return;
+        const opt = selProducto.selectedOptions[0];
+        if (!opt || opt.value === '') {
+            selUnidad.innerHTML = '';
+            todasUnidades.forEach(u => selUnidad.add(new Option(u.t, u.v)));
+            selUnidad.value = '';
+            if (avisoUnidad) avisoUnidad.style.display = 'none';
+            return;
+        }
+        // Solo la unidad del producto: no se puede elegir otra.
+        selUnidad.innerHTML = '';
+        selUnidad.add(new Option(opt.dataset.unidadTxt + ' — fija del producto', opt.dataset.unidad));
+        selUnidad.value = opt.dataset.unidad;
+        if (avisoUnidad) {
+            avisoUnidad.textContent = 'Unidad fijada por el producto (' + opt.dataset.unidadTxt + ').';
+            avisoUnidad.style.display = 'block';
+        }
+        // Si el producto es de un solo proveedor y no hay proveedor elegido, se sugiere.
+        if (selProveedor && selProveedor.value === '' && opt.dataset.prov) {
+            selProveedor.value = opt.dataset.prov;
+            filtrarProductos();
+        }
+    }
+
+    if (selProducto && selUnidad && selProveedor) {
+        selProveedor.addEventListener('change', filtrarProductos);
+        selProducto.addEventListener('change', fijarUnidad);
+    }
+
     const regForm = document.getElementById('regForm');
     const btnRegistrar = regForm ? regForm.querySelector('button[type="submit"]') : null;
 

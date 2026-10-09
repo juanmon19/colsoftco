@@ -104,8 +104,8 @@ header("Expires: 0");
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-    <script src="../../public/js/tareas.js" defer></script>
-    <script src="../../public/js/calendario_tareas.js" defer></script>
+    <script src="../../public/js/tareas.js?v=2" defer></script>
+    <script src="../../public/js/calendario_tareas.js?v=2" defer></script>
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
