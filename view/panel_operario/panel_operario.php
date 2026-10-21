@@ -44,524 +44,515 @@ try {
 </head>
 
 <body>
-<?php if (!empty($_SESSION['aviso_rol'])): ?><script>document.addEventListener('DOMContentLoaded',()=>{alert(<?= json_encode($_SESSION['aviso_rol']) ?>);});</script><?php unset($_SESSION['aviso_rol']); endif; ?>
+    <?php if (!empty($_SESSION['aviso_rol'])): ?><script>
+            document.addEventListener('DOMContentLoaded', () => {
+                alert(<?= json_encode($_SESSION['aviso_rol']) ?>);
+            });
+        </script><?php unset($_SESSION['aviso_rol']);
+                endif; ?>
 
-<div class="menu-overlay" id="menuOverlay"></div>
-<div class="app">
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="app">
 
         <!-- SIDEBAR COMPARTIDO (misma estructura que módulos, admin y bodeguero) -->
-        <aside class="sidebar" id="sidebar">
-            <div class="brand">
-                <img src="../../public/imagenes/logo.png" alt="Logo COLSOFTCO" width="58" height="58">
-                <div class="brand-text">
-                    <strong>COLSOFTCO</strong>
-                    <span>Sistema de Gestión</span>
-                </div>
-            </div>
+        <div class="menu-overlay" id="menuOverlay"></div>
+        <div class="app">
 
-            <button class="mobile-menu" id="btnMenuToggle" type="button"
-                    aria-expanded="false" aria-controls="navMenu">
-                <span>☰ Menú</span>
-                <span class="toggle-icono">⌄</span>
-            </button>
+            <!-- SIDEBAR CENTRALIZADO -->
+            <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
-            <nav class="nav" id="navMenu">
-                <button class="nav-item active" onclick="window.location.href='panel_operario.php'">🏠 Panel Principal</button>
-                <button class="nav-item" onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>
-                <button class="nav-item" onclick="window.location.href='../Receta_de_colchones/receta_colchones.php'">Receta de Colchones</button>
-                <button class="nav-item" onclick="window.location.href='../registromp/registromp.php'">Registrar Materia Prima</button>
-                <button class="nav-item" onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">Inventario de Materia Prima</button>
-                <button class="nav-item" onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
-                <button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
-                <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
-            </nav>
-        </aside>
+            <div class="main">
 
-        <div class="main">
+                <!-- HEADER COMPARTIDO (misma estructura que módulos, admin y bodeguero) -->
+                <header class="topbar">
+                    <button class="mobile-open" id="mobileOpen" type="button" aria-label="Abrir menú">☰</button>
 
-        <!-- HEADER COMPARTIDO (misma estructura que módulos, admin y bodeguero) -->
-        <header class="topbar">
-            <button class="mobile-open" id="mobileOpen" type="button" aria-label="Abrir menú">☰</button>
-
-            <div class="welcome">
-                <h1 id="saludoHeader">BIENVENIDO</h1>
-                <p>Operario</p>
-            </div>
-
-            <div class="header-actions">
-                <div class="perfil-menu" id="perfilMenu">
-                    <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                        <img id="avatarHeader" class="avatar-header" width="32" height="32" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
-                        <span class="perfil-trigger-text">
-                            <strong id="nombreHeaderCorto">Usuario</strong>
-                            <small>Operario</small>
-                        </span>
-                        <span class="perfil-caret">⌄</span>
-                    </button>
-
-                    <div class="perfil-dropdown" id="perfilDropdown">
-                        <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
-                        <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
-                        <button type="button" id="btnTemaOscuro">
-                            <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
-                        </button>
-                        <div class="perfil-dropdown-divider"></div>
-                        <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
+                    <div class="welcome">
+                        <h1 id="saludoHeader">BIENVENIDO</h1>
+                        <p>Operario</p>
                     </div>
-                </div>
 
-                <input type="file" id="inputFotoPerfil" accept="image/png, image/jpeg, image/webp" hidden>
-            </div>
-        </header>
+                    <div class="header-actions">
+                        <div class="perfil-menu" id="perfilMenu">
+                            <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
+                                <img id="avatarHeader" class="avatar-header" width="32" height="32" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                                <span class="perfil-trigger-text">
+                                    <strong id="nombreHeaderCorto">Usuario</strong>
+                                    <small>Operario</small>
+                                </span>
+                                <span class="perfil-caret">⌄</span>
+                            </button>
 
-        <main class="content">
-
-                <!-- PERFIL + ESTADÍSTICAS (mismo diseño que panel_admin) -->
-                <section class="hero-grid">
-
-                    <article class="profile">
-                        <img id="fotoPerfilGrande" width="165" height="206" fetchpriority="high" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
-
-                        <div class="profile-data">
-                            <h2 id="nombreCompletoPerfil">Cargando…</h2>
-                            <p class="role"><b>Rol:</b> Operario</p>
-                            <p><span class="small-icon" aria-hidden="true">✉</span> <span id="emailPerfil">—</span></p>
-                            <p><span class="small-icon" aria-hidden="true">☏</span> <span id="telefonoPerfil">—</span></p>
-                            <p><span class="small-icon" aria-hidden="true">⌕</span> Bogotá, Colombia</p>
+                            <div class="perfil-dropdown" id="perfilDropdown">
+                                <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
+                                <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
+                                <button type="button" id="btnTemaOscuro">
+                                    <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
+                                </button>
+                                <div class="perfil-dropdown-divider"></div>
+                                <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
+                            </div>
                         </div>
-                    </article>
 
-                    <div class="stats">
-
-                        <article class="stat">
-                            <div class="stat-content">
-                                <span>Tareas pendientes</span>
-                                <strong id="statTareas"><?= (int) $tareasOp ?></strong>
-                                <i aria-hidden="true" class="stat-icon yellow">▣</i>
-                            </div>
-                            <a href="#tareas">Ver detalles <b>›</b></a>
-                        </article>
-
-                        <article class="stat">
-                            <div class="stat-content">
-                                <span>Inventario total</span>
-                                <strong id="statInventario"><?= number_format($inventarioOp, 0, ',', '.') ?></strong>
-                                <i aria-hidden="true" class="stat-icon green">◇</i>
-                            </div>
-                            <a href="../inventario_materia_prima/inventario_materia_prima.php">Ver inventario
-                                <b>›</b></a>
-                        </article>
-
-                        <article class="stat">
-                            <div class="stat-content">
-                                <span>Proveedores</span>
-                                <strong id="statProveedores"><?= (int) $proveedoresOp ?></strong>
-                                <i aria-hidden="true" class="stat-icon purple">♙</i>
-                            </div>
-                            <a href="../lista_proveedores/lista_proveedores.php">Ver proveedores <b>›</b></a>
-                        </article>
-
-                        <article class="stat">
-                            <div class="stat-content">
-                                <span>Productos</span>
-                                <strong id="statProductos"><?= number_format($productosOp, 0, ',', '.') ?></strong>
-                                <i aria-hidden="true" class="stat-icon blue">◇</i>
-                            </div>
-                            <a href="../inventario_productos_terminados/inventario_productos_terminados.php">Ver
-                                productos <b>›</b></a>
-                        </article>
-
+                        <input type="file" id="inputFotoPerfil" accept="image/png, image/jpeg, image/webp" hidden>
                     </div>
-                </section>
+                </header>
 
-                <!-- TAREAS + DERECHA (mismo diseño que panel_admin) -->
-                <section class="dashboard-grid">
+                <main class="content">
 
-                    <article class="tasks card" id="tareas">
-                        <div class="title-row">
-                            <h3><span>▣</span> Tareas Pendientes</h3>
-                            <div class="title-actions">
-                                <div class="view-tabs">
-                                    <button type="button" data-vista="kanban" class="active">Kanban</button>
-                                    <button type="button" data-vista="calendario">Calendario</button>
+                    <!-- PERFIL + ESTADÍSTICAS (mismo diseño que panel_admin) -->
+                    <section class="hero-grid">
+
+                        <article class="profile">
+                            <img id="fotoPerfilGrande" width="165" height="206" fetchpriority="high" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+
+                            <div class="profile-data">
+                                <h2 id="nombreCompletoPerfil">Cargando…</h2>
+                                <p class="role"><b>Rol:</b> Operario</p>
+                                <p><span class="small-icon" aria-hidden="true">✉</span> <span id="emailPerfil">—</span></p>
+                                <p><span class="small-icon" aria-hidden="true">☏</span> <span id="telefonoPerfil">—</span></p>
+                                <p><span class="small-icon" aria-hidden="true">⌕</span> Bogotá, Colombia</p>
+                            </div>
+                        </article>
+
+                        <div class="stats">
+
+                            <article class="stat">
+                                <div class="stat-content">
+                                    <span>Tareas pendientes</span>
+                                    <strong id="statTareas"><?= (int) $tareasOp ?></strong>
+                                    <i aria-hidden="true" class="stat-icon yellow">▣</i>
                                 </div>
-                                <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
-                            </div>
+                                <a href="#tareas">Ver detalles <b>›</b></a>
+                            </article>
+
+                            <article class="stat">
+                                <div class="stat-content">
+                                    <span>Inventario total</span>
+                                    <strong id="statInventario"><?= number_format($inventarioOp, 0, ',', '.') ?></strong>
+                                    <i aria-hidden="true" class="stat-icon green">◇</i>
+                                </div>
+                                <a href="../inventario_materia_prima/inventario_materia_prima.php">Ver inventario
+                                    <b>›</b></a>
+                            </article>
+
+                            <article class="stat">
+                                <div class="stat-content">
+                                    <span>Proveedores</span>
+                                    <strong id="statProveedores"><?= (int) $proveedoresOp ?></strong>
+                                    <i aria-hidden="true" class="stat-icon purple">♙</i>
+                                </div>
+                                <a href="../lista_proveedores/lista_proveedores.php">Ver proveedores <b>›</b></a>
+                            </article>
+
+                            <article class="stat">
+                                <div class="stat-content">
+                                    <span>Productos</span>
+                                    <strong id="statProductos"><?= number_format($productosOp, 0, ',', '.') ?></strong>
+                                    <i aria-hidden="true" class="stat-icon blue">◇</i>
+                                </div>
+                                <a href="../inventario_productos_terminados/inventario_productos_terminados.php">Ver
+                                    productos <b>›</b></a>
+                            </article>
+
                         </div>
+                    </section>
 
-                        <div class="kanban" id="taskTableBody">
-                            <p class="placeholder">Cargando tareas...</p>
-                        </div>
+                    <!-- TAREAS + DERECHA (mismo diseño que panel_admin) -->
+                    <section class="dashboard-grid">
 
-                        <div class="calendario-tareas" id="calTareas" hidden></div>
-
-                        <div class="tasks-summary" id="tasksSummary">
-                            <span class="sum-loading">Calculando resumen…</span>
-                        </div>
-                    </article>
-
-                    <aside class="right">
-
-                        <article class="quick card">
+                        <article class="tasks card" id="tareas">
                             <div class="title-row">
-                                <h3><span>ϟ</span> Acciones rápidas</h3>
+                                <h3><span>▣</span> Tareas Pendientes</h3>
+                                <div class="title-actions">
+                                    <div class="view-tabs">
+                                        <button type="button" data-vista="kanban" class="active">Kanban</button>
+                                        <button type="button" data-vista="calendario">Calendario</button>
+                                    </div>
+                                    <button id="btnNuevaTarea" class="btn-nueva-tarea" type="button">+ Nueva tarea</button>
+                                </div>
                             </div>
 
-                            <div class="quick-grid">
-                                <button onclick="window.location.href='../Receta_de_colchones/receta_colchones.php'">
-                                    <span aria-hidden="true" class="quick-icon blue-icon">⚙</span>
-                                    <b>Ver recetas</b>
-                                </button>
+                            <div class="kanban" id="taskTableBody">
+                                <p class="placeholder">Cargando tareas...</p>
+                            </div>
 
-                                <button onclick="window.location.href='../registromp/registromp.php'">
-                                    <span aria-hidden="true" class="quick-icon green-icon">＋</span>
-                                    <b>Registrar materia prima</b>
-                                </button>
+                            <div class="calendario-tareas" id="calTareas" hidden></div>
 
-                                <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
-                                    <span aria-hidden="true" class="quick-icon yellow-icon">◇</span>
-                                    <b>Inventario de materia prima</b>
-                                </button>
-
-                                <button onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">
-                                    <span aria-hidden="true" class="quick-icon purple-icon">▣</span>
-                                    <b>Inventario de productos</b>
-                                </button>
-
-                                <button onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">
-                                    <span aria-hidden="true" class="quick-icon green-icon">🏭</span>
-                                    <b>Historial fabricación</b>
-                                </button>
-
-                                <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
-                                    <span aria-hidden="true" class="quick-icon yellow-icon">♙</span>
-                                    <b>Proveedores</b>
-                                </button>
-
-                                <button onclick="window.location.href='../tareas/tareas.php'">
-                                    <span aria-hidden="true" class="quick-icon blue-icon">📅</span>
-                                    <b>Calendario de tareas</b>
-                                </button>
+                            <div class="tasks-summary" id="tasksSummary">
+                                <span class="sum-loading">Calculando resumen…</span>
                             </div>
                         </article>
 
-                        <article class="contact card">
-                            <div class="title-row">
-                                <h3><span>⌕</span> Información de contacto</h3>
-                            </div>
-                            <p>⌖ <span>Bogotá, Colombia</span></p>
-                            <p>✉ <span>contacto@colsoftco.com</span></p>
-                            <p>⌕ <span>+57 (1) 234-5678</span></p>
-                            <p>◷ <span>Lun - Vie: 8:00 am - 6:00 pm</span></p>
-                        </article>
+                        <aside class="right">
 
-                    </aside>
+                            <article class="quick card">
+                                <div class="title-row">
+                                    <h3><span>ϟ</span> Acciones rápidas</h3>
+                                </div>
 
-                </section>
+                                <div class="quick-grid">
+                                    <button onclick="window.location.href='../Receta_de_colchones/receta_colchones.php'">
+                                        <span aria-hidden="true" class="quick-icon blue-icon">⚙</span>
+                                        <b>Ver recetas</b>
+                                    </button>
 
-            </main>
+                                    <button onclick="window.location.href='../registromp/registromp.php'">
+                                        <span aria-hidden="true" class="quick-icon green-icon">＋</span>
+                                        <b>Registrar materia prima</b>
+                                    </button>
 
-            <?php include __DIR__ . '/../partials/footer.php'; ?>
+                                    <button onclick="window.location.href='../inventario_materia_prima/inventario_materia_prima.php'">
+                                        <span aria-hidden="true" class="quick-icon yellow-icon">◇</span>
+                                        <b>Inventario de materia prima</b>
+                                    </button>
 
-        </div><!-- /.main -->
-    </div><!-- /.app -->
+                                    <button onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">
+                                        <span aria-hidden="true" class="quick-icon purple-icon">▣</span>
+                                        <b>Inventario de productos</b>
+                                    </button>
+
+                                    <button onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">
+                                        <span aria-hidden="true" class="quick-icon green-icon">🏭</span>
+                                        <b>Historial fabricación</b>
+                                    </button>
+
+                                    <button onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">
+                                        <span aria-hidden="true" class="quick-icon yellow-icon">♙</span>
+                                        <b>Proveedores</b>
+                                    </button>
+
+                                    <button onclick="window.location.href='../tareas/tareas.php'">
+                                        <span aria-hidden="true" class="quick-icon blue-icon">📅</span>
+                                        <b>Calendario de tareas</b>
+                                    </button>
+                                </div>
+                            </article>
+
+                            <article class="contact card">
+                                <div class="title-row">
+                                    <h3><span>⌕</span> Información de contacto</h3>
+                                </div>
+                                <p>⌖ <span>Bogotá, Colombia</span></p>
+                                <p>✉ <span>contacto@colsoftco.com</span></p>
+                                <p>⌕ <span>+57 (1) 234-5678</span></p>
+                                <p>◷ <span>Lun - Vie: 8:00 am - 6:00 pm</span></p>
+                            </article>
+
+                        </aside>
+
+                    </section>
+
+                </main>
+
+                <?php include __DIR__ . '/../partials/footer.php'; ?>
+
+            </div><!-- /.main -->
+        </div><!-- /.app -->
 
 
-    <!-- ══ MODAL NUEVA TAREA ══ -->
-    <div class="modal-overlay" id="modalTareaOverlay">
-        <div class="modal-box">
-            <h3>Registrar nueva tarea</h3>
-            <form id="formNuevaTarea">
-                <label for="tareaTitulo">Título</label>
-                <input type="text" id="tareaTitulo" list="sugerenciasTareas" placeholder="Ej. Controlar inventario" autocomplete="off" required>
-                <datalist id="sugerenciasTareas"></datalist>
+        <!-- ══ MODAL NUEVA TAREA ══ -->
+        <div class="modal-overlay" id="modalTareaOverlay">
+            <div class="modal-box">
+                <h3>Registrar nueva tarea</h3>
+                <form id="formNuevaTarea">
+                    <label for="tareaTitulo">Título</label>
+                    <input type="text" id="tareaTitulo" list="sugerenciasTareas" placeholder="Ej. Controlar inventario" autocomplete="off" required>
+                    <datalist id="sugerenciasTareas"></datalist>
 
-                <label for="tareaPrioridad">Prioridad</label>
-                <select id="tareaPrioridad">
-                    <option value="low">Baja</option>
-                    <option value="medium" selected>Media</option>
-                    <option value="high">Alta</option>
-                </select>
+                    <label for="tareaPrioridad">Prioridad</label>
+                    <select id="tareaPrioridad">
+                        <option value="low">Baja</option>
+                        <option value="medium" selected>Media</option>
+                        <option value="high">Alta</option>
+                    </select>
 
-                <label for="tareaVencimiento">Fecha de vencimiento</label>
-                <input type="date" id="tareaVencimiento">
+                    <label for="tareaVencimiento">Fecha de vencimiento</label>
+                    <input type="date" id="tareaVencimiento">
 
-                <div id="wrapAsignado" style="display:none">
-                    <label for="tareaAsignado">Asignar a (solo admin)</label>
-                    <select id="tareaAsignado"></select>
-                </div>
+                    <div id="wrapAsignado" style="display:none">
+                        <label for="tareaAsignado">Asignar a (solo admin)</label>
+                        <select id="tareaAsignado"></select>
+                    </div>
 
-                <div class="modal-actions">
-                    <button type="button" id="btnCancelarTarea" class="btn-outline">Cancelar</button>
-                    <button type="submit" class="btn-primary">Guardar tarea</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ══ MODAL EDITAR PERFIL ══ -->
-    <div class="modal-overlay" id="modalPerfilOverlay">
-        <div class="modal-box">
-            <h3>Editar mis datos</h3>
-
-            <div class="modal-perfil-foto">
-                <img id="fotoPerfilModal" width="165" height="206" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
-                <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
+                    <div class="modal-actions">
+                        <button type="button" id="btnCancelarTarea" class="btn-outline">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar tarea</button>
+                    </div>
+                </form>
             </div>
-
-            <form id="formEditarPerfil">
-                <label for="perfilNombre">Nombre</label>
-                <input type="text" id="perfilNombre" required>
-
-                <label for="perfilApellido">Apellido</label>
-                <input type="text" id="perfilApellido" required>
-
-                <label for="perfilEmail">Correo electrónico</label>
-                <input type="email" id="perfilEmail" required>
-
-                <label for="perfilTelefono">Teléfono</label>
-                <input type="text" id="perfilTelefono" placeholder="Ej. 3001234567">
-
-                <div class="modal-actions">
-                    <button type="button" id="btnCancelarPerfil" class="btn-outline">Cancelar</button>
-                    <button type="submit" class="btn-primary">Guardar cambios</button>
-                </div>
-            </form>
         </div>
-    </div>
 
-    <!-- =====================================================
+        <!-- ══ MODAL EDITAR PERFIL ══ -->
+        <div class="modal-overlay" id="modalPerfilOverlay">
+            <div class="modal-box">
+                <h3>Editar mis datos</h3>
+
+                <div class="modal-perfil-foto">
+                    <img id="fotoPerfilModal" width="165" height="206" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                    <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
+                </div>
+
+                <form id="formEditarPerfil">
+                    <label for="perfilNombre">Nombre</label>
+                    <input type="text" id="perfilNombre" required>
+
+                    <label for="perfilApellido">Apellido</label>
+                    <input type="text" id="perfilApellido" required>
+
+                    <label for="perfilEmail">Correo electrónico</label>
+                    <input type="email" id="perfilEmail" required>
+
+                    <label for="perfilTelefono">Teléfono</label>
+                    <input type="text" id="perfilTelefono" placeholder="Ej. 3001234567">
+
+                    <div class="modal-actions">
+                        <button type="button" id="btnCancelarPerfil" class="btn-outline">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- =====================================================
          SCRIPTS
     ====================================================== -->
 
-    <?php require_once __DIR__ . '/../partials/botpress.php'; ?>
+        <?php require_once __DIR__ . '/../partials/botpress.php'; ?>
 
-    <script src="../../public/js/app.js" defer></script>
-    <script src="../../public/js/menu_activo.js" defer></script>
+        <script src="../../public/js/app.js" defer></script>
+        <script src="../../public/js/menu_activo.js" defer></script>
 
-    <script>
-        // Sidebar compartido (igual que módulos, admin y bodeguero).
-        const sidebar = document.getElementById('sidebar');
-        const nav = document.getElementById('navMenu');
-        const openButton = document.getElementById('mobileOpen');
-        const menuButton = document.getElementById('btnMenuToggle');
+        <script>
+            // Sidebar compartido (igual que módulos, admin y bodeguero).
+            const sidebar = document.getElementById('sidebar');
+            const nav = document.getElementById('navMenu');
+            const openButton = document.getElementById('mobileOpen');
+            const menuButton = document.getElementById('btnMenuToggle');
 
-        function openSidebar() {
-            sidebar.classList.add('mobile-visible');
-            document.body.classList.add('menu-open');
-        }
-        function closeSidebar() {
-            sidebar.classList.remove('mobile-visible');
-            document.body.classList.remove('menu-open');
-        }
-        if (openButton) openButton.addEventListener('click', openSidebar);
-        if (menuButton) menuButton.addEventListener('click', () => {
-            nav.classList.toggle('open');
-            menuButton.setAttribute('aria-expanded', nav.classList.contains('open'));
-        });
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 900 &&
-                sidebar.classList.contains('mobile-visible') &&
-                !sidebar.contains(e.target) &&
-                e.target !== openButton) {
-                closeSidebar();
+            function openSidebar() {
+                sidebar.classList.add('mobile-visible');
+                document.body.classList.add('menu-open');
             }
-        });
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 900) {
+
+            function closeSidebar() {
                 sidebar.classList.remove('mobile-visible');
-                if (nav) nav.classList.remove('open');
                 document.body.classList.remove('menu-open');
             }
-        });
-
-        // Refresca las stats con datos reales sin recargar.
-        async function refrescarStatsOperario() {
-            try {
-                const resp = await fetch('/colsoftco/app/dashboard_stats.php');
-                const data = await resp.json();
-                if (!data.ok) return;
-                const fmt = (n) => Number(n).toLocaleString('es-CO');
-                if (document.getElementById('statInventario')) document.getElementById('statInventario').textContent = fmt(data.inventario_total);
-                if (document.getElementById('statProductos')) document.getElementById('statProductos').textContent = fmt(data.productos);
-                if (document.getElementById('statProveedores')) document.getElementById('statProveedores').textContent = fmt(data.proveedores);
-            } catch (e) {}
-        }
-        refrescarStatsOperario();
-        setInterval(refrescarStatsOperario, 30000);
-        // El resumen de tareas lo pinta tareas.js (misma carga de datos).
-    </script>
-
-    <script src="../../public/js/tareas.js?v=2" defer></script>
-    <script src="../../public/js/calendario_tareas.js?v=2" defer></script>
-    <script src="../../public/js/mensajes_badge.js" defer></script>
-
-    <script>
-        // ================= MENÚ DE PERFIL: DATOS, FOTO Y TEMA =================
-
-        const btnPerfilMenu = document.getElementById('btnPerfilMenu');
-        const perfilDropdown = document.getElementById('perfilDropdown');
-        const btnCambiarFoto = document.getElementById('btnCambiarFoto');
-        const btnCambiarFotoModal = document.getElementById('btnCambiarFotoModal');
-        const inputFotoPerfil = document.getElementById('inputFotoPerfil');
-        const btnEditarDatos = document.getElementById('btnEditarDatos');
-        const btnTemaOscuro = document.getElementById('btnTemaOscuro');
-        const temaIconoTexto = document.getElementById('temaIconoTexto');
-
-        const modalPerfilOverlay = document.getElementById('modalPerfilOverlay');
-        const formEditarPerfil = document.getElementById('formEditarPerfil');
-        const btnCancelarPerfil = document.getElementById('btnCancelarPerfil');
-        const perfilNombre = document.getElementById('perfilNombre');
-        const perfilApellido = document.getElementById('perfilApellido');
-        const perfilEmail = document.getElementById('perfilEmail');
-        const perfilTelefono = document.getElementById('perfilTelefono');
-
-        const avatarHeader = document.getElementById('avatarHeader');
-        const fotoPerfilGrande = document.getElementById('fotoPerfilGrande');
-        const fotoPerfilModal = document.getElementById('fotoPerfilModal');
-        const nombreHeaderCorto = document.getElementById('nombreHeaderCorto');
-        const nombreCompletoPerfil = document.getElementById('nombreCompletoPerfil');
-        const saludoHeader = document.getElementById('saludoHeader');
-        const emailPerfil = document.getElementById('emailPerfil');
-        const telefonoPerfil = document.getElementById('telefonoPerfil');
-
-        function togglePerfilDropdown() {
-            const abierto = perfilDropdown.classList.contains('open');
-            perfilDropdown.classList.toggle('open', !abierto);
-            btnPerfilMenu.setAttribute('aria-expanded', String(!abierto));
-        }
-        function cerrarPerfilDropdown() {
-            perfilDropdown.classList.remove('open');
-            btnPerfilMenu.setAttribute('aria-expanded', 'false');
-        }
-
-        btnPerfilMenu.addEventListener('click', (e) => {
-            e.stopPropagation();
-            togglePerfilDropdown();
-        });
-        perfilDropdown.addEventListener('click', (e) => e.stopPropagation());
-
-        async function cargarPerfil() {
-            try {
-                const resp = await fetch('../../app/perfil_usuario.php?accion=obtener');
-                const data = await resp.json();
-                if (!data.ok) return;
-
-                const u = data.usuario;
-                const nombreCorto = u.nombre;
-                const nombreCompleto = `${u.nombre} ${u.apellido}`;
-
-                nombreHeaderCorto.textContent = nombreCorto;
-                nombreCompletoPerfil.textContent = nombreCompleto;
-                saludoHeader.textContent = `BIENVENIDO, ${nombreCorto.toUpperCase()}`;
-                if (emailPerfil) emailPerfil.textContent = u.email || '—';
-                if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '—';
-
-                if (u.foto) {
-                    const url = `../../public/imagenes/perfiles/${u.foto}`;
-                    avatarHeader.src = url;
-                    fotoPerfilGrande.src = url;
-                    fotoPerfilModal.src = url;
+            if (openButton) openButton.addEventListener('click', openSidebar);
+            if (menuButton) menuButton.addEventListener('click', () => {
+                nav.classList.toggle('open');
+                menuButton.setAttribute('aria-expanded', nav.classList.contains('open'));
+            });
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 900 &&
+                    sidebar.classList.contains('mobile-visible') &&
+                    !sidebar.contains(e.target) &&
+                    e.target !== openButton) {
+                    closeSidebar();
                 }
+            });
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 900) {
+                    sidebar.classList.remove('mobile-visible');
+                    if (nav) nav.classList.remove('open');
+                    document.body.classList.remove('menu-open');
+                }
+            });
 
-                perfilNombre.value = u.nombre || '';
-                perfilApellido.value = u.apellido || '';
-                perfilEmail.value = u.email || '';
-                perfilTelefono.value = u.telefono || '';
-            } catch (e) {
-                console.error('No se pudo cargar el perfil', e);
+            // Refresca las stats con datos reales sin recargar.
+            async function refrescarStatsOperario() {
+                try {
+                    const resp = await fetch('/colsoftco/app/dashboard_stats.php');
+                    const data = await resp.json();
+                    if (!data.ok) return;
+                    const fmt = (n) => Number(n).toLocaleString('es-CO');
+                    if (document.getElementById('statInventario')) document.getElementById('statInventario').textContent = fmt(data.inventario_total);
+                    if (document.getElementById('statProductos')) document.getElementById('statProductos').textContent = fmt(data.productos);
+                    if (document.getElementById('statProveedores')) document.getElementById('statProveedores').textContent = fmt(data.proveedores);
+                } catch (e) {}
             }
-        }
+            refrescarStatsOperario();
+            setInterval(refrescarStatsOperario, 30000);
+            // El resumen de tareas lo pinta tareas.js (misma carga de datos).
+        </script>
 
-        function abrirSelectorFoto() {
-            cerrarPerfilDropdown();
-            inputFotoPerfil.click();
-        }
-        btnCambiarFoto.addEventListener('click', abrirSelectorFoto);
-        btnCambiarFotoModal.addEventListener('click', abrirSelectorFoto);
+        <script src="../../public/js/tareas.js?v=2" defer></script>
+        <script src="../../public/js/calendario_tareas.js?v=2" defer></script>
+        <script src="../../public/js/mensajes_badge.js" defer></script>
 
-        inputFotoPerfil.addEventListener('change', async () => {
-            const archivo = inputFotoPerfil.files[0];
-            if (!archivo) return;
+        <script>
+            // ================= MENÚ DE PERFIL: DATOS, FOTO Y TEMA =================
 
-            const formData = new FormData();
-            formData.append('accion', 'foto');
-            formData.append('foto', archivo);
-            formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]')?.content || '');
+            const btnPerfilMenu = document.getElementById('btnPerfilMenu');
+            const perfilDropdown = document.getElementById('perfilDropdown');
+            const btnCambiarFoto = document.getElementById('btnCambiarFoto');
+            const btnCambiarFotoModal = document.getElementById('btnCambiarFotoModal');
+            const inputFotoPerfil = document.getElementById('inputFotoPerfil');
+            const btnEditarDatos = document.getElementById('btnEditarDatos');
+            const btnTemaOscuro = document.getElementById('btnTemaOscuro');
+            const temaIconoTexto = document.getElementById('temaIconoTexto');
 
-            try {
-                const resp = await fetch('../../app/perfil_usuario.php', { method: 'POST', body: formData });
-                const data = await resp.json();
-                if (data.ok) {
-                    avatarHeader.src = data.url;
-                    fotoPerfilGrande.src = data.url;
-                    fotoPerfilModal.src = data.url;
+            const modalPerfilOverlay = document.getElementById('modalPerfilOverlay');
+            const formEditarPerfil = document.getElementById('formEditarPerfil');
+            const btnCancelarPerfil = document.getElementById('btnCancelarPerfil');
+            const perfilNombre = document.getElementById('perfilNombre');
+            const perfilApellido = document.getElementById('perfilApellido');
+            const perfilEmail = document.getElementById('perfilEmail');
+            const perfilTelefono = document.getElementById('perfilTelefono');
+
+            const avatarHeader = document.getElementById('avatarHeader');
+            const fotoPerfilGrande = document.getElementById('fotoPerfilGrande');
+            const fotoPerfilModal = document.getElementById('fotoPerfilModal');
+            const nombreHeaderCorto = document.getElementById('nombreHeaderCorto');
+            const nombreCompletoPerfil = document.getElementById('nombreCompletoPerfil');
+            const saludoHeader = document.getElementById('saludoHeader');
+            const emailPerfil = document.getElementById('emailPerfil');
+            const telefonoPerfil = document.getElementById('telefonoPerfil');
+
+            function togglePerfilDropdown() {
+                const abierto = perfilDropdown.classList.contains('open');
+                perfilDropdown.classList.toggle('open', !abierto);
+                btnPerfilMenu.setAttribute('aria-expanded', String(!abierto));
+            }
+
+            function cerrarPerfilDropdown() {
+                perfilDropdown.classList.remove('open');
+                btnPerfilMenu.setAttribute('aria-expanded', 'false');
+            }
+
+            btnPerfilMenu.addEventListener('click', (e) => {
+                e.stopPropagation();
+                togglePerfilDropdown();
+            });
+            perfilDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+            async function cargarPerfil() {
+                try {
+                    const resp = await fetch('../../app/perfil_usuario.php?accion=obtener');
+                    const data = await resp.json();
+                    if (!data.ok) return;
+
+                    const u = data.usuario;
+                    const nombreCorto = u.nombre;
+                    const nombreCompleto = `${u.nombre} ${u.apellido}`;
+
+                    nombreHeaderCorto.textContent = nombreCorto;
+                    nombreCompletoPerfil.textContent = nombreCompleto;
+                    saludoHeader.textContent = `BIENVENIDO, ${nombreCorto.toUpperCase()}`;
+                    if (emailPerfil) emailPerfil.textContent = u.email || '—';
+                    if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '—';
+
+                    if (u.foto) {
+                        const url = `../../public/imagenes/perfiles/${u.foto}`;
+                        avatarHeader.src = url;
+                        fotoPerfilGrande.src = url;
+                        fotoPerfilModal.src = url;
+                    }
+
+                    perfilNombre.value = u.nombre || '';
+                    perfilApellido.value = u.apellido || '';
+                    perfilEmail.value = u.email || '';
+                    perfilTelefono.value = u.telefono || '';
+                } catch (e) {
+                    console.error('No se pudo cargar el perfil', e);
+                }
+            }
+
+            function abrirSelectorFoto() {
+                cerrarPerfilDropdown();
+                inputFotoPerfil.click();
+            }
+            btnCambiarFoto.addEventListener('click', abrirSelectorFoto);
+            btnCambiarFotoModal.addEventListener('click', abrirSelectorFoto);
+
+            inputFotoPerfil.addEventListener('change', async () => {
+                const archivo = inputFotoPerfil.files[0];
+                if (!archivo) return;
+
+                const formData = new FormData();
+                formData.append('accion', 'foto');
+                formData.append('foto', archivo);
+                formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]')?.content || '');
+
+                try {
+                    const resp = await fetch('../../app/perfil_usuario.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await resp.json();
+                    if (data.ok) {
+                        avatarHeader.src = data.url;
+                        fotoPerfilGrande.src = data.url;
+                        fotoPerfilModal.src = data.url;
+                    } else {
+                        alert(data.error || 'No se pudo actualizar la foto.');
+                    }
+                } catch (e) {
+                    alert('Error de conexión al subir la foto.');
+                    console.error(e);
+                } finally {
+                    inputFotoPerfil.value = '';
+                }
+            });
+
+            btnEditarDatos.addEventListener('click', () => {
+                cerrarPerfilDropdown();
+                modalPerfilOverlay.classList.add('show');
+            });
+            btnCancelarPerfil.addEventListener('click', () => modalPerfilOverlay.classList.remove('show'));
+            modalPerfilOverlay.addEventListener('click', (e) => {
+                if (e.target === modalPerfilOverlay) modalPerfilOverlay.classList.remove('show');
+            });
+
+            formEditarPerfil.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    const resp = await fetch('../../app/perfil_usuario.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `accion=actualizar&nombre=${encodeURIComponent(perfilNombre.value.trim())}` +
+                            `&apellido=${encodeURIComponent(perfilApellido.value.trim())}` +
+                            `&email=${encodeURIComponent(perfilEmail.value.trim())}` +
+                            `&telefono=${encodeURIComponent(perfilTelefono.value.trim())}`
+                    });
+                    const data = await resp.json();
+                    if (data.ok) {
+                        modalPerfilOverlay.classList.remove('show');
+                        cargarPerfil();
+                    } else {
+                        alert(data.error || 'No se pudieron guardar los cambios.');
+                    }
+                } catch (e) {
+                    alert('Error de conexión al guardar los cambios.');
+                    console.error(e);
+                }
+            });
+
+            function aplicarTextoTema() {
+                const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
+                temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : '🌙 Activar tema oscuro';
+            }
+
+            btnTemaOscuro.addEventListener('click', () => {
+                const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
+                if (esOscuro) {
+                    document.documentElement.removeAttribute('data-tema');
+                    localStorage.setItem('colsoftco_tema', 'claro');
                 } else {
-                    alert(data.error || 'No se pudo actualizar la foto.');
+                    document.documentElement.setAttribute('data-tema', 'oscuro');
+                    localStorage.setItem('colsoftco_tema', 'oscuro');
                 }
-            } catch (e) {
-                alert('Error de conexión al subir la foto.');
-                console.error(e);
-            } finally {
-                inputFotoPerfil.value = '';
-            }
-        });
+                aplicarTextoTema();
+            });
 
-        btnEditarDatos.addEventListener('click', () => {
-            cerrarPerfilDropdown();
-            modalPerfilOverlay.classList.add('show');
-        });
-        btnCancelarPerfil.addEventListener('click', () => modalPerfilOverlay.classList.remove('show'));
-        modalPerfilOverlay.addEventListener('click', (e) => {
-            if (e.target === modalPerfilOverlay) modalPerfilOverlay.classList.remove('show');
-        });
-
-        formEditarPerfil.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                const resp = await fetch('../../app/perfil_usuario.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `accion=actualizar&nombre=${encodeURIComponent(perfilNombre.value.trim())}` +
-                          `&apellido=${encodeURIComponent(perfilApellido.value.trim())}` +
-                          `&email=${encodeURIComponent(perfilEmail.value.trim())}` +
-                          `&telefono=${encodeURIComponent(perfilTelefono.value.trim())}`
-                });
-                const data = await resp.json();
-                if (data.ok) {
-                    modalPerfilOverlay.classList.remove('show');
-                    cargarPerfil();
-                } else {
-                    alert(data.error || 'No se pudieron guardar los cambios.');
-                }
-            } catch (e) {
-                alert('Error de conexión al guardar los cambios.');
-                console.error(e);
-            }
-        });
-
-        function aplicarTextoTema() {
-            const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
-            temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : '🌙 Activar tema oscuro';
-        }
-
-        btnTemaOscuro.addEventListener('click', () => {
-            const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
-            if (esOscuro) {
-                document.documentElement.removeAttribute('data-tema');
-                localStorage.setItem('colsoftco_tema', 'claro');
-            } else {
-                document.documentElement.setAttribute('data-tema', 'oscuro');
-                localStorage.setItem('colsoftco_tema', 'oscuro');
-            }
             aplicarTextoTema();
-        });
+            cargarPerfil();
 
-        aplicarTextoTema();
-        cargarPerfil();
-
-        document.addEventListener('click', () => cerrarPerfilDropdown());
-    </script>
+            document.addEventListener('click', () => cerrarPerfilDropdown());
+        </script>
 
 </body>
 

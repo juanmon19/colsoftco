@@ -43,52 +43,52 @@ $materialesDisponibles = $dbConn->query("
             ?>
 
             <main class="content">
-<div class="paneles" style="grid-template-columns: 1fr;">
-        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='receta_colchones.php'">← Volver a Receta de Colchones</button>
-    </div>
+                <div class="paneles" style="grid-template-columns: 1fr;">
+                    <button class="btn-back" onclick="window.location.href='receta_colchones.php'">← Volver</button>
+                </div>
 
-    <!-- ══════════════════════════════════════════════ -->
-    <!-- PANEL REGISTRAR NUEVO MODELO + RECETA         -->
-    <!-- ══════════════════════════════════════════════ -->
-    <div class="paneles" style="grid-template-columns: 1fr;">
+                <!-- ══════════════════════════════════════════════ -->
+                <!-- PANEL REGISTRAR NUEVO MODELO + RECETA         -->
+                <!-- ══════════════════════════════════════════════ -->
+                <div class="paneles" style="grid-template-columns: 1fr;">
 
-        <div class="panel">
-            <div class="panel-header">📋 Registrar Nuevo Modelo de Colchón</div>
-            <div class="panel-body">
+                    <div class="panel">
+                        <div class="panel-header">📋 Registrar Nuevo Modelo de Colchón</div>
+                        <div class="panel-body">
 
-                <div style="display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:18px;">
-                    <div>
-                        <label style="display:block;font-weight:bold;font-size:14px;margin-bottom:6px;">Nombre del Modelo</label>
-                        <input type="text" id="regNombreModelo" placeholder="Ej: Colchón Imperial" style="width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                            <div style="display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:18px;">
+                                <div>
+                                    <label style="display:block;font-weight:bold;font-size:14px;margin-bottom:6px;">Nombre del Modelo</label>
+                                    <input type="text" id="regNombreModelo" placeholder="Ej: Colchón Imperial" style="width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                                </div>
+                            </div>
+
+                            <h3 style="font-size:16px;margin-bottom:12px;color:#D4AF37;">🧪 Receta (Obligatoria)</h3>
+                            <p style="font-size:13px;color:#666;margin-bottom:12px;">Agrega los materiales que componen este modelo de colchón.</p>
+
+                            <div id="regRecetaContainer">
+                                <!-- Filas de ingredientes se agregan aquí dinámicamente -->
+                            </div>
+
+                            <button type="button" class="btn" style="background:#16a34a;color:white;margin-top:10px;margin-bottom:18px;padding:10px 18px;font-size:14px;" onclick="agregarFilaReceta('reg')">
+                                ＋ Agregar Material
+                            </button>
+
+                            <div id="regMensaje" style="display:none;padding:10px 14px;border-radius:6px;font-weight:600;margin-bottom:12px;"></div>
+
+                            <div style="display:flex;gap:12px;justify-content:flex-end;">
+                                <button type="button" class="btn" style="background:#6b7280;color:white;" onclick="limpiarFormRegistro()">
+                                    Limpiar
+                                </button>
+                                <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="registrarModelo()">
+                                    💾 Registrar Modelo
+                                </button>
+                            </div>
+
+                        </div>
                     </div>
+
                 </div>
-
-                <h3 style="font-size:16px;margin-bottom:12px;color:#D4AF37;">🧪 Receta (Obligatoria)</h3>
-                <p style="font-size:13px;color:#666;margin-bottom:12px;">Agrega los materiales que componen este modelo de colchón.</p>
-
-                <div id="regRecetaContainer">
-                    <!-- Filas de ingredientes se agregan aquí dinámicamente -->
-                </div>
-
-                <button type="button" class="btn" style="background:#16a34a;color:white;margin-top:10px;margin-bottom:18px;padding:10px 18px;font-size:14px;" onclick="agregarFilaReceta('reg')">
-                    ＋ Agregar Material
-                </button>
-
-                <div id="regMensaje" style="display:none;padding:10px 14px;border-radius:6px;font-weight:600;margin-bottom:12px;"></div>
-
-                <div style="display:flex;gap:12px;justify-content:flex-end;">
-                    <button type="button" class="btn" style="background:#6b7280;color:white;" onclick="limpiarFormRegistro()">
-                        Limpiar
-                    </button>
-                    <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="registrarModelo()">
-                        💾 Registrar Modelo
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
             </main>
 
             <?php include __DIR__ . '/../partials/footer.php'; ?>
@@ -97,7 +97,7 @@ $materialesDisponibles = $dbConn->query("
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-<script>
+    <script>
         /* ══════════════════════════════════════════
            DATOS DE MATERIALES PARA SELECTS DINÁMICOS
            ══════════════════════════════════════════ */
@@ -150,7 +150,10 @@ $materialesDisponibles = $dbConn->query("
                 if (!idMaterial || isNaN(cantidad) || cantidad <= 0) {
                     return null; // Validación fallida
                 }
-                receta.push({ id_material: idMaterial, cantidad: cantidad });
+                receta.push({
+                    id_material: idMaterial,
+                    cantidad: cantidad
+                });
             }
 
             return receta;

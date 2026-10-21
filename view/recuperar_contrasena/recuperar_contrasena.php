@@ -24,7 +24,7 @@ session_start();
     </div>
     
     <div class="header-title">
-      <h1>Recuperar Contraseña</h1>
+      <h1>RECUPERAR CONTRASEÑA</h1>
     </div>
 
     <!-- Elemento invisible para equilibrar el espacio del logo y centrar el título -->

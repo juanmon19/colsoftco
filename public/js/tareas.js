@@ -24,7 +24,7 @@
     // Solo los 'titulo' son etiquetas visibles y se pueden renombrar.
     const columnas = [
         { key: 'pendiente',  titulo: 'Pendientes' },
-        { key: 'por-hacer',  titulo: 'Por hacer' },
+        { key: 'por-hacer',  titulo: 'En proceso' },
         { key: 'terminado',  titulo: 'Terminadas' }
     ];
 

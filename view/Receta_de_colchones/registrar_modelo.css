@@ -24,7 +24,6 @@ header {
     justify-content: space-between;
     padding: 10px 24px;
     gap: 12px;
-    border-bottom: 3px solid #D4AF37;
 }
 
 header .logo {
@@ -62,6 +61,29 @@ header .logo img {
     font-weight: bold;
     transition: 0.25s ease;
     flex-shrink: 0;
+}
+
+.btn-back {
+    background: #0A1F44;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    width: 100px;
+    cursor: pointer;
+    margin: 4px 6px -15px 0; /* <--- Cambiamos el margen inferior a negativo (-15px) */
+    transition: background 0.2s ease;
+}
+
+.btn-back:hover {
+    background: #16296b;
+}
+
+html[data-tema="oscuro"] .btn-back {
+    background: var(--gold, #d4af37);
+    color: #0A1F44;
 }
 
 .btn-logout:hover {

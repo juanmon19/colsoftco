@@ -307,7 +307,7 @@ try {
                                 <h3><span>⌕</span> Información de contacto</h3>
                             </div>
                             <p>⌖ <span>Bogotá, Colombia</span></p>
-                            <p>✉ <span>contacto@colsoftco.com</span></p>
+                            <p>✉ <span>colsoftco4@gmail.com</span></p>
                             <p>⌕ <span>+57 322 903 5224</span></p>
                             <p>◷ <span>Lun - Vie: 8:00 am - 6:00 pm</span></p>
                         </article>

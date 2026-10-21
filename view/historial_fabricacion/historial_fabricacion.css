@@ -45,7 +45,28 @@ header .logo img {
     font-weight: 700;
     text-transform: uppercase;
 }
+.btn-back {
+    background: #0A1F44;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    width: 100px;
+    cursor: pointer;
+    margin: 4px 6px -15px 0; /* <--- Cambiamos el margen inferior a negativo (-15px) */
+    transition: background 0.2s ease;
+}
 
+.btn-back:hover {
+    background: #16296b;
+}
+
+html[data-tema="oscuro"] .btn-back {
+    background: var(--gold, #d4af37);
+    color: #0A1F44;
+}
 .btn-logout {
     background-color: #D4AF37;
     color: #0A1F44;

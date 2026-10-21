@@ -89,3 +89,65 @@
 .placeholder { color: #475569; padding: 16px 4px; }
 .modulo-head h2 { margin: 0; font-size: 20px; color: #0A1F44; }
 .modulo-head p { margin: 4px 0 0; color: #64748b; font-size: 13px; }
+
+/* ══ TEMA OSCURO MÓDULO TAREAS ══ */
+html[data-tema="oscuro"] .card {
+    background: var(--surface, #101a30);
+    border-color: var(--border, rgba(148, 163, 184, 0.18));
+    color: var(--text, #e8edf5);
+    box-shadow: var(--shadow, 0 6px 20px rgba(0, 0, 0, 0.45));
+}
+
+html[data-tema="oscuro"] .title-row h3 {
+    color: #ffffff;
+}
+
+html[data-tema="oscuro"] .placeholder {
+    color: var(--muted, #9aa7bd);
+}
+
+html[data-tema="oscuro"] .btn-nueva-tarea {
+    background: var(--gold, #d4af37);
+    color: #0A1F44;
+}
+
+html[data-tema="oscuro"] .btn-nueva-tarea:hover {
+    background: var(--gold-soft, rgba(212, 175, 55, 0.2));
+    color: var(--gold, #d4af37);
+}
+
+/* Ajustes para la barra inferior de resumen */
+html[data-tema="oscuro"] .tasks-summary {
+    background: var(--surface-2, #16223c);
+    border-color: var(--border, rgba(148, 163, 184, 0.18));
+    color: var(--text, #e8edf5);
+}
+
+html[data-tema="oscuro"] .tasks-summary span {
+    color: var(--muted, #9aa7bd);
+}
+
+/* Modal de tareas en tema oscuro */
+html[data-tema="oscuro"] .modal-tarea {
+    background: var(--surface, #101a30);
+    border: 1px solid var(--border, rgba(148, 163, 184, 0.18));
+    color: var(--text, #e8edf5);
+}
+
+html[data-tema="oscuro"] .modal-tarea input,
+html[data-tema="oscuro"] .modal-tarea select {
+    background: var(--surface-2, #16223c);
+    border-color: var(--border, rgba(148, 163, 184, 0.18));
+    color: var(--text, #e8edf5);
+}
+
+html[data-tema="oscuro"] .btn-primary {
+    background: var(--gold, #d4af37);
+    color: #0A1F44;
+}
+
+html[data-tema="oscuro"] .btn-outline {
+    background: transparent;
+    border-color: var(--border, rgba(148, 163, 184, 0.18));
+    color: var(--text, #e8edf5);
+}

@@ -349,7 +349,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Si el producto es de un solo proveedor y no hay proveedor elegido, se sugiere.
         if (selProveedor && selProveedor.value === '' && opt.dataset.prov) {
             selProveedor.value = opt.dataset.prov;
-            filtrarProductos();
         }
     }
 

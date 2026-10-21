@@ -42,73 +42,77 @@ $historial = $dbConn->query(
             ?>
 
             <main class="content">
-<div class="contenedor-historial">
+                <div class="contenedor-historial">
 
-        <div class="panel panel-historial">
-            <div class="panel-header">Producciones registradas</div>
-
-            <div class="panel-body">
-
-                <?php if (count($historial) === 0): ?>
-
-                    <p class="placeholder">
-                        Aún no se ha registrado ninguna fabricación.
-                    </p>
-
-                <?php else: ?>
-
-                    <!-- FIX responsive: envoltorio con scroll horizontal en móvil -->
-                    <div class="table-responsive hist-tabla-envolvedora">
-                    <table class="tabla-historial hist-tabla-produccion">
-                        <thead>
-                            <tr>
-                                <th>Recibo</th>
-                                <th>Fecha</th>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Usuario</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($historial as $registro): ?>
-                                <tr>
-                                    <td class="celda-id">
-                                        #<?= str_pad($registro['id'], 6, '0', STR_PAD_LEFT) ?>
-                                    </td>
-                                    <td>
-                                        <?= date('d/m/Y H:i', strtotime($registro['fecha_fabricacion'])) ?>
-                                    </td>
-                                    <td class="celda-producto">
-                                        <?= htmlspecialchars($registro['nombre_modelo']) ?>
-                                    </td>
-                                    <td>
-                                        <?= (int) $registro['cantidad'] ?> uds.
-                                    </td>
-                                    <td>
-                                        <?= htmlspecialchars($registro['usuario']) ?>
-                                    </td>
-                                    <td>
-                                        <a
-                                            href="ver_recibo.php?id=<?= (int) $registro['id'] ?>"
-                                            target="_blank"
-                                            rel="noopener"
-                                            class="btn-ver-pdf">
-                                            Ver / Descargar PDF
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                    <div style="margin-bottom: 14px;">
+                        <button class="btn-back" onclick="window.location.href='../Receta_de_colchones/receta_colchones.php'">← Volver</button>
                     </div>
 
-                <?php endif; ?>
+                    <div class="panel panel-historial">
+                        <div class="panel-header">Producciones registradas</div>
 
-            </div>
-        </div>
+                        <div class="panel-body">
 
-    </div>
+                            <?php if (count($historial) === 0): ?>
+
+                                <p class="placeholder">
+                                    Aún no se ha registrado ninguna fabricación.
+                                </p>
+
+                            <?php else: ?>
+
+                                <!-- FIX responsive: envoltorio con scroll horizontal en móvil -->
+                                <div class="table-responsive hist-tabla-envolvedora">
+                                    <table class="tabla-historial hist-tabla-produccion">
+                                        <thead>
+                                            <tr>
+                                                <th>Recibo</th>
+                                                <th>Fecha</th>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
+                                                <th>Usuario</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($historial as $registro): ?>
+                                                <tr>
+                                                    <td class="celda-id">
+                                                        #<?= str_pad($registro['id'], 6, '0', STR_PAD_LEFT) ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= date('d/m/Y H:i', strtotime($registro['fecha_fabricacion'])) ?>
+                                                    </td>
+                                                    <td class="celda-producto">
+                                                        <?= htmlspecialchars($registro['nombre_modelo']) ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= (int) $registro['cantidad'] ?> uds.
+                                                    </td>
+                                                    <td>
+                                                        <?= htmlspecialchars($registro['usuario']) ?>
+                                                    </td>
+                                                    <td>
+                                                        <a
+                                                            href="ver_recibo.php?id=<?= (int) $registro['id'] ?>"
+                                                            target="_blank"
+                                                            rel="noopener"
+                                                            class="btn-ver-pdf">
+                                                            Ver / Descargar PDF
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            <?php endif; ?>
+
+                        </div>
+                    </div>
+
+                </div>
             </main>
 
             <?php include __DIR__ . '/../partials/footer.php'; ?>
@@ -117,7 +121,7 @@ $historial = $dbConn->query(
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-<script src="../../public/js/app.js" defer></script>
+    <script src="../../public/js/app.js" defer></script>
 
 </body>
 

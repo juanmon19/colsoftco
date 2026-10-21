@@ -152,7 +152,6 @@ button {
     height: 57px;
     object-fit: contain;
     border-radius: 50%;
-    border: 2px solid var(--gold);
     background: white;
 }
 

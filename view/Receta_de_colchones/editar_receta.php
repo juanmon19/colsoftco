@@ -47,62 +47,62 @@ $materialesDisponibles = $dbConn->query("
             ?>
 
             <main class="content">
-<div class="paneles" style="grid-template-columns: 1fr;">
-        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='receta_colchones.php'">← Volver a Receta de Colchones</button>
-    </div>
-
-    <!-- ══════════════════════════════════════════════ -->
-    <!-- PANEL EDITAR RECETA DE MODELO EXISTENTE       -->
-    <!-- ══════════════════════════════════════════════ -->
-    <div class="paneles" style="grid-template-columns: 1fr;">
-
-        <div class="panel">
-            <div class="panel-header">✏️ Editar Receta de Modelo Existente</div>
-            <div class="panel-body">
-
-                <label style="display:block;font-weight:bold;font-size:14px;margin-bottom:6px;">Seleccionar Modelo</label>
-                <div class="receta-form-row">
-                    <select id="editSelectModelo" style="flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
-                        <option value="">-- Seleccionar modelo --</option>
-                        <?php foreach ($modelos as $m): ?>
-                            <option value="<?= $m['id_modelo'] ?>">
-                                <?= htmlspecialchars($m['nombre_modelo']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="cargarReceta()">
-                        🔍 Cargar Receta
-                    </button>
+                <div class="paneles" style="grid-template-columns: 1fr;">
+                    <button class="btn-back" onclick="window.location.href='receta_colchones.php'">← Volver</button>
                 </div>
 
-                <div id="editRecetaSection" style="display:none;">
-                    <h3 style="font-size:16px;margin-bottom:12px;color:#0A1F44;">🧪 Receta Actual</h3>
+                <!-- ══════════════════════════════════════════════ -->
+                <!-- PANEL EDITAR RECETA DE MODELO EXISTENTE       -->
+                <!-- ══════════════════════════════════════════════ -->
+                <div class="paneles" style="grid-template-columns: 1fr;">
 
-                    <div id="editRecetaContainer">
-                        <!-- Filas de ingredientes se cargan aquí -->
+                    <div class="panel">
+                        <div class="panel-header">✏️ Editar Receta de Modelo Existente</div>
+                        <div class="panel-body">
+
+                            <label style="display:block;font-weight:bold;font-size:14px;margin-bottom:6px;">Seleccionar Modelo</label>
+                            <div class="receta-form-row">
+                                <select id="editSelectModelo" style="flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                                    <option value="">-- Seleccionar modelo --</option>
+                                    <?php foreach ($modelos as $m): ?>
+                                        <option value="<?= $m['id_modelo'] ?>">
+                                            <?= htmlspecialchars($m['nombre_modelo']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="cargarReceta()">
+                                    🔍 Cargar Receta
+                                </button>
+                            </div>
+
+                            <div id="editRecetaSection" style="display:none;">
+                                <h3 style="font-size:16px;margin-bottom:12px;color:#0A1F44;">🧪 Receta Actual</h3>
+
+                                <div id="editRecetaContainer">
+                                    <!-- Filas de ingredientes se cargan aquí -->
+                                </div>
+
+                                <button type="button" class="btn" style="background:#16a34a;color:white;margin-top:10px;margin-bottom:18px;padding:10px 18px;font-size:14px;" onclick="agregarFilaReceta('edit')">
+                                    ＋ Agregar Material
+                                </button>
+
+                                <div id="editMensaje" style="display:none;padding:10px 14px;border-radius:6px;font-weight:600;margin-bottom:12px;"></div>
+
+                                <div class="receta-form-actions">
+                                    <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="guardarReceta()">
+                                        💾 Guardar Cambios
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="editPlaceholder">
+                                <p class="placeholder">Selecciona un modelo y presiona <strong>Cargar Receta</strong> para ver y editar su receta.</p>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <button type="button" class="btn" style="background:#16a34a;color:white;margin-top:10px;margin-bottom:18px;padding:10px 18px;font-size:14px;" onclick="agregarFilaReceta('edit')">
-                        ＋ Agregar Material
-                    </button>
-
-                    <div id="editMensaje" style="display:none;padding:10px 14px;border-radius:6px;font-weight:600;margin-bottom:12px;"></div>
-
-                    <div class="receta-form-actions">
-                        <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="guardarReceta()">
-                            💾 Guardar Cambios
-                        </button>
-                    </div>
                 </div>
-
-                <div id="editPlaceholder">
-                    <p class="placeholder">Selecciona un modelo y presiona <strong>Cargar Receta</strong> para ver y editar su receta.</p>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
             </main>
 
             <?php include __DIR__ . '/../partials/footer.php'; ?>
@@ -111,7 +111,7 @@ $materialesDisponibles = $dbConn->query("
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-<script>
+    <script>
         /* ══════════════════════════════════════════
            DATOS DE MATERIALES PARA SELECTS DINÁMICOS
            ══════════════════════════════════════════ */
@@ -164,7 +164,10 @@ $materialesDisponibles = $dbConn->query("
                 if (!idMaterial || isNaN(cantidad) || cantidad <= 0) {
                     return null; // Validación fallida
                 }
-                receta.push({ id_material: idMaterial, cantidad: cantidad });
+                receta.push({
+                    id_material: idMaterial,
+                    cantidad: cantidad
+                });
             }
 
             return receta;
