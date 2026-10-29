@@ -57,7 +57,7 @@ $materialesDisponibles = $dbConn->query("
                 <div class="paneles" style="grid-template-columns: 1fr;">
 
                     <div class="panel">
-                        <div class="panel-header">✏️ Editar Receta de Modelo Existente</div>
+                        <div class="panel-header">Editar Receta de Modelo Existente</div>
                         <div class="panel-body">
 
                             <label style="display:block;font-weight:bold;font-size:14px;margin-bottom:6px;">Seleccionar Modelo</label>
@@ -71,12 +71,12 @@ $materialesDisponibles = $dbConn->query("
                                     <?php endforeach; ?>
                                 </select>
                                 <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="cargarReceta()">
-                                    🔍 Cargar Receta
+                                     Cargar Receta
                                 </button>
                             </div>
 
                             <div id="editRecetaSection" style="display:none;">
-                                <h3 style="font-size:16px;margin-bottom:12px;color:#0A1F44;">🧪 Receta Actual</h3>
+                                <h3 style="font-size:16px;margin-bottom:12px;color:#0A1F44;"> Receta Actual</h3>
 
                                 <div id="editRecetaContainer">
                                     <!-- Filas de ingredientes se cargan aquí -->
@@ -90,7 +90,7 @@ $materialesDisponibles = $dbConn->query("
 
                                 <div class="receta-form-actions">
                                     <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="guardarReceta()">
-                                        💾 Guardar Cambios
+                                         Guardar Cambios
                                     </button>
                                 </div>
                             </div>

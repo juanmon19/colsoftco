@@ -53,7 +53,7 @@ $materialesDisponibles = $dbConn->query("
                 <div class="paneles" style="grid-template-columns: 1fr;">
 
                     <div class="panel">
-                        <div class="panel-header">📋 Registrar Nuevo Modelo de Colchón</div>
+                        <div class="panel-header"> Registrar Nuevo Modelo de Colchón</div>
                         <div class="panel-body">
 
                             <div style="display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:18px;">
@@ -63,7 +63,7 @@ $materialesDisponibles = $dbConn->query("
                                 </div>
                             </div>
 
-                            <h3 style="font-size:16px;margin-bottom:12px;color:#D4AF37;">🧪 Receta (Obligatoria)</h3>
+                            <h3 style="font-size:16px;margin-bottom:12px;color:#D4AF37;"> Receta (Obligatoria)</h3>
                             <p style="font-size:13px;color:#666;margin-bottom:12px;">Agrega los materiales que componen este modelo de colchón.</p>
 
                             <div id="regRecetaContainer">
@@ -81,7 +81,7 @@ $materialesDisponibles = $dbConn->query("
                                     Limpiar
                                 </button>
                                 <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="registrarModelo()">
-                                    💾 Registrar Modelo
+                                     Registrar Modelo
                                 </button>
                             </div>
 

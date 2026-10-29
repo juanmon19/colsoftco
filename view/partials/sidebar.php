@@ -38,7 +38,7 @@ $ver = fn(string $archivo) => puede_acceder($archivo, $rolKey ?: 'administrador'
     </button>
 
     <nav class="nav" id="navMenu">
-        <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../../app/ir_panel.php'">🏠 Panel Principal</button>
+        <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../../app/ir_panel.php'"> Panel Principal</button>
         <?php if ($ver('lista_proveedores.php')): ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>
         <?php endif; ?>
@@ -70,9 +70,9 @@ $ver = fn(string $archivo) => puede_acceder($archivo, $rolKey ?: 'administrador'
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
         <?php endif; ?>
         <?php if ($ver('tareas.php')): ?>
-        <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../tareas/tareas.php'">☑ Tareas</button>
+        <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../tareas/tareas.php'">Tareas</button>
         <?php endif; ?>
-        <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
+        <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../mensajeria/mensajeria.php'">Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
     </nav>
 
 </aside>

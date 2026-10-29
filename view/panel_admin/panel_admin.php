@@ -131,7 +131,7 @@ try {
                 <button class="nav-item" onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
                 <button class="nav-item" onclick="window.location.href='../registro_de_producto_terminado/registro_producto_terminado.php'">Registrar Producto Terminado</button>
                 <button class="nav-item" onclick="window.location.href='../receta_de_colchones/receta_colchones.php'">Receta de Colchones</button>
-                <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
+                <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
             </nav>
 
             
@@ -164,12 +164,12 @@ try {
                         <div class="perfil-dropdown" id="perfilDropdown">
                             <!-- Nueva opción de Registrar -->
                             <button type="button" onclick="window.location.href='../registro/registro.php'">
-                                ➕ Registrar usuario
+                                 Registrar usuario
                             </button>
-                            <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
-                            <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
+                            <button type="button" id="btnCambiarFoto"> Cambiar foto de perfil</button>
+                            <button type="button" id="btnEditarDatos"> Editar mis datos</button>
                             <button type="button" id="btnTemaOscuro">
-                                <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
+                                <span id="temaIconoTexto"> Activar tema oscuro</span>
                             </button>
                             <div class="perfil-dropdown-divider"></div>
                             <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>

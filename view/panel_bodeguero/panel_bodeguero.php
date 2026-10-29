@@ -62,7 +62,7 @@ try {
         </button>
 
         <nav class="nav" id="navMenu">
-            <button class="nav-item active" onclick="window.location.href='panel_bodeguero.php'">🏠 Panel Principal</button>
+            <button class="nav-item active" onclick="window.location.href='panel_bodeguero.php'">Panel Principal</button>
             <button class="nav-item" onclick="window.location.href='../lista_proveedores/lista_proveedores.php'">Lista de Proveedores</button>
             <button class="nav-item" onclick="window.location.href='../control_de_stock/control_de_stock.php'">Control de Stock</button>
             <button class="nav-item" onclick="window.location.href='../registromp/registromp.php'">Registrar Materia Prima</button>
@@ -70,7 +70,7 @@ try {
             <button class="nav-item" onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
             <button class="nav-item" onclick="window.location.href='../registro_de_producto_terminado/registro_producto_terminado.php'">Registrar Producto Terminado</button>
             <button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
-            <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">📨 Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
+            <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
         </nav>
     </aside>
 

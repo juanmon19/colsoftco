@@ -84,10 +84,10 @@ try {
                             </button>
 
                             <div class="perfil-dropdown" id="perfilDropdown">
-                                <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
-                                <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
+                                <button type="button" id="btnCambiarFoto"> Cambiar foto de perfil</button>
+                                <button type="button" id="btnEditarDatos">Editar mis datos</button>
                                 <button type="button" id="btnTemaOscuro">
-                                    <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
+                                    <span id="temaIconoTexto">Activar tema oscuro</span>
                                 </button>
                                 <div class="perfil-dropdown-divider"></div>
                                 <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
