@@ -363,8 +363,6 @@ $soloLecturaProveedores = !es_admin();
         })();
     </script>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
     <script>
     /* Refuerzo: si el navegador restaura esta página desde su bfcache

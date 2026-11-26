@@ -133,6 +133,10 @@ button {
     font-weight: 400;
     justify-content: flex-start;
 }
+/* "¿Necesitas ayuda?": enlace al manual de usuario en el sidebar */
+.sidebar a.nav-item {
+    text-decoration: none;
+}
 /* AUDITORÍA: .help-box y .headset eliminados (0 usos en PHP/JS).
    Eran caja de ayuda legacy del sidebar que ya no existe en partials/sidebar.php. */
 .mobile-menu,

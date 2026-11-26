@@ -250,10 +250,10 @@
             if (data.ok) {
                 await cargarTareas();
             } else {
-                alert(data.error || 'No se pudo actualizar la tarea.');
+                mostrarNotificacion('error', data.error || 'No se pudo actualizar la tarea.');
             }
         } catch (e) {
-            alert('Error de conexión al actualizar la tarea.');
+            mostrarNotificacion('error', 'Error de conexión al actualizar la tarea.');
         }
     }
 
@@ -265,9 +265,9 @@
                 body: `accion=actualizar&id_tarea=${encodeURIComponent(id)}&estado=${encodeURIComponent(estado)}`
             });
             const data = await resp.json();
-            if (!data.ok) alert(data.error || 'No se pudo mover la tarea.');
+            if (!data.ok) mostrarNotificacion('error', data.error || 'No se pudo mover la tarea.');
         } catch (e) {
-            alert('Error de conexión al mover la tarea.');
+            mostrarNotificacion('error', 'Error de conexión al mover la tarea.');
         }
         await cargarTareas();
     }
@@ -275,7 +275,7 @@
     async function eliminarTarea(boton) {
         const tarjeta = boton.closest('.kanban-card');
         const id = tarjeta.dataset.id;
-        if (!confirm('¿Eliminar esta tarea?')) return;
+        if (!await confirmarAccion('Eliminar tarea', '¿Eliminar esta tarea?')) return;
 
         try {
             const resp = await fetch(BASE_APP + 'app/logica_tareas.php', {
@@ -287,10 +287,10 @@
             if (data.ok) {
                 await cargarTareas();
             } else {
-                alert(data.error || 'No se pudo eliminar la tarea.');
+                mostrarNotificacion('error', data.error || 'No se pudo eliminar la tarea.');
             }
         } catch (e) {
-            alert('Error de conexión.');
+            mostrarNotificacion('error', 'Error de conexión.');
         }
     }
 
@@ -407,7 +407,7 @@
 
         // Validación frontend de fecha pasada
         if (vencimiento && vencimiento < new Date().toISOString().split('T')[0]) {
-            alert('No se puede asignar una fecha de vencimiento en el pasado.');
+            mostrarNotificacion('warning', 'No se puede asignar una fecha de vencimiento en el pasado.');
             return;
         }
 
@@ -428,10 +428,10 @@
                 formNuevaTarea.reset();
                 await cargarTareas();
             } else {
-                alert(data.error || 'No se pudo registrar la tarea.');
+                mostrarNotificacion('error', data.error || 'No se pudo registrar la tarea.');
             }
         } catch (e) {
-            alert('Error de conexión.');
+            mostrarNotificacion('error', 'Error de conexión.');
         }
     });
 

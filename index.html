@@ -19,6 +19,13 @@
     <meta property="og:image" content="https://colsoftco.infinityfree.me/public/imagenes/logo.png">
     <meta name="twitter:card" content="summary">
     <link href="index/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="public/css/soporte.css">
+    <script>
+        try {
+            if (localStorage.getItem('colsoftco_tema') === 'oscuro') document.documentElement.dataset.tema = 'oscuro';
+        } catch { /* El soporte también funciona sin almacenamiento local. */ }
+    </script>
+    <script defer src="public/js/soporte.js"></script>
 </head>
 
 <body>
@@ -64,8 +71,7 @@
 
     </main>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
+    <colsoft-ayuda></colsoft-ayuda>
 
     <footer>
         <div class="footer-divider"></div>

@@ -172,8 +172,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
     <script>
     /* Interceptamos el envío del formulario para que la confirmación
@@ -203,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             window.location.replace(destino);
         })
         .catch(function () {
-            alert('Ocurrió un error al guardar los cambios. Intenta de nuevo.');
+            mostrarNotificacion('error', 'Ocurrió un error al guardar los cambios. Intenta de nuevo.');
             btnConfirmar.disabled = false;
         });
     });
@@ -217,7 +215,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
     </script>
 
-    <script src="../../public/js/app.js" defer></script>
     
 </body>
 </html>

@@ -182,17 +182,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const cantidad = document.getElementById('cantidad').value;
 
       if (!producto) {
-        alert('Por favor seleccione un producto.');
+        mostrarNotificacion('warning', 'Por favor seleccione un producto.');
         e.preventDefault();
         return;
       }
       if (cantidad === '' || Number(cantidad) < 0) {
-        alert('Ingrese una cantidad mínima válida (número mayor o igual a 0).');
+        mostrarNotificacion('warning', 'Ingrese una cantidad mínima válida (número mayor o igual a 0).');
         e.preventDefault();
         return;
       }
       if (chkEmail.checked && inputCorreo.value.trim() === '') {
-        alert('Ingrese el correo donde desea recibir la notificación.');
+        mostrarNotificacion('warning', 'Ingrese el correo donde desea recibir la notificación.');
         e.preventDefault();
         return;
       }
@@ -204,10 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       campoCorreo.style.display = 'none';
     }
   </script>
-  <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-  <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
-  <script src="../../public/js/app.js" defer></script>
 </body>
 
 </html>

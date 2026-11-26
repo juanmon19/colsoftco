@@ -46,3 +46,19 @@ ErrorDocument 502 /view/errores/error_502.php
 <FilesMatch "(?i)(\.sql$|^correo\.local\.php$)">
     Require all denied
 </FilesMatch>
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+</IfModule>
+
+# Protección de archivos sensibles
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Páginas de error personalizadas
+# (Déjalas comentadas mientras pruebas en localhost; descoméntalas al subir a InfinityFree)
+# ErrorDocument 403 /view/errores/403.php
+# ErrorDocument 404 /view/errores/404.php
+# ErrorDocument 500 /view/errores/500.php

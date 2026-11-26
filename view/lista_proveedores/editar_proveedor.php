@@ -303,10 +303,7 @@ $unico = count($actuales) === 1 ? (int) $actuales[0]['id_material'] : 0;
         }
     </script>
 
-    <script src="../../public/js/app.js" defer></script>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 </body>
 
 </html>

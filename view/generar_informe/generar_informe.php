@@ -113,7 +113,6 @@ $MESES = [
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-<script src="../../public/js/app.js" defer></script>
     <script src="../../public/js/escape-html.js"></script>
     <script>
         function cambiarRutaComp(ruta) {

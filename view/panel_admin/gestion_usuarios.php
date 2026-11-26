@@ -400,7 +400,6 @@ $rolActual = 'Administrador';
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-    <script src="../../public/js/app.js" defer></script>
     <script src="../../public/js/escape-html.js"></script>
     <script>
         function formatearFechaActividad(fechaStr) {
@@ -484,7 +483,7 @@ $rolActual = 'Administrador';
 
         async function toggleEstado(idUsuario, nuevoEstado) {
             const accion = nuevoEstado === 0 ? 'desactivar' : 'activar';
-            if (!confirm(`¿Desea ${accion} este usuario?`)) return;
+            if (!await confirmarAccion('Cambiar estado del usuario', `¿Desea ${accion} este usuario?`)) return;
 
             try {
                 const resp = await fetch('../../app/logica_usuarios.php', {
@@ -499,10 +498,10 @@ $rolActual = 'Administrador';
                     cargarUsuarios();
                     cargarConectados();
                 } else {
-                    alert(data.error || 'Error al cambiar estado.');
+                    mostrarNotificacion('error', data.error || 'Error al cambiar estado.');
                 }
             } catch (e) {
-                alert('Error de conexión.');
+                mostrarNotificacion('error', 'Error de conexión.');
             }
         }
 

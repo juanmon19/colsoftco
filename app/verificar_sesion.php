@@ -47,10 +47,7 @@ if ($__connCheck && isset($_SESSION['token_sesion'])) {
         if (!$__rowCheck || $__rowCheck['token_sesion'] !== $_SESSION['token_sesion']) {
             session_unset();
             session_destroy();
-            echo '<script>
-                alert("Alguien más ingresó a tu cuenta. Por favor, loguéate de nuevo.");
-                window.location.href = "' . htmlspecialchars(colsoftco_login_url(), ENT_QUOTES, 'UTF-8') . '";
-            </script>';
+            header("Location: " . colsoftco_login_url() . "?sesion=reemplazada", true, 303);
             exit();
         }
     } catch (\Throwable $__e) {
@@ -85,10 +82,7 @@ if ($__connCheck) {
         if (!$__rowActivo || (int) $__rowActivo['activo'] !== 1) {
             session_unset();
             session_destroy();
-            echo '<script>
-                alert("Tu cuenta ha sido desactivada por el administrador. Contacta al administrador.");
-                window.location.href = "' . htmlspecialchars(colsoftco_login_url(), ENT_QUOTES, 'UTF-8') . '";
-            </script>';
+            header("Location: " . colsoftco_login_url() . "?sesion=desactivada", true, 303);
             exit();
         }
 
@@ -100,10 +94,7 @@ if ($__connCheck) {
                 if ($__minutosInactivo > MINUTOS_INACTIVIDAD_MAX) {
                     session_unset();
                     session_destroy();
-                    echo '<script>
-                        alert("Tu sesión expiró por inactividad. Por favor, inicia sesión de nuevo.");
-                        window.location.href = "' . htmlspecialchars(colsoftco_login_url(), ENT_QUOTES, 'UTF-8') . '";
-                    </script>';
+                    header("Location: " . colsoftco_login_url() . "?sesion=inactiva", true, 303);
                     exit();
                 }
             }

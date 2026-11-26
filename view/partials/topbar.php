@@ -62,7 +62,7 @@ if (!isset($prefijo)) {
                     <span id="temaIconoTexto">Activar tema oscuro</span>
                 </button>
                 <div class="perfil-dropdown-divider"></div>
-                <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
+                <button type="button" class="perfil-dropdown-logout" onclick="confirmarCerrarSesion(event, '<?= $prefijo ?>../../app/logout.php')">⏻ Cerrar sesión</button>
             </div>
         </div>
 

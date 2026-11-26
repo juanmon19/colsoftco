@@ -1,0 +1,162 @@
+colsoft-ayuda {
+    --ayuda-marino: #0A1F44;
+    --ayuda-dorado: #D4AF37;
+    --ayuda-fondo: #fff;
+    --ayuda-lienzo: #f3f5f8;
+    --ayuda-tinta: #0A1F44;
+    --ayuda-linea: #c7cfdb;
+    --ayuda-chip: #fff9e7;
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 900;
+    font: 400 15px/1.5 system-ui, sans-serif;
+    text-align: start;
+    color: var(--ayuda-tinta);
+}
+html[data-tema="oscuro"] colsoft-ayuda {
+    color-scheme: dark;
+    --ayuda-fondo: #142b4c;
+    --ayuda-lienzo: #0b1c35;
+    --ayuda-tinta: #f5f6f9;
+    --ayuda-linea: #4e617d;
+    --ayuda-chip: #223654;
+}
+colsoft-ayuda *, colsoft-ayuda *::before, colsoft-ayuda *::after { box-sizing: border-box; }
+colsoft-ayuda button {
+    min-width: 0;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+    cursor: pointer;
+}
+colsoft-ayuda .ayuda-lanzador {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border: 2px solid var(--ayuda-dorado);
+    border-radius: 50%;
+    color: var(--ayuda-dorado);
+    background: var(--ayuda-marino);
+    box-shadow: 0 5px 16px #0a1f4433;
+}
+colsoft-ayuda #ayuda-ventana {
+    position: absolute;
+    right: 0;
+    bottom: 66px;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    width: min(23rem, calc(100vw - 32px));
+    height: min(31rem, calc(100vh - 110px));
+    height: min(31rem, calc(100dvh - 100px - env(safe-area-inset-bottom)));
+    padding: 0;
+    overflow: hidden;
+    background: var(--ayuda-lienzo);
+    border: 1px solid var(--ayuda-linea);
+    border-radius: 18px;
+    box-shadow: 0 14px 48px #07152d38;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+}
+colsoft-ayuda.abierto #ayuda-ventana {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+colsoft-ayuda .ayuda-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 15px 13px 18px;
+    color: #fff;
+    background: var(--ayuda-marino);
+    border-bottom: 2px solid var(--ayuda-dorado);
+}
+colsoft-ayuda .ayuda-cabecera span { color: var(--ayuda-dorado); font-size: .8rem; font-weight: 600; }
+colsoft-ayuda #ayuda-titulo { margin: 0; color: #fff; font: 650 1.12rem/1.35 system-ui, sans-serif; }
+colsoft-ayuda .ayuda-cerrar { width: 40px; height: 40px; color: #fff; font-size: 1.7rem; }
+colsoft-ayuda .ayuda-historial {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px 12px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+colsoft-ayuda .ayuda-respuesta, colsoft-ayuda .ayuda-pregunta {
+    max-width: 94%;
+    flex: 0 0 auto;
+    padding: 10px 13px;
+    border-radius: 12px 12px 12px 3px;
+    background: var(--ayuda-fondo);
+    color: var(--ayuda-tinta);
+    border: 1px solid var(--ayuda-linea);
+    overflow-wrap: anywhere;
+}
+colsoft-ayuda .ayuda-pregunta {
+    align-self: flex-end;
+    border-color: var(--ayuda-dorado);
+    border-radius: 12px 12px 3px 12px;
+    color: #fff;
+    background: var(--ayuda-marino);
+}
+colsoft-ayuda .ayuda-opciones { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+colsoft-ayuda .ayuda-opciones button {
+    padding: 5px 10px;
+    border: 1px solid var(--ayuda-dorado);
+    border-radius: 14px;
+    color: var(--ayuda-tinta);
+    background: var(--ayuda-chip);
+    font-size: .85rem;
+}
+colsoft-ayuda .ayuda-opciones button:hover { color: #0A1F44; background: var(--ayuda-dorado); }
+colsoft-ayuda .ayuda-respuesta a {
+    display: block;
+    margin-top: 8px;
+    color: var(--ayuda-tinta);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 650;
+}
+colsoft-ayuda .ayuda-form {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    padding: 10px;
+    background: var(--ayuda-fondo);
+    border-top: 1px solid var(--ayuda-linea);
+}
+colsoft-ayuda .ayuda-form input {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 8px 12px;
+    background: var(--ayuda-fondo);
+    color: var(--ayuda-tinta);
+    border: 1px solid var(--ayuda-linea);
+    border-radius: 8px;
+    font: 400 16px/1.4 system-ui, sans-serif;
+}
+colsoft-ayuda .ayuda-form input::placeholder { color: var(--ayuda-tinta); opacity: .75; }
+colsoft-ayuda .ayuda-form button {
+    width: 42px;
+    border-radius: 8px;
+    background: var(--ayuda-dorado);
+    color: var(--ayuda-marino);
+    font-size: 1.2rem;
+}
+colsoft-ayuda :focus-visible { outline: 2px solid var(--ayuda-tinta); outline-offset: 2px; }
+colsoft-ayuda .ayuda-cerrar:focus-visible { outline-color: var(--ayuda-dorado); }
+@media (prefers-reduced-motion: reduce) {
+    colsoft-ayuda #ayuda-ventana { transition: none; }
+}

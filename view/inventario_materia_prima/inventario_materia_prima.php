@@ -356,10 +356,10 @@ $soloLecturaInv = es_operario();
             const nuevoEstado = estadoActual === 'activo' ? 'inactivo' : 'activo';
             const accion = estadoActual === 'activo' ? 'deshabilitar' : 'habilitar';
 
-            if (!confirm(`¿Desea ${accion} esta materia prima?`)) return;
+            if (!await confirmarAccion('Cambiar estado del material', `¿Desea ${accion} esta materia prima?`)) return;
 
             try {
-                const resp = await fetch('../../../app/logica_inventario_api.php', {
+                const resp = await fetch('../../app/logica_inventario_api.php', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: `accion=cambiar_estado&id=${id}&estado=${nuevoEstado}`
@@ -368,10 +368,10 @@ $soloLecturaInv = es_operario();
                 if (data.ok) {
                     location.reload();
                 } else {
-                    alert(data.error || 'Error al cambiar estado.');
+                    mostrarNotificacion('error', data.error || 'Error al cambiar estado.');
                 }
             } catch(e) {
-                alert('Error de conexión.');
+                mostrarNotificacion('error', 'Error de conexión.');
             }
         });
 

@@ -1,0 +1,74 @@
+:root {
+    --aviso-fondo: #fff;
+    --aviso-tinta: #0A1F44;
+    --aviso-dorado: #D4AF37;
+    --aviso-exito: #167449;
+    --aviso-error: #b42639;
+    --aviso-alerta: #895b08;
+    --aviso-info: #265da1;
+}
+html[data-tema="oscuro"] {
+    --aviso-fondo: #0A1F44;
+    --aviso-tinta: #f7f7fa;
+    --aviso-exito: #72dfad;
+    --aviso-error: #ff9ba6;
+    --aviso-alerta: #edc85b;
+    --aviso-info: #93c5fd;
+}
+.aviso-success { --aviso-acento: var(--aviso-exito); }
+.aviso-error { --aviso-acento: var(--aviso-error); }
+.aviso-warning { --aviso-acento: var(--aviso-alerta); }
+.aviso-info { --aviso-acento: var(--aviso-info); }
+div.swal2-container.avisos { z-index: 20000; }
+.avisos .swal2-popup.aviso-modal, dialog.aviso-local,
+.avisos .swal2-popup.aviso-toast, .aviso-toast-local {
+    box-sizing: border-box;
+    background: var(--aviso-fondo);
+    color: var(--aviso-tinta);
+    border: 1px solid var(--aviso-dorado);
+    border-radius: 16px;
+    font-family: inherit;
+    overflow-wrap: anywhere;
+    box-shadow: 0 12px 40px #0a1f4440;
+}
+.avisos .aviso-toast, .aviso-toast-local {
+    border-inline-start: 5px solid var(--aviso-acento) !important;
+    --swal2-timer-progress-bar-background: var(--aviso-acento);
+}
+.avisos .swal2-title, .avisos .swal2-html-container { color: var(--aviso-tinta); }
+.avisos .swal2-timer-progress-bar { background: var(--aviso-acento); }
+.aviso-acciones { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+.aviso-acciones button {
+    width: auto;
+    border-radius: 9px;
+    border: 1px solid var(--aviso-dorado);
+    padding: 10px 20px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+.aviso-acciones .aviso-aceptar { color: #0A1F44; background: #D4AF37; }
+.aviso-acciones .aviso-cancelar { color: var(--aviso-tinta); background: var(--aviso-fondo); }
+.aviso-acciones button:focus-visible { outline: 2px solid var(--aviso-tinta); outline-offset: 3px; }
+dialog.aviso-local { margin: auto; width: min(26rem, 92vw); padding: 24px; text-align: center; }
+.aviso-local::backdrop { background: #07152db3; }
+.aviso-local p { margin: 14px 0 24px; }
+.aviso-toast-local {
+    position: fixed;
+    inset: 12px 12px auto auto;
+    z-index: 20000;
+    max-width: min(26rem, 92vw);
+    padding: 14px 20px;
+    overflow: hidden;
+}
+.aviso-toast-local strong { display: block; color: var(--aviso-acento); }
+.aviso-toast-local::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 3px;
+    background: var(--aviso-acento);
+    transform-origin: left;
+    animation: aviso-tiempo 5s linear forwards;
+}
+@keyframes aviso-tiempo { to { transform: scaleX(0); } }

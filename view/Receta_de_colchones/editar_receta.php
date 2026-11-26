@@ -186,7 +186,7 @@ $materialesDisponibles = $dbConn->query("
             const idModelo = document.getElementById('editSelectModelo').value;
 
             if (!idModelo) {
-                alert('Selecciona un modelo primero.');
+                mostrarNotificacion('warning', 'Selecciona un modelo primero.');
                 return;
             }
 
@@ -195,7 +195,7 @@ $materialesDisponibles = $dbConn->query("
                 const data = await resp.json();
 
                 if (!data.ok) {
-                    alert(data.error);
+                    mostrarNotificacion('error', data.error);
                     return;
                 }
 
@@ -216,7 +216,7 @@ $materialesDisponibles = $dbConn->query("
                 document.getElementById('editMensaje').style.display = 'none';
 
             } catch (e) {
-                alert('Error de conexión.');
+                mostrarNotificacion('error', 'Error de conexión.');
                 console.error(e);
             }
         }
@@ -246,6 +246,8 @@ $materialesDisponibles = $dbConn->query("
                 return;
             }
 
+            if (!await confirmarAccion('Guardar receta', '¿Deseas guardar los cambios de este modelo?')) return;
+
             try {
                 const formData = new FormData();
                 formData.set('csrf_token', <?= json_encode(generarTokenCSRF()) ?>);
@@ -271,10 +273,7 @@ $materialesDisponibles = $dbConn->query("
         }
     </script>
 
-    <script src="../../public/js/app.js" defer></script>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
 </body>
 

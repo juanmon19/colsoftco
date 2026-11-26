@@ -434,7 +434,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             window.location.replace(respuesta.url || 'lista_inventario.php');
         })
         .catch(function () {
-            alert('Ocurrió un error al eliminar la materia prima. Intenta de nuevo.');
+            mostrarNotificacion('error', 'Ocurrió un error al eliminar la materia prima. Intenta de nuevo.');
             btnEliminar.disabled = false;
         });
     });

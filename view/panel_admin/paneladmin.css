@@ -85,6 +85,10 @@ button {
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.08);
 }
+/* "¿Necesitas ayuda?": enlace al manual de usuario en el sidebar */
+.sidebar a.nav-item {
+    text-decoration: none;
+}
 .help-box {
     position: absolute;
     left: 19px;

@@ -73,6 +73,8 @@ $ver = fn(string $archivo) => puede_acceder($archivo, $rolKey ?: 'administrador'
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../tareas/tareas.php'">Tareas</button>
         <?php endif; ?>
         <button class="nav-item" onclick="window.location.href='<?= $prefijo ?>../mensajeria/mensajeria.php'">Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
+        <a class="nav-item" href="<?= $prefijo ?>../manual/index.html"
+           target="_blank" rel="noopener">¿Necesitas ayuda?</a>
     </nav>
 
 </aside>

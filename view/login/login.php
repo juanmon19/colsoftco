@@ -4,6 +4,13 @@ session_start();
 // Obtener mensajes de sesión
 $error = '';
 $mensaje = '';
+$avisosSesion = [
+    'reemplazada' => 'Se inició sesión en otro dispositivo. Vuelve a ingresar.',
+    'desactivada' => 'Tu cuenta fue desactivada. Contacta al administrador.',
+    'inactiva' => 'Tu sesión expiró por inactividad. Vuelve a ingresar.',
+];
+$motivo = $_GET['sesion'] ?? '';
+$avisoSesion = is_string($motivo) ? ($avisosSesion[$motivo] ?? '') : '';
 
 if (isset($_SESSION['error'])) {
     $error = $_SESSION['error'];
@@ -20,12 +27,12 @@ if (isset($_SESSION['mensaje'])) {
 <html lang="es">
 
 <head>
-    <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php include __DIR__ . '/../partials/seo.php'; ?>
     <link href="login.css" rel="stylesheet">
     <title>Login</title>
+    <?php require_once __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
@@ -43,14 +50,18 @@ if (isset($_SESSION['mensaje'])) {
             <h2>INICIAR SESIÓN</h2>
 
             <!-- Mensajes -->
-            <div id="alertaCliente" class="mensaje-error" style="<?= empty($error) ? 'display:none;' : '' ?>">
-                <?= htmlspecialchars($error) ?>
+            <div id="alertaCliente" class="mensaje-error" style="<?= $error === '' && $avisoSesion === '' ? 'display:none;' : '' ?>">
+                <?= htmlspecialchars($error ?: $avisoSesion) ?>
             </div>
 
             <?php if (!empty($mensaje)) : ?>
                 <div class="mensaje-exito">
                     <?= htmlspecialchars($mensaje) ?>
                 </div>
+            <?php endif; ?>
+
+            <?php if ($avisoSesion !== ''): ?>
+            <script>document.addEventListener('DOMContentLoaded', () => mostrarNotificacion('warning', <?= json_encode($avisoSesion, JSON_HEX_TAG) ?>));</script>
             <?php endif; ?>
 
             <form id="loginForm" method="POST" action="../../app/logica.php" autocomplete="off" novalidate>
@@ -90,9 +101,6 @@ if (isset($_SESSION['mensaje'])) {
         </div>
     </div>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-    <script src="../../public/js/app.js" defer></script>
 
     <script>
         window.addEventListener('pageshow', function () {
@@ -181,6 +189,7 @@ if (isset($_SESSION['mensaje'])) {
         </div>
     </footer>
 
+    <?php require_once __DIR__ . '/../partials/chatbot.php'; ?>
 </body>
 
 </html>

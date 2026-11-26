@@ -8,7 +8,6 @@ require_once "../../app/verificar_sesion.php";
 <html lang="es">
 
 <head>
-    <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php include __DIR__ . '/../partials/seo.php'; ?>
@@ -130,6 +129,7 @@ require_once "../../app/verificar_sesion.php";
             background: #f0f2f5;
         }
     </style>
+    <?php require_once __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
 <body>
@@ -145,7 +145,7 @@ require_once "../../app/verificar_sesion.php";
             <h1>REGISTRO DE USUARIOS</h1>
         </div>
 
-        <button id="btnLogout" class="btn-logout" onclick="cerrarSesion()">
+        <button id="btnLogout" class="btn-logout" onclick="confirmarCerrarSesion(event, '../../app/logout.php')">
             Cerrar sesión
         </button>
     </header>
@@ -580,11 +580,9 @@ require_once "../../app/verificar_sesion.php";
 
 </script>
 
-    <script src="../../public/js/app.js" defer></script>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
+    <?php require_once __DIR__ . '/../partials/chatbot.php'; ?>
 </body>
 
 </html>

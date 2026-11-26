@@ -14,10 +14,10 @@ if (!isset($prefijo)) {
 }
 $prefijoJs = json_encode($prefijo . '../../');
 ?>
-<script src="<?= $prefijo ?>../../public/js/app.js"></script>
+<?php require_once __DIR__ . '/chatbot.php'; ?>
 <script src="<?= $prefijo ?>../../public/js/menu_activo.js"></script>
 <?php if (!empty($_SESSION['aviso_rol'])): ?>
-<script>document.addEventListener('DOMContentLoaded', () => { if (window.showToast) showToast(<?= json_encode($_SESSION['aviso_rol']) ?>, 'error'); else alert(<?= json_encode($_SESSION['aviso_rol']) ?>); });</script>
+<script>document.addEventListener('DOMContentLoaded', () => { mostrarNotificacion('warning', <?= json_encode($_SESSION['aviso_rol'], JSON_HEX_TAG) ?>); });</script>
 <?php unset($_SESSION['aviso_rol']); endif; ?>
 
 <script>
@@ -204,10 +204,10 @@ $prefijoJs = json_encode($prefijo . '../../');
                 if (fotoPerfilGrande) fotoPerfilGrande.src = url;
                 if (fotoPerfilModal) fotoPerfilModal.src = url;
             } else {
-                alert(data.error || 'No se pudo actualizar la foto.');
+                mostrarNotificacion('error', data.error || 'No se pudo actualizar la foto.');
             }
         } catch (e) {
-            alert('Error de conexión al subir la foto.');
+            mostrarNotificacion('error', 'Error de conexión al subir la foto.');
             console.error(e);
         } finally {
             inputFotoPerfil.value = '';
@@ -239,10 +239,10 @@ $prefijoJs = json_encode($prefijo . '../../');
                 modalPerfilOverlay.classList.remove('show');
                 cargarPerfil();
             } else {
-                alert(data.error || 'No se pudieron guardar los cambios.');
+                mostrarNotificacion('error', data.error || 'No se pudieron guardar los cambios.');
             }
         } catch (e) {
-            alert('Error de conexión al guardar los cambios.');
+            mostrarNotificacion('error', 'Error de conexión al guardar los cambios.');
             console.error(e);
         }
     });

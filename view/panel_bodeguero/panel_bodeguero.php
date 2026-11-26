@@ -42,7 +42,7 @@ try {
 </head>
 
 <body>
-<?php if (!empty($_SESSION['aviso_rol'])): ?><script>document.addEventListener('DOMContentLoaded',()=>{alert(<?= json_encode($_SESSION['aviso_rol']) ?>);});</script><?php unset($_SESSION['aviso_rol']); endif; ?>
+<?php if (!empty($_SESSION['aviso_rol'])): ?><script>document.addEventListener('DOMContentLoaded',()=>{mostrarNotificacion('warning', <?= json_encode($_SESSION['aviso_rol'], JSON_HEX_TAG) ?>);});</script><?php unset($_SESSION['aviso_rol']); endif; ?>
 <div class="menu-overlay" id="menuOverlay"></div>
 <div class="app">
 
@@ -72,6 +72,8 @@ try {
             <button class="nav-item" onclick="window.location.href='../registro_de_producto_terminado/registro_producto_terminado.php'">Registrar Producto Terminado</button>
             <button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
             <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'"> Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
+            <a class="nav-item" href="../manual/index.html"
+               target="_blank" rel="noopener">¿Necesitas ayuda?</a>
         </nav>
     </aside>
 
@@ -106,7 +108,7 @@ try {
                             <span id="temaIconoTexto">Activar tema oscuro</span>
                         </button>
                         <div class="perfil-dropdown-divider"></div>
-                        <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
+                        <button type="button" class="perfil-dropdown-logout" onclick="confirmarCerrarSesion(event, '../../app/logout.php')">⏻ Cerrar sesión</button>
                     </div>
                 </div>
 
@@ -317,7 +319,6 @@ try {
     </div>
 </div>
 
-<script src="../../public/js/app.js" defer></script>
 <script src="../../public/js/menu_activo.js" defer></script>
 
 <script>
@@ -373,7 +374,7 @@ try {
     // El resumen de tareas lo pinta tareas.js (misma carga de datos).
 </script>
 
-<script src="../../public/js/tareas.js?v=2" defer></script>
+<script src="../../public/js/tareas.js?v=3" defer></script>
 <script src="../../public/js/calendario_tareas.js?v=2" defer></script>
 <script src="../../public/js/mensajes_badge.js" defer></script>
 
@@ -472,10 +473,10 @@ try {
                 fotoPerfilGrande.src = data.url;
                 fotoPerfilModal.src = data.url;
             } else {
-                alert(data.error || 'No se pudo actualizar la foto.');
+                mostrarNotificacion('error', data.error || 'No se pudo actualizar la foto.');
             }
         } catch (e) {
-            alert('Error de conexión al subir la foto.');
+            mostrarNotificacion('error', 'Error de conexión al subir la foto.');
             console.error(e);
         } finally {
             inputFotoPerfil.value = '';
@@ -508,10 +509,10 @@ try {
                 modalPerfilOverlay.classList.remove('show');
                 cargarPerfil();
             } else {
-                alert(data.error || 'No se pudieron guardar los cambios.');
+                mostrarNotificacion('error', data.error || 'No se pudieron guardar los cambios.');
             }
         } catch (e) {
-            alert('Error de conexión al guardar los cambios.');
+            mostrarNotificacion('error', 'Error de conexión al guardar los cambios.');
             console.error(e);
         }
     });
@@ -540,6 +541,6 @@ try {
     document.addEventListener('click', () => cerrarPerfilDropdown());
 </script>
 
-<?php require_once __DIR__ . '/../partials/botpress.php'; ?>
+<?php require_once __DIR__ . '/../partials/chatbot.php'; ?>
 </body>
 </html>

@@ -211,6 +211,9 @@ $soloLecturaReceta = es_operario();
         async function fabricar() {
 
             if (!ultimoResultado) return;
+            const {id_modelo, cantidad, nombre_producto} = ultimoResultado;
+            if (!await confirmarAccion('Confirmar fabricación',
+                `Fabricar ${cantidad} unidades de ${nombre_producto} descontará los materiales de la receta.`)) return;
 
             try {
                 const resp = await fetch(
@@ -218,8 +221,8 @@ $soloLecturaReceta = es_operario();
                         method: 'POST',
                         body: new URLSearchParams({
                             accion: 'fabricar',
-                            id_modelo: ultimoResultado.id_modelo,
-                            cantidad: ultimoResultado.cantidad,
+                            id_modelo,
+                            cantidad,
                             csrf_token: <?= json_encode(generarTokenCSRF()) ?>
                         })
                     }
@@ -227,7 +230,7 @@ $soloLecturaReceta = es_operario();
                 const data = await resp.json();
 
                 if (data.ok) {
-                    alert(data.mensaje);
+                    mostrarNotificacion('success', data.mensaje);
 
                     // Descarga automática del recibo en PDF
                     if (data.recibo_pdf) {
@@ -236,11 +239,11 @@ $soloLecturaReceta = es_operario();
 
                     generar(); // refresca el stock disponible
                 } else {
-                    alert(data.error || 'No se pudo fabricar.');
+                    mostrarNotificacion('error', data.error || 'No se pudo fabricar.');
                 }
 
             } catch (e) {
-                alert('Error de conexión al fabricar.');
+                mostrarNotificacion('error', 'Error de conexión al fabricar.');
                 console.error(e);
             }
         }
@@ -265,10 +268,7 @@ $soloLecturaReceta = es_operario();
         }
     </script>
 
-    <script src="../../public/js/app.js" defer></script>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
 </body>
 

@@ -1,82 +1,64 @@
-<?php 
-  class Conexion 
-  {
-    private string $Servidor = "sql301.infinityfree.com";
-    private string $BaseDeDatos = "if0_43417357_colsoftco";
-    private string $Usuario = "if0_43417357";
-    private string $Password = "Sanijajo";
-    
-    public string $sql;
+<?php
 
-    public $pps = null;
+class Conexion
+{
+    public $sql;
+    public $pps;
+    private $conexion = null;
 
-    private static ?PDO $instance = null;
-    private $Conector = null;
+    private string $host;
+    private string $dbName;
+    private string $user;
+    private string $password;
+    private string $charset = 'utf8mb4';
 
-    public function getConnection(): PDO {
-      if (self::$instance === null) {
-        try {
-          self::$instance = new PDO(
-            "mysql:host={$this->Servidor};dbname={$this->BaseDeDatos};charset=utf8mb4",
-            $this->Usuario, 
-            $this->Password,
-            [
-              PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-              PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-              PDO::ATTR_EMULATE_PREPARES => false,
-            ]
-          );
-        } catch (PDOException $e) {
-          error_log("Error de conexión BD: " . $e->getMessage());
-
-          if (ob_get_level() > 0) {
-            ob_end_clean();
-          }
-
-          http_response_code(500);
-
-          $posiblesRutas = [
-            dirname(__DIR__, 1) . '/view/errores/error_500.php',
-            dirname(__DIR__, 2) . '/view/errores/error_500.php',
-            dirname(__DIR__, 1) . '/view/errors/error_500.php',
-            dirname(__DIR__, 2) . '/view/errors/error_500.php',
-            dirname(__DIR__, 1) . '/view/error_500.php',
-            dirname(__DIR__, 2) . '/view/error_500.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/view/errores/error_500.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/view/errors/error_500.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/view/error_500.php'
-          ];
-
-          $cargado = false;
-          foreach ($posiblesRutas as $ruta) {
-            if (file_exists($ruta)) {
-              require_once $ruta;
-              $cargado = true;
-              break;
-            }
-          }
-
-          if (!$cargado) {
-            echo "<h1>Error 500 - Error interno del servidor</h1><p>No se pudo establecer conexión con la base de datos.</p>";
-          }
-          exit;
-        }
-      }
-      $this->Conector = self::$instance;
-      return $this->Conector;
-    }
-
-    public function closeDataBase()
+    public function __construct()
     {
-      if($this->pps != null)
-      {
-        $this->pps = null;
-      }
+        $hostActual = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $esLocal = in_array($hostActual, ['localhost', '127.0.0.1'], true)
+            || strpos($hostActual, 'localhost:') === 0
+            || strpos($hostActual, '127.0.0.1:') === 0;
 
-      if($this->Conector != null)
-      {
-        $this->Conector = null;
-      }      
+        if ($esLocal) {
+            // ===== CONFIGURACIÓN LOCAL (XAMPP) =====
+            $this->host     = 'localhost';
+            $this->dbName   = 'colsoftco'; // <-- Cambia si tu BD en phpMyAdmin tiene otro nombre
+            $this->user     = 'root';
+            $this->password = '';
+        } else {
+            // ===== CONFIGURACIÓN PRODUCCIÓN (INFINITYFREE) =====
+            $this->host     = 'sqlXXX.infinityfree.com'; // <-- Tu MySQL Hostname de InfinityFree
+            $this->dbName   = 'if0_XXXXXXXX_colsoftco';  // <-- Tu MySQL DB Name de InfinityFree
+            $this->user     = 'if0_XXXXXXXX';            // <-- Tu MySQL Username de InfinityFree
+            $this->password = 'TU_PASSWORD_INFINITYFREE'; // <-- Tu MySQL Password de InfinityFree
+        }
     }
-    
-  }
+
+    public function getConnection(): ?PDO
+    {
+        if ($this->conexion instanceof PDO) {
+            return $this->conexion;
+        }
+
+        try {
+            $dsn = "mysql:host={$this->host};dbname={$this->dbName};charset={$this->charset}";
+            $opciones = [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false,
+            ];
+
+            $this->conexion = new PDO($dsn, $this->user, $this->password, $opciones);
+            return $this->conexion;
+        } catch (PDOException $e) {
+            error_log('Error de conexión PDO en Conexion::getConnection(): ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function closeDataBase(): void
+    {
+        $this->pps = null;
+        $this->conexion = null;
+    }
+}

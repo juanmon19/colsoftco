@@ -112,7 +112,6 @@ require_once "../../app/verificar_sesion.php";
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-<script src="../../public/js/app.js" defer></script>
     <script>
         function escHtml(str) {
             const d = document.createElement('div');
@@ -323,7 +322,7 @@ require_once "../../app/verificar_sesion.php";
         }
         document.getElementById('formChat').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!chatOtro) { alert('Elige un usuario'); return; }
+            if (!chatOtro) { mostrarNotificacion('warning', 'Elige un usuario'); return; }
             const txt = document.getElementById('chatTexto').value.trim();
             if (!txt) return;
             const fd = new FormData();
@@ -339,7 +338,7 @@ require_once "../../app/verificar_sesion.php";
                 document.getElementById('chatTexto').value = '';
                 cancelarCita();
                 abrirChat();
-            } else alert(data.error || 'No se pudo enviar');
+            } else mostrarNotificacion('error', data.error || 'No se pudo enviar');
         });
     </script>
 </body>

@@ -241,27 +241,6 @@ $productosDb = $conn->query(
         </div>
     </div>
 
-    <!-- ══ MODAL CONFIRMAR ELIMINACIÓN ══ -->
-    <div class="modal-overlay" id="modal-confirm">
-        <div class="modal">
-            <h3>Confirmar eliminación</h3>
-            <p class="confirm-msg" id="confirm-msg">
-                ¿Estás seguro de eliminar este producto?
-            </p>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal()">
-                    Cancelar
-                </button>
-                <button
-                    class="btn-delete-confirm"
-                    onclick="confirmarEliminacion()">
-                    Eliminar
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div class="toast" id="toast"></div>
             </main>
 
             <?php include __DIR__ . '/../partials/footer.php'; ?>
@@ -285,7 +264,6 @@ $productosDb = $conn->query(
         const SOLO_LECTURA = <?= $soloLecturaInv ? 'true' : 'false' ?>;
 
         let editingId = null; // Identificador numérico del objeto en edición (Permanece en null en inserciones)
-        let deletingId = null; // Almacenador temporal del ID agendado para descarte definitivo
 
         const inputBusqueda = document.getElementById('inputBusquedaProducto');
         const selectOrden = document.getElementById('selectOrden');
@@ -375,12 +353,7 @@ $productosDb = $conn->query(
         function openDeleteModal(id) {
             const p = productos.find((x) => x.id === id);
             if (!p) return;
-            deletingId = id;
-            document.getElementById("confirm-msg").textContent =
-                `¿Estás seguro de eliminar "${p.nombre}"?`;
-            document
-                .getElementById("modal-confirm")
-                .classList.add("active");
+            confirmarAccion('Eliminar producto', `¿Deseas eliminar «${p.nombre}»?`, () => eliminarProducto(id));
         }
 
         function closeModal() {
@@ -392,14 +365,18 @@ $productosDb = $conn->query(
         // ===== HELPER AJAX =====
         async function llamarServidor(datos) {
             const body = new URLSearchParams(datos);
-            const res = await fetch(window.location.pathname, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body,
-            });
-            return res.json();
+            try {
+                const res = await fetch(window.location.pathname, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body,
+                });
+                return await res.json();
+            } catch {
+                return { ok: false, error: 'Error de conexión al guardar el cambio.' };
+            }
         }
 
         // ===== ACCIONES =====
@@ -412,7 +389,7 @@ $productosDb = $conn->query(
                 .value.trim();
 
             if (!nombre || cantidad === "" || isNaN(cantidad) || Number(cantidad) < 0) {
-                showToast("Complete todos los campos con datos válidos.");
+                mostrarNotificacion('warning', "Complete todos los campos con datos válidos.");
                 return;
             }
 
@@ -433,50 +410,42 @@ $productosDb = $conn->query(
             }
 
             if (!resultado.ok) {
-                showToast(resultado.error || "No se pudo guardar el producto.");
+                mostrarNotificacion('error', resultado.error || "No se pudo guardar el producto.");
                 return;
             }
 
             if (editingId === null) {
                 productos.push({ id: resultado.id, nombre, cantidad: Number(cantidad) });
-                showToast("Producto agregado.");
+                mostrarNotificacion('success', "Producto agregado.");
             } else {
                 const p = productos.find((x) => x.id === editingId);
                 if (p) {
                     p.nombre = nombre;
                     p.cantidad = Number(cantidad);
                 }
-                showToast("Producto actualizado.");
+                mostrarNotificacion('success', "Producto actualizado.");
             }
 
             closeModal();
             renderTabla();
         }
 
-        async function confirmarEliminacion() {
+        async function eliminarProducto(id) {
             const resultado = await llamarServidor({
                 ajax_action: "delete",
-                id: deletingId,
+                id,
             });
 
             if (!resultado.ok) {
-                showToast(resultado.error || "No se pudo eliminar el producto.");
+                mostrarNotificacion('error', resultado.error || "No se pudo eliminar el producto.");
                 closeModal();
                 return;
             }
 
-            productos = productos.filter((x) => x.id !== deletingId);
+            productos = productos.filter((x) => x.id !== id);
             closeModal();
             renderTabla();
-            showToast("Producto eliminado.");
-        }
-
-        // ===== TOAST =====
-        function showToast(msg) {
-            const t = document.getElementById("toast");
-            t.textContent = msg;
-            t.classList.add("show");
-            setTimeout(() => t.classList.remove("show"), 2500);
+            mostrarNotificacion('success', "Producto eliminado.");
         }
 
         document.querySelectorAll(".modal-overlay").forEach((overlay) => {
@@ -487,10 +456,7 @@ $productosDb = $conn->query(
 
         renderTabla();
     </script>
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
 
-    <script src="../../public/js/app.js" defer></script>
 </body>
 
 </html>
