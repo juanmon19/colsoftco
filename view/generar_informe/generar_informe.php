@@ -114,6 +114,7 @@ $MESES = [
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
 <script src="../../public/js/app.js" defer></script>
+    <script src="../../public/js/escape-html.js"></script>
     <script>
         function cambiarRutaComp(ruta) {
             const f = document.getElementById('formComparativo');
@@ -163,7 +164,7 @@ $MESES = [
 
                     return `
                         <tr class="fila-materia">
-                            <td>${d.nombre || 'N/A'}</td>
+                            <td>${escaparHTML(d.nombre || 'N/A')}</td>
                             <td>${d.entradas_a}</td>
                             <td style="color:${d.salidas_a > 0 ? '#ff8a8a' : 'white'};">${salA}</td>
                             <td>${d.entradas_b}</td>

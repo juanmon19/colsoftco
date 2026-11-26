@@ -28,6 +28,18 @@ if (!$registro) {
     die('No se encontró ese recibo.');
 }
 
+if (($_GET['original'] ?? '') === '1') {
+    $nombre = sprintf('recibo_%06d.pdf', $id);
+    $archivo = __DIR__ . '/../../public/recibos/' . $nombre;
+    if (is_file($archivo)) {
+        header('Content-Type: application/pdf');
+        header('Cache-Control: private, no-store');
+        header('Content-Disposition: attachment; filename="' . $nombre . '"');
+        readfile($archivo);
+        exit();
+    }
+}
+
 $fechaTexto = date('d/m/Y H:i', strtotime($registro['fecha_fabricacion']));
 
 $pdf = new ReciboPDF($registro['id'], $fechaTexto);

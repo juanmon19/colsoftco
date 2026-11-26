@@ -2,6 +2,7 @@
 
 require_once "../../app/verificar_sesion.php";
 require_once "../../config/conexion.php";
+$imagenPerfil = require __DIR__ . '/../partials/imagen_perfil.php';
 
 // Datos reales del panel (igual que admin/bodeguero).
 try {
@@ -75,7 +76,7 @@ try {
                     <div class="header-actions">
                         <div class="perfil-menu" id="perfilMenu">
                             <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                                <img id="avatarHeader" class="avatar-header" width="32" height="32" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                                <img id="avatarHeader" class="avatar-header" width="32" height="32" src="../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
                                 <span class="perfil-trigger-text">
                                     <strong id="nombreHeaderCorto">Usuario</strong>
                                     <small>Operario</small>
@@ -84,7 +85,7 @@ try {
                             </button>
 
                             <div class="perfil-dropdown" id="perfilDropdown">
-                                <button type="button" id="btnCambiarFoto"> Cambiar foto de perfil</button>
+                                <button type="button" id="btnCambiarFoto">Cambiar foto de perfil</button>
                                 <button type="button" id="btnEditarDatos">Editar mis datos</button>
                                 <button type="button" id="btnTemaOscuro">
                                     <span id="temaIconoTexto">Activar tema oscuro</span>
@@ -104,7 +105,7 @@ try {
                     <section class="hero-grid">
 
                         <article class="profile">
-                            <img id="fotoPerfilGrande" width="165" height="206" fetchpriority="high" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                            <img id="fotoPerfilGrande" width="165" height="206" fetchpriority="high" src="../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
 
                             <div class="profile-data">
                                 <h2 id="nombreCompletoPerfil">Cargando…</h2>
@@ -289,7 +290,7 @@ try {
                 <h3>Editar mis datos</h3>
 
                 <div class="modal-perfil-foto">
-                    <img id="fotoPerfilModal" width="165" height="206" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                    <img id="fotoPerfilModal" width="165" height="206" src="../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
                     <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
                 </div>
 
@@ -363,7 +364,7 @@ try {
             // Refresca las stats con datos reales sin recargar.
             async function refrescarStatsOperario() {
                 try {
-                    const resp = await fetch('/colsoftco/app/dashboard_stats.php');
+                    const resp = await fetch('../../app/dashboard_stats.php');
                     const data = await resp.json();
                     if (!data.ok) return;
                     const fmt = (n) => Number(n).toLocaleString('es-CO');
@@ -442,14 +443,6 @@ try {
                     saludoHeader.textContent = `BIENVENIDO, ${nombreCorto.toUpperCase()}`;
                     if (emailPerfil) emailPerfil.textContent = u.email || '—';
                     if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '—';
-
-                    if (u.foto) {
-                        const url = `../../public/imagenes/perfiles/${u.foto}`;
-                        avatarHeader.src = url;
-                        fotoPerfilGrande.src = url;
-                        fotoPerfilModal.src = url;
-                    }
-
                     perfilNombre.value = u.nombre || '';
                     perfilApellido.value = u.apellido || '';
                     perfilEmail.value = u.email || '';
@@ -533,7 +526,7 @@ try {
 
             function aplicarTextoTema() {
                 const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
-                temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : '🌙 Activar tema oscuro';
+                temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : 'Activar tema oscuro';
             }
 
             btnTemaOscuro.addEventListener('click', () => {

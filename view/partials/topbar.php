@@ -16,6 +16,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $rolActual = rol_legible();
+$imagenPerfil = require __DIR__ . '/imagen_perfil.php';
 $rolKey = rol_actual();
 /* $prefijo lo calcula sidebar.php (se incluye siempre antes); fallback por si acaso */
 if (!isset($prefijo)) {
@@ -41,7 +42,7 @@ if (!isset($prefijo)) {
         <!-- MENÚ DE PERFIL DESPLEGABLE ÚNICO -->
         <div class="perfil-menu" id="perfilMenu">
             <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                <img id="avatarHeader" class="avatar-header" width="32" height="32" src="<?= $prefijo ?>../../public/imagenes/usuario.png" alt="Foto de perfil">
+                <img id="avatarHeader" class="avatar-header" width="32" height="32" src="<?= $prefijo ?>../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
                 <span class="perfil-trigger-text">
                     <strong id="nombreHeaderCorto">Usuario</strong>
                     <small><?= htmlspecialchars($rolActual) ?></small>
@@ -52,13 +53,13 @@ if (!isset($prefijo)) {
             <div class="perfil-dropdown" id="perfilDropdown">
                 <?php if (($rolKey ?? '') === 'administrador' || ($rolKey ?? '') === ''): ?>
                 <button type="button" onclick="window.location.href='<?= $prefijo ?>../registro/registro.php'">
-                    ➕ Registrar usuario
+                     Registrar usuario
                 </button>
                 <?php endif; ?>
-                <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
-                <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
+                <button type="button" id="btnCambiarFoto">Cambiar foto de perfil</button>
+                <button type="button" id="btnEditarDatos">Editar mis datos</button>
                 <button type="button" id="btnTemaOscuro">
-                    <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
+                    <span id="temaIconoTexto">Activar tema oscuro</span>
                 </button>
                 <div class="perfil-dropdown-divider"></div>
                 <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
@@ -75,7 +76,7 @@ if (!isset($prefijo)) {
         <h3>Editar mis datos</h3>
 
         <div class="modal-perfil-foto">
-            <img id="fotoPerfilModal" width="165" height="206" src="<?= $prefijo ?>../../public/imagenes/usuario.png" alt="Foto de perfil">
+            <img id="fotoPerfilModal" width="165" height="206" src="<?= $prefijo ?>../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
             <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
         </div>
 

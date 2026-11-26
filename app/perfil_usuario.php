@@ -34,7 +34,7 @@ $accion = $_REQUEST['accion'] ?? '';
 /* Carpeta donde se guardan las fotos de perfil */
 $carpetaFotos = __DIR__ . '/../public/imagenes/perfiles/';
 if (!is_dir($carpetaFotos)) {
-    mkdir($carpetaFotos, 0755, true);
+    @mkdir($carpetaFotos, 0755, true);
 }
 
 /* ══ Obtener los datos actuales del usuario logueado ══ */
@@ -121,7 +121,7 @@ if ($accion === 'foto') {
             1 * 1024 * 1024,
             'usuario_' . (int) $idUsuario
         );
-    } catch (RuntimeException $e) {
+    } catch (\Throwable $e) {
         echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
         exit();
     }

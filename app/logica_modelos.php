@@ -3,16 +3,17 @@
  * API para gestión de modelos de colchón y sus recetas.
  * Todas las respuestas son JSON.
  */
-require_once 'verificar_sesion.php';
+require_once __DIR__ . '/verificar_sesion.php';
 date_default_timezone_set('America/Bogota');
 header('Content-Type: application/json');
-require_once '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/HistorialMovimientos.php';
 
 $conexion = new Conexion();
 $db = $conexion->getConnection();
 
-$accion = $_REQUEST['accion'] ?? '';
+$accion = $_POST['accion'] ?? $_GET['accion'] ?? '';
+verificarAccesoReceta(in_array($accion, ['registrar_modelo', 'actualizar_receta'], true));
 
 /* ══════════════════════════════════════════════
    LISTAR MATERIALES (para los selects dinámicos)
@@ -132,7 +133,7 @@ if ($accion === 'registrar_modelo') {
             'id_modelo' => $nuevoIdModelo,
         ]);
 
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         if ($db->inTransaction()) {
             $db->rollBack();
         }
@@ -227,7 +228,7 @@ if ($accion === 'actualizar_receta') {
             'mensaje' => "Receta del modelo '{$modeloExistente['nombre_modelo']}' actualizada exitosamente.",
         ]);
 
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         if ($db->inTransaction()) {
             $db->rollBack();
         }

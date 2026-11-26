@@ -3,14 +3,23 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+date_default_timezone_set('America/Bogota');
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../config/setting.php';
 require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/permisos.php';
+
+foreach ([
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../config/setting.php',
+    __DIR__ . '/correo_plantilla.php',
+] as $__depMail) {
+    if (file_exists($__depMail)) {
+        require_once $__depMail;
+    }
+}
 
 // --- BLOQUE 1: SOLICITUD DE RESETEO ---
 if (isset($_POST['send'])):
@@ -21,8 +30,12 @@ if (isset($_POST['send'])):
             $token_ = bin2hex(random_bytes(32));
 
             // Se corrigió el punto y coma y ahora updateUser retorna true/false
-            if (updateUser($token_, tiempo_expiracion_token(), $Usuario[0]->id_usuario)) {
-                EnviarCorreoResetPassword($Usuario[0]->email, $Usuario[0]->usuario, $Usuario[0]->id_usuario, $token_);
+            if (updateUser($token_, function_exists('tiempo_expiracion_token') ? tiempo_expiracion_token() : (time() + 1800), $Usuario[0]->id_usuario)) {
+                if (!EnviarCorreoResetPassword($Usuario[0]->email, $Usuario[0]->nombre, $Usuario[0]->id_usuario, $token_)) {
+                    $_SESSION['response'] = 'No se pudo enviar el correo. Contacta al administrador para revisar la configuración de correo.';
+                    header('Location: ../view/recuperar_contrasena/recuperar_contrasena.php?message=error');
+                    exit();
+                }
                 $_SESSION['response'] = 'Hemos enviado un correo con las instrucciones.';
                 header("Location: ../view/login/login.php?message=ok");
                 exit();
@@ -185,6 +198,10 @@ function updateUser($token, $tiempo_vida, $user_id) {
     } catch (\Throwable $th) {
         error_log($th->getMessage());
         return false;
+    } finally {
+        if (method_exists($conex, 'closeDataBase')) {
+            $conex->closeDataBase();
+        }
     }
 }
 
@@ -198,14 +215,30 @@ function updateUserID($new_password, $user_id) {
         $conex->pps->execute();
     } catch (\Throwable $th) {
         error_log($th->getMessage());
+    } finally {
+        if (method_exists($conex, 'closeDataBase')) {
+            $conex->closeDataBase();
+        }
     }
 }
 
-function EnviarCorreoResetPassword($Correo, $NombreReceptor, $userid, $token_User) {
-    $mail = new PHPMailer(true);
+function EnviarCorreoResetPassword($Correo, $NombreReceptor, $userid, $token_User): bool {
+    if (
+        !class_exists(PHPMailer::class) ||
+        !function_exists('prepararCorreo') ||
+        !defined('HOST') ||
+        !defined('USERNAME') ||
+        !defined('PASSWORD') ||
+        USERNAME === '' ||
+        PASSWORD === ''
+    ) {
+        error_log('COLSOFTCO: falta PHPMailer, plantilla o credenciales SMTP.');
+        return false;
+    }
+
     try {
-        // Para producción, cambia a SMTP::DEBUG_OFF para no romper la experiencia de usuario
-        $mail->SMTPDebug = SMTP::DEBUG_OFF; 
+        $mail = new PHPMailer(true);
+        $mail->SMTPDebug  = SMTP::DEBUG_OFF;
         $mail->isSMTP();
         $mail->Host       = HOST;
         $mail->SMTPAuth   = true;
@@ -213,20 +246,31 @@ function EnviarCorreoResetPassword($Correo, $NombreReceptor, $userid, $token_Use
         $mail->Password   = PASSWORD;
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
+        $mail->Timeout    = 8;
 
-        $mail->setFrom('colsoftco4@gmail.com', 'Colsoftco');
+        $mail->setFrom(USERNAME, 'Colsoftco');
         $mail->addAddress($Correo, $NombreReceptor);
 
-        $mail->isHTML(true);
-        $mail->Subject = 'Reseteo de password';
-        
-        // Uso de & en lugar de && para los parámetros URL estándar
-        $baseUrl = defined('BASE_URL') ? BASE_URL : 'http://localhost/colsoftco';
-        $mail->Body    = 'Usted ha solicitado un cambio de contraseña. <br><br> <b><a href="' . $baseUrl . '/view/cambiocontrasena/cambio_contrasena.php?id=' . urlencode($userid) . '&token=' . urlencode($token_User) . '">Cambiar Contraseña</a></b>';
+        if (defined('BASE_URL') && BASE_URL !== '') {
+            $base = rtrim(BASE_URL, '/');
+        } else {
+            $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $base = $scheme . '://' . $host . colsoftco_base_path();
+        }
 
-        $mail->send();
-    } catch (Exception $e) {
-        error_log("Mailer Error: {$mail->ErrorInfo}");
+        $url = $base . '/view/cambiocontrasena/cambio_contrasena.php?' . http_build_query([
+            'id' => $userid, 'token' => $token_User,
+        ]);
+        prepararCorreo($mail, 'Restablece tu contraseña de COLSOFTCO', "Hola, {$NombreReceptor}.",
+            'Recibimos una solicitud para cambiar la contraseña de tu cuenta.',
+            nota: 'Si tú solicitaste el cambio, usa el botón antes de que venza el enlace. Si no lo solicitaste, puedes ignorar este correo.',
+            boton: 'Crear una nueva contraseña', url: $url);
+
+        return $mail->send();
+    } catch (\Throwable $e) {
+        error_log('Mailer Error: ' . $e->getMessage());
+        return false;
     }
 }
 

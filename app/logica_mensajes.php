@@ -2,18 +2,21 @@
 /**
  * API para mensajería interna.
  */
-session_start();
+date_default_timezone_set('America/Bogota');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 header('Content-Type: application/json');
-require_once '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
-if (!isset($_SESSION['documento']) || !isset($_SESSION['user_id'])) {
+$userId = (int) ($_SESSION['user_id'] ?? $_SESSION['id_usuario'] ?? 0);
+if (!isset($_SESSION['documento']) || $userId <= 0) {
     echo json_encode(['ok' => false, 'error' => 'Sesión no válida.']);
     exit();
 }
 
 $conexion = new Conexion();
 $db = $conexion->getConnection();
-$userId = (int) $_SESSION['user_id'];
 
 $accion = $_REQUEST['accion'] ?? '';
 

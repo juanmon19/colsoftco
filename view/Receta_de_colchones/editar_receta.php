@@ -29,7 +29,7 @@ $materialesDisponibles = $dbConn->query("
     <!-- Orden estándar: global -> layout -> módulo -->
     <link rel="stylesheet" href="../../public/css/global.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
-    <link href="editar_receta.css" rel="stylesheet">
+    <link href="editar_receta.css?v=2" rel="stylesheet">
     <?php include __DIR__ . '/../partials/scripts_layout.php'; ?>
 </head>
 
@@ -60,9 +60,9 @@ $materialesDisponibles = $dbConn->query("
                         <div class="panel-header">Editar Receta de Modelo Existente</div>
                         <div class="panel-body">
 
-                            <label style="display:block;font-weight:bold;font-size:14px;margin-bottom:6px;">Seleccionar Modelo</label>
+                            <label class="campo-label" for="editSelectModelo">Seleccionar Modelo</label>
                             <div class="receta-form-row">
-                                <select id="editSelectModelo" style="flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                                <select id="editSelectModelo">
                                     <option value="">-- Seleccionar modelo --</option>
                                     <?php foreach ($modelos as $m): ?>
                                         <option value="<?= $m['id_modelo'] ?>">
@@ -70,27 +70,27 @@ $materialesDisponibles = $dbConn->query("
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
-                                <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="cargarReceta()">
-                                     Cargar Receta
+                                <button type="button" class="btn btn-guardar" onclick="cargarReceta()">
+                                    Cargar Receta
                                 </button>
                             </div>
 
                             <div id="editRecetaSection" style="display:none;">
-                                <h3 style="font-size:16px;margin-bottom:12px;color:#0A1F44;"> Receta Actual</h3>
+                                <h3 class="receta-titulo">Receta Actual</h3>
 
                                 <div id="editRecetaContainer">
                                     <!-- Filas de ingredientes se cargan aquí -->
                                 </div>
 
-                                <button type="button" class="btn" style="background:#16a34a;color:white;margin-top:10px;margin-bottom:18px;padding:10px 18px;font-size:14px;" onclick="agregarFilaReceta('edit')">
+                                <button type="button" class="btn btn-agregar" style="margin-top:10px;margin-bottom:18px;" onclick="agregarFilaReceta('edit')">
                                     ＋ Agregar Material
                                 </button>
 
-                                <div id="editMensaje" style="display:none;padding:10px 14px;border-radius:6px;font-weight:600;margin-bottom:12px;"></div>
+                                <div id="editMensaje" class="mensaje-estado"></div>
 
                                 <div class="receta-form-actions">
-                                    <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="guardarReceta()">
-                                         Guardar Cambios
+                                    <button type="button" class="btn btn-guardar" onclick="guardarReceta()">
+                                        Guardar Cambios
                                     </button>
                                 </div>
                             </div>
@@ -111,6 +111,7 @@ $materialesDisponibles = $dbConn->query("
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
+    <script src="../../public/js/escape-html.js"></script>
     <script>
         /* ══════════════════════════════════════════
            DATOS DE MATERIALES PARA SELECTS DINÁMICOS
@@ -121,8 +122,8 @@ $materialesDisponibles = $dbConn->query("
             let options = '<option value="">-- Seleccionar material --</option>';
             materialesDisponibles.forEach(m => {
                 const sel = (String(m.id_material) === String(selectedId)) ? 'selected' : '';
-                const unidad = m.nombre_unidad ? ` (${m.nombre_unidad})` : '';
-                options += `<option value="${m.id_material}" ${sel}>${m.nombre_material}${unidad}</option>`;
+                const unidad = m.nombre_unidad ? ` (${escaparHTML(m.nombre_unidad)})` : '';
+                options += `<option value="${m.id_material}" ${sel}>${escaparHTML(m.nombre_material)}${unidad}</option>`;
             });
             return options;
         }
@@ -135,14 +136,12 @@ $materialesDisponibles = $dbConn->query("
             const fila = document.createElement('div');
             fila.className = 'receta-fila';
             fila.innerHTML = `
-                <select class="receta-material" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                <select class="receta-material">
                     ${crearSelectMaterial(idMaterial)}
                 </select>
                 <input type="number" class="receta-cantidad" placeholder="Cantidad" step="0.01" min="0.01"
-                       value="${cantidad}"
-                       style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                       value="${cantidad}">
                 <button type="button" class="receta-quitar" onclick="this.parentElement.remove()"
-                        style="background:#dc2626;color:white;border:none;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:bold;font-size:14px;"
                         title="Quitar material">✕</button>
             `;
             container.appendChild(fila);
@@ -175,10 +174,9 @@ $materialesDisponibles = $dbConn->query("
 
         function mostrarMensaje(elementId, texto, tipo) {
             const el = document.getElementById(elementId);
-            el.style.display = 'block';
             el.textContent = texto;
-            el.style.background = tipo === 'ok' ? '#e5f7ec' : '#fdecea';
-            el.style.color = tipo === 'ok' ? '#1e7e42' : '#c0392b';
+            el.className = 'mensaje-estado ' + (tipo === 'ok' ? 'mensaje-ok' : 'mensaje-error');
+            el.style.display = 'block';
         }
 
         /* ══════════════════════════════════════════
@@ -208,7 +206,7 @@ $materialesDisponibles = $dbConn->query("
                 container.innerHTML = '';
 
                 if (data.receta.length === 0) {
-                    container.innerHTML = '<p style="color:#666;font-size:14px;">Este modelo no tiene receta. Agrega materiales abajo.</p>';
+                    container.innerHTML = '<p class="receta-desc">Este modelo no tiene receta. Agrega materiales abajo.</p>';
                 } else {
                     data.receta.forEach(item => {
                         agregarFilaReceta('edit', item.id_material, item.cantidad_requerida);
@@ -250,6 +248,7 @@ $materialesDisponibles = $dbConn->query("
 
             try {
                 const formData = new FormData();
+                formData.set('csrf_token', <?= json_encode(generarTokenCSRF()) ?>);
                 formData.append('accion', 'actualizar_receta');
                 formData.append('id_modelo', idModelo);
                 formData.append('receta', JSON.stringify(receta));

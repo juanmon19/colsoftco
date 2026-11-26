@@ -1,12 +1,20 @@
 <?php
+require_once __DIR__ . '/validar_stock.php';
 
 require_once __DIR__ . '/../config/conexion.php';
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../config/setting.php';
+
+foreach ([
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../config/setting.php',
+    __DIR__ . '/correo_plantilla.php',
+] as $__depAlerta) {
+    if (file_exists($__depAlerta)) {
+        require_once $__depAlerta;
+    }
+}
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
 class AlertaStockLogica
 {
@@ -23,6 +31,9 @@ class AlertaStockLogica
      */
     public function guardarConfiguracion($idMaterial, $stockMinimo, $notificarEmail, $correoNotificacion)
     {
+        if (!stockValido($stockMinimo)) {
+            return false;
+        }
         $sql = "
             UPDATE materias_primas
             SET
@@ -169,10 +180,22 @@ class AlertaStockLogica
 
     private function enviarCorreoAlerta($correoDestino, $nombreMaterial, $stockActual, $stockMinimo)
     {
-        $mail = new PHPMailer(true);
+        if (
+            !class_exists(PHPMailer::class) ||
+            !function_exists('prepararCorreo') ||
+            !defined('HOST') ||
+            !defined('USERNAME') ||
+            !defined('PASSWORD') ||
+            USERNAME === '' ||
+            PASSWORD === ''
+        ) {
+            error_log('Alerta de stock: falta PHPMailer, plantilla o credenciales SMTP.');
+            return false;
+        }
 
         try {
-            $mail->SMTPDebug = SMTP::DEBUG_OFF;
+            $mail = new PHPMailer(true);
+            $mail->SMTPDebug  = SMTP::DEBUG_OFF;
             $mail->isSMTP();
             $mail->Host       = HOST;
             $mail->SMTPAuth   = true;
@@ -180,25 +203,21 @@ class AlertaStockLogica
             $mail->Password   = PASSWORD;
             $mail->SMTPSecure = 'tls';
             $mail->Port       = 587;
+            $mail->Timeout    = 8;
             $mail->CharSet    = 'UTF-8';
 
-            $mail->setFrom('colsoftco4@gmail.com', 'Colsoftco - Alertas de Stock');
+            $mail->setFrom(USERNAME, 'Colsoftco - Alertas de Stock');
             $mail->addAddress($correoDestino);
 
-            $mail->isHTML(true);
-            $mail->Subject = "⚠ Stock mínimo alcanzado: {$nombreMaterial}";
-            $mail->Body    = "
-                <p>El material <b>{$nombreMaterial}</b> alcanzó su nivel mínimo de stock.</p>
-                <p><b>Stock actual:</b> {$stockActual}<br>
-                <b>Stock mínimo configurado:</b> {$stockMinimo}</p>
-                <p>Por favor gestiona un nuevo pedido con el proveedor correspondiente.</p>
-            ";
+            prepararCorreo($mail, "Stock mínimo alcanzado: {$nombreMaterial}", '',
+                'Las existencias de esta materia prima llegaron al mínimo configurado o están por debajo de él.',
+                ['Materia prima' => $nombreMaterial, 'Stock actual' => $stockActual, 'Stock mínimo' => $stockMinimo],
+                'Revisa las existencias y coordina la reposición con el proveedor correspondiente.');
 
             $mail->send();
             return true;
-
-        } catch (Exception $e) {
-            error_log("Error enviando alerta de stock: {$mail->ErrorInfo}");
+        } catch (\Throwable $e) {
+            error_log('Error enviando alerta de stock: ' . $e->getMessage());
             return false;
         }
     }

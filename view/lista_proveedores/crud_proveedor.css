@@ -148,6 +148,7 @@ body {
 }
 
 .campo input,
+.campo select,
 .campo textarea {
     padding: 10px 12px;
     border: 1px solid #cbd5e1;
@@ -515,12 +516,14 @@ html[data-tema="oscuro"] .campo label {
     color: var(--text, #e8edf5);
 }
 html[data-tema="oscuro"] .campo input,
+html[data-tema="oscuro"] .campo select,
 html[data-tema="oscuro"] .campo textarea {
     background: var(--surface-2, #16223c);
     color: var(--text, #e8edf5);
     border: 1px solid var(--border, rgba(148, 163, 184, .18));
 }
 html[data-tema="oscuro"] .campo input:focus,
+html[data-tema="oscuro"] .campo select:focus,
 html[data-tema="oscuro"] .campo textarea:focus {
     border-color: var(--gold, #d4af37);
     box-shadow: 0 0 0 3px var(--gold-soft, rgba(212, 175, 55, .12));

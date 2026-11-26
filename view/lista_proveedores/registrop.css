@@ -176,6 +176,7 @@ form {
 }
 
 .field-group input,
+.field-group select,
 .field-group textarea {
     width: 100%;
     padding: 10px;
@@ -187,6 +188,7 @@ form {
 }
 
 .field-group input:focus,
+.field-group select:focus,
 .field-group textarea:focus {
     outline: none;
     border-color: #0A1F44;
@@ -538,12 +540,16 @@ html[data-tema="oscuro"] .field-group label {
     color: var(--text, #e8edf5);
 }
 html[data-tema="oscuro"] .field-group input,
+html[data-tema="oscuro"] .field-group select,
+.field-group select,
 html[data-tema="oscuro"] .field-group textarea {
     background: var(--surface-2, #16223c);
     color: var(--text, #e8edf5);
     border: 1px solid var(--border, rgba(148, 163, 184, .18));
 }
 html[data-tema="oscuro"] .field-group input:focus,
+html[data-tema="oscuro"] .field-group select:focus,
+.field-group select:focus,
 html[data-tema="oscuro"] .field-group textarea:focus {
     border-color: var(--gold, #d4af37);
     box-shadow: 0 0 0 3px var(--gold-soft, rgba(212, 175, 55, .12));
@@ -609,3 +615,25 @@ html[data-tema="oscuro"] footer {
     background: var(--surface, #101a30);
     color: var(--muted, #9aa7bd);
 }
+
+.materiales-proveedor {
+    border: 0;
+    min-inline-size: 0;
+    margin: 22px 0 0;
+}
+.materiales-proveedor legend {
+    padding: 0 0 0 10px;
+    border-inline-start: 4px solid #d4af37;
+    color: var(--text, #0a1f44);
+    font-size: 16px;
+    font-weight: 700;
+}
+.ayuda-materiales {
+    margin: 8px 0 14px;
+    color: var(--muted, #475569);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.materiales-proveedor .field-group { min-width: 0; }
+.materiales-proveedor select { min-height: 40px; }
+.materiales-proveedor > .field-group { margin-top: 12px; }

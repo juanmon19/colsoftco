@@ -197,6 +197,13 @@ $soloLecturaProveedores = !es_admin();
                                     <?php endif; ?>
 
                                     <p>
+                                        <strong>Materia prima que suministra:</strong>
+                                        <?= $proveedor['materias_primas']
+                                            ? htmlspecialchars(implode(', ', $proveedor['materias_primas']))
+                                            : 'Sin materia prima activa asignada' ?>
+                                    </p>
+
+                                    <p>
                                         <strong>Contacto:</strong>
                                         <?php
                                         echo htmlspecialchars(

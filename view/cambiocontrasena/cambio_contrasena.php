@@ -3,13 +3,18 @@ session_start();
 
 require_once '../../config/conexion.php';
 
+$id = $_GET['id'] ?? '';
+$token = $_GET['token'] ?? '';
+
+if ($id === '' || $token === '') {
+    $_SESSION['error'] = 'El enlace de recuperación es inválido o está incompleto.';
+    header("Location: ../login/login.php");
+    exit();
+}
+
 $conexion = new Conexion();
-
 $tiempo = time();
-
 $MiConexion = $conexion->getConnection();
-
-/* Inicializar para evitar "Undefined variable $data" */
 $data = [];
 
 $conexion->sql = "SELECT * FROM usuarios 
@@ -18,21 +23,16 @@ $conexion->sql = "SELECT * FROM usuarios
                   AND expired_session > ?";
 
 try {
-
     $conexion->pps = $MiConexion->prepare($conexion->sql);
-
-    $conexion->pps->bindParam(1, $_GET['id']);
-    $conexion->pps->bindParam(2, $_GET['token']);
+    $conexion->pps->bindParam(1, $id);
+    $conexion->pps->bindParam(2, $token);
     $conexion->pps->bindParam(3, $tiempo);
-
     $conexion->pps->execute();
 
     $data = $conexion->pps->fetchAll(PDO::FETCH_OBJ);
 } catch (\Throwable $th) {
-
     error_log('Error en cambio_contrasena: ' . $th->getMessage());
 } finally {
-
     $conexion->closeDataBase();
 }
 
@@ -46,7 +46,7 @@ if (count($data) > 0):
         <script>/* Aplica el tema guardado (claro/oscuro) antes de pintar */(function(){try{if(localStorage.getItem('colsoftco_tema')==='oscuro'){document.documentElement.setAttribute('data-tema','oscuro');}}catch(e){}})();</script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php include __DIR__ . '/../partials/seo.php'; ?>
+        <?php include __DIR__ . '/../partials/seo.php'; ?>
         <title>Cambio Contraseña</title>
         <link href="cambiocontrasena.css" rel="stylesheet">
     </head>
@@ -64,7 +64,6 @@ if (count($data) > 0):
                 <h1>Cambiar Contraseña</h1>
             </div>
 
-            <!-- Elemento invisible para equilibrar el espacio del logo y que el título quede perfectamente centrado -->
             <div style="width: 55px; flex-shrink: 0;"></div>
         </header>
 
@@ -94,12 +93,12 @@ if (count($data) > 0):
                         <input
                             type="hidden"
                             name="id"
-                            value="<?= htmlspecialchars($_GET['id'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                            value="<?= htmlspecialchars($id, ENT_QUOTES, 'UTF-8') ?>">
 
                         <input
                             type="hidden"
                             name="token"
-                            value="<?= htmlspecialchars($_GET['token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                            value="<?= htmlspecialchars($token, ENT_QUOTES, 'UTF-8') ?>">
 
                     </div>
 
@@ -155,6 +154,7 @@ if (count($data) > 0):
 
 <?php
 else:
+    $_SESSION['error'] = 'El enlace de recuperación ya fue utilizado, es inválido o ha expirado. Solicita uno nuevo.';
     header("Location: ../login/login.php");
     exit();
 endif;

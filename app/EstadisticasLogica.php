@@ -182,11 +182,12 @@ class EstadisticasLogica
                     SUM(estado IN ('pendiente','por-hacer')) AS pendientes,
                     SUM(estado != 'terminado'
                         AND fecha_vencimiento IS NOT NULL
-                        AND fecha_vencimiento < CURDATE()) AS vencidas
+                        AND fecha_vencimiento < :hoy) AS vencidas
              FROM tareas
              WHERE fecha_creacion BETWEEN :ini AND :fin"
         );
-        $stmt->execute([':ini' => $inicio, ':fin' => $fin]);
+        $hoy = (new \DateTimeImmutable('now', new \DateTimeZone('America/Bogota')))->format('Y-m-d');
+        $stmt->execute([':hoy' => $hoy, ':ini' => $inicio, ':fin' => $fin]);
         $t = $stmt->fetch(PDO::FETCH_ASSOC);
         $total = (int) $t['total'];
         $term  = (int) $t['terminadas'];

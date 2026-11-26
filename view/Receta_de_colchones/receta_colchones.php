@@ -82,8 +82,8 @@ $soloLecturaReceta = es_operario();
         </div>
         <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
         <?php if (!$soloLecturaReceta): ?>
-        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='registrar_modelo.php'">📋 Registrar Nuevo Modelo de Colchón</button>
-        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='editar_receta.php'">✏️ Editar Receta</button>
+        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='registrar_modelo.php'">Registrar Nuevo Modelo de Colchón</button>
+        <button style="background:#0A1F44;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;" onclick="window.location.href='editar_receta.php'">Editar Receta</button>
         <?php else: ?>
         <p class="aviso-solo-lectura">Modo solo lectura: puedes consultar recetas para ensamblar, pero no crear ni editar modelos.</p>
         <?php endif; ?>
@@ -96,7 +96,8 @@ $soloLecturaReceta = es_operario();
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
-<script>
+<script src="../../public/js/escape-html.js"></script>
+    <script>
         const selectProducto = document.getElementById('producto');
         const inputCantidad = document.getElementById('cantidad');
         const btnGenerar = document.getElementById('btnGenerar');
@@ -120,7 +121,7 @@ $soloLecturaReceta = es_operario();
                 const data = await resp.json();
 
                 if (!data.ok) {
-                    resultadoBody.innerHTML = `<div class="banner banner-error">${data.error}</div>`;
+                    resultadoBody.innerHTML = `<div class="banner banner-error">${escaparHTML(data.error)}</div>`;
                     return;
                 }
 
@@ -137,9 +138,9 @@ $soloLecturaReceta = es_operario();
 
             const filas = data.materiales.map(m => `
                 <tr>
-                    <td class="celda-material">${m.icono} ${m.nombre_material}</td>
-                    <td>${formatear(m.cantidad_requerida)} ${m.unidad}</td>
-                    <td>${formatear(m.cantidad_disponible)} ${m.unidad}</td>
+                    <td class="celda-material">${m.icono} ${escaparHTML(m.nombre_material)}</td>
+                    <td>${formatear(m.cantidad_requerida)} ${escaparHTML(m.unidad)}</td>
+                    <td>${formatear(m.cantidad_disponible)} ${escaparHTML(m.unidad)}</td>
                     <td>
                         <span class="estado ${m.suficiente ? 'estado-ok' : 'estado-fail'}">
                             ${m.suficiente ? '✔ Disponible' : '✖ Insuficiente'}
@@ -153,14 +154,14 @@ $soloLecturaReceta = es_operario();
                         <span class="banner-icono">✔</span>
                         <div>
                             <strong>Producción posible</strong>
-                            <p>Todos los materiales están disponibles para fabricar ${data.cantidad} ${data.nombre_producto.toLowerCase()}s.</p>
+                            <p>Todos los materiales están disponibles para fabricar ${data.cantidad} ${escaparHTML(data.nombre_producto.toLowerCase())}s.</p>
                         </div>
                    </div>` :
                 `<div class="banner banner-error">
                         <span class="banner-icono">✖</span>
                         <div>
                             <strong>Producción no posible</strong>
-                            <p>Falta materia prima para fabricar ${data.cantidad} ${data.nombre_producto.toLowerCase()}s.</p>
+                            <p>Falta materia prima para fabricar ${data.cantidad} ${escaparHTML(data.nombre_producto.toLowerCase())}s.</p>
                         </div>
                    </div>`;
 
@@ -168,15 +169,15 @@ $soloLecturaReceta = es_operario();
                 `<div class="banner banner-ok">
                         <span class="banner-icono">✔</span>
                         <div>
-                            <strong>La producción de ${data.cantidad} ${data.nombre_producto.toLowerCase()}s es un éxito.</strong>
+                            <strong>La producción de ${data.cantidad} ${escaparHTML(data.nombre_producto.toLowerCase())}s es un éxito.</strong>
                             <p>Al confirmar, se descontarán automáticamente las materias primas del inventario
                                y se aumentará el stock de productos terminados.</p>
                         </div>
                    </div>` :
                 '';
 
-            const botonFabricar = data.produccion_posible ?
-                `<button id="btnFabricar" class="btn btn-fabricar">🏭 Fabricar</button>` :
+            const botonFabricar = <?= es_admin() ? 'true' : 'false' ?> && data.produccion_posible ?
+                `<button id="btnFabricar" class="btn btn-fabricar">Fabricar</button>` :
                 '';
 
             resultadoBody.innerHTML = `
@@ -213,7 +214,15 @@ $soloLecturaReceta = es_operario();
 
             try {
                 const resp = await fetch(
-                    `../../app/logica_colchones.php?accion=fabricar&id_modelo=${ultimoResultado.id_modelo}&cantidad=${ultimoResultado.cantidad}`
+                    '../../app/logica_colchones.php', {
+                        method: 'POST',
+                        body: new URLSearchParams({
+                            accion: 'fabricar',
+                            id_modelo: ultimoResultado.id_modelo,
+                            cantidad: ultimoResultado.cantidad,
+                            csrf_token: <?= json_encode(generarTokenCSRF()) ?>
+                        })
+                    }
                 );
                 const data = await resp.json();
 

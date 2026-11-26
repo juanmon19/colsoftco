@@ -45,19 +45,23 @@ function guardarImagenSegura(array $file, string $destDir, int $maxBytes, string
         throw new RuntimeException('La imagen supera el tamaño máximo permitido.');
     }
 
-    // MIME real olfateado en servidor (ignora Content-Type del cliente).
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime = $finfo->file($file['tmp_name']);
-    if (!isset(UPLOAD_MIMES_PERMITIDOS[$mime])) {
-        throw new RuntimeException('Formato no permitido. Usa JPG, PNG o WEBP.');
-    }
-    $extension = UPLOAD_MIMES_PERMITIDOS[$mime];
-
     // Estructura real de imagen (dimensiones). Falla con PDFs/HTML/SVG disfrazados.
     $dims = @getimagesize($file['tmp_name']);
     if ($dims === false || $dims[0] <= 0 || $dims[1] <= 0) {
         throw new RuntimeException('El archivo no es una imagen válida.');
     }
+
+    // MIME real olfateado en servidor (con respaldo en getimagesize si finfo no está activo).
+    if (class_exists('finfo')) {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($file['tmp_name']);
+    } else {
+        $mime = $dims['mime'] ?? '';
+    }
+    if (!isset(UPLOAD_MIMES_PERMITIDOS[$mime])) {
+        throw new RuntimeException('Formato no permitido. Usa JPG, PNG o WEBP.');
+    }
+    $extension = UPLOAD_MIMES_PERMITIDOS[$mime];
     if ($dims[0] > UPLOAD_MAX_DIMENSION || $dims[1] > UPLOAD_MAX_DIMENSION) {
         throw new RuntimeException('La imagen excede las dimensiones máximas.');
     }
@@ -83,6 +87,10 @@ function guardarImagenSegura(array $file, string $destDir, int $maxBytes, string
             throw new RuntimeException('El archivo no es una imagen válida.');
         }
 
+        if ($extension === 'png') {
+            imagealphablending($img, false);
+            imagesavealpha($img, true);
+        }
         $ok = match ($extension) {
             'jpg'  => imagejpeg($img, $ruta, 88),
             'png'  => imagepng($img, $ruta, 6),

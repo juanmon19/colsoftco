@@ -2,6 +2,7 @@
 
 require_once "../../app/verificar_sesion.php";
 require_once "../../config/conexion.php";
+$imagenPerfil = require __DIR__ . '/../partials/imagen_perfil.php';
 
 $conexion = new Conexion();
 $db = $conexion->getConnection();
@@ -79,7 +80,7 @@ try {
             <h3>Editar mis datos</h3>
 
             <div class="modal-perfil-foto">
-                <img id="fotoPerfilModal" width="165" height="206" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                <img id="fotoPerfilModal" width="165" height="206" src="../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
                 <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
             </div>
 
@@ -153,7 +154,7 @@ try {
                     <!-- MENÚ DE PERFIL DESPLEGABLE ÚNICO -->
                     <div class="perfil-menu" id="perfilMenu">
                         <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                            <img id="avatarHeader" class="avatar-header" width="32" height="32" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                            <img id="avatarHeader" class="avatar-header" width="32" height="32" src="../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
                             <span class="perfil-trigger-text">
                                 <strong id="nombreHeaderCorto">Juan Jose</strong>
                                 <small>Administrador</small>
@@ -164,12 +165,12 @@ try {
                         <div class="perfil-dropdown" id="perfilDropdown">
                             <!-- Nueva opción de Registrar -->
                             <button type="button" onclick="window.location.href='../registro/registro.php'">
-                                 Registrar usuario
+                                Registrar usuario
                             </button>
-                            <button type="button" id="btnCambiarFoto"> Cambiar foto de perfil</button>
-                            <button type="button" id="btnEditarDatos"> Editar mis datos</button>
+                            <button type="button" id="btnCambiarFoto">Cambiar foto de perfil</button>
+                            <button type="button" id="btnEditarDatos">Editar mis datos</button>
                             <button type="button" id="btnTemaOscuro">
-                                <span id="temaIconoTexto"> Activar tema oscuro</span>
+                                <span id="temaIconoTexto">Activar tema oscuro</span>
                             </button>
                             <div class="perfil-dropdown-divider"></div>
                             <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
@@ -186,7 +187,7 @@ try {
                 <section class="hero-grid">
 
                     <article class="profile">
-                        <img id="fotoPerfilGrande" width="165" height="206" fetchpriority="high" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                        <img id="fotoPerfilGrande" width="165" height="206" fetchpriority="high" src="../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
 
                         <div class="profile-data">
                             <h2 id="nombreCompletoPerfil">Juan Jose Montaño</h2>
@@ -428,14 +429,6 @@ try {
                 nombreCompletoPerfil.textContent = nombreCompleto;
                 if (emailPerfil) emailPerfil.textContent = u.email || '';
                 if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '';
-
-                if (u.foto) {
-                    const url = `../../public/imagenes/perfiles/${u.foto}`;
-                    avatarHeader.src = url;
-                    fotoPerfilGrande.src = url;
-                    fotoPerfilModal.src = url;
-                }
-
                 perfilNombre.value = u.nombre || '';
                 perfilApellido.value = u.apellido || '';
                 perfilEmail.value = u.email || '';
@@ -514,7 +507,7 @@ try {
 
         function aplicarTextoTema() {
             const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
-            temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : '🌙 Activar tema oscuro';
+            temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : 'Activar tema oscuro';
         }
 
         btnTemaOscuro.addEventListener('click', () => {

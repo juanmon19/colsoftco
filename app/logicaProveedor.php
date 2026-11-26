@@ -15,14 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $imagen = $_POST['imagen'] ?? '';
 
             $logica->registrarProveedor(
-                $_POST['nombre_empresa'],
-                $_POST['contacto_nombre'],
-                $_POST['contacto_apellido'],
-                $_POST['telefono'],
-                $_POST['email'],
-                $_POST['nit'],
-                $_POST['direccion'],
-                $_POST['descripcion_empresa'],
+                $_POST['nombre_empresa'] ?? '',
+                $_POST['contacto_nombre'] ?? '',
+                $_POST['contacto_apellido'] ?? '',
+                $_POST['telefono'] ?? '',
+                $_POST['email'] ?? '',
+                $_POST['nit'] ?? '',
+                $_POST['direccion'] ?? '',
+                $_POST['descripcion_empresa'] ?? '',
                 $imagen
             );
 
@@ -34,15 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $imagen = $_POST['imagen'] ?? null;
 
             $logica->actualizarProveedor(
-                (int) $_POST['id_proveedor'],
-                $_POST['nombre_empresa'],
-                $_POST['contacto_nombre'],
-                $_POST['contacto_apellido'],
-                $_POST['telefono'],
-                $_POST['email'],
-                $_POST['nit'],
-                $_POST['direccion'],
-                $_POST['descripcion_empresa'],
+                (int) ($_POST['id_proveedor'] ?? 0),
+                $_POST['nombre_empresa'] ?? '',
+                $_POST['contacto_nombre'] ?? '',
+                $_POST['contacto_apellido'] ?? '',
+                $_POST['telefono'] ?? '',
+                $_POST['email'] ?? '',
+                $_POST['nit'] ?? '',
+                $_POST['direccion'] ?? '',
+                $_POST['descripcion_empresa'] ?? '',
                 $imagen
             );
 
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'eliminar':
 
             $logica->eliminarProveedor(
-                (int) $_POST['id_proveedor']
+                (int) ($_POST['id_proveedor'] ?? 0)
             );
 
             header("Location: ../view/lista_proveedores/lista_proveedores.php");

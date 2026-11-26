@@ -11,12 +11,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // La clase de FPDF instalada por Composer puede llamarse "Fpdf\Fpdf"
 // (versiones nuevas) o simplemente "FPDF" en el espacio global
 // (versión 1.8.2, la que te instaló Composer). Detectamos cuál existe.
-if (class_exists('Fpdf\Fpdf')) {
-    class_alias('Fpdf\Fpdf', 'FpdfBase');
-} elseif (class_exists('FPDF')) {
-    class_alias('FPDF', 'FpdfBase');
-} else {
-    throw new Exception('No se encontró la clase FPDF. Verifica que "composer require setasign/fpdf" se haya instalado correctamente.');
+if (!class_exists('FpdfBase', false)) {
+    if (class_exists('Fpdf\Fpdf')) {
+        class_alias('Fpdf\Fpdf', 'FpdfBase');
+    } elseif (class_exists('FPDF')) {
+        class_alias('FPDF', 'FpdfBase');
+    } else {
+        throw new Exception('No se encontró la clase FPDF. Verifica que "composer require setasign/fpdf" se haya instalado correctamente.');
+    }
 }
 
 class ReciboPDF extends FpdfBase
@@ -32,6 +34,21 @@ class ReciboPDF extends FpdfBase
     private $verdeFondo  = [232, 248, 238];
     private $verdeBorde  = [182, 230, 198];
     private $verdeTexto  = [22, 101, 52];
+
+    private function enc($texto): string
+    {
+        $str = (string) $texto;
+        if (function_exists('iconv')) {
+            $conv = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $str);
+            if ($conv !== false) {
+                return $conv;
+            }
+        }
+        if (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding($str, 'ISO-8859-1', 'UTF-8');
+        }
+        return $str;
+    }
 
     public function __construct($numeroRecibo, $fechaHora = null)
     {
@@ -68,7 +85,7 @@ class ReciboPDF extends FpdfBase
 
         $this->SetTextColor(...$this->azulMarino);
         $this->SetFont('Arial', 'B', 18);
-        $this->Cell(0, 10, utf8_decode('Comprobante de Producción'), 0, 1, 'C');
+        $this->Cell(0, 10, $this->enc('Comprobante de Producción'), 0, 1, 'C');
 
         $this->SetFont('Arial', '', 10);
         $this->SetTextColor(110, 110, 110);
@@ -77,8 +94,8 @@ class ReciboPDF extends FpdfBase
 
         $this->SetFont('Arial', 'B', 11);
         $this->SetTextColor(...$this->azulMarino);
-        $this->Cell(95, 8, utf8_decode('Recibo No.: ') . str_pad($this->numeroRecibo, 6, '0', STR_PAD_LEFT), 0, 0, 'L');
-        $this->Cell(95, 8, utf8_decode('Fecha: ') . $this->fechaHora, 0, 1, 'R');
+        $this->Cell(95, 8, $this->enc('Recibo No.: ') . str_pad($this->numeroRecibo, 6, '0', STR_PAD_LEFT), 0, 0, 'L');
+        $this->Cell(95, 8, $this->enc('Fecha: ') . $this->fechaHora, 0, 1, 'R');
 
         $this->SetDrawColor(...$this->dorado);
         $this->SetLineWidth(0.4);
@@ -96,7 +113,7 @@ class ReciboPDF extends FpdfBase
 
         $this->SetFont('Arial', 'I', 8);
         $this->SetTextColor(130, 130, 130);
-        $this->Cell(0, 6, utf8_decode('Generado automaticamente por el sistema COLSOFTCO  -  Pagina ') . $this->PageNo(), 0, 0, 'C');
+        $this->Cell(0, 6, $this->enc('Generado automaticamente por el sistema COLSOFTCO  -  Pagina ') . $this->PageNo(), 0, 0, 'C');
     }
 
     public function agregarDetalle($nombreProducto, $cantidad)
@@ -111,14 +128,14 @@ class ReciboPDF extends FpdfBase
         $this->SetXY(22, $yInicio + 7);
         $this->SetFont('Arial', 'B', 12);
         $this->SetTextColor(...$this->azulMarino);
-        $this->Cell(55, 8, utf8_decode('Producto fabricado:'), 0, 0, 'L');
+        $this->Cell(55, 8, $this->enc('Producto fabricado:'), 0, 0, 'L');
         $this->SetFont('Arial', '', 12);
-        $this->Cell(105, 8, utf8_decode($nombreProducto), 0, 1, 'L');
+        $this->Cell(105, 8, $this->enc($nombreProducto), 0, 1, 'L');
 
         $this->SetXY(22, $yInicio + 19);
         $this->SetFont('Arial', 'B', 12);
         $this->SetTextColor(...$this->azulMarino);
-        $this->Cell(55, 8, utf8_decode('Cantidad producida:'), 0, 0, 'L');
+        $this->Cell(55, 8, $this->enc('Cantidad producida:'), 0, 0, 'L');
         $this->SetFont('Arial', '', 12);
         $this->Cell(105, 8, $cantidad . ' unidades', 0, 1, 'L');
 
@@ -137,11 +154,11 @@ class ReciboPDF extends FpdfBase
         $this->SetXY(22, $yInicio + 6);
         $this->SetTextColor(...$this->verdeTexto);
         $this->SetFont('Arial', 'B', 12);
-        $this->Cell(170, 7, utf8_decode('Produccion registrada exitosamente'), 0, 1, 'L');
+        $this->Cell(170, 7, $this->enc('Produccion registrada exitosamente'), 0, 1, 'L');
 
         $this->SetX(22);
         $this->SetFont('Arial', '', 10);
-        $this->MultiCell(166, 5.5, utf8_decode(
+        $this->MultiCell(166, 5.5, $this->enc(
             'El inventario de materia prima fue descontado y el stock de producto terminado ' .
             'fue actualizado correctamente en el sistema.'
         ));

@@ -15,6 +15,10 @@ if (!$id || $id <= 0) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!stockValido($_POST['stock_minimo'] ?? null) || !stockValido($_POST['stock_actual'] ?? null)) {
+        http_response_code(422);
+        exit('El stock debe ser un número mayor o igual a cero con hasta dos decimales.');
+    }
 
     // Guardamos el estado ANTES de actualizar, para el historial
     $stmtAntes = $conn->prepare("SELECT * FROM materias_primas WHERE id_material = :id");
@@ -25,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stock_actual = $_POST['stock_actual'];
     $stock_minimo = $_POST['stock_minimo'];
     $id_unidad = $_POST['id_unidad'];
-    $id_proveedor = $_POST['id_proveedor'];
+    $id_proveedor = ($_POST['id_proveedor'] ?? '') === '' ? null : $_POST['id_proveedor'];
 
     $sql = "UPDATE materias_primas
             SET
@@ -76,6 +80,14 @@ $stmt = $conn->prepare($sql);
 $stmt->execute([':id' => $id]);
 
 $material = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$material) {
+    http_response_code(404);
+    exit('Materia prima no encontrada.');
+}
+$unidades = $conn->query('SELECT id_unidad, nombre_unidad, sigla FROM unidades_medida ORDER BY nombre_unidad')->fetchAll();
+$stmt = $conn->prepare("SELECT id_proveedor, nombre_empresa FROM proveedores WHERE estado = 'activo' OR id_proveedor = ? ORDER BY nombre_empresa");
+$stmt->execute([$material['id_proveedor']]);
+$proveedores = $stmt->fetchAll();
 
 ?>
 
@@ -144,15 +156,22 @@ $material = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
 
                     <div class="form-group">
-                        <label>ID Unidad</label>
-                        <input type="number" name="id_unidad" class="form-control"
-                            value="<?= $material['id_unidad'] ?>" required>
+                        <label for="unidad">Unidad de medida</label>
+                        <select id="unidad" name="id_unidad" class="form-control" required>
+                            <?php foreach ($unidades as $u): ?>
+                            <option value="<?= (int) $u['id_unidad'] ?>" <?= $material['id_unidad'] == $u['id_unidad'] ? 'selected' : '' ?>><?= htmlspecialchars($u['nombre_unidad'] . ' (' . $u['sigla'] . ')') ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label>ID Proveedor</label>
-                        <input type="number" name="id_proveedor" class="form-control"
-                            value="<?= $material['id_proveedor'] ?>" required>
+                        <label for="proveedor">Proveedor (opcional)</label>
+                        <select id="proveedor" name="id_proveedor" class="form-control">
+                            <option value="">Sin proveedor asignado</option>
+                            <?php foreach ($proveedores as $prov): ?>
+                            <option value="<?= (int) $prov['id_proveedor'] ?>" <?= $material['id_proveedor'] == $prov['id_proveedor'] ? 'selected' : '' ?>><?= htmlspecialchars($prov['nombre_empresa']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <button type="submit" class="btn btn-primary">

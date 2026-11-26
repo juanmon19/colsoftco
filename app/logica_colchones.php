@@ -1,10 +1,12 @@
 <?php
-require_once 'verificar_sesion.php';
+require_once __DIR__ . '/verificar_sesion.php';
 date_default_timezone_set('America/Bogota');
 header('Content-Type: application/json');
-require_once '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/HistorialMovimientos.php';
-require_once __DIR__ . '/../vendor/autoload.php';
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
+}
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -109,9 +111,11 @@ function evaluarProduccion(PDO $db, int $idModelo, int $cantidad): array
     ];
 }
 
-$accion   = $_REQUEST['accion']    ?? '';
-$idModelo = isset($_REQUEST['id_modelo']) ? (int) $_REQUEST['id_modelo'] : 0;
-$cantidad = isset($_REQUEST['cantidad']) ? (int) $_REQUEST['cantidad'] : 0;
+$accion = $_POST['accion'] ?? $_GET['accion'] ?? '';
+verificarAccesoReceta($accion === 'fabricar');
+$entrada = $accion === 'fabricar' ? $_POST : $_GET;
+$idModelo = isset($entrada['id_modelo']) ? (int) $entrada['id_modelo'] : 0;
+$cantidad = isset($entrada['cantidad']) ? (int) $entrada['cantidad'] : 0;
 
 /* ══ Solo calcula y compara, no toca la base de datos ══ */
 if ($accion === 'calcular') {
@@ -250,11 +254,12 @@ if ($accion === 'fabricar') {
 
         $stmtHistorialProd = $db->prepare(
             "INSERT INTO historial_produccion (id_modelo, cantidad, fecha_fabricacion, usuario)
-             VALUES (:id_modelo, :cantidad, NOW(), :usuario)"
+             VALUES (:id_modelo, :cantidad, :fecha_fab, :usuario)"
         );
         $stmtHistorialProd->execute([
             ':id_modelo' => $resultado['id_modelo'],
             ':cantidad'  => $resultado['cantidad'],
+            ':fecha_fab' => date('Y-m-d H:i:s'),
             ':usuario'   => $usuarioNombre,
         ]);
         $numeroRecibo = (int) $db->lastInsertId();
@@ -296,7 +301,7 @@ if ($accion === 'fabricar') {
            ======================================================= */
         $carpetaRecibos = __DIR__ . '/../public/recibos/';
         if (!is_dir($carpetaRecibos)) {
-            mkdir($carpetaRecibos, 0755, true);
+            @mkdir($carpetaRecibos, 0755, true);
         }
 
         $nombreArchivo = 'recibo_' . str_pad($numeroRecibo, 6, '0', STR_PAD_LEFT) . '.pdf';
@@ -378,26 +383,30 @@ if ($accion === 'fabricar') {
         <?php
         $html = ob_get_clean();
 
-        $options = new Options();
-        $options->set('isRemoteEnabled', false);
-        $options->set('defaultFont', 'Helvetica');
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A5', 'portrait'); 
-        $dompdf->render();
-
-        // Guardar el archivo PDF generado en la carpeta del servidor
-        file_put_contents($rutaCompleta, $dompdf->output());
+        if (class_exists(Dompdf::class) && class_exists(Options::class)) {
+            try {
+                $options = new Options();
+                $options->set('isRemoteEnabled', false);
+                $options->set('defaultFont', 'Helvetica');
+                $dompdf = new Dompdf($options);
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A5', 'portrait');
+                $dompdf->render();
+                @file_put_contents($rutaCompleta, $dompdf->output());
+            } catch (\Throwable $pdfErr) {
+                error_log('Error generando PDF en logica_colchones.php: ' . $pdfErr->getMessage());
+            }
+        }
 
         // Devolver la respuesta JSON exitosa con la ruta al archivo
         echo json_encode([
             'ok'            => true,
             'mensaje'       => "Se fabricaron {$resultado['cantidad']} unidades de {$resultado['nombre_producto']} correctamente.",
-            'recibo_pdf'    => '../../public/recibos/' . $nombreArchivo,
+            'recibo_pdf'    => '../historial_fabricacion/ver_recibo.php?original=1&id=' . $numeroRecibo,
             'numero_recibo' => $numeroRecibo,
         ]);
 
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         if ($db->inTransaction()) {
             $db->rollBack();
         }

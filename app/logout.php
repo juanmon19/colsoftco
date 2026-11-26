@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // ══ LIMPIAR TOKEN DE SESIÓN ÚNICA ══
 // Se hace antes de destruir la sesión para que el próximo login
@@ -9,11 +11,16 @@ if (isset($_SESSION['user_id'])) {
 
     try {
         $conex = new Conexion();
-        $conex->sql = "UPDATE usuarios SET token_sesion = NULL WHERE id_usuario = :id";
-        $conex->pps = $conex->getConnection()->prepare($conex->sql);
-        $conex->pps->bindParam(":id", $_SESSION['user_id']);
-        $conex->pps->execute();
-        $conex->closeDataBase();
+        $conn = $conex->getConnection();
+        if ($conn) {
+            $conex->sql = "UPDATE usuarios SET token_sesion = NULL WHERE id_usuario = :id";
+            $conex->pps = $conn->prepare($conex->sql);
+            $conex->pps->bindParam(":id", $_SESSION['user_id']);
+            $conex->pps->execute();
+        }
+        if (method_exists($conex, 'closeDataBase')) {
+            $conex->closeDataBase();
+        }
     } catch (\Throwable $th) {
         error_log('Error al limpiar token_sesion en logout: ' . $th->getMessage());
     }

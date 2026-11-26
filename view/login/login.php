@@ -43,11 +43,9 @@ if (isset($_SESSION['mensaje'])) {
             <h2>INICIAR SESIÓN</h2>
 
             <!-- Mensajes -->
-            <?php if (!empty($error)) : ?>
-                <div class="mensaje-error">
-                    <?= htmlspecialchars($error) ?>
-                </div>
-            <?php endif; ?>
+            <div id="alertaCliente" class="mensaje-error" style="<?= empty($error) ? 'display:none;' : '' ?>">
+                <?= htmlspecialchars($error) ?>
+            </div>
 
             <?php if (!empty($mensaje)) : ?>
                 <div class="mensaje-exito">
@@ -55,7 +53,7 @@ if (isset($_SESSION['mensaje'])) {
                 </div>
             <?php endif; ?>
 
-            <form id="loginForm" method="POST" action="../../app/logica.php" autocomplete="off">
+            <form id="loginForm" method="POST" action="../../app/logica.php" autocomplete="off" novalidate>
 
                 <input type="hidden" name="login" value="1">
 
@@ -69,7 +67,6 @@ if (isset($_SESSION['mensaje'])) {
                     <div class="password-container">
                         <input type="password" id="password" name="password" required>
                         <button type="button" id="togglePassword" class="toggle-password" tabindex="-1" aria-label="Mostrar contraseña">
-                            <!-- Icono de Ojo Abierto (Por defecto) -->
                             <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
                                 <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
@@ -95,17 +92,37 @@ if (isset($_SESSION['mensaje'])) {
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js" defer></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/19/20260514194818-J71XBHCL.js" defer></script>
-
-    <!-- FIX auditoría: ruta rota ../js/app.js (404) -> pública correcta -->
     <script src="../../public/js/app.js" defer></script>
 
     <script>
-        // Limpiar el formulario al cargar o regresar a la página
         window.addEventListener('pageshow', function () {
             document.getElementById('loginForm').reset();
         });
 
-        // Funcionalidad para alternar la contraseña y cambiar entre los iconos vectoriales de la imagen
+        // Validación visual uniforme para campos vacíos (BUG-02)
+        const loginForm = document.getElementById('loginForm');
+        const alertaCliente = document.getElementById('alertaCliente');
+        const inputUser = document.getElementById('username');
+        const inputPass = document.getElementById('password');
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', function (e) {
+                const doc = inputUser.value.trim();
+                const pass = inputPass.value;
+
+                if (doc === '' || pass === '') {
+                    e.preventDefault();
+                    alertaCliente.textContent = 'Por favor complete el documento y la contraseña.';
+                    alertaCliente.style.display = 'block';
+                    if (doc === '') {
+                        inputUser.focus();
+                    } else {
+                        inputPass.focus();
+                    }
+                }
+            });
+        }
+
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
 
@@ -115,7 +132,6 @@ if (isset($_SESSION['mensaje'])) {
                 passwordInput.setAttribute('type', type);
 
                 if (type === 'password') {
-                    // Muestra el icono de ojo abierto
                     togglePassword.innerHTML = `
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
@@ -123,7 +139,6 @@ if (isset($_SESSION['mensaje'])) {
                         </svg>
                     `;
                 } else {
-                    // Muestra el icono de ojo con la barra diagonal cruzada
                     togglePassword.innerHTML = `
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
@@ -152,10 +167,10 @@ if (isset($_SESSION['mensaje'])) {
 
             <div>
                 <p class="footer-col-title">Contacto</p>
-                <div class="footer-contact-item">📍 Bogotá, Colombia</div>
-                <div class="footer-contact-item">✉ contacto@colsoftco.com</div>
-                <div class="footer-contact-item">📞 +57 322905224</div>
-                <div class="footer-contact-item">🕐 Lun – Vie: 8:00 am – 6:00 pm</div>
+                <div class="footer-contact-item"> Bogotá, Colombia</div>
+                <div class="footer-contact-item">colsoftco4@gmail.com</div>
+                <div class="footer-contact-item">+57 322905224</div>
+                <div class="footer-contact-item">Lun – Vie: 8:00 am – 6:00 pm</div>
             </div>
 
         </div>

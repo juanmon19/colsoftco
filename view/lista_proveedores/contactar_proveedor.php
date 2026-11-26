@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../app/HistorialMovimientos.php';
 require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/setting.php';
+require_once __DIR__ . '/../../app/correo_plantilla.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -16,7 +17,7 @@ $conn = $db->getConnection();
 
 $logicaProveedor = new ProveedorLogica();
 
-$idProveedor = $_GET['id'] ?? 0;
+$idProveedor = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?: 0;
 $proveedor = $logicaProveedor->getProveedorById($idProveedor);
 
 if (!$proveedor) {
@@ -28,38 +29,39 @@ $stmtMateriales = $conn->prepare("
     SELECT mp.id_material, mp.nombre_material, um.nombre_unidad
     FROM materias_primas mp
     LEFT JOIN unidades_medida um ON mp.id_unidad = um.id_unidad
-    WHERE mp.id_proveedor = :id_proveedor
+    WHERE mp.estado = 'activo' AND (mp.id_proveedor = :principal OR EXISTS (
+        SELECT 1 FROM proveedores_materiales pm
+        WHERE pm.id_material = mp.id_material AND pm.id_proveedor = :adicional
+    ))
     ORDER BY mp.nombre_material ASC
 ");
-$stmtMateriales->execute([':id_proveedor' => $idProveedor]);
+$stmtMateriales->execute([':principal' => $idProveedor, ':adicional' => $idProveedor]);
 $materiales = $stmtMateriales->fetchAll(PDO::FETCH_ASSOC);
 
-$mensaje = '';
-$mensajeTipo = ''; // 'exito' o 'error'
+$mensaje = $_SESSION['catalogo_proveedor_ok'] ?? '';
+unset($_SESSION['catalogo_proveedor_ok']);
+$mensajeTipo = 'exito'; // 'exito' o 'error'
 // Bodeguero/Operario no contactan al proveedor: solicitan al admin.
 $esSolicitudInterna = !es_admin();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !validarTokenCSRF(is_string($_POST['csrf_token'] ?? null) ? $_POST['csrf_token'] : '')) {
+    http_response_code(403);
+    $mensaje = 'La sesión cambió. Vuelve a enviar el formulario.';
+    $mensajeTipo = 'error';
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $idMaterial = $_POST['materiaPrima'] ?? '';
     $cantidad = $_POST['cantidadPedido'] ?? '';
 
-    if ($idMaterial === '' || $cantidad === '' || (float)$cantidad <= 0) {
+    $catalogo = array_column($materiales, null, 'id_material');
+    $infoMaterial = is_string($idMaterial) ? ($catalogo[$idMaterial] ?? null) : null;
+    if (!$infoMaterial || $proveedor['estado'] !== 'activo' || !stockValido($cantidad) || (float)$cantidad <= 0) {
 
         $mensaje = "Selecciona la materia prima e ingresa una cantidad válida.";
         $mensajeTipo = 'error';
 
     } else {
 
-        // Nombre y unidad del material, para el correo e historial
-        $stmtNombre = $conn->prepare("
-            SELECT mp.nombre_material, um.nombre_unidad
-            FROM materias_primas mp
-            LEFT JOIN unidades_medida um ON mp.id_unidad = um.id_unidad
-            WHERE mp.id_material = :id
-        ");
-        $stmtNombre->execute([':id' => $idMaterial]);
-        $infoMaterial = $stmtNombre->fetch(PDO::FETCH_ASSOC);
         $nombreMaterial = $infoMaterial['nombre_material'] ?? 'Material';
         $unidadMaterial = $infoMaterial['nombre_unidad'] ?? '';
 
@@ -194,23 +196,18 @@ function enviarCorreoPedido($correoDestino, $nombreEmpresaProveedor, $nombreMate
         $mail->Port       = 587;
         $mail->CharSet    = 'UTF-8';
 
-        $mail->setFrom('colsoftco4@gmail.com', 'Max & Flex - Pedidos');
+        $mail->setFrom(USERNAME, 'Max & Flex - Pedidos');
         $mail->addAddress($correoDestino, $nombreEmpresaProveedor);
 
         $cantidadTexto = $unidadMaterial
             ? "{$cantidad} {$unidadMaterial}"
             : $cantidad;
 
-        $mail->isHTML(true);
-        $mail->Subject = "Nuevo pedido de materia prima - Max & Flex";
-        $mail->Body    = "
-            <p>Estimado proveedor <b>{$nombreEmpresaProveedor}</b>,</p>
-            <p>Max & Flex desea realizar el siguiente pedido:</p>
-            <p><b>Materia prima:</b> {$nombreMaterial}<br>
-            <b>Cantidad solicitada:</b> {$cantidadTexto}</p>
-            <p>Por favor confirma la disponibilidad y el tiempo estimado de entrega.</p>
-            <p>Saludos,<br>Max & Flex</p>
-        ";
+        prepararCorreo($mail, 'Pedido de materia prima de Max & Flex', "Hola, equipo de {$nombreEmpresaProveedor}.",
+            'Max & Flex solicita el siguiente material para producción.',
+            ['Materia prima' => $nombreMaterial, 'Cantidad solicitada' => $cantidadTexto],
+            'Por favor, responde a este correo para confirmar la disponibilidad y la fecha estimada de entrega.');
+
 
         $mail->send();
         return true;
@@ -235,16 +232,15 @@ function enviarCorreoSolicitudAdmin($correoAdmin, $nombreEmpresaProveedor, $nomb
         $mail->Port       = 587;
         $mail->CharSet    = 'UTF-8';
 
-        $mail->setFrom('colsoftco4@gmail.com', 'COLSOFTCO - Solicitudes');
+        $mail->setFrom(USERNAME, 'COLSOFTCO - Solicitudes');
         $mail->addAddress($correoAdmin, 'Administrador COLSOFTCO');
 
-        $mail->isHTML(true);
-        $mail->Subject = "Solicitud de pedido ({$rolSolicitante}): {$nombreEmpresaProveedor}";
-        $mail->Body    = "<p>El {$rolSolicitante} <b>" . htmlspecialchars($solicitante) . "</b> solicita realizar un pedido:</p>"
-            . "<p><b>Proveedor:</b> " . htmlspecialchars($nombreEmpresaProveedor) . "<br>"
-            . "<b>Materia prima:</b> " . htmlspecialchars($nombreMaterial) . "<br>"
-            . "<b>Cantidad:</b> " . htmlspecialchars(trim($cantidad . ' ' . $unidadMaterial)) . "</p>"
-            . "<p>Ingresa al módulo de proveedores para gestionarlo.</p>";
+        prepararCorreo($mail, "Solicitud de pedido para {$nombreEmpresaProveedor}", 'Hola, equipo de administración.',
+            'Se recibió una solicitud interna de abastecimiento. Revisa los datos antes de contactar al proveedor.',
+            ['Solicitante' => $solicitante, 'Rol' => $rolSolicitante, 'Proveedor' => $nombreEmpresaProveedor,
+             'Materia prima' => $nombreMaterial, 'Cantidad' => trim($cantidad . ' ' . $unidadMaterial)],
+            boton: 'Consultar proveedores', url: BASE_URL . '/view/lista_proveedores/lista_proveedores.php');
+
 
         $mail->send();
         return true;
@@ -337,6 +333,7 @@ function enviarCorreoSolicitudAdmin($correoAdmin, $nombreEmpresaProveedor, $nomb
     <!-- MODAL DE PEDIDO -->
     <div class="modal-overlay" id="modalPedidoOverlay">
         <form method="POST" class="modal-pedido">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generarTokenCSRF()) ?>">
             <h3>Detalles del Pedido</h3>
 
             <label for="materiaPrima">Materia prima a pedir:</label>
@@ -356,7 +353,7 @@ function enviarCorreoSolicitudAdmin($correoAdmin, $nombreEmpresaProveedor, $nomb
                 Cantidad
                 <span id="unidadCantidad" class="unidad-badge"></span>:
             </label>
-            <input type="number" id="cantidadPedido" name="cantidadPedido" placeholder="Ej: 50" min="1" step="0.01" required>
+            <input type="number" id="cantidadPedido" name="cantidadPedido" placeholder="Ej: 50" min="0.01" step="0.01" required>
 
             <div class="modal-botones">
                 <button type="button" id="btnCerrarModal" class="btn-secundario">Cancelar</button>

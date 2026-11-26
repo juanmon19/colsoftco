@@ -79,6 +79,24 @@ if (!defined('PERMISOS_MODULOS')) {
     ]);
 }
 
+if (!function_exists('colsoftco_base_path')) {
+    /**
+     * Detecta la ruta base de la app automáticamente:
+     * - En XAMPP local (/colsoftco/view/...) devuelve '/colsoftco'
+     * - En InfinityFree (/view/...) devuelve ''
+     */
+    function colsoftco_base_path(): string {
+        $script = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+        foreach (['/view/', '/app/', '/index/', '/public/'] as $marker) {
+            $pos = strpos($script, $marker);
+            if ($pos !== false) {
+                return rtrim(substr($script, 0, $pos), '/');
+            }
+        }
+        return '';
+    }
+}
+
 if (!function_exists('rol_actual')) {
     function rol_actual(): string {
         return strtolower(trim($_SESSION['rol'] ?? ''));
@@ -170,8 +188,27 @@ if (!function_exists('requerir_permiso_modulo')) {
         }
         $rol = rol_actual();
         if (!puede_acceder($archivo, $rol)) {
-            header("Location: /colsoftco/app/ir_panel.php?denegado=1");
+            header("Location: " . colsoftco_base_path() . "/app/ir_panel.php?denegado=1");
             exit();
         }
+    }
+}
+
+function verificarAccesoReceta(bool $escritura): void
+{
+    $vista = $escritura ? 'editar_receta.php' : 'receta_colchones.php';
+    if (!puede_acceder($vista, rol_actual())) {
+        http_response_code(403);
+        exit(json_encode(['ok' => false, 'error' => 'Sin permiso para esta operación.']));
+    }
+    if ($escritura && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Allow: POST');
+        http_response_code(405);
+        exit(json_encode(['ok' => false, 'error' => 'Se requiere POST.']));
+    }
+    $token = $_POST['csrf_token'] ?? '';
+    if ($escritura && (!is_string($token) || !validarTokenCSRF($token))) {
+        http_response_code(403);
+        exit(json_encode(['ok' => false, 'error' => 'Recarga la página para continuar.']));
     }
 }

@@ -1,6 +1,12 @@
 (function() {
     'use strict';
-    const BASE_APP = (typeof PREFIJO_APP !== 'undefined') ? PREFIJO_APP : '/colsoftco/';
+    // CAMBIO: la carpeta base se calcula a partir de la URL de la página.
+    // En XAMPP (localhost/colsoftco/view/...) da "/colsoftco/";
+    // en InfinityFree (dominio/view/...) da "/".
+    const BASE_APP = (function () {
+        const m = window.location.pathname.match(/^(.*?)\/view\//);
+        return (m ? m[1] : '') + '/';
+    })();
     async function actualizarBadgeMensajes() {
         try {
             const resp = await fetch(BASE_APP + 'app/logica_mensajes.php?accion=no_leidos');
@@ -30,4 +36,3 @@
         if (!document.hidden) actualizarBadgeMensajes();
     });
 })();
-

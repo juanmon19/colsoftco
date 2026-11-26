@@ -4,9 +4,9 @@ require_once "../../app/verificar_sesion.php";
 require_once '../../config/conexion.php';
 
 $conexion = new Conexion();
-$dbConn = $conexion->getConnection();
+$dbConn =$conexion->getConnection();
 
-$materialesDisponibles = $dbConn->query("
+$materialesDisponibles =$dbConn->query("
     SELECT mp.id_material, mp.nombre_material, um.nombre_unidad
     FROM materias_primas mp
     LEFT JOIN unidades_medida um ON um.id_unidad = mp.id_unidad
@@ -53,35 +53,35 @@ $materialesDisponibles = $dbConn->query("
                 <div class="paneles" style="grid-template-columns: 1fr;">
 
                     <div class="panel">
-                        <div class="panel-header"> Registrar Nuevo Modelo de Colchón</div>
+                        <div class="panel-header">Registrar Nuevo Modelo de Colchón</div>
                         <div class="panel-body">
 
-                            <div style="display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:18px;">
+                            <div class="campo-grupo">
                                 <div>
-                                    <label style="display:block;font-weight:bold;font-size:14px;margin-bottom:6px;">Nombre del Modelo</label>
-                                    <input type="text" id="regNombreModelo" placeholder="Ej: Colchón Imperial" style="width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                                    <label class="campo-label" for="regNombreModelo">Nombre del Modelo</label>
+                                    <input type="text" id="regNombreModelo" placeholder="Ej: Colchón Imperial">
                                 </div>
                             </div>
 
-                            <h3 style="font-size:16px;margin-bottom:12px;color:#D4AF37;"> Receta (Obligatoria)</h3>
-                            <p style="font-size:13px;color:#666;margin-bottom:12px;">Agrega los materiales que componen este modelo de colchón.</p>
+                            <h3 class="receta-titulo">Receta (Obligatoria)</h3>
+                            <p class="receta-desc">Agrega los materiales que componen este modelo de colchón.</p>
 
                             <div id="regRecetaContainer">
                                 <!-- Filas de ingredientes se agregan aquí dinámicamente -->
                             </div>
 
-                            <button type="button" class="btn" style="background:#16a34a;color:white;margin-top:10px;margin-bottom:18px;padding:10px 18px;font-size:14px;" onclick="agregarFilaReceta('reg')">
+                            <button type="button" class="btn btn-agregar" onclick="agregarFilaReceta('reg')">
                                 ＋ Agregar Material
                             </button>
 
-                            <div id="regMensaje" style="display:none;padding:10px 14px;border-radius:6px;font-weight:600;margin-bottom:12px;"></div>
+                            <div id="regMensaje" class="mensaje-estado"></div>
 
-                            <div style="display:flex;gap:12px;justify-content:flex-end;">
-                                <button type="button" class="btn" style="background:#6b7280;color:white;" onclick="limpiarFormRegistro()">
+                            <div class="acciones-formulario">
+                                <button type="button" class="btn btn-limpiar" onclick="limpiarFormRegistro()">
                                     Limpiar
                                 </button>
-                                <button type="button" class="btn" style="background:#0A1F44;color:white;" onclick="registrarModelo()">
-                                     Registrar Modelo
+                                <button type="button" class="btn btn-registrar" onclick="registrarModelo()">
+                                    Registrar Modelo
                                 </button>
                             </div>
 
@@ -97,6 +97,7 @@ $materialesDisponibles = $dbConn->query("
     </div>
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
+    <script src="../../public/js/escape-html.js"></script>
     <script>
         /* ══════════════════════════════════════════
            DATOS DE MATERIALES PARA SELECTS DINÁMICOS
@@ -107,8 +108,8 @@ $materialesDisponibles = $dbConn->query("
             let options = '<option value="">-- Seleccionar material --</option>';
             materialesDisponibles.forEach(m => {
                 const sel = (String(m.id_material) === String(selectedId)) ? 'selected' : '';
-                const unidad = m.nombre_unidad ? ` (${m.nombre_unidad})` : '';
-                options += `<option value="${m.id_material}" ${sel}>${m.nombre_material}${unidad}</option>`;
+                const unidad = m.nombre_unidad ? ` (${escaparHTML(m.nombre_unidad)})` : '';
+                options += `<option value="${m.id_material}" ${sel}>${escaparHTML(m.nombre_material)}${unidad}</option>`;
             });
             return options;
         }
@@ -119,16 +120,14 @@ $materialesDisponibles = $dbConn->query("
         function agregarFilaReceta(prefix, idMaterial = '', cantidad = '') {
             const container = document.getElementById(prefix + 'RecetaContainer');
             const fila = document.createElement('div');
-            fila.style.cssText = 'display:flex;gap:12px;align-items:center;margin-bottom:10px;';
+            fila.className = 'receta-fila';
             fila.innerHTML = `
-                <select class="receta-material" style="flex:2;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
+                <select class="receta-material">
                     ${crearSelectMaterial(idMaterial)}
                 </select>
                 <input type="number" class="receta-cantidad" placeholder="Cantidad" step="0.01" min="0.01"
-                       value="${cantidad}"
-                       style="flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;">
-                <button type="button" onclick="this.parentElement.remove()"
-                        style="background:#dc2626;color:white;border:none;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:bold;font-size:14px;"
+                       value="${cantidad}">
+                <button type="button" class="btn-quitar" onclick="this.parentElement.remove()"
                         title="Quitar material">✕</button>
             `;
             container.appendChild(fila);
@@ -161,10 +160,9 @@ $materialesDisponibles = $dbConn->query("
 
         function mostrarMensaje(elementId, texto, tipo) {
             const el = document.getElementById(elementId);
-            el.style.display = 'block';
             el.textContent = texto;
-            el.style.background = tipo === 'ok' ? '#e5f7ec' : '#fdecea';
-            el.style.color = tipo === 'ok' ? '#1e7e42' : '#c0392b';
+            el.className = 'mensaje-estado ' + (tipo === 'ok' ? 'mensaje-ok' : 'mensaje-error');
+            el.style.display = 'block';
         }
 
         /* ══════════════════════════════════════════
@@ -194,6 +192,7 @@ $materialesDisponibles = $dbConn->query("
 
             try {
                 const formData = new FormData();
+                formData.set('csrf_token', <?= json_encode(generarTokenCSRF()) ?>);
                 formData.append('accion', 'registrar_modelo');
                 formData.append('nombre_modelo', nombre);
                 formData.append('receta', JSON.stringify(receta));

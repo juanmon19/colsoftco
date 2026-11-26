@@ -26,6 +26,7 @@ if (!isset($__seo_done)) {
     $__desc = $seo_descripcion
         ?? 'COLSOFTCO: sistema de gestión y administración de materias primas para Max&Flex. Inventarios, stock, proveedores, recetas y producción.';
 
+    echo '<link rel="icon" href="' . $__base . '/favicon.ico?v=1" sizes="16x16 32x32 48x48 64x64">' . "\n";
     echo '<link rel="canonical" href="' . htmlspecialchars($__canonica) . '">' . "\n";
     echo '<meta name="description" content="' . htmlspecialchars($__desc) . '">' . "\n";
     echo '<meta name="robots" content="index, follow, max-image-preview:large">' . "\n";

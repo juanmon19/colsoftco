@@ -170,14 +170,6 @@ $prefijoJs = json_encode($prefijo . '../../');
             if (nombreCompletoPerfil) nombreCompletoPerfil.textContent = nombreCompleto;
             if (emailPerfil) emailPerfil.textContent = u.email || '';
             if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '';
-
-            if (u.foto) {
-                const url = `${PREFIJO_APP}public/imagenes/perfiles/${u.foto}`;
-                if (avatarHeader) avatarHeader.src = url;
-                if (fotoPerfilGrande) fotoPerfilGrande.src = url;
-                if (fotoPerfilModal) fotoPerfilModal.src = url;
-            }
-
             if (perfilNombre) perfilNombre.value = u.nombre || '';
             if (perfilApellido) perfilApellido.value = u.apellido || '';
             if (perfilEmail) perfilEmail.value = u.email || '';
@@ -207,9 +199,10 @@ $prefijoJs = json_encode($prefijo . '../../');
             const resp = await fetch(PREFIJO_APP + 'app/perfil_usuario.php', { method: 'POST', body: formData });
             const data = await resp.json();
             if (data.ok) {
-                if (avatarHeader) avatarHeader.src = data.url;
-                if (fotoPerfilGrande) fotoPerfilGrande.src = data.url;
-                if (fotoPerfilModal) fotoPerfilModal.src = data.url;
+                const url = PREFIJO_APP + 'public/imagenes/perfiles/' + encodeURIComponent(data.foto);
+                if (avatarHeader) avatarHeader.src = url;
+                if (fotoPerfilGrande) fotoPerfilGrande.src = url;
+                if (fotoPerfilModal) fotoPerfilModal.src = url;
             } else {
                 alert(data.error || 'No se pudo actualizar la foto.');
             }
@@ -256,7 +249,7 @@ $prefijoJs = json_encode($prefijo . '../../');
 
     function aplicarTextoTema() {
         const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
-        temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : '🌙 Activar tema oscuro';
+        temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : ' Activar tema oscuro';
     }
 
     btnTemaOscuro.addEventListener('click', () => {

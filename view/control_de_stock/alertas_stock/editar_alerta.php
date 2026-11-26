@@ -11,6 +11,10 @@ $id = $_GET['id'];
 $material = $logica->obtenerMaterial($id);
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    if (!stockValido($_POST['stock_minimo'] ?? null)) {
+        http_response_code(422);
+        exit('El stock debe ser un número mayor o igual a cero con hasta dos decimales.');
+    }
     $stockMinimoAnterior = $material['stock_minimo'] ?? null;
 
     $logica->actualizarStockMinimo(

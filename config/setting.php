@@ -15,4 +15,4 @@ function tiempo_expiracion_token(): int {
 }
 
 // URL base del sistema (cambiar en producción)
-define("BASE_URL", "http://localhost/colsoftco");
+define("BASE_URL", "https://colsoftco.infinityfree.me/");

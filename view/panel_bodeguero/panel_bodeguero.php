@@ -2,6 +2,7 @@
 
 require_once "../../app/verificar_sesion.php";
 require_once "../../config/conexion.php";
+$imagenPerfil = require __DIR__ . '/../partials/imagen_perfil.php';
 
 // Datos reales del panel (igual que panel_admin, pero con alcance de bodega).
 try {
@@ -70,7 +71,7 @@ try {
             <button class="nav-item" onclick="window.location.href='../inventario_productos_terminados/inventario_productos_terminados.php'">Inventario de Productos</button>
             <button class="nav-item" onclick="window.location.href='../registro_de_producto_terminado/registro_producto_terminado.php'">Registrar Producto Terminado</button>
             <button class="nav-item" onclick="window.location.href='../historial_fabricacion/historial_fabricacion.php'">Historial de Fabricación</button>
-            <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'">Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
+            <button class="nav-item" onclick="window.location.href='../mensajeria/mensajeria.php'"> Mensajes <span id="badgeMensajesNoLeidos" style="display:none;"></span></button>
         </nav>
     </aside>
 
@@ -90,7 +91,7 @@ try {
                 <!-- MENÚ DE PERFIL DESPLEGABLE -->
                 <div class="perfil-menu" id="perfilMenu">
                     <button class="perfil-trigger" id="btnPerfilMenu" type="button" aria-haspopup="true" aria-expanded="false">
-                        <img id="avatarHeader" class="avatar-header" width="32" height="32" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                        <img id="avatarHeader" class="avatar-header" width="32" height="32" src="../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
                         <span class="perfil-trigger-text">
                             <strong id="nombreHeaderCorto">Usuario</strong>
                             <small>Bodeguero</small>
@@ -99,10 +100,10 @@ try {
                     </button>
 
                     <div class="perfil-dropdown" id="perfilDropdown">
-                        <button type="button" id="btnCambiarFoto">🖼 Cambiar foto de perfil</button>
-                        <button type="button" id="btnEditarDatos">✎ Editar mis datos</button>
+                        <button type="button" id="btnCambiarFoto">Cambiar foto de perfil</button>
+                        <button type="button" id="btnEditarDatos">Editar mis datos</button>
                         <button type="button" id="btnTemaOscuro">
-                            <span id="temaIconoTexto">🌙 Activar tema oscuro</span>
+                            <span id="temaIconoTexto">Activar tema oscuro</span>
                         </button>
                         <div class="perfil-dropdown-divider"></div>
                         <button type="button" class="perfil-dropdown-logout" onclick="cerrarSesion()">⏻ Cerrar sesión</button>
@@ -120,7 +121,7 @@ try {
                 <section class="hero-grid">
 
                     <article class="profile">
-                        <img id="fotoPerfilGrande" width="165" height="206" fetchpriority="high" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+                        <img id="fotoPerfilGrande" width="165" height="206" fetchpriority="high" src="../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
 
                         <div class="profile-data">
                             <h2 id="nombreCompletoPerfil">Cargando…</h2>
@@ -291,7 +292,7 @@ try {
         <h3>Editar mis datos</h3>
 
         <div class="modal-perfil-foto">
-            <img id="fotoPerfilModal" width="165" height="206" src="../../public/imagenes/usuario.png" alt="Foto de perfil">
+            <img id="fotoPerfilModal" width="165" height="206" src="../../public/imagenes/<?= $imagenPerfil ?>" alt="Foto de perfil">
             <button type="button" id="btnCambiarFotoModal">Cambiar foto</button>
         </div>
 
@@ -358,7 +359,7 @@ try {
     // Refresca las 4 stats con datos reales sin recargar.
     async function refrescarStatsBodega() {
         try {
-            const resp = await fetch('/colsoftco/app/dashboard_stats.php');
+            const resp = await fetch('../../app/dashboard_stats.php');
             const data = await resp.json();
             if (!data.ok) return;
             const fmt = (n) => Number(n).toLocaleString('es-CO');
@@ -437,14 +438,6 @@ try {
             saludoHeader.textContent = `BIENVENIDO, ${nombreCorto.toUpperCase()}`;
             if (emailPerfil) emailPerfil.textContent = u.email || '—';
             if (telefonoPerfil) telefonoPerfil.textContent = u.telefono || '—';
-
-            if (u.foto) {
-                const url = `../../public/imagenes/perfiles/${u.foto}`;
-                avatarHeader.src = url;
-                fotoPerfilGrande.src = url;
-                fotoPerfilModal.src = url;
-            }
-
             perfilNombre.value = u.nombre || '';
             perfilApellido.value = u.apellido || '';
             perfilEmail.value = u.email || '';
@@ -526,7 +519,7 @@ try {
     // --- Tema oscuro (persistente en todo el sistema vía localStorage) ---
     function aplicarTextoTema() {
         const esOscuro = document.documentElement.getAttribute('data-tema') === 'oscuro';
-        temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : '🌙 Activar tema oscuro';
+        temaIconoTexto.textContent = esOscuro ? '☀ Activar tema claro' : 'Activar tema oscuro';
     }
 
     btnTemaOscuro.addEventListener('click', () => {

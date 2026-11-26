@@ -8,14 +8,18 @@
 // coinciden, la diferencia en segundos queda inflada y "online" nunca da true.
 date_default_timezone_set('America/Bogota');
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 header('Content-Type: application/json');
-require_once '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 if (!isset($_SESSION['documento'])) {
     echo json_encode(['ok' => false, 'error' => 'Sesión no válida.']);
     exit();
 }
+
+require_once __DIR__ . '/verificar_sesion.php';
 
 // Solo administradores pueden gestionar usuarios
 if (($_SESSION['rol'] ?? '') !== 'administrador') {
@@ -84,14 +88,16 @@ if ($accion === 'cambiar_estado') {
 
 /* ══ Obtener usuarios conectados (para polling) ══ */
 if ($accion === 'conectados') {
-    $stmt = $db->query("
+    $limite = date('Y-m-d H:i:s', time() - 300);
+    $stmt = $db->prepare("
         SELECT id_usuario, nombre, apellido, rol, foto, ultima_actividad
         FROM usuarios
         WHERE token_sesion IS NOT NULL
-          AND ultima_actividad >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+          AND ultima_actividad >= :limite
           AND activo = 1
         ORDER BY ultima_actividad DESC
     ");
+    $stmt->execute([':limite' => $limite]);
     echo json_encode(['ok' => true, 'conectados' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
     exit();
 }

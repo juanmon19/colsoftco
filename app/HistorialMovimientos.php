@@ -28,9 +28,10 @@ class HistorialMovimientos
                     VALUES
                         (:modulo, :accion, :id_registro, :descripcion,
                          :datos_anteriores, :datos_nuevos,
-                         :usuario_id, :usuario_nombre, :ip, NOW())";
+                         :usuario_id, :usuario_nombre, :ip, :fecha_hora)";
 
             $stmt = $this->conn->prepare($sql);
+            $ahora = (new \DateTimeImmutable('now', new \DateTimeZone('America/Bogota')))->format('Y-m-d H:i:s');
 
             return $stmt->execute([
                 ':modulo'           => $datos['modulo'],
@@ -46,6 +47,7 @@ class HistorialMovimientos
                 ':usuario_id'       => $datos['usuario_id'] ?? null,
                 ':usuario_nombre'   => $datos['usuario_nombre'] ?? ($_SESSION['nombre'] ?? 'Sistema'),
                 ':ip'               => $_SERVER['REMOTE_ADDR'] ?? null,
+                ':fecha_hora'       => $ahora,
             ]);
         } catch (\Throwable $e) {
             error_log('Error registrando historial: ' . $e->getMessage());

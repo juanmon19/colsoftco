@@ -1,8 +1,17 @@
 <?php
 // Plantilla única de errores. Las páginas error_*.php solo definen variables y la incluyen.
+
+// Base de URL del proyecto: '' en InfinityFree, '/colsoftco' en XAMPP
+$raiz    = str_replace('\\', '/', realpath(__DIR__ . '/../..'));
+$docroot = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT']));
+$base    = rtrim(str_replace($docroot, '', $raiz), '/');
+
 $codigo = $codigo ?? 404;
 $titulo = $titulo ?? 'Página no encontrada (Not Found)';
-$imagen = $imagen ?? '/colsoftco/public/imagenes/errores/404.jpeg';
+$imagen = $imagen ?? '/public/imagenes/errores/404.jpeg';
+
+// Quita el prefijo fijo '/colsoftco' (si viene de error_*.php) y pone la base real
+$imagen = $base . preg_replace('#^/colsoftco#', '', $imagen);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -91,7 +100,7 @@ $imagen = $imagen ?? '/colsoftco/public/imagenes/errores/404.jpeg';
             if (document.referrer && window.history.length > 1) {
                 window.history.back();
             } else {
-                window.location.href = '/colsoftco/index.html';
+                window.location.href = <?= json_encode($base . '/view/login/login.php') ?>;
             }
         }
     </script>

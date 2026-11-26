@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $notificarEmail = isset($_POST['notif']) && in_array('email', $_POST['notif']);
   $correoNotificacion = trim($_POST['correo_notificacion'] ?? '');
 
-  if ($idMaterial === '' || $cantidadMinima === '') {
+  if ($idMaterial === '' || !stockValido($cantidadMinima)) {
     $mensaje = "Selecciona un producto e ingresa la cantidad mínima.";
   } elseif ($notificarEmail && $correoNotificacion === '') {
     $mensaje = "Ingresa el correo donde deseas recibir la notificación.";

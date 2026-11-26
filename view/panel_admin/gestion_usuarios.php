@@ -401,6 +401,7 @@ $rolActual = 'Administrador';
 
     <?php include __DIR__ . '/../partials/scripts_layout_footer.php'; ?>
     <script src="../../public/js/app.js" defer></script>
+    <script src="../../public/js/escape-html.js"></script>
     <script>
         function formatearFechaActividad(fechaStr) {
             if (!fechaStr) return 'Nunca';
@@ -433,7 +434,7 @@ $rolActual = 'Administrador';
                 grid.innerHTML = data.conectados.map(u => `
                 <div class="conectado-badge">
                     <span class="dot"></span>
-                    ${u.nombre} ${u.apellido} <small>(${u.rol})</small>
+                    ${escaparHTML(u.nombre)} ${escaparHTML(u.apellido)} <small>(${escaparHTML(u.rol)})</small>
                 </div>
             `).join('');
             } catch (e) {
@@ -459,10 +460,10 @@ $rolActual = 'Administrador';
                     const btnDisabled = esAdmin ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : '';
 
                     return `<tr>
-                    <td><strong>${u.nombre} ${u.apellido}</strong></td>
-                    <td>${u.documento}</td>
-                    <td>${u.email}</td>
-                    <td><span class="badge-rol ${u.rol}">${u.rol}</span></td>
+                    <td><strong>${escaparHTML(u.nombre)} ${escaparHTML(u.apellido)}</strong></td>
+                    <td>${escaparHTML(u.documento)}</td>
+                    <td>${escaparHTML(u.email)}</td>
+                    <td><span class="badge-rol ${escaparHTML(u.rol)}">${escaparHTML(u.rol)}</span></td>
                     <td><span class="badge-estado ${u.activo == 1 ? 'activo' : 'inactivo'}">${u.activo == 1 ? 'Activo' : 'Inactivo'}</span></td>
                     <td>
                         <span class="badge-online ${u.online ? 'si' : 'no'}">

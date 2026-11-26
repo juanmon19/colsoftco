@@ -2,7 +2,6 @@
 
 require_once "../../app/verificar_sesion.php";
 require_once '../../config/conexion.php';
-require_once __DIR__ . '/../../app/HistorialMovimientos.php';
 
 /* Evita que el navegador restaure esta página desde su caché al
    presionar "atrás", lo que mostraría el formulario o el listado de
@@ -16,122 +15,51 @@ header("Expires: 0");
 $db = new Conexion();
 $conn = $db->getConnection();
 
-$unidades = $conn->query("SELECT * FROM unidades_medida")->fetchAll(PDO::FETCH_ASSOC);
-$proveedores = $conn->query("SELECT * FROM proveedores")->fetchAll(PDO::FETCH_ASSOC);
+require_once __DIR__ . '/../../app/registro_materia_prima.php';
+require_once __DIR__ . '/../../app/alerta_stock.php';
 
-/*
- * CONEXIÓN DEL DESPLEGABLE DE PRODUCTOS
- * Se obtienen las materias primas directamente
- * desde la base de datos.
- */
-$materias_primas = $conn->query("
-    SELECT m.id_material, m.nombre_material, m.id_unidad, m.id_proveedor,
-           m.estado, u.sigla, u.nombre_unidad, p.nombre_empresa
-    FROM materias_primas m
-    LEFT JOIN unidades_medida u ON u.id_unidad = m.id_unidad
-    LEFT JOIN proveedores p ON p.id_proveedor = m.id_proveedor
-    ORDER BY m.nombre_material ASC
-")->fetchAll(PDO::FETCH_ASSOC);
-
-$mensaje = '';
-$mensajeTipo = '';
-
-/* Mensaje que llega tras el redirect (ver más abajo) */
-if (isset($_GET['msg'], $_GET['tipo'])) {
-    $mensaje = $_GET['msg'];
-    $mensajeTipo = $_GET['tipo'] === 'ok' ? 'ok' : 'error';
-}
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-    // El producto llega por ID de catálogo: nombre y unidad se toman de la
-    // BD (canónicos) y se IGNORA lo que mande el cliente en id_unidad.
-    // Así una tela siempre queda en metros aunque manipulen el formulario.
-    $idMaterialPost = (int) ($_POST['id_material'] ?? 0);
-    $stock_actual = $_POST['stock_actual'] ?? '';
-    $id_proveedor = (int) ($_POST['id_proveedor'] ?? 0);
-
-    $stmtMat = $conn->prepare(
-        "SELECT nombre_material, id_unidad FROM materias_primas WHERE id_material = :id LIMIT 1"
-    );
-    $stmtMat->execute([':id' => $idMaterialPost]);
-    $matPost = $stmtMat->fetch(PDO::FETCH_ASSOC);
-
-    $stmtProv = $conn->prepare(
-        "SELECT COUNT(*) FROM proveedores WHERE id_proveedor = :id AND estado = 'activo'"
-    );
-    $stmtProv->execute([':id' => $id_proveedor]);
-    $provOk = ((int) $stmtProv->fetchColumn()) > 0;
-
-    // El formulario ya no pide stock mínimo, pero la columna en la BD es
-    // NOT NULL sin valor por defecto, así que se envía 0 automáticamente.
-    $stock_minimo = 0;
-
-    if (!$matPost || !$provOk || $stock_actual === '' || !is_numeric($stock_actual) || (float) $stock_actual < 0) {
-        $mensajeRedirect = 'Datos inválidos: verifica producto, cantidad y proveedor.';
-        $tipoRedirect = 'error';
+$proveedorOrigen = filter_input(INPUT_GET, 'proveedor', FILTER_VALIDATE_INT) ?: 0;
+$desdeStock = ($_GET['origen'] ?? '') === 'stock';
+$puedeRegistrar = es_admin() || es_bodeguero();
+$mensaje = $_SESSION['alta_material_ok'] ?? '';
+unset($_SESSION['alta_material_ok']);
+$mensajeTipo = 'ok';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $mensajeTipo = 'error';
+    if (!$puedeRegistrar || !validarTokenCSRF(is_string($_POST['csrf_token'] ?? null) ? $_POST['csrf_token'] : '')) {
+        http_response_code(403);
+        $mensaje = 'No se pudo autorizar el registro. Revisa tu sesión y vuelve a intentarlo.';
     } else {
-        $nombre_material = $matPost['nombre_material'];
-        $id_unidad = (int) $matPost['id_unidad'];
         try {
-            $sql = "INSERT INTO materias_primas
-                    (
-                        nombre_material,
-                        stock_actual,
-                        stock_minimo,
-                        id_unidad,
-                        id_proveedor
-                    )
-                    VALUES
-                    (
-                        :nombre_material,
-                        :stock_actual,
-                        :stock_minimo,
-                        :id_unidad,
-                        :id_proveedor
-                    )";
-
-            $stmt = $conn->prepare($sql);
-
-            $stmt->execute([
-                ':nombre_material' => $nombre_material,
-                ':stock_actual' => $stock_actual,
-                ':stock_minimo' => $stock_minimo,
-                ':id_unidad' => $id_unidad,
-                ':id_proveedor' => $id_proveedor
-            ]);
-
-            (new HistorialMovimientos())->registrar([
-                'modulo'       => 'materia_prima',
-                'accion'       => 'crear',
-                'id_registro'  => $conn->lastInsertId(),
-                'descripcion'  => "Se registró la materia prima '{$nombre_material}' con stock inicial de {$stock_actual}",
-                'datos_nuevos' => [
-                    'nombre_material' => $nombre_material,
-                    'stock_actual'    => $stock_actual,
-                    'stock_minimo'    => $stock_minimo,
-                    'id_unidad'       => $id_unidad,
-                    'id_proveedor'    => $id_proveedor,
-                ],
-                'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
-            ]);
-
-            $mensajeRedirect = "Materia prima '{$nombre_material}' registrada correctamente.";
-            $tipoRedirect = 'ok';
-        } catch (Exception $e) {
-            $mensajeRedirect = 'Error al registrar la materia prima: ' . $e->getMessage();
-            $tipoRedirect = 'error';
+            $idNuevo = registrarMateriaPrima($conn, $_POST);
+            try {
+                (new AlertaStockLogica())->verificarStock($idNuevo);
+            } catch (Throwable $e) {
+                error_log('Alerta de stock inicial: ' . $e->getMessage());
+            }
+            if ($proveedorOrigen && (string) $proveedorOrigen === ($_POST['id_proveedor'] ?? '')) {
+                $_SESSION['catalogo_proveedor_ok'] = 'Materia prima registrada y vinculada al proveedor.';
+                header('Location: ../lista_proveedores/contactar_proveedor.php?id=' . $proveedorOrigen, true, 303);
+            } elseif ($desdeStock) {
+                header('Location: ../control_de_stock/inventario/lista_inventario.php', true, 303);
+            } else {
+                $_SESSION['alta_material_ok'] = 'Materia prima registrada correctamente.';
+                header('Location: registromp.php', true, 303);
+            }
+            exit;
+        } catch (DomainException $e) {
+            $mensaje = $e->getMessage();
+        } catch (Throwable $e) {
+            error_log('Registro de materia prima: ' . $e->getMessage());
+            $mensaje = 'No se pudo guardar la materia prima. Vuelve a intentarlo.';
         }
     }
-
-    /* Redirigimos siempre (patrón POST-Redirect-GET), llevando el
-       mensaje por la URL. Así el POST nunca queda como una entrada
-       "viva" del historial: al recargar o volver con "atrás", el
-       navegador siempre hace un GET nuevo, sin reenviar el formulario
-       ni mostrar datos desactualizados. */
-    header("Location: registromp.php?msg=" . urlencode($mensajeRedirect) . "&tipo=" . urlencode($tipoRedirect));
-    exit;
 }
+$unidades = $conn->query('SELECT id_unidad, nombre_unidad, sigla FROM unidades_medida ORDER BY nombre_unidad')->fetchAll();
+$proveedores = $conn->query("SELECT id_proveedor, nombre_empresa FROM proveedores WHERE estado = 'activo' ORDER BY nombre_empresa")->fetchAll();
+$valor = static fn($campo, $defecto = '') => is_string($_POST[$campo] ?? null) ? $_POST[$campo] : $defecto;
+$esc = static fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+$unidadActual = $valor('id_unidad', $unidades ? '' : 'nueva');
 ?>
 
 <!doctype html>
@@ -167,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="form-card">
                 <div class="form-header">
                     <span class="form-header-bar"></span>
-                    Registra Producto
+                    Registrar materia prima
                 </div>
 
                 <div class="form-body">
@@ -178,95 +106,59 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
                     <?php endif; ?>
 
-                    <form id="regForm" method="POST">
+                    <?php if (!$puedeRegistrar): ?>
+                    <p>Tu rol tiene acceso de consulta. <a href="../inventario_materia_prima/inventario_materia_prima.php">Ver inventario de materias primas</a></p>
+                    <?php else: ?>
+                    <form method="post">
+                        <input type="hidden" name="csrf_token" value="<?= $esc(generarTokenCSRF()) ?>">
                         <div class="form-grid">
-
-                            <div class="form-group">
-                                <label for="producto">Producto</label>
-                                <div class="select-wrap">
-
-                                    <select id="producto" name="id_material" required>
-
-                                        <option value="">-- Seleccione --</option>
-
-                                        <?php foreach ($materias_primas as $material): ?>
-
-                                            <option value="<?= (int) $material['id_material'] ?>"
-                                                data-unidad="<?= (int) $material['id_unidad'] ?>"
-                                                data-unidad-txt="<?= htmlspecialchars(($material['nombre_unidad'] ?? '') . ' (' . ($material['sigla'] ?? '') . ')') ?>"
-                                                data-prov="<?= (int) $material['id_proveedor'] ?>">
-                                                <?= htmlspecialchars($material['nombre_material']) ?>
-                                            </option>
-
-                                        <?php endforeach; ?>
-
-                                    </select>
-
-                                </div>
+                            <div class="form-group full">
+                                <label for="producto">Nombre de la materia prima</label>
+                                <input id="producto" type="text" name="nombre_material" maxlength="100" value="<?= $esc($valor('nombre_material')) ?>" required>
                             </div>
-
                             <div class="form-group">
                                 <label for="unidad">Unidad de medida</label>
-                                <div class="select-wrap">
-                                    <select id="unidad" name="id_unidad" required>
-                                        <option value="">-- Seleccione un producto --</option>
-
-                                        <?php foreach ($unidades as $unidad): ?>
-
-                                            <option value="<?= $unidad['id_unidad'] ?>">
-                                                <?= htmlspecialchars($unidad['nombre_unidad']) ?> (<?= htmlspecialchars($unidad['sigla']) ?>)
-                                            </option>
-
-                                        <?php endforeach; ?>
-
-                                    </select>
-                                    <small id="avisoUnidad" class="aviso-unidad" style="display:none"></small>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="cantidad">Cantidad</label>
-                                <input
-                                    type="number"
-                                    id="cantidad"
-                                    name="stock_actual"
-                                    min="0"
-                                    step="0.01"
-                                    placeholder="Ingrese la cantidad"
-                                    required
-                                />
-                            </div>
-
-                            <div class="form-group full">
-                                <label for="proveedor">Proveedor</label>
-
-                                <select id="proveedor" name="id_proveedor" required>
-
-                                    <option value="">Seleccione</option>
-
-                                    <?php foreach ($proveedores as $proveedor): ?>
-
-                                        <option value="<?= $proveedor['id_proveedor'] ?>">
-                                            <?= htmlspecialchars($proveedor['nombre_empresa']) ?> -
-                                            <?= htmlspecialchars($proveedor['descripcion_empresa']) ?>
-                                        </option>
-
+                                <select id="unidad" name="id_unidad" required>
+                                    <?php if ($unidades): ?><option value="">Selecciona una unidad</option><?php endif; ?>
+                                    <?php foreach ($unidades as $u): ?>
+                                    <option value="<?= (int) $u['id_unidad'] ?>" <?= $unidadActual === (string) $u['id_unidad'] ? 'selected' : '' ?>><?= $esc($u['nombre_unidad'] . ' (' . $u['sigla'] . ')') ?></option>
                                     <?php endforeach; ?>
-
+                                    <option value="nueva" <?= $unidadActual === 'nueva' ? 'selected' : '' ?>>Crear una unidad</option>
                                 </select>
-
                             </div>
-
+                            <div class="form-group" data-unidad-nueva>
+                                <label for="nombreUnidad">Nombre de la nueva unidad</label>
+                                <input id="nombreUnidad" type="text" name="nombre_unidad" maxlength="20" placeholder="Por ejemplo, kilogramo" value="<?= $esc($valor('nombre_unidad')) ?>">
+                            </div>
+                            <div class="form-group" data-unidad-nueva>
+                                <label for="sigla">Sigla de la nueva unidad</label>
+                                <input id="sigla" type="text" name="sigla" maxlength="5" placeholder="Por ejemplo, kg" value="<?= $esc($valor('sigla')) ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="cantidad">Cantidad inicial</label>
+                                <input id="cantidad" type="number" name="stock_actual" min="0" step="0.01" value="<?= $esc($valor('stock_actual')) ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="minimo">Stock mínimo</label>
+                                <input id="minimo" type="number" name="stock_minimo" min="0" step="0.01" value="<?= $esc($valor('stock_minimo','0')) ?>" required>
+                            </div>
+                            <div class="form-group full">
+                                <label for="proveedor">Proveedor (opcional)</label>
+                                <select id="proveedor" name="id_proveedor">
+                                    <option value="">Sin proveedor asignado</option>
+                                    <?php foreach ($proveedores as $prov): ?>
+                                    <option value="<?= (int) $prov['id_proveedor'] ?>" <?= $valor('id_proveedor', (string) $proveedorOrigen) === (string) $prov['id_proveedor'] ? 'selected' : '' ?>><?= $esc($prov['nombre_empresa']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
-
-                        <hr class="form-divider" />
-
+                        <hr class="form-divider">
                         <div class="form-actions">
                             <button type="reset" class="btn btn-outline">Limpiar</button>
                             <button type="submit" class="btn btn-primary">Registrar</button>
                         </div>
-
                     </form>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -289,111 +181,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="../../public/js/app.js" defer></script>
 
     <script>
-    /* Interceptamos el envío del formulario para que el POST nunca
-       quede como una entrada propia en el historial del navegador.
-       Enviamos por fetch y usamos location.replace() hacia la URL
-       final (registromp.php con el mensaje), reemplazando la entrada
-       actual en vez de crear una nueva. Así, al presionar "atrás", el
-       navegador siempre pide una página nueva al servidor en vez de
-       reenviar el formulario o mostrar un estado desactualizado. */
-    /* Selects enlazados: el proveedor filtra los productos de su catálogo
-       (si solo suministra telas, no aparecen resortes) y el producto FIJA
-       su unidad canónica (la tela solo permite metros). El servidor vuelve
-       a validar todo, así que manipular el HTML no sirve. */
-    const selProducto = document.getElementById('producto');
-    const selUnidad = document.getElementById('unidad');
-    const selProveedor = document.getElementById('proveedor');
-    const avisoUnidad = document.getElementById('avisoUnidad');
-    const todasUnidades = selUnidad ? Array.from(selUnidad.options).map(o => ({ v: o.value, t: o.text })) : [];
-
-    function opcionesProducto() {
-        return selProducto ? Array.from(selProducto.options).filter(o => o.value !== '') : [];
-    }
-
-    function filtrarProductos() {
-        if (!selProducto || !selProveedor) return;
-        const prov = selProveedor.value;
-        let visibles = 0;
-        opcionesProducto().forEach(o => {
-            const ok = prov === '' || o.dataset.prov === prov;
-            o.hidden = !ok;
-            o.disabled = !ok; // Safari ignora hidden en <option>
-            if (ok) visibles++;
-        });
-        // Si el producto elegido ya no lo surte ese proveedor, se resetea.
-        const actual = selProducto.selectedOptions[0];
-        if (actual && actual.value !== '' && actual.hidden) {
-            selProducto.value = '';
-            fijarUnidad();
-        }
-    }
-
-    function fijarUnidad() {
-        if (!selProducto || !selUnidad) return;
-        const opt = selProducto.selectedOptions[0];
-        if (!opt || opt.value === '') {
-            selUnidad.innerHTML = '';
-            todasUnidades.forEach(u => selUnidad.add(new Option(u.t, u.v)));
-            selUnidad.value = '';
-            if (avisoUnidad) avisoUnidad.style.display = 'none';
-            return;
-        }
-        // Solo la unidad del producto: no se puede elegir otra.
-        selUnidad.innerHTML = '';
-        selUnidad.add(new Option(opt.dataset.unidadTxt + ' — fija del producto', opt.dataset.unidad));
-        selUnidad.value = opt.dataset.unidad;
-        if (avisoUnidad) {
-            avisoUnidad.textContent = 'Unidad fijada por el producto (' + opt.dataset.unidadTxt + ').';
-            avisoUnidad.style.display = 'block';
-        }
-        // Si el producto es de un solo proveedor y no hay proveedor elegido, se sugiere.
-        if (selProveedor && selProveedor.value === '' && opt.dataset.prov) {
-            selProveedor.value = opt.dataset.prov;
-        }
-    }
-
-    if (selProducto && selUnidad && selProveedor) {
-        selProveedor.addEventListener('change', filtrarProductos);
-        selProducto.addEventListener('change', fijarUnidad);
-    }
-
-    const regForm = document.getElementById('regForm');
-    const btnRegistrar = regForm ? regForm.querySelector('button[type="submit"]') : null;
-
-    if (regForm) {
-        regForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (btnRegistrar) btnRegistrar.disabled = true;
-
-            const datos = new FormData(regForm);
-
-            fetch(window.location.pathname, {
-                method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body: datos
-            })
-            .then(function (respuesta) {
-                if (!respuesta.ok) {
-                    throw new Error('Respuesta no válida del servidor');
-                }
-                window.location.replace(respuesta.url || 'registromp.php');
-            })
-            .catch(function () {
-                alert('Ocurrió un error al registrar la materia prima. Intenta de nuevo.');
-                if (btnRegistrar) btnRegistrar.disabled = false;
+    const unidad = document.getElementById('unidad');
+    if (unidad) {
+        function mostrarCamposUnidad() {
+            const nueva = unidad.value === 'nueva';
+            document.querySelectorAll('[data-unidad-nueva]').forEach(grupo => {
+                grupo.style.display = nueva ? '' : 'none';
+                grupo.querySelector('input').required = nueva;
             });
-        });
-    }
-
-    /* Refuerzo: si el navegador restaura esta página desde su bfcache
-       (por ejemplo al volver con "atrás"), forzamos una recarga real
-       para que PHP vuelva a consultar el estado actual de la base de
-       datos en vez de mostrar una copia desactualizada. */
-    window.addEventListener('pageshow', function (event) {
-        if (event.persisted) {
-            window.location.reload();
         }
-    });
+        unidad.addEventListener('change', mostrarCamposUnidad);
+        unidad.form.addEventListener('reset', () => setTimeout(mostrarCamposUnidad, 0));
+        mostrarCamposUnidad();
+    }
     </script>
 
 </body>

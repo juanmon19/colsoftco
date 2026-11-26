@@ -1,7 +1,8 @@
 <?php
+require_once __DIR__ . '/validar_stock.php';
 
 require_once __DIR__ . '/../config/conexion.php';
-require_once __DIR__ . '/../app/HistorialMovimientos.php';
+require_once __DIR__ . '/HistorialMovimientos.php';
 
 class InventarioLogica
 {
@@ -56,6 +57,9 @@ class InventarioLogica
         $proveedor
     )
     {
+        if (!stockValido($stockActual) || !stockValido($stockMinimo)) {
+            return false;
+        }
         $sql = "
         INSERT INTO materias_primas
         (
@@ -109,6 +113,9 @@ class InventarioLogica
         $proveedor
     )
     {
+        if (!stockValido($stockActual) || !stockValido($stockMinimo)) {
+            return false;
+        }
         /* Necesitamos el stock ANTES de actualizar, para poder calcular el movimiento real */
         $materialAnterior = $this->obtenerMaterial($id);
         $stockAnterior = $materialAnterior['stock_actual'] ?? null;
@@ -256,6 +263,9 @@ class InventarioLogica
     /* Stock mínimo / alertas (canónico: usar estos, no ProveedorLogica) */
     public function actualizarStockMinimo($id, $stockMinimo)
     {
+        if (!stockValido($stockMinimo)) {
+            return false;
+        }
         $stmt = $this->conn->prepare(
             "UPDATE materias_primas SET stock_minimo = ? WHERE id_material = ?"
         );

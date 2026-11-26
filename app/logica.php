@@ -1,7 +1,6 @@
 <?php
 
 // El detalle técnico de los errores va al log del servidor, nunca a pantalla.
-// Para depurar en local, cambia APP_DEBUG a true en tu .env (o config/setting.php).
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 ini_set('log_errors', 1);
@@ -12,100 +11,106 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 date_default_timezone_set('America/Bogota');
 
-require_once __DIR__ . '/../config/conexion.php';
-require_once __DIR__ . '/../config/setting.php';
-require_once __DIR__ . '/../vendor/autoload.php';
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
-// Verificar si existe la clase Historial antes de requerirla
+require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/permisos.php';
 
-$rutaHistorial = __DIR__ . '/HistorialMovimientos.php';
-
-if (file_exists($rutaHistorial)) {
-    require_once $rutaHistorial;
+// Cargas protegidas para que nunca generen un error 500 si falta algún archivo auxiliar
+foreach ([
+    __DIR__ . '/../config/setting.php',
+    __DIR__ . '/correo_plantilla.php',
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/HistorialMovimientos.php',
+] as $archivoOpcional) {
+    if (file_exists($archivoOpcional)) {
+        require_once $archivoOpcional;
+    } else {
+        error_log('Aviso en logica.php: no se encontró ' . $archivoOpcional);
+    }
 }
 
-// login de acceso
+// ==============================================
+// LOGIN DE ACCESO
+// ==============================================
 if (isset($_POST['login'])) {
-    if (isset($_POST['documento']) and isset($_POST['password'])) {
-        $login = $_POST['documento'];
-        $Password = $_POST['password'];
-
+    if (isset($_POST['documento']) && isset($_POST['password'])) {
         login([
-            'documento' => $login,
-            'password' => $Password
+            'documento' => trim((string) $_POST['documento']),
+            'password'  => (string) $_POST['password'],
         ]);
     } else {
         $_SESSION['error'] = 'Ingrese sus credenciales';
-        header("location:../view/login/login.php");
+        header("Location: ../view/login/login.php");
         exit();
     }
 }
 
-// registro nuevos usuarios (solo administrador + CSRF: este endpoint NO pasa
-// por verificar_sesion, así que la puerta se cierra aquí mismo)
+// ==============================================
+// REGISTRO NUEVOS USUARIOS (SOLO ADMINISTRADOR + CSRF)
+// ==============================================
 if (isset($_POST['registro'])) {
-    require_once __DIR__ . '/permisos.php';
+    require_once __DIR__ . '/verificar_sesion.php';
 
     if (!es_admin()) {
         $_SESSION['mensaje'] = 'Sin permiso para registrar usuarios.';
-        header("location:../view/login/login.php");
+        header("Location: ../view/login/login.php");
         exit();
     }
 
     if (!validarTokenCSRF($_POST['csrf_token'] ?? '')) {
         $_SESSION['mensaje'] = 'Sesión inválida. Recarga la página e inténtalo de nuevo.';
-        header("location:../view/registro/registro.php");
+        header("Location: ../view/registro/registro.php");
         exit();
     }
 
-    $Email = $_POST['email'] ?? '';
+    $Email     = $_POST['email'] ?? '';
     $Documento = $_POST['documento'] ?? '';
-    $Nombre = $_POST['nombre'] ?? '';
-    $Apellido = $_POST['apellido'] ?? '';
-    $Rol = $_POST['rol'] ?? '';
-    $Password = $_POST['password'] ?? '';
-    $Telefono = $_POST['telefono'] ?? '';
+    $Nombre    = $_POST['nombre'] ?? '';
+    $Apellido  = $_POST['apellido'] ?? '';
+    $Rol       = $_POST['rol'] ?? '';
+    $Password  = $_POST['password'] ?? '';
+    $Telefono  = $_POST['telefono'] ?? '';
+
+    if (!in_array($Rol, ['administrador', 'bodeguero', 'operario'], true)) {
+        $_SESSION['mensaje'] = 'Selecciona un rol válido.';
+        header('Location: ../view/registro/registro.php');
+        exit();
+    }
 
     // Validar requisitos de la contraseña
     if (strlen($Password) < 8) {
         $_SESSION['mensaje'] = 'La contraseña debe tener mínimo 8 caracteres.';
-        header("location:../view/registro/registro.php");
+        header("Location: ../view/registro/registro.php");
         exit();
     }
 
     if (!preg_match('/[A-Z]/', $Password)) {
         $_SESSION['mensaje'] = 'La contraseña debe tener al menos una letra mayúscula.';
-        header("location:../view/registro/registro.php");
+        header("Location: ../view/registro/registro.php");
         exit();
     }
 
     if (!preg_match('/[a-z]/', $Password)) {
         $_SESSION['mensaje'] = 'La contraseña debe tener al menos una letra minúscula.';
-        header("location:../view/registro/registro.php");
+        header("Location: ../view/registro/registro.php");
         exit();
     }
 
     if (!preg_match('/[0-9]/', $Password)) {
         $_SESSION['mensaje'] = 'La contraseña debe tener al menos un número.';
-        header("location:../view/registro/registro.php");
+        header("Location: ../view/registro/registro.php");
         exit();
     }
 
     if (!preg_match('/[\W_]/', $Password)) {
         $_SESSION['mensaje'] = 'La contraseña debe tener al menos un carácter especial.';
-        header("location:../view/registro/registro.php");
+        header("Location: ../view/registro/registro.php");
         exit();
     }
 
-    // MANEJO Y SUBIDA DE LA FOTO (endurecido H1/H3: MIME olfateado, re-encode
-    // con GD, nombre aleatorio; la extensión del cliente jamás se usa).
-    // Se guarda en la misma carpeta que usa perfil_usuario.php (public/imagenes/perfiles/)
-    // y en la BD se guarda SOLO el nombre del archivo, porque así es como
-    // panel_admin.php arma la URL: `../../public/imagenes/perfiles/${u.foto}`
+    // Subida segura de foto de perfil
     $rutaFotoBD = null;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         require_once __DIR__ . '/upload_seguro.php';
@@ -116,27 +121,26 @@ if (isset($_POST['registro'])) {
                 7 * 1024 * 1024,
                 'usr'
             );
-        } catch (RuntimeException $e) {
+        } catch (\Throwable $e) {
             $_SESSION['mensaje'] = $e->getMessage();
-            header("location:../view/registro/registro.php");
+            header("Location: ../view/registro/registro.php");
             exit();
         }
     }
 
-    // REGISTRO EN BASE DE DATOS
+    // Registro en base de datos
     $nuevoUsuarioId = saveUser([
-        'email' => $Email,
+        'email'     => $Email,
         'documento' => $Documento,
-        'nombre' => $Nombre,
-        'apellido' => $Apellido,
-        'rol' => $Rol,
-        'telefono' => $Telefono,
-        'foto' => $rutaFotoBD,
-        'password' => password_hash($Password, PASSWORD_BCRYPT),
+        'nombre'    => $Nombre,
+        'apellido'  => $Apellido,
+        'rol'       => $Rol,
+        'telefono'  => $Telefono,
+        'foto'      => $rutaFotoBD,
+        'password'  => password_hash($Password, PASSWORD_BCRYPT),
     ]);
 
     if ($nuevoUsuarioId) {
-        // REGISTRO EN HISTORIAL DE MOVIMIENTOS
         if (class_exists('HistorialMovimientos')) {
             try {
                 $historial = new HistorialMovimientos();
@@ -151,10 +155,10 @@ if (isset($_POST['registro'])) {
                         'nombre'    => $Nombre,
                         'apellido'  => $Apellido,
                         'rol'       => $Rol,
-                        'foto'      => $rutaFotoBD
+                        'foto'      => $rutaFotoBD,
                     ],
                     'usuario_id'     => $_SESSION['user_id'] ?? null,
-                    'usuario_nombre' => $_SESSION['nombre'] ?? 'Sistema'
+                    'usuario_nombre' => $_SESSION['nombre'] ?? 'Sistema',
                 ]);
             } catch (\Throwable $e) {
                 error_log('Error al registrar historial en registro: ' . $e->getMessage());
@@ -166,16 +170,22 @@ if (isset($_POST['registro'])) {
         $_SESSION['mensaje'] = 'Error al registrar usuario';
     }
 
-    header("location:../view/registro/registro.php");
+    header("Location: ../view/registro/registro.php");
     exit();
 }
 
-// Función saveUser con captura de errores
+// ==============================================
+// FUNCIONES DE BASE DE DATOS Y AUTENTICACIÓN
+// ==============================================
 function saveUser(array $datos)
 {
+    $Conex = null;
     try {
-        $Conex = new Conexion;
+        $Conex = new Conexion();
         $MiConexion = $Conex->getConnection();
+        if (!$MiConexion) {
+            throw new \RuntimeException('No se pudo obtener la conexión a la base de datos.');
+        }
 
         $Conex->pps = $MiConexion->prepare(
             "INSERT INTO usuarios
@@ -198,104 +208,160 @@ function saveUser(array $datos)
         }
         return false;
     } catch (\Throwable $th) {
-        // El detalle técnico se va al log del servidor, NUNCA a pantalla.
         error_log('Error de Base de Datos en saveUser(): ' . $th->getMessage());
         return false;
     } finally {
-        $Conex->closeDataBase();
+        if ($Conex && method_exists($Conex, 'closeDataBase')) {
+            $Conex->closeDataBase();
+        }
     }
 }
 
-// realizar el login al sistema
+function obtenerIdDispositivo(): string
+{
+    $deviceId = $_COOKIE['colsoftco_dev'] ?? '';
+    if (!is_string($deviceId) || !preg_match('/^[a-f0-9]{16}$/', $deviceId)) {
+        $deviceId = bin2hex(random_bytes(8));
+    }
+
+    setcookie('colsoftco_dev', $deviceId, [
+        'expires'  => time() + (365 * 24 * 60 * 60),
+        'path'     => '/',
+        'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
+    return $deviceId;
+}
+
 function login(array $credenciales)
 {
-    $Conex = new Conexion;
-    $Usuario = ConsultaUsuario($Conex, ['documento' => $credenciales['documento']]);
+    try {
+        $Conex = new Conexion();
+        $Usuario = ConsultaUsuario($Conex, ['documento' => $credenciales['documento']]);
+    } catch (\Throwable $th) {
+        error_log('Error crítico en login(): ' . $th->getMessage());
+        $_SESSION['error'] = 'No se pudo conectar con la base de datos. Intenta de nuevo.';
+        header("Location: ../view/login/login.php");
+        exit();
+    }
 
     if ($Usuario) {
-        // Verificar si la cuenta está activa
         if (isset($Usuario[0]['activo']) && (int) $Usuario[0]['activo'] !== 1) {
             $_SESSION['error'] = 'Tu cuenta ha sido desactivada. Contacta al administrador.';
-            header("location:../view/login/login.php");
+            header("Location: ../view/login/login.php");
             exit();
         }
-        $UsuarioEmail = $Usuario[0]['email'];
+
+        $UsuarioEmail     = $Usuario[0]['email'];
         $UsuarioDocumento = $Usuario[0]['documento'];
-        $HashPassword = $Usuario[0]['password_hash'];
+        $HashPassword     = $Usuario[0]['password_hash'];
 
-        if ($UsuarioEmail === $credenciales['documento'] or $UsuarioDocumento === $credenciales['documento']) {
+        if ($UsuarioEmail === $credenciales['documento'] || $UsuarioDocumento === $credenciales['documento']) {
             if (password_verify($credenciales['password'], $HashPassword)) {
-                if (!empty($Usuario[0]['token_sesion'])) {
-                    $ipIngreso = $_SERVER['REMOTE_ADDR'] ?? 'IP desconocida';
-                    $fechaIngreso = date('d/m/Y H:i:s');
+                $ipIngreso      = $_SERVER['REMOTE_ADDR'] ?? 'IP desconocida';
+                $fechaIngreso   = date('d/m/Y H:i:s');
+                $nombreCompleto = trim($Usuario[0]['nombre'] . ' ' . $Usuario[0]['apellido']);
 
-                    EnviarAlertaSesionDuplicada(
-                        $Usuario[0]['email'],
-                        $Usuario[0]['nombre'] . ' ' . $Usuario[0]['apellido'],
-                        $ipIngreso,
-                        $fechaIngreso
-                    );
+                // Identificador persistente de este dispositivo (16 caracteres hex)
+                $deviceId = obtenerIdDispositivo();
 
-                    if (class_exists('HistorialMovimientos')) {
-                        try {
+                // Solo es sesión duplicada si había una sesión ACTIVA (<= 30 min)
+                // abierta desde OTRO dispositivo o navegador diferente.
+                $tokenAnterior   = (string) ($Usuario[0]['token_sesion'] ?? '');
+                $ultimaActividad = $Usuario[0]['ultima_actividad'] ?? null;
+                $minutosMax      = defined('MINUTOS_INACTIVIDAD_MAX') ? (int) MINUTOS_INACTIVIDAD_MAX : 30;
+
+                $sesionAunActiva = false;
+                if ($tokenAnterior !== '' && !empty($ultimaActividad)) {
+                    $tsUltima = strtotime($ultimaActividad);
+                    if ($tsUltima !== false && ((time() - $tsUltima) / 60) <= $minutosMax) {
+                        $sesionAunActiva = true;
+                    }
+                }
+
+                $mismoDispositivo = ($tokenAnterior !== '' && strlen($tokenAnterior) === 64)
+                    && hash_equals(substr($tokenAnterior, 0, 16), $deviceId);
+
+                $esSesionDuplicada = $sesionAunActiva && !$mismoDispositivo;
+
+                if (class_exists('HistorialMovimientos')) {
+                    try {
+                        if ($esSesionDuplicada) {
                             (new HistorialMovimientos())->registrar([
                                 'modulo'         => 'Seguridad',
                                 'accion'         => 'sesion_duplicada',
                                 'id_registro'    => $Usuario[0]['id_usuario'],
-                                'descripcion'    => "Se detectó un nuevo inicio de sesión para {$Usuario[0]['nombre']} {$Usuario[0]['apellido']} (Doc: {$Usuario[0]['documento']}) mientras ya existía una sesión activa. IP: {$ipIngreso}.",
+                                'descripcion'    => "Se detectó un nuevo inicio de sesión desde otro dispositivo para {$nombreCompleto} (Doc: {$Usuario[0]['documento']}) mientras ya existía una sesión activa. IP: {$ipIngreso}.",
                                 'usuario_id'     => $Usuario[0]['id_usuario'],
-                                'usuario_nombre' => $Usuario[0]['nombre'] . ' ' . $Usuario[0]['apellido'],
+                                'usuario_nombre' => $nombreCompleto,
                             ]);
-                        } catch (\Throwable $e) {
-                            error_log('Error al registrar alerta de sesión duplicada: ' . $e->getMessage());
+                        } else {
+                            (new HistorialMovimientos())->registrar([
+                                'modulo'         => 'Seguridad',
+                                'accion'         => 'inicio_sesion',
+                                'id_registro'    => $Usuario[0]['id_usuario'],
+                                'descripcion'    => "Inicio de sesión de {$nombreCompleto} (Doc: {$Usuario[0]['documento']}). IP: {$ipIngreso}.",
+                                'usuario_id'     => $Usuario[0]['id_usuario'],
+                                'usuario_nombre' => $nombreCompleto,
+                            ]);
                         }
+                    } catch (\Throwable $e) {
+                        error_log('Error al registrar evento de inicio de sesión: ' . $e->getMessage());
                     }
                 }
 
-                // Generar un nuevo token y guardarlo tanto en la sesión como
-                // en la base de datos. Esto invalida automáticamente
-                // cualquier sesión anterior (verificar_sesion.php compara
-                // este valor en cada petición).
-                $nuevoTokenSesion = bin2hex(random_bytes(32));
+                // Token de 64 chars: 16 chars del dispositivo + 48 chars aleatorios
+                $nuevoTokenSesion = $deviceId . bin2hex(random_bytes(24));
                 guardarTokenSesion($Usuario[0]['id_usuario'], $nuevoTokenSesion);
                 refrescarUltimaActividad($Usuario[0]['id_usuario']);
-                // Sesión fresca: se borra cualquier resto del usuario anterior
-                // (evita que id_usuario/id/usuario_id viejos hagan ver otro nombre).
+
                 $_SESSION = [];
                 session_regenerate_id(true);
                 $_SESSION['token_sesion'] = $nuevoTokenSesion;
+                $_SESSION['user_id']      = (int) $Usuario[0]['id_usuario'];
+                $_SESSION['id_usuario']   = (int) $Usuario[0]['id_usuario'];
+                $_SESSION['rol']          = strtolower(trim($Usuario[0]['rol']));
+                $_SESSION['nombre']       = $Usuario[0]['nombre'];
+                $_SESSION['apellido']     = $Usuario[0]['apellido'];
+                $_SESSION['documento']    = $Usuario[0]['documento'];
+                $_SESSION['email']        = $Usuario[0]['email'];
 
-                $_SESSION['user_id'] = (int) $Usuario[0]['id_usuario'];
-                $_SESSION['id_usuario'] = (int) $Usuario[0]['id_usuario'];
-                $_SESSION['rol'] = strtolower(trim($Usuario[0]['rol']));
-                $_SESSION['nombre'] = $Usuario[0]['nombre'];
-                $_SESSION['apellido'] = $Usuario[0]['apellido'];
-                $_SESSION['documento'] = $Usuario[0]['documento'];
-                $_SESSION['email'] = $Usuario[0]['email'];
+                EnviarAlertaInicioSesion(
+                    $_SESSION['email'],
+                    $nombreCompleto,
+                    $ipIngreso,
+                    $fechaIngreso,
+                    $esSesionDuplicada
+                );
 
                 $Rol = $_SESSION['rol'];
 
-                if ($Rol == 'administrador') {
-                    header("location:../view/panel_admin/panel_admin.php");
-                } elseif ($Rol == 'bodeguero') {
-                    header("location:../view/panel_bodeguero/panel_bodeguero.php");
-                } elseif ($Rol == 'operario') {
-                    header("location:../view/panel_operario/panel_operario.php");
+                if ($Rol === 'administrador') {
+                    header("Location: ../view/panel_admin/panel_admin.php");
+                } elseif ($Rol === 'bodeguero') {
+                    header("Location: ../view/panel_bodeguero/panel_bodeguero.php");
+                } elseif ($Rol === 'operario') {
+                    header("Location: ../view/panel_operario/panel_operario.php");
+                } else {
+                    $_SESSION['error'] = 'Rol de usuario no reconocido.';
+                    header("Location: ../view/login/login.php");
                 }
                 exit();
             } else {
                 $_SESSION['error'] = 'Contraseña Incorrecta';
-                header("location:../view/login/login.php");
+                header("Location: ../view/login/login.php");
                 exit();
             }
         } else {
             $_SESSION['error'] = 'Error en el documento';
-            header("location:../view/login/login.php");
+            header("Location: ../view/login/login.php");
             exit();
         }
     } else {
         $_SESSION['error'] = 'Error, no existe ese usuario';
-        header("location:../view/login/login.php");
+        header("Location: ../view/login/login.php");
         exit();
     }
 }
@@ -305,36 +371,40 @@ function ConsultaUsuario($conexion, array $dataConsulta)
     $consulta = "SELECT * FROM usuarios WHERE documento = :documento OR email = :email";
 
     try {
-        $conexion->pps = $conexion->getConnection()->prepare($consulta);
+        $conn = $conexion->getConnection();
+        if (!$conn) {
+            throw new \RuntimeException('Conexión nula en ConsultaUsuario.');
+        }
+        $conexion->pps = $conn->prepare($consulta);
         $conexion->pps->bindParam(":documento", $dataConsulta['documento']);
         $conexion->pps->bindParam(":email", $dataConsulta['documento']);
         $conexion->pps->execute();
 
         return $conexion->pps->fetchAll();
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         error_log('Error en ConsultaUsuario: ' . $e->getMessage());
         return [];
     } finally {
-        $conexion->closeDataBase();
+        if ($conexion && method_exists($conexion, 'closeDataBase')) {
+            $conexion->closeDataBase();
+        }
     }
 }
 
-// ══════════════════════════════════════════════
+// ==============================================
 // CONTROL DE SESIÓN ÚNICA
-// ══════════════════════════════════════════════
-
-/**
- * Guarda el token de sesión activo del usuario en la base de datos.
- * Al hacer login desde otro lugar, este valor cambia y la sesión
- * anterior queda invalidada (ver app/verificar_sesion.php).
- */
+// ==============================================
 function guardarTokenSesion($idUsuario, $token)
 {
-    $conex = new Conexion();
-    $conex->sql = "UPDATE usuarios SET token_sesion = :token WHERE id_usuario = :id";
-
+    $conex = null;
     try {
-        $conex->pps = $conex->getConnection()->prepare($conex->sql);
+        $conex = new Conexion();
+        $conn = $conex->getConnection();
+        if (!$conn) {
+            return false;
+        }
+        $conex->sql = "UPDATE usuarios SET token_sesion = :token WHERE id_usuario = :id";
+        $conex->pps = $conn->prepare($conex->sql);
         $conex->pps->bindParam(":token", $token);
         $conex->pps->bindParam(":id", $idUsuario);
         return $conex->pps->execute();
@@ -342,42 +412,55 @@ function guardarTokenSesion($idUsuario, $token)
         error_log('Error al guardar token_sesion: ' . $th->getMessage());
         return false;
     } finally {
-        $conex->closeDataBase();
+        if ($conex && method_exists($conex, 'closeDataBase')) {
+            $conex->closeDataBase();
+        }
     }
 }
 
-/**
- * Marca "ahora" como última actividad justo al iniciar sesión.
- * Sin esto, el primer chequeo de inactividad en verificar_sesion.php
- * compara contra un valor viejo (de una sesión anterior) y expira
- * la sesión inmediatamente después de loguearse.
- */
 function refrescarUltimaActividad($idUsuario)
 {
-    $conex = new Conexion();
-    $conex->sql = "UPDATE usuarios SET ultima_actividad = NOW() WHERE id_usuario = :id";
-
+    $conex = null;
     try {
-        $conex->pps = $conex->getConnection()->prepare($conex->sql);
+        $conex = new Conexion();
+        $conn = $conex->getConnection();
+        if (!$conn) {
+            return false;
+        }
+        $ahora = date('Y-m-d H:i:s');
+        $conex->sql = "UPDATE usuarios SET ultima_actividad = :ahora WHERE id_usuario = :id";
+        $conex->pps = $conn->prepare($conex->sql);
+        $conex->pps->bindParam(":ahora", $ahora);
         $conex->pps->bindParam(":id", $idUsuario);
         return $conex->pps->execute();
     } catch (\Throwable $th) {
         error_log('Error al refrescar ultima_actividad: ' . $th->getMessage());
         return false;
     } finally {
-        $conex->closeDataBase();
+        if ($conex && method_exists($conex, 'closeDataBase')) {
+            $conex->closeDataBase();
+        }
     }
 }
 
-/**
- * Envía un correo de alerta al dueño de la cuenta cuando se detecta
- * un nuevo inicio de sesión mientras ya existía una sesión activa.
- */
-function EnviarAlertaSesionDuplicada($correo, $nombreReceptor, $ip, $fecha)
+// Notifica al titular después de cada autenticación exitosa.
+function EnviarAlertaInicioSesion($correo, $nombreReceptor, $ip, $fecha, bool $habiaSesion)
 {
-    $mail = new PHPMailer(true);
+    if (
+        !class_exists(PHPMailer::class) ||
+        !function_exists('prepararCorreo') ||
+        !defined('HOST') ||
+        !defined('USERNAME') ||
+        !defined('PASSWORD') ||
+        USERNAME === '' ||
+        PASSWORD === ''
+    ) {
+        return;
+    }
+
     try {
-        $mail->SMTPDebug = SMTP::DEBUG_OFF;
+        $mail = new PHPMailer(true);
+        $mail->SMTPDebug  = SMTP::DEBUG_OFF;
         $mail->isSMTP();
         $mail->Host       = HOST;
         $mail->SMTPAuth   = true;
@@ -385,29 +468,34 @@ function EnviarAlertaSesionDuplicada($correo, $nombreReceptor, $ip, $fecha)
         $mail->Password   = PASSWORD;
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
+        $mail->Timeout    = 8;
 
-        $mail->setFrom('colsoftco4@gmail.com', 'Colsoftco - Seguridad');
+        $mail->setFrom(USERNAME, 'Colsoftco - Seguridad');
         $mail->addAddress($correo, $nombreReceptor);
 
-        $mail->isHTML(true);
-        $mail->Subject = 'Alerta de seguridad: nuevo inicio de sesion en tu cuenta';
+        if (defined('BASE_URL') && BASE_URL !== '') {
+            $base = rtrim(BASE_URL, '/');
+        } else {
+            $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $base = $scheme . '://' . $host . colsoftco_base_path();
+        }
 
-        $baseUrl = defined('BASE_URL') ? BASE_URL : 'http://localhost/colsoftco';
-        $urlCambioPassword = $baseUrl . '/view/recuperar_contrasena/recuperar_contrasena.php';
-
-        $mail->Body    = '
-            Hola ' . htmlspecialchars($nombreReceptor) . ',<br><br>
-            Detectamos un <b>nuevo inicio de sesión</b> en tu cuenta de COLSOFTCO
-            mientras ya había una sesión activa en otro dispositivo o navegador.<br><br>
-            <b>Fecha y hora:</b> ' . htmlspecialchars($fecha) . '<br>
-            <b>Dirección IP:</b> ' . htmlspecialchars($ip) . '<br><br>
-            Si fuiste tu, puedes ignorar este mensaje; la sesion anterior se cerró automaticamente.<br>
-            Si <b>no reconoces</b> este ingreso, cambia tu contraseña de inmediato haciendo clic aquí:<br><br>
-            <b><a href="' . $urlCambioPassword . '">Cambiar mi contraseña</a></b>
-        ';
+        prepararCorreo(
+            $mail,
+            'Nuevo inicio de sesión en COLSOFTCO',
+            "Hola, {$nombreReceptor}.",
+            $habiaSesion
+                ? 'Se inició sesión en tu cuenta desde otro dispositivo y se reemplazó la sesión anterior.'
+                : 'Se inició sesión en tu cuenta de COLSOFTCO.',
+            ['Fecha y hora' => $fecha, 'Dirección IP' => $ip],
+            'Si reconoces este ingreso, puedes seguir usando tu cuenta. Si no lo reconoces, solicita un cambio de contraseña.',
+            'Cambiar mi contraseña',
+            $base . '/view/recuperar_contrasena/recuperar_contrasena.php'
+        );
 
         $mail->send();
-    } catch (Exception $e) {
-        error_log('Error al enviar alerta de sesión duplicada: ' . $mail->ErrorInfo);
+    } catch (\Throwable $e) {
+        error_log('Error al enviar el aviso de inicio de sesión: ' . $e->getMessage());
     }
 }

@@ -15,79 +15,68 @@ if (!$proveedor) {
     die("Proveedor no encontrado");
 }
 
+$conn = (new Conexion())->getConnection();
+$error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $imagen = $proveedor['imagen'] ?? null;
-
-    // =====================================
-    // CAMBIAR IMAGEN SI SE SELECCIONÓ UNA
-    // =====================================
-
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-
-        require_once __DIR__ . '/../../app/upload_seguro.php';
-
-        if (!validarTokenCSRF($_POST['csrf_token'] ?? '')) {
-            die("Sesión inválida. Recarga la página.");
-        }
-
-        // Carpeta donde se guardan las imágenes
-        $carpetaImagenes = __DIR__ . '/../../public/imagenes/proveedores/';
-
-        // Re-codificada, nombre aleatorio, máximo 2 MB (H4: el contenido
-        // nunca se valida solo por extensión).
-        try {
-            $nuevoNombre = guardarImagenSegura($_FILES['imagen'], $carpetaImagenes, 2 * 1024 * 1024, 'proveedor_' . $id);
-        } catch (RuntimeException $e) {
-            die(htmlspecialchars($e->getMessage()));
-        }
-
-        // Eliminar imagen anterior (basename interno impide salidas del dir)
-        if (!empty($imagen)) {
-            borrarArchivoSeguro($carpetaImagenes, $imagen);
-        }
-
-        $imagen = $nuevoNombre;
+    if (!validarTokenCSRF(is_string($_POST['csrf_token'] ?? null) ? $_POST['csrf_token'] : '')) {
+        http_response_code(403);
+        exit('Sesión inválida. Recarga la página.');
     }
+    require_once __DIR__ . '/../../app/upload_seguro.php';
+    $carpeta = __DIR__ . '/../../public/imagenes/proveedores/';
+    $nuevoNombre = null;
+    try {
+        $conn->beginTransaction();
+        $bloqueo = $conn->prepare('SELECT imagen FROM proveedores WHERE id_proveedor = ? FOR UPDATE');
+        $bloqueo->execute([$id]);
+        $actual = $bloqueo->fetch(PDO::FETCH_ASSOC);
+        if (!$actual) {
+            throw new DomainException('El proveedor ya no existe.');
+        }
+        if (($_FILES['imagen']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+            $nuevoNombre = guardarImagenSegura($_FILES['imagen'], $carpeta, 2 * 1024 * 1024, 'proveedor_' . $id);
+        }
+        $logica->actualizarProveedor($id, $_POST['nombre_empresa'], $_POST['contacto_nombre'],
+            $_POST['contacto_apellido'], $_POST['telefono'], $_POST['email'], $_POST['nit'],
+            $_POST['direccion'], $_POST['descripcion_empresa'], $nuevoNombre ?? $actual['imagen']);
 
-    // =====================================
-    // ACTUALIZAR PROVEEDOR
-    // =====================================
-
-    $logica->actualizarProveedor(
-        $id,
-        $_POST['nombre_empresa'],
-        $_POST['contacto_nombre'],
-        $_POST['contacto_apellido'],
-        $_POST['telefono'],
-        $_POST['email'],
-        $_POST['nit'],
-        $_POST['direccion'],
-        $_POST['descripcion_empresa'],
-        $imagen
-    );
-
-    // =====================================
-    // HISTORIAL
-    // =====================================
-
-    (new HistorialMovimientos())->registrar([
-        'modulo'          => 'proveedores',
-        'accion'          => 'editar',
-        'id_registro'     => $id,
-        'descripcion'     => "Se actualizó el proveedor '{$_POST['nombre_empresa']}'",
-        'datos_anteriores' => $proveedor,
-        'datos_nuevos'    => $_POST,
-        'usuario_nombre'  => trim(
-            ($_SESSION['nombre'] ?? '') . ' ' .
-                ($_SESSION['apellido'] ?? '')
-        ) ?: 'Sistema',
-    ]);
-
-    header("Location: ../lista_proveedores/lista_proveedores.php");
-    exit;
+        $destino = $_POST['id_material'] ?? '';
+        if ($destino !== '') {
+            $origen = $_POST['material_anterior'] ?? '';
+            if (!is_string($destino) || !ctype_digit($destino) || (int) $destino < 1
+                || !is_string($origen) || !ctype_digit($origen)) {
+                throw new DomainException('Revisa la materia prima seleccionada.');
+            }
+            $logica->cambiarMateriaSuministrada($id, (int) $origen, (int) $destino);
+        }
+        $datos = $_POST;
+        unset($datos['csrf_token']);
+        if (!(new HistorialMovimientos())->registrar([
+            'modulo' => 'proveedores', 'accion' => 'editar', 'id_registro' => $id,
+            'descripcion' => "Se actualizó el proveedor '{$_POST['nombre_empresa']}'",
+            'datos_anteriores' => $proveedor, 'datos_nuevos' => $datos,
+            'usuario_nombre' => trim(($_SESSION['nombre'] ?? '') . ' ' . ($_SESSION['apellido'] ?? '')) ?: 'Sistema',
+        ])) {
+            throw new RuntimeException('No se pudo guardar el historial.');
+        }
+        $conn->commit();
+        if ($nuevoNombre) {
+            borrarArchivoSeguro($carpeta, $actual['imagen']);
+        }
+        header('Location: lista_proveedores.php', true, 303);
+        exit;
+    } catch (Throwable $e) {
+        if ($conn->inTransaction()) {
+            $conn->rollBack();
+        }
+        borrarArchivoSeguro($carpeta, $nuevoNombre);
+        error_log('Edición de proveedor: ' . $e->getMessage());
+        $error = $e instanceof DomainException ? $e->getMessage() : 'No se pudieron guardar los cambios. Revisa los datos y la imagen.';
+    }
 }
-
+$materiales = $logica->materialesParaEdicion($id);
+$actuales = array_values(array_filter($materiales, static fn($mp) => $mp['vinculado']));
+$unico = count($actuales) === 1 ? (int) $actuales[0]['id_material'] : 0;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -139,6 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generarTokenCSRF()) ?>">
 
+                    <?php if ($error): ?><p role="alert"><?= htmlspecialchars($error) ?></p><?php endif; ?>
                     <div class="form-grid">
 
                         <div class="campo full imagen-section">
@@ -239,11 +229,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 required>
                         </div>
 
+                        <?php if (count($actuales) > 1): ?>
+                        <div class="campo full">
+                            <label for="materialAnterior">Materia prima a reemplazar</label>
+                            <select id="materialAnterior" name="material_anterior">
+                                <?php foreach ($actuales as $mp): ?>
+                                <option value="<?= (int) $mp['id_material'] ?>"><?= htmlspecialchars($mp['nombre_material']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <?php else: ?>
+                        <input type="hidden" name="material_anterior" value="<?= $unico ?>">
+                        <?php endif; ?>
+                        <div class="campo full">
+                            <label for="idMaterial">Materia prima que suministra</label>
+                            <select id="idMaterial" name="id_material">
+                                <?php if (!$unico): ?>
+                                <option value=""><?= !$materiales ? 'No hay materias primas registradas' : ($actuales ? 'Conservar el catálogo actual' : 'Selecciona una materia prima') ?></option>
+                                <?php endif; ?>
+                                <?php foreach ($materiales as $mp): ?>
+                                <?php if ($mp['estado'] !== 'activo' && (int) $mp['id_material'] !== $unico) continue; ?>
+                                <option value="<?= (int) $mp['id_material'] ?>" <?= (int) $mp['id_material'] === $unico ? 'selected' : '' ?>><?= htmlspecialchars($mp['nombre_material']) ?><?= $mp['estado'] !== 'activo' ? ' (inactiva)' : '' ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                         <div class="campo full">
                             <label>Descripción Empresa</label>
                             <textarea
                                 name="descripcion_empresa"
-                                required><?= htmlspecialchars($proveedor['descripcion_empresa']) ?></textarea>
+                                ><?= htmlspecialchars($proveedor['descripcion_empresa'] ?? '') ?></textarea>
                         </div>
 
                     </div>

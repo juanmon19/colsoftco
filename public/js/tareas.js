@@ -17,7 +17,14 @@
 (function () {
     'use strict';
 
-    const BASE_APP = (typeof PREFIJO_APP !== 'undefined') ? PREFIJO_APP : '/colsoftco/';
+    // CAMBIO: la carpeta base se calcula a partir de la URL de la página.
+    // En XAMPP (localhost/colsoftco/view/...) da "/colsoftco/";
+    // en InfinityFree (dominio/view/...) da "/".
+    // Antes quedaba fijo en '/colsoftco/' y en el hosting daba 404.
+    const BASE_APP = (function () {
+        const m = window.location.pathname.match(/^(.*?)\/view\//);
+        return (m ? m[1] : '') + '/';
+    })();
 
     // CONTRATO CON LA BD: los key DEBEN ser idénticos al ENUM de
     // tareas.estado ('pendiente', 'por-hacer', 'terminado').

@@ -7,18 +7,21 @@
  *   y ver/gestionar las de todos.
  */
 
+date_default_timezone_set('America/Bogota');
 header('Content-Type: application/json');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once __DIR__ . '/permisos.php';
-require_once '../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php';
 
 // Verificar que el usuario esté autenticado
 if (!isset($_SESSION['documento'])) {
     echo json_encode(['ok' => false, 'error' => 'Sesión no válida.']);
     exit();
 }
+
+require_once __DIR__ . '/verificar_sesion.php';
 
 $conexion = new Conexion();
 $db = $conexion->getConnection();
@@ -34,6 +37,11 @@ try {
     }
 } catch (Throwable $e) {
     $hayDueno = false; // BD sin migrar: se sigue en modo global (solo admin debería llegar aquí)
+}
+
+if (!$admin && (!$hayDueno || $me <= 0)) {
+    http_response_code(403);
+    exit(json_encode(['ok' => false, 'error' => 'No se pudo verificar el propietario de las tareas.']));
 }
 
 $accion = $_REQUEST['accion'] ?? '';
@@ -55,22 +63,13 @@ if ($accion === 'listar') {
              WHERE activo = 1 ORDER BY nombre ASC"
         )->fetchAll(PDO::FETCH_ASSOC);
     } else {
-        if ($hayDueno) {
-            $stmt = $db->prepare(
-                "SELECT id_tarea, titulo, prioridad, fecha_vencimiento, estado, id_usuario
-                 FROM tareas WHERE id_usuario = :me
-                 ORDER BY FIELD(estado, 'pendiente', 'por-hacer', 'terminado'),
-                          fecha_vencimiento ASC"
-            );
-            $stmt->execute([':me' => $me]);
-        } else {
-            $stmt = $db->query(
-                "SELECT id_tarea, titulo, prioridad, fecha_vencimiento, estado
-                 FROM tareas
-                 ORDER BY FIELD(estado, 'pendiente', 'por-hacer', 'terminado'),
-                          fecha_vencimiento ASC"
-            );
-        }
+        $stmt = $db->prepare(
+            "SELECT id_tarea, titulo, prioridad, fecha_vencimiento, estado, id_usuario
+             FROM tareas WHERE id_usuario = :me
+             ORDER BY FIELD(estado, 'pendiente', 'por-hacer', 'terminado'),
+                      fecha_vencimiento ASC"
+        );
+        $stmt->execute([':me' => $me]);
         $tareas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $usuarios = [];
     }
@@ -94,7 +93,12 @@ if ($accion === 'usuarios') {
 
 /* ══ Sugerencias de títulos ya usados antes, para el autocompletado ══ */
 if ($accion === 'sugerencias') {
-    $stmt = $db->query("SELECT DISTINCT titulo FROM tareas ORDER BY titulo ASC LIMIT 20");
+    if ($admin) {
+        $stmt = $db->query("SELECT DISTINCT titulo FROM tareas ORDER BY titulo ASC LIMIT 20");
+    } else {
+        $stmt = $db->prepare("SELECT DISTINCT titulo FROM tareas WHERE id_usuario = ? ORDER BY titulo ASC LIMIT 20");
+        $stmt->execute([$me]);
+    }
     echo json_encode(['ok' => true, 'sugerencias' => $stmt->fetchAll(PDO::FETCH_COLUMN)]);
     exit();
 }
@@ -207,7 +211,12 @@ if ($accion === 'actualizar') {
         try {
             $col = $db->query("SHOW COLUMNS FROM tareas LIKE 'fecha_cierre'")->fetch();
             if ($col) {
-                $campos[] = $estado === 'terminado' ? 'fecha_cierre = NOW()' : 'fecha_cierre = NULL';
+                if ($estado === 'terminado') {
+                    $campos[] = 'fecha_cierre = :fecha_cierre';
+                    $params[':fecha_cierre'] = date('Y-m-d H:i:s');
+                } else {
+                    $campos[] = 'fecha_cierre = NULL';
+                }
             }
         } catch (Throwable $e) {
             // sin columna: se actualiza solo el estado

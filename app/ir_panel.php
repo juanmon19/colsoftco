@@ -15,7 +15,7 @@ if (!isset($_SESSION['rol'])) {
     exit();
 }
 
-switch ($_SESSION['rol']) {
+switch (strtolower(trim((string) $_SESSION['rol']))) {
 
     case 'administrador':
         header("Location: ../view/panel_admin/panel_admin.php");

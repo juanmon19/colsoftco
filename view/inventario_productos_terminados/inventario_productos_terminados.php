@@ -280,7 +280,7 @@ $productosDb = $conn->query(
                                 'nombre' => $p['nombre_producto'],
                                 'cantidad' => (float) $p['stock_actual'],
                             ];
-                        }, $productosDb), JSON_UNESCAPED_UNICODE) ?>;
+                        }, $productosDb), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) ?>;
 
         const SOLO_LECTURA = <?= $soloLecturaInv ? 'true' : 'false' ?>;
 
@@ -331,10 +331,11 @@ $productosDb = $conn->query(
                 `;
                 tr.innerHTML = `
                     <td>${p.id}</td>
-                    <td>${p.nombre}</td>
+                    <td></td>
                     <td>${formatCantidad(p.cantidad)}</td>
                     ${celdaAcciones}
                 `;
+                tr.cells[1].textContent = p.nombre;
                 tbody.appendChild(tr);
             });
 
